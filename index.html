@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Hereby Commit - Coming Soon</title>
+    <meta name="description" content="Dating for people who actually commit">
+    <meta property="og:title" content="I Hereby Commit">
+    <meta property="og:description" content="Dating for people who actually commit">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iherebycommit.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;700&family=Sora:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .container {
+            max-width: 560px;
+            width: 100%;
+            padding: 48px 24px;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 0.7em;
+            letter-spacing: 0.15rem;
+            text-transform: uppercase;
+            color: #e056fd;
+            border: 1px solid #e056fd;
+            border-radius: 2rem;
+            padding: 6px 18px;
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+        .emoji-hero {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+        h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #e056fd, #833ab4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tagline {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1em;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 12px;
+            max-width: 460px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .pitch {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.85em;
+            line-height: 1.6;
+            font-weight: 200;
+            margin-bottom: 36px;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .waitlist-form {
+            display: flex;
+            gap: 8px;
+            max-width: 440px;
+            margin: 0 auto 12px;
+        }
+        .waitlist-form input[type="email"] {
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875em;
+            font-weight: 300;
+            outline: none;
+            transition: border-color 0.25s;
+        }
+        .waitlist-form input::placeholder { color: rgba(255,255,255,0.3); }
+        .waitlist-form input:focus { border-color: #e056fd; }
+        .waitlist-form button {
+            padding: 14px 28px;
+            border-radius: 2rem;
+            border: none;
+            background: #e056fd;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+            cursor: pointer;
+            transition: opacity 0.25s, transform 0.25s;
+            white-space: nowrap;
+        }
+        .waitlist-form button:hover { opacity: 0.9; transform: scale(1.04); }
+        .waitlist-form button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .form-msg {
+            font-size: 0.8em;
+            font-weight: 300;
+            min-height: 1.4em;
+            margin-bottom: 40px;
+        }
+        .form-msg.success { color: #4ade80; }
+        .form-msg.error { color: #f87171; }
+        .footer {
+            color: rgba(255,255,255,0.2);
+            font-size: 0.75em;
+            font-weight: 200;
+        }
+        @media (max-width: 480px) {
+            .waitlist-form { flex-direction: column; }
+            .waitlist-form button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="badge">Coming Soon</div>
+        <div class="emoji-hero">💍</div>
+        <h1>I Hereby Commit</h1>
+        <p class="tagline">Dating for people who actually commit</p>
+        <p class="pitch">Set a date, time, and location. State your ultimate relationship goal. Match with someone equally serious. No games, no ghosting.</p>
+        <form class="waitlist-form" id="wf" onsubmit="return sub(event)">
+            <input type="email" id="em" placeholder="Enter your email" required autocomplete="email">
+            <button type="submit" id="btn">Be the first to know</button>
+        </form>
+        <p class="form-msg" id="msg"></p>
+        <p class="footer">© 2026 I Hereby Commit</p>
+    </div>
+    <script>
+        const S='https://kxyqdzkoyuzszcyfvpee.supabase.co',K='sb_publishable_aXDS4SvG7aMZKExyNPTbgA_mBzZdQZU',N='iherebycommit';
+        async function sub(e){e.preventDefault();const b=document.getElementById('btn'),m=document.getElementById('msg'),v=document.getElementById('em').value.trim();if(!v)return!1;b.disabled=!0;b.textContent='...';m.textContent='';m.className='form-msg';try{const r=await fetch(S+'/rest/v1/waitlist',{method:'POST',headers:{'apikey':K,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({email:v,site_url:location.href,site_name:N})});if(r.ok){m.textContent="You're on the list! We'll be in touch.";m.className='form-msg success';document.getElementById('em').value='';}else if(r.status===409){m.textContent="You're already on the list!";m.className='form-msg success';}else throw 0;}catch(x){m.textContent='Something went wrong. Please try again.';m.className='form-msg error';}b.disabled=!1;b.textContent='Be the first to know';return!1;}
+    </script>
+</body>
+</html>
