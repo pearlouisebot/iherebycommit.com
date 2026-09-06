@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#EDEDED">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<title>Your match</title></head>
+<body>
+<div class="phone">
+  <div class="bar"><span>9:41</span><span>Cohort 01 · Austin</span></div>
+  <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+  <div class="body">
+
+    <div class="kicker">ROUND 4 · RESULT</div>
+    <h1>You matched.</h1>
+    <div class="matchcard">
+      <div class="big"></div>
+      <h2 id="who">—</h2>
+      <div class="sub">Message open for 7 days</div>
+    </div>
+    <p>Pick a time and a place. We'll ask you both how it went afterward.</p>
+
+    <div class="note"><b>This screen looks identical in every arm.</b> Four different algorithms produced the matches in this study, and nobody is told which one they're in. If the interface leaked that, the trial would be over.</div>
+
+  </div>
+  <div class="foot">
+
+    <a class="btn" href="feedback.html">Open the thread</a>
+
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script>
+  const state = load();
+  who.textContent = POOL[ranking(state)[0]].n;
+</script>
+</body>
+</html>

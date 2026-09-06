@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#EDEDED">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<title>After the date</title></head>
+<body>
+<div class="phone">
+  <div class="bar"><span>9:41</span><span>Cohort 01 · Austin</span></div>
+  <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+  <div class="body">
+
+    <div class="kicker">TWO DAYS AFTER · 90 SECONDS</div>
+    <h1>How did it go?</h1>
+
+    <div class="field">
+      <div class="q">Did you meet in person?</div>
+      <div class="dots"><button class="dot wide sel">Yes</button><button class="dot wide">No</button></div>
+    </div>
+    <div class="field">
+      <div class="q">When they disagreed with you, how did they handle it?</div>
+      <div class="dots"><button class="dot">1</button><button class="dot">2</button><button class="dot sel">3</button><button class="dot">4</button><button class="dot">5</button></div>
+    </div>
+    <div class="field">
+      <div class="q">Did they ask you questions and follow up on the answers?</div>
+      <div class="dots"><button class="dot">1</button><button class="dot">2</button><button class="dot">3</button><button class="dot sel">4</button><button class="dot">5</button></div>
+    </div>
+    <div class="field">
+      <div class="q">Would you rearrange your week to see them again?</div>
+      <div class="dots"><button class="dot">1</button><button class="dot">2</button><button class="dot">3</button><button class="dot sel">4</button><button class="dot">5</button></div>
+    </div>
+
+    <div class="note"><b>The second experiment lives here.</b> Half the cohort gets these anchored behavioural questions. The other half gets a blank text box. A century of hiring research says the structured version produces better judgments — nobody has ever tested that in dating.</div>
+
+  </div>
+  <div class="foot">
+
+    <a class="btn signal" href="pulse.html">Submit</a>
+
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script>
+  document.addEventListener('click', e => {
+    if(!e.target.classList.contains('dot')) return;
+    [...e.target.parentElement.children].forEach(d => d.classList.remove('sel'));
+    e.target.classList.add('sel');
+  });
+</script>
+</body>
+</html>
