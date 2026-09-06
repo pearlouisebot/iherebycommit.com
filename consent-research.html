@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#EDEDED">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<title>Research consent</title>
+<script>(function(){const P="1234";if(sessionStorage.getItem("auth")===P)return;document.documentElement.style.visibility="hidden";window.addEventListener("DOMContentLoaded",function(){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:sans-serif;";o.innerHTML="<div style='text-align:center;padding:40px;max-width:320px;'><h2 style='margin-bottom:24px;'>Enter password</h2><input id='pw' type='password' placeholder='Password' style='border:1px solid #ccc;padding:10px;font-size:1rem;width:100%;box-sizing:border-box;border-radius:6px;margin-bottom:12px;'/><button onclick='chk()' style='background:#000;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:6px;cursor:pointer;width:100%;'>Enter</button><p id='err' style='color:red;margin-top:10px;display:none;'>Incorrect</p></div>";document.body.appendChild(o);document.documentElement.style.visibility="";document.getElementById("pw").addEventListener("keydown",function(e){if(e.key==="Enter")chk();});});window.chk=function(){var v=document.getElementById("pw").value;if(v===P){sessionStorage.setItem("auth",P);location.reload();}else{document.getElementById("err").style.display="block";}};})();</script>
+<style>
+.consent-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:flex-start}
+.consent-item:last-of-type{border-bottom:0}
+.consent-item input[type=checkbox]{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--signal);cursor:pointer}
+.consent-item label{font-size:.85rem;color:var(--ink-soft);line-height:1.5;cursor:pointer}
+.consent-item label b{color:var(--ink)}
+.irb-badge{display:inline-flex;align-items:center;gap:6px;background:var(--pale);border:1px solid var(--signal);border-radius:20px;padding:4px 12px;font-size:.72rem;color:var(--signal);font-weight:700;letter-spacing:.04em;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bar"><span>9:41</span><span>Cohort 01 · Austin</span></div>
+  <div class="steps"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+  <div class="body">
+
+    <div class="kicker">RESEARCH CONSENT</div>
+    <h1>Before we begin, a few things you should know.</h1>
+
+    <div class="irb-badge">✓ IRB APPROVED · HATCH LABS</div>
+
+    <p>This study is conducted by Hatch Labs under an approved IRB protocol. Participation is voluntary. You may withdraw at any time without penalty.</p>
+
+    <div class="note">
+      <b>Study:</b> Longitudinal Relationship Health Study (LRHS-2026)<br>
+      <b>Principal Investigator:</b> Hatch Labs Research Team<br>
+      <b>Duration:</b> Up to 5 years, with quarterly check-ins<br>
+      <b>Contact:</b> research@hatchlabs.com
+    </div>
+
+    <p class="small" style="margin-bottom:16px">Please read and check each item below to continue.</p>
+
+    <div class="consent-item">
+      <input type="checkbox" id="c1">
+      <label for="c1">I understand this is <b>voluntary research</b> and I can withdraw at any time without losing access to the app.</label>
+    </div>
+    <div class="consent-item">
+      <input type="checkbox" id="c2">
+      <label for="c2">I understand my <b>responses are confidential</b> and will never be linked to my name in any publication.</label>
+    </div>
+    <div class="consent-item">
+      <input type="checkbox" id="c3">
+      <label for="c3">I agree to complete <b>quarterly check-ins</b> about my relationship status and satisfaction for up to 5 years.</label>
+    </div>
+    <div class="consent-item">
+      <input type="checkbox" id="c4">
+      <label for="c4">I understand my de-identified data may be used in <b>academic publications</b> and shared with research partners.</label>
+    </div>
+    <div class="consent-item">
+      <input type="checkbox" id="c5">
+      <label for="c5">I am <b>18 years of age or older</b> and legally able to consent to research participation.</label>
+    </div>
+
+  </div>
+  <div class="foot">
+    <button class="btn signal" id="continueBtn" onclick="goNext()" disabled>I agree — continue</button>
+    <a class="btn ghost" href="index.html">Go back</a>
+  </div>
+</div>
+
+<script>
+  const boxes = document.querySelectorAll('input[type=checkbox]');
+  const btn = document.getElementById('continueBtn');
+  boxes.forEach(b => b.addEventListener('change', check));
+  function check(){
+    const all = [...boxes].every(b => b.checked);
+    btn.disabled = !all;
+    btn.style.opacity = all ? '1' : '0.4';
+  }
+  check();
+  function goNext(){ window.location.href = 'consent-data.html'; }
+</script>
+</body>
+</html>

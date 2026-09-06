@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#EDEDED">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<title>Data consent</title>
+<script>(function(){const P="1234";if(sessionStorage.getItem("auth")===P)return;document.documentElement.style.visibility="hidden";window.addEventListener("DOMContentLoaded",function(){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:sans-serif;";o.innerHTML="<div style='text-align:center;padding:40px;max-width:320px;'><h2 style='margin-bottom:24px;'>Enter password</h2><input id='pw' type='password' placeholder='Password' style='border:1px solid #ccc;padding:10px;font-size:1rem;width:100%;box-sizing:border-box;border-radius:6px;margin-bottom:12px;'/><button onclick='chk()' style='background:#000;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:6px;cursor:pointer;width:100%;'>Enter</button><p id='err' style='color:red;margin-top:10px;display:none;'>Incorrect</p></div>";document.body.appendChild(o);document.documentElement.style.visibility="";document.getElementById("pw").addEventListener("keydown",function(e){if(e.key==="Enter")chk();});});window.chk=function(){var v=document.getElementById("pw").value;if(v===P){sessionStorage.setItem("auth",P);location.reload();}else{document.getElementById("err").style.display="block";}};})();</script>
+<style>
+.data-block{background:var(--warm);border-radius:13px;padding:16px;margin-bottom:12px}
+.data-block .icon{font-size:1.4rem;margin-bottom:8px}
+.data-block h3{font-family:'Fraunces',serif;font-size:1rem;font-weight:400;margin-bottom:6px}
+.data-block p{font-size:.8rem;color:var(--graphite);margin-bottom:0}
+.data-block .tags{margin-top:10px;display:flex;gap:5px;flex-wrap:wrap}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--rule)}
+.toggle-row:last-of-type{border-bottom:0}
+.toggle-row .label{font-size:.88rem;font-weight:700}
+.toggle-row .sub{font-size:.76rem;color:var(--graphite);margin-top:2px}
+.toggle{position:relative;width:44px;height:26px;flex:none}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--rule);border-radius:13px;cursor:pointer;transition:.2s}
+.slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+input:checked + .slider{background:var(--signal)}
+input:checked + .slider:before{transform:translateX(18px)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bar"><span>9:41</span><span>Cohort 01 · Austin</span></div>
+  <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+  <div class="body">
+
+    <div class="kicker">DATA SHARING</div>
+    <h1>What we'd like to learn from you.</h1>
+    <p>The more data you share, the more we can understand. Everything is optional — you can change these at any time in settings.</p>
+
+    <div class="data-block">
+      <div class="icon">🏃</div>
+      <h3>Health & biometrics</h3>
+      <p>Sleep, HRV, readiness, recovery, and activity data from your wearables. Used to study how physical wellbeing correlates with relationship satisfaction.</p>
+      <div class="tags">
+        <span class="tag">Oura</span>
+        <span class="tag">Whoop</span>
+        <span class="tag">Apple Health</span>
+      </div>
+    </div>
+
+    <div class="data-block">
+      <div class="icon">💳</div>
+      <h3>Financial patterns</h3>
+      <p>Spending categories and income levels — not individual transactions. Used to study financial stress as a predictor of relationship outcomes.</p>
+      <div class="tags">
+        <span class="tag">Plaid</span>
+        <span class="tag">Bank-linked</span>
+      </div>
+    </div>
+
+    <p class="small" style="margin-top:4px;margin-bottom:16px">Choose what you're comfortable sharing:</p>
+
+    <div class="toggle-row">
+      <div>
+        <div class="label">Health data</div>
+        <div class="sub">Oura, Whoop, Apple Health</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="tHealth" checked><span class="slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div>
+        <div class="label">Financial data</div>
+        <div class="sub">Spending categories & income range</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="tFinancial" checked><span class="slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div>
+        <div class="label">Location (city only)</div>
+        <div class="sub">Cohort grouping by metro area</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="tLocation" checked><span class="slider"></span></label>
+    </div>
+
+  </div>
+  <div class="foot">
+    <button class="btn signal" onclick="goNext()">Save preferences</button>
+    <a class="btn ghost" href="consent-research.html">Go back</a>
+  </div>
+</div>
+
+<script>
+  function goNext(){
+    const s = JSON.parse(localStorage.getItem('ihc') || '{}');
+    s.shareHealth = document.getElementById('tHealth').checked;
+    s.shareFinancial = document.getElementById('tFinancial').checked;
+    s.shareLocation = document.getElementById('tLocation').checked;
+    localStorage.setItem('ihc', JSON.stringify(s));
+    window.location.href = 'connect.html';
+  }
+</script>
+</body>
+</html>

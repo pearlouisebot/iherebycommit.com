@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#EDEDED">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<title>You're in</title>
+<script>(function(){const P="1234";if(sessionStorage.getItem("auth")===P)return;document.documentElement.style.visibility="hidden";window.addEventListener("DOMContentLoaded",function(){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:sans-serif;";o.innerHTML="<div style='text-align:center;padding:40px;max-width:320px;'><h2 style='margin-bottom:24px;'>Enter password</h2><input id='pw' type='password' placeholder='Password' style='border:1px solid #ccc;padding:10px;font-size:1rem;width:100%;box-sizing:border-box;border-radius:6px;margin-bottom:12px;'/><button onclick='chk()' style='background:#000;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:6px;cursor:pointer;width:100%;'>Enter</button><p id='err' style='color:red;margin-top:10px;display:none;'>Incorrect</p></div>";document.body.appendChild(o);document.documentElement.style.visibility="";document.getElementById("pw").addEventListener("keydown",function(e){if(e.key==="Enter")chk();});});window.chk=function(){var v=document.getElementById("pw").value;if(v===P){sessionStorage.setItem("auth",P);location.reload();}else{document.getElementById("err").style.display="block";}};})();</script>
+<style>
+.hero{text-align:center;padding:40px 18px 30px}
+.hero .circle{width:80px;height:80px;border-radius:40px;background:var(--signal);margin:0 auto 20px;display:grid;place-items:center;font-size:2rem}
+.hero h1{font-size:1.8rem;margin-bottom:10px}
+.hero p{font-size:.9rem;color:var(--graphite)}
+.summary{margin:0 0 20px}
+.summary-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--rule);font-size:.85rem}
+.summary-row:last-of-type{border-bottom:0}
+.summary-row .v{color:var(--signal);font-weight:700}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bar"><span>9:41</span><span>Cohort 01 · Austin</span></div>
+  <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+  <div class="body">
+
+    <div class="hero">
+      <div class="circle">✓</div>
+      <h1>You're in.</h1>
+      <p>Welcome to Cohort 01. Your baseline is set. We'll check in every three months.</p>
+    </div>
+
+    <div class="summary">
+      <div class="summary-row"><span>Study enrollment</span><span class="v">Active</span></div>
+      <div class="summary-row"><span>Cohort</span><span class="v">01 · Austin</span></div>
+      <div class="summary-row"><span>Next check-in</span><span class="v">Dec 2026</span></div>
+      <div class="summary-row"><span>Data sources</span><span class="v" id="sources">—</span></div>
+    </div>
+
+    <div class="note">
+      Your first quarterly check-in will arrive in December. In the meantime, use the app to explore your matches and see how the cohort is thinking about relationships.
+    </div>
+
+  </div>
+  <div class="foot">
+    <a class="btn signal" href="baseline.html">Start baseline survey</a>
+    <a class="btn ghost" href="compare.html">Skip to app</a>
+  </div>
+</div>
+
+<script>
+  // Show connected sources summary
+  const s = JSON.parse(localStorage.getItem('ihc') || '{}');
+  const sources = [];
+  if(s.oura) sources.push('Oura');
+  if(s.whoop) sources.push('Whoop');
+  if(s.plaid) sources.push('Bank');
+  document.getElementById('sources').textContent = sources.length ? sources.join(', ') : 'None yet';
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#EDEDED">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<title>Connect your data</title>
+<script>(function(){const P="1234";if(sessionStorage.getItem("auth")===P)return;document.documentElement.style.visibility="hidden";window.addEventListener("DOMContentLoaded",function(){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:sans-serif;";o.innerHTML="<div style='text-align:center;padding:40px;max-width:320px;'><h2 style='margin-bottom:24px;'>Enter password</h2><input id='pw' type='password' placeholder='Password' style='border:1px solid #ccc;padding:10px;font-size:1rem;width:100%;box-sizing:border-box;border-radius:6px;margin-bottom:12px;'/><button onclick='chk()' style='background:#000;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:6px;cursor:pointer;width:100%;'>Enter</button><p id='err' style='color:red;margin-top:10px;display:none;'>Incorrect</p></div>";document.body.appendChild(o);document.documentElement.style.visibility="";document.getElementById("pw").addEventListener("keydown",function(e){if(e.key==="Enter")chk();});});window.chk=function(){var v=document.getElementById("pw").value;if(v===P){sessionStorage.setItem("auth",P);location.reload();}else{document.getElementById("err").style.display="block";}};})();</script>
+<style>
+.source{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--rule)}
+.source:last-of-type{border-bottom:0}
+.source .logo{width:42px;height:42px;border-radius:11px;background:var(--warm);flex:none;display:grid;place-items:center;font-size:1.2rem}
+.source .info{flex:1}
+.source .info .name{font-weight:700;font-size:.9rem;margin-bottom:2px}
+.source .info .desc{font-size:.76rem;color:var(--graphite)}
+.source .action{flex:none}
+.chip{font-size:.74rem;font-weight:700;padding:6px 14px;border-radius:20px;border:none;cursor:pointer;font-family:inherit}
+.chip.connect{background:var(--signal);color:#fff}
+.chip.connected{background:var(--pale);color:var(--signal);border:1px solid var(--signal)}
+.chip.skip{background:var(--warm);color:var(--graphite)}
+.chip.mobile-only{background:var(--warm);color:var(--graphite);cursor:default;font-size:.68rem}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bar"><span>9:41</span><span>Cohort 01 · Austin</span></div>
+  <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>
+  <div class="body">
+
+    <div class="kicker">CONNECT YOUR DATA</div>
+    <h1>Link your sources.</h1>
+    <p>Connect whatever you're comfortable with. You can always add more later in settings.</p>
+
+    <div class="source">
+      <div class="logo">💍</div>
+      <div class="info">
+        <div class="name">Oura Ring</div>
+        <div class="desc">Sleep, HRV, readiness score</div>
+      </div>
+      <div class="action">
+        <button class="chip connect" id="oura-btn" onclick="connectOura()">Connect</button>
+      </div>
+    </div>
+
+    <div class="source">
+      <div class="logo">⚡</div>
+      <div class="info">
+        <div class="name">Whoop</div>
+        <div class="desc">Strain, recovery, sleep</div>
+      </div>
+      <div class="action">
+        <button class="chip connect" id="whoop-btn" onclick="connectWhoop()">Connect</button>
+      </div>
+    </div>
+
+    <div class="source">
+      <div class="logo">🍎</div>
+      <div class="info">
+        <div class="name">Apple Health</div>
+        <div class="desc">Steps, workouts, heart rate</div>
+      </div>
+      <div class="action">
+        <span class="chip mobile-only">📱 iPhone only</span>
+      </div>
+    </div>
+
+    <div class="source">
+      <div class="logo">🏦</div>
+      <div class="info">
+        <div class="name">Bank account</div>
+        <div class="desc">Spending categories, income range</div>
+      </div>
+      <div class="action">
+        <button class="chip connect" id="plaid-btn" onclick="connectPlaid()">Connect</button>
+      </div>
+    </div>
+
+    <div class="note" id="apple-note" style="display:none">
+      <b>Apple Health:</b> Open this app on your iPhone to connect Apple Health. We'll send you a reminder.
+    </div>
+
+  </div>
+  <div class="foot">
+    <button class="btn signal" onclick="goNext()">Continue</button>
+    <button class="btn ghost" onclick="skipAll()">Skip for now</button>
+  </div>
+</div>
+
+<script>
+  const state = {oura:false, whoop:false, plaid:false};
+
+  function connectOura(){
+    const btn = document.getElementById('oura-btn');
+    btn.textContent = 'Connecting…';
+    btn.disabled = true;
+    setTimeout(()=>{
+      state.oura = true;
+      btn.className = 'chip connected';
+      btn.textContent = '✓ Connected';
+    }, 1800);
+  }
+
+  function connectWhoop(){
+    const btn = document.getElementById('whoop-btn');
+    btn.textContent = 'Connecting…';
+    btn.disabled = true;
+    setTimeout(()=>{
+      state.whoop = true;
+      btn.className = 'chip connected';
+      btn.textContent = '✓ Connected';
+    }, 1800);
+  }
+
+  function connectPlaid(){
+    const btn = document.getElementById('plaid-btn');
+    btn.textContent = 'Connecting…';
+    btn.disabled = true;
+    setTimeout(()=>{
+      state.plaid = true;
+      btn.className = 'chip connected';
+      btn.textContent = '✓ Connected';
+    }, 2200);
+  }
+
+  function skipAll(){ window.location.href = 'connect-done.html'; }
+  function goNext(){ window.location.href = 'connect-done.html'; }
+</script>
+</body>
+</html>
