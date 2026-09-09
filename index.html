@@ -197,5 +197,20 @@
       }
     });
   </script>
+
+<script>
+(function () {
+  const KEY = "iherebycommit_gate_v1";
+  const PASS = "1234";
+  if (sessionStorage.getItem(KEY) === "ok") return;
+  const entered = window.prompt("Enter password");
+  if (entered === PASS) {
+    sessionStorage.setItem(KEY, "ok");
+    return;
+  }
+  document.documentElement.innerHTML = "<head><title>Protected</title></head><body style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;padding:40px;background:#f6ede4;color:#25160f;'><h1>Protected</h1><p>Wrong password.</p></body>";
+})();
+</script>
+
 </body>
 </html>
