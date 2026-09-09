@@ -1,38 +1,201 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light only">
-<meta name="theme-color" content="#EDEDED">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
-<title>Join the study</title><script>(function(){const P="1234";if(sessionStorage.getItem("auth")===P)return;document.documentElement.style.visibility="hidden";window.addEventListener("DOMContentLoaded",function(){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:sans-serif;";o.innerHTML="<div style="text-align:center;padding:40px;max-width:320px;"><h2 style="margin-bottom:24px;">Enter password</h2><input id="pw" type="password" placeholder="Password" style="border:1px solid #ccc;padding:10px;font-size:1rem;width:100%;box-sizing:border-box;border-radius:6px;margin-bottom:12px;"/><button onclick="chk()" style="background:#000;color:#fff;border:none;padding:10px 24px;font-size:1rem;border-radius:6px;cursor:pointer;width:100%;">Enter</button><p id="err" style="color:red;margin-top:10px;display:none;">Incorrect</p></div>";document.body.appendChild(o);document.documentElement.style.visibility="";document.getElementById("pw").addEventListener("keydown",function(e){if(e.key==="Enter")chk();});});window.chk=function(){var v=document.getElementById("pw").value;if(v===P){sessionStorage.setItem("auth",P);location.reload();}else{document.getElementById("err").style.display="block";}};})();</script></head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>I Hereby Commit</title>
+  <meta name="description" content="A new way to commit to love, intentionally." />
+  <style>
+    :root{
+      --bg:#f7efe7;
+      --card:#fff9f4;
+      --text:#1e1a17;
+      --muted:#6f6259;
+      --accent:#25160f;
+      --line:rgba(37,22,15,.10);
+      --shadow:0 20px 60px rgba(37,22,15,.10);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,#fbf5ef 0%,#f6ede4 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",Helvetica,Arial,sans-serif}
+    body{min-height:100vh}
+    .wrap{max-width:520px;margin:0 auto;padding:24px 18px 40px}
+    .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+    .card{
+      background:rgba(255,249,244,.9);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px 20px;
+      backdrop-filter:blur(10px);
+    }
+    h1{
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:44px;
+      line-height:.95;
+      letter-spacing:-.03em;
+      margin:0 0 16px;
+      font-weight:600;
+    }
+    .sub{
+      font-size:17px;
+      line-height:1.5;
+      color:var(--muted);
+      margin:0 0 28px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-size:13px;
+      color:var(--text);
+      margin-bottom:20px;
+    }
+    form{display:flex;flex-direction:column;gap:12px}
+    input[type="email"]{
+      width:100%;
+      border:1px solid rgba(37,22,15,.16);
+      background:#fff;
+      color:var(--text);
+      border-radius:16px;
+      padding:16px 18px;
+      font-size:16px;
+      outline:none;
+      appearance:none;
+    }
+    input[type="email"]:focus{
+      border-color:#8d6d58;
+      box-shadow:0 0 0 4px rgba(141,109,88,.10);
+    }
+    button{
+      border:0;
+      background:var(--accent);
+      color:#fff;
+      border-radius:16px;
+      padding:16px 18px;
+      font-size:16px;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 10px 30px rgba(37,22,15,.18);
+    }
+    button:disabled{opacity:.7;cursor:wait}
+    .fine{
+      margin-top:14px;
+      font-size:13px;
+      line-height:1.5;
+      color:var(--muted);
+    }
+    .status{
+      min-height:24px;
+      margin-top:10px;
+      font-size:14px;
+      color:var(--muted);
+    }
+    .quote{
+      margin-top:26px;
+      padding-top:20px;
+      border-top:1px solid var(--line);
+      color:var(--text);
+      font-size:15px;
+      line-height:1.6;
+    }
+    @media (min-width:640px){
+      .wrap{padding-top:42px}
+      .card{padding:36px 30px}
+      h1{font-size:58px}
+      .sub{font-size:19px}
+      form{flex-direction:row;align-items:stretch}
+      button{white-space:nowrap}
+    }
+  </style>
+</head>
 <body>
-<div class="phone">
-  <div class="bar"><span>9:41</span><span>Cohort 01 · Austin</span></div>
-  <div class="steps"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="body">
+  <main class="wrap">
+    <div class="eyebrow">I Hereby Commit</div>
+    <section class="card">
+      <div class="pill">✨ Intentional dating, built for what comes next</div>
+      <h1>Commit to the idea before the app exists.</h1>
+      <p class="sub">
+        We’re building something softer, smarter, and more deliberate than modern dating has any right to be.
+        If you want first access when it opens, leave your email.
+      </p>
 
-    <div class="kicker">BEFORE YOU START</div>
-    <h1>Nobody actually knows what makes a relationship last.</h1>
-    <p>We're trying to find out. If you join the study, we'll ask you a few questions now and check in every three months — for years, if you'll let us.</p>
-    <p>Your answers go to researchers. They are never shown to other members.</p>
-    <p class="small">You can use the app either way.</p>
+      <form id="signup-form">
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Enter your email" required />
+        <button id="submit-btn" type="submit">Get early access</button>
+      </form>
+      <div class="status" id="status"></div>
 
-  </div>
-  <div class="foot">
+      <div class="fine">
+        No spam. Just launch updates, early invites, and the occasional note when we have something actually worth your attention.
+      </div>
 
+<<<<<<< HEAD
     <a class="btn signal" href="consent-research.html" onclick="mark(true)">Join the study</a>
     <a class="btn ghost" href="compare.html" onclick="mark(false)">Just use the app</a>
+=======
+      <div class="quote">
+        “Humans have been letting machines optimize everything except the one thing that matters most.”
+      </div>
+    </section>
+  </main>
+>>>>>>> 6c62da7 (Replace 404 with mobile-first landing page and Supabase signup)
 
-  </div>
-</div>
-<script src="assets/app.js"></script>
-<script>
-  function mark(joined){ const s = load(); s.joined = joined; save(s); }
-</script>
+  <script>
+    const SUPABASE_URL = "https://kxyqdzkoyuzszcyfvpee.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4eXFkemtveXV6c3pjeWZ2cGVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MTIwNTAsImV4cCI6MjA3OTM4ODA1MH0.Ewj9y9Bdv96Z0e_HkoY0fUjDdl1euHOKWJIoB0XMSLg";
+
+    const form = document.getElementById('signup-form');
+    const emailInput = document.getElementById('email');
+    const button = document.getElementById('submit-btn');
+    const statusEl = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim().toLowerCase();
+      if (!email) return;
+
+      button.disabled = true;
+      statusEl.textContent = "Saving your spot...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/ihrerebycommit_signups`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify([{
+            email,
+            source: 'iherebycommit.com',
+            user_agent: navigator.userAgent,
+            referrer: document.referrer || null
+          }])
+        });
+
+        if (res.ok) {
+          form.reset();
+          statusEl.textContent = "You’re in. We’ll let you know when it’s ready.";
+        } else if (res.status === 409) {
+          statusEl.textContent = "You’re already on the list.";
+        } else {
+          const text = await res.text();
+          console.error(text);
+          statusEl.textContent = "Something went wrong. Try again in a sec.";
+        }
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Something went wrong. Try again in a sec.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
