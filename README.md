@@ -1,76 +1,68 @@
-# Study Demo — clickable prototype
+# iherebycommit.com — landing page
 
-A seven-screen prototype of a dating app built as a research instrument. Static HTML, no build step, no dependencies, no backend.
+One file, no build step, no dependencies beyond Google Fonts.
 
-**Live flow:** `index.html` → `baseline.html` → `compare.html` → `ranking.html` → `match.html` → `feedback.html` → `pulse.html`
+## Deploy
 
----
+**Netlify / Vercel / Cloudflare Pages** — drag this folder into the dashboard. Done.
+**Any host** — upload `index.html` to the web root.
+**GitHub Pages** — push the folder, enable Pages on the branch.
 
-## What it demonstrates
-
-The core mechanic is **pairwise comparison**, not swiping. Two profiles, one question: who would you rather meet. Each choice updates an Elo-style rating (a practical stand-in for the Bradley-Terry model), and the ranking screen shows a complete ordering estimated from those choices — including pairs the user never actually saw.
-
-`compare.html` uses adaptive selection: it presents the pair the model is currently least certain about, which is why roughly twenty judgments produce a reliable top ten instead of the 31,125 comparisons an exhaustive approach would need.
-
-`ranking.html` shows the estimated order and lets the user drag to correct it. Works with both mouse and touch.
-
-Interaction state persists across pages via `localStorage`, and falls back to in-memory when storage is unavailable. `pulse.html` clears it so the demo can be run again.
+Point `iherebycommit.com` at whichever you pick.
 
 ---
 
-## Files
+## THE ONE THING TO DO BEFORE IT GOES LIVE
 
+**The email form does not store anything yet.** It validates and shows a
+confirmation, and then the address is gone.
+
+The NYT piece will send more traffic than the page will ever see again.
+A form that silently discards addresses is the single most expensive
+bug on this site.
+
+### To fix it — pick one, ~15 minutes
+
+**ConvertKit** — Grow → Landing Pages & Forms → create form → Embed → HTML.
+Replace the `<form id="join-form">` block with theirs, keep the surrounding
+markup so the styling holds.
+
+**Mailchimp** — Audience → Signup forms → Embedded forms. Same swap.
+
+**Formspree** — no list management, just delivery. Change one line:
+```html
+<form id="join-form" action="https://formspree.io/f/YOUR_ID" method="POST">
 ```
-demo/
-├── index.html        consent fork — join the study or just use the app
-├── baseline.html     stated preferences + questions about the person
-├── compare.html      the pairwise comparison mechanic (interactive)
-├── ranking.html      estimated ranking, drag to reorder (interactive)
-├── match.html        match reveal — identical across all study arms
-├── feedback.html     post-date form — where the second experiment lives
-├── pulse.html        quarterly check-in — the outcome measure
-└── assets/
-    ├── style.css     all styling
-    └── app.js        candidate pool, state persistence, ranking engine
-```
+and delete the `<script>` block at the bottom so the real submit goes through.
+
+**Buttondown** — cheapest if you want to write to the list later. Same pattern.
+
+### Then test it properly
+Submit from your own phone, on cellular, not wifi. Confirm the address
+actually arrives in the list. Do this before you send the URL to anyone.
 
 ---
 
-## Deploying to GitHub Pages
+## Before launch
 
-Everything here is static. No build, no npm, no framework.
+- [ ] Email capture wired and tested from a phone
+- [ ] `hello@iherebycommit.com` exists and is monitored
+- [ ] Confirm the January Sunday dates (10, 17, 24, 31) are what you want
+- [ ] Legal review — the founder quote, and any League figures
+- [ ] Add analytics if you want conversion data (Plausible or Fathom; both
+      are cookieless, which matters given what the page says about privacy)
+- [ ] Add a favicon and an og:image — the page has OG tags but no image,
+      so link previews will be bare
 
-**Option A — repo root**
+## What's in the page
 
-1. Create a public repo (e.g. `study-demo`)
-2. Copy the contents of this `demo/` folder into the repo root, so `index.html` sits at the top level
-3. Commit and push to `main`
-4. Settings → Pages → Source: **Deploy from a branch** → Branch: `main`, folder: `/ (root)` → Save
-5. Live in a minute or two at `https://<username>.github.io/study-demo/`
+Mobile-first. Base styles are the phone; 38rem and 60rem are enhancements.
+Forced-dark defences included — some Android browsers and in-app webviews
+invert pages regardless of `color-scheme`, so every surface declares an
+explicit background.
 
-**Option B — docs folder**
-
-Put the files in `/docs` instead and select folder `/docs` at step 4. Useful if the repo will also hold other work.
-
----
-
-## Notes for whoever deploys this
-
-- **All paths are relative.** Nothing needs a base URL set, and it works in a subdirectory.
-- **No secrets, no API calls, no analytics.** The only external request is a Google Fonts stylesheet. Remove that link and the pages fall back to system fonts if you'd rather have zero external calls.
-- **Fake data only.** The six candidate profiles in `assets/app.js` are invented. No real people, no photos — the avatars are CSS gradients.
-- **Mobile-first.** The phone frame becomes full-bleed below 430px, so it looks like a real app on a phone rather than a mockup of one.
-- **To change the candidate pool,** edit the `POOL` array at the top of `assets/app.js`. Keep everyone within a single dating pool — comparisons are only meaningful between candidates a given user would actually consider.
-- **To change how fast the ranking converges,** adjust the `K` constant in `recordChoice()` in `assets/app.js`. Higher K means each comparison moves the ratings more.
-
----
-
-## Known limitations
-
-This is a prototype for showing people the interaction, not a foundation to build a product on.
-
-- No accounts, no server, no persistence beyond the local browser
-- The four study arms aren't implemented — `match.html` always returns the top-ranked candidate
-- The post-date form always shows the structured variant; the free-text arm isn't built
-- Six candidates rather than a realistic pool of a few hundred
-- Elo stands in for Bradley-Terry. Same family of model and it converges to the same ordering, but a real implementation should fit the actual model on the full comparison history
+The claim under the timeline names eHarmony and Tawkify deliberately.
+Both have published peer-reviewed research; the defensible claim is that
+nobody has run a **controlled trial**, not that nobody has published.
+Don't revert that to "zero studies" — it isn't true and the people you
+most want to impress know it isn't.

@@ -1,213 +1,289 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>I Hereby Commit</title>
-  <meta name="description" content="A new way to commit to love, intentionally." />
-  <style>
-    :root{
-      --bg:#f7efe7;
-      --card:#fff9f4;
-      --text:#1e1a17;
-      --muted:#6f6259;
-      --accent:#25160f;
-      --line:rgba(37,22,15,.10);
-      --shadow:0 20px 60px rgba(37,22,15,.10);
-      --radius:24px;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:linear-gradient(180deg,#fbf5ef 0%,#f6ede4 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",Helvetica,Arial,sans-serif}
-    body{min-height:100vh}
-    .wrap{max-width:520px;margin:0 auto;padding:24px 18px 40px}
-    .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
-    .card{
-      background:rgba(255,249,244,.9);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:28px 20px;
-      backdrop-filter:blur(10px);
-    }
-    h1{
-      font-family:Georgia, "Times New Roman", serif;
-      font-size:44px;
-      line-height:.95;
-      letter-spacing:-.03em;
-      margin:0 0 16px;
-      font-weight:600;
-    }
-    .sub{
-      font-size:17px;
-      line-height:1.5;
-      color:var(--muted);
-      margin:0 0 28px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 14px;
-      border-radius:999px;
-      background:#fff;
-      border:1px solid var(--line);
-      font-size:13px;
-      color:var(--text);
-      margin-bottom:20px;
-    }
-    form{display:flex;flex-direction:column;gap:12px}
-    input[type="email"]{
-      width:100%;
-      border:1px solid rgba(37,22,15,.16);
-      background:#fff;
-      color:var(--text);
-      border-radius:16px;
-      padding:16px 18px;
-      font-size:16px;
-      outline:none;
-      appearance:none;
-    }
-    input[type="email"]:focus{
-      border-color:#8d6d58;
-      box-shadow:0 0 0 4px rgba(141,109,88,.10);
-    }
-    button{
-      border:0;
-      background:var(--accent);
-      color:#fff;
-      border-radius:16px;
-      padding:16px 18px;
-      font-size:16px;
-      font-weight:600;
-      cursor:pointer;
-      box-shadow:0 10px 30px rgba(37,22,15,.18);
-    }
-    button:disabled{opacity:.7;cursor:wait}
-    .fine{
-      margin-top:14px;
-      font-size:13px;
-      line-height:1.5;
-      color:var(--muted);
-    }
-    .status{
-      min-height:24px;
-      margin-top:10px;
-      font-size:14px;
-      color:var(--muted);
-    }
-    .quote{
-      margin-top:26px;
-      padding-top:20px;
-      border-top:1px solid var(--line);
-      color:var(--text);
-      font-size:15px;
-      line-height:1.6;
-    }
-    @media (min-width:640px){
-      .wrap{padding-top:42px}
-      .card{padding:36px 30px}
-      h1{font-size:58px}
-      .sub{font-size:19px}
-      form{flex-direction:row;align-items:stretch}
-      button{white-space:nowrap}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<title>I Hereby Commit — 52 dates, one cohort, and the trial nobody has run</title>
+<meta name="description" content="Four Sunday evenings. Fifty-two three-minute video dates. You meet every single person in your cohort. San Francisco, January 2027.">
+<meta property="og:title" content="I Hereby Commit">
+<meta property="og:description" content="Sixty years of matchmaking. Not one controlled trial. We're running the first one.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* base = mobile */
+  html{color-scheme:light only;background-color:#FFF;color:#000;-webkit-text-size-adjust:100%}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Karla',system-ui,sans-serif;background-color:#FFF;color:#000;
+    font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  header,main,footer,section{background-color:#FFF}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:400;letter-spacing:-.02em;line-height:1.08}
+  a{color:#0A5A52}
+  :focus-visible{outline:2px solid #0A5A52;outline-offset:3px}
+  .wrap{padding-inline:1.4rem}
+  section{padding-block:2.75rem}
+
+  .top{display:flex;align-items:baseline;justify-content:space-between;
+    padding-block:1.1rem;border-bottom:1px solid #CCC}
+  .mark{font-family:'Fraunces',Georgia,serif;font-size:1rem}
+  .mark em{font-style:normal;color:#0A5A52}
+  .top .loc{font-size:.78rem;color:#4A4A4A}
+
+  .hero{padding-top:2.25rem;padding-bottom:0}
+  .hero h1{font-size:2.3rem}
+  .hero .lede{margin-top:1.15rem;font-size:1.02rem;color:#1A1A1A}
+  .cta{display:inline-block;margin-top:1.6rem;background-color:#0A5A52;color:#FFF;
+    text-decoration:none;font-weight:700;font-size:1rem;padding:.9rem 1.4rem;line-height:1.6}
+
+/* the offer — the thing nobody else can say */
+  .offer{background-color:#000;color:#FFF}
+  .offer h2{font-size:1.9rem;color:#FFF;margin-bottom:1.2rem}
+  .offer .row{display:flex;gap:14px;padding-block:.9rem;border-bottom:1px solid #333;align-items:baseline}
+  .offer .row:last-of-type{border-bottom:0}
+  .offer .n{font-family:'Fraunces',Georgia,serif;font-size:1.5rem;color:#7FB3AB;min-width:2.6rem;line-height:1}
+  .offer .t{font-size:.96rem;color:#E8EDEC}
+  .offer .t b{color:#FFF;font-weight:500}
+  .offer .kick{margin-top:1.4rem;font-size:.95rem;color:#B9C9C6;font-style:italic;
+    font-family:'Fraunces',Georgia,serif}
+
+  .era{padding-block:2.5rem}
+  .track{position:relative;padding-left:1.6rem}
+  .line{position:absolute;left:4px;top:.5rem;bottom:.5rem;width:1px;background-color:#000;
+    transform:scaleY(0);transform-origin:top;animation:dv 1s .3s cubic-bezier(.22,.61,.36,1) forwards}
+  @keyframes dv{to{transform:scaleY(1)}}
+  .mk{position:relative;padding-bottom:1.1rem;opacity:0;animation:ri .45s forwards}
+  @keyframes ri{to{opacity:1}}
+  .mk .dot{position:absolute;left:-1.6rem;top:.5rem;width:9px;height:9px;border-radius:50%;background-color:#000}
+  .mk .y{font-family:'Fraunces',Georgia,serif;font-size:1.3rem;line-height:1;display:inline-block;min-width:3.9rem}
+  .mk .w{display:inline;font-size:.86rem;color:#4A4A4A}
+  .mk.now .dot{background-color:#0A5A52;width:13px;height:13px;left:calc(-1.6rem - 2px);top:.35rem}
+  .mk.now .y,.mk.now .w{color:#0A5A52}
+  .void{margin-top:1.8rem;border-top:1px dashed #CCC;padding-top:1.3rem}
+  .void .big{font-family:'Fraunces',Georgia,serif;font-size:1.4rem;line-height:1.18}
+  .void .small{margin-top:.85rem;font-size:.9rem;color:#4A4A4A}
+
+  .why{border-top:1px solid #000}
+  .why .q{padding-block:1.4rem;border-bottom:1px solid #CCC}
+  .why h3{font-size:1.22rem;margin-bottom:.5rem}
+  .why p{font-size:.96rem;color:#1A1A1A}
+
+  .founder{background-color:#F2F2F2}
+  .founder blockquote p{font-family:'Fraunces',Georgia,serif;font-size:1.28rem;line-height:1.32;letter-spacing:-.015em}
+  .founder blockquote p + p{margin-top:.9rem;font-size:1rem;color:#3A3A3A;line-height:1.45}
+  .founder cite{display:block;margin-top:1.4rem;font-style:normal;font-size:.88rem;color:#0A5A52}
+
+  .facts{margin-top:1.3rem;border-top:1px solid #CCC}
+  .facts div{display:flex;justify-content:space-between;gap:1rem;padding-block:.7rem;
+    border-bottom:1px solid #CCC;font-size:.93rem}
+  .facts dt{color:#4A4A4A;flex:none}
+  .facts dd{text-align:right;font-weight:500}
+
+  form{background-color:#FFF;border:1px solid #000;padding:1.4rem;margin-top:2rem}
+  form h3{font-size:1.28rem;margin-bottom:.4rem}
+  form .sub{font-size:.92rem;color:#4A4A4A;margin-bottom:1.1rem}
+  form label{display:block;font-size:.85rem;color:#4A4A4A;margin-bottom:.5rem}
+  input[type=email]{font-family:inherit;font-size:16px;padding:.9rem;width:100%;min-height:48px;
+    border:1px solid #CCC;background-color:#FFF;color:#000;border-radius:0}
+  input[type=email]::placeholder{color:#9A9A9A}
+  button{font-family:inherit;font-size:1rem;font-weight:700;padding:.95rem;width:100%;min-height:48px;
+    margin-top:.7rem;border:0;background-color:#0A5A52;color:#FFF;cursor:pointer;border-radius:0}
+  button:hover{background-color:#08453F}
+  form small{display:block;margin-top:.9rem;font-size:.8rem;color:#4A4A4A;line-height:1.5}
+  .done{display:none}
+  form.sent .field{display:none}
+  form.sent .done{display:block;font-size:.95rem}
+  form.sent .done b{display:block;font-family:'Fraunces',Georgia,serif;font-size:1.2rem;
+    font-weight:400;margin-bottom:.35rem}
+
+  footer{border-top:1px solid #CCC;padding-block:1.8rem;font-size:.84rem;color:#4A4A4A}
+  footer a{color:#4A4A4A}
+  footer div + div{margin-top:.5rem}
+
+  @media (min-width:38rem){
+    body{font-size:18px}
+    .wrap{padding-inline:2.5rem}
+    section{padding-block:4rem}
+    .hero{padding-top:3.5rem}
+    .hero h1{font-size:3.3rem;max-width:16ch}
+    .hero .lede{font-size:1.1rem;max-width:52ch}
+    .offer h2{font-size:2.3rem;max-width:18ch}
+    .offer .n{font-size:1.8rem;min-width:3.2rem}
+    .void{display:flex;gap:2.5rem;align-items:baseline}
+    .void .big{font-size:1.85rem;max-width:22ch}
+    .void .small{margin-top:0;max-width:30ch}
+    .why .q{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr);gap:2rem;padding-block:1.9rem}
+    .why h3{margin-bottom:0}
+    .why p{max-width:46ch}
+    .founder blockquote p{font-size:1.65rem;max-width:34ch}
+  }
+  @media (min-width:60rem){
+    .wrap{max-width:72rem;margin-inline:auto;padding-inline:3.5rem}
+    section{padding-block:5.5rem}
+    .mark{font-size:1.1rem}
+    .hero h1{font-size:4.6rem;max-width:17ch}
+    .hero .lede{font-size:1.18rem}
+    .offer .grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start}
+    .offer h2{margin-bottom:0}
+    .track{padding-left:0;padding-top:2.6rem}
+    .line{left:0;top:2.6rem;bottom:auto;width:100%;height:1px;transform:scaleX(0);
+      transform-origin:left;animation:dh 1.1s .3s cubic-bezier(.22,.61,.36,1) forwards}
+    @keyframes dh{to{transform:scaleX(1)}}
+    .marks{display:flex;justify-content:space-between;align-items:flex-start}
+    .mk{flex:1;padding-bottom:0}
+    .mk:last-child{flex:0 0 auto;text-align:right}
+    .mk .dot{position:relative;left:auto;top:auto;margin:-4px 0 .85rem}
+    .mk.now .dot{left:auto;top:auto;margin:-6px 0 .8rem auto}
+    .mk .y{display:block;min-width:0;font-size:1.6rem}
+    .mk .w{display:block;margin-top:.35rem;font-size:.8rem}
+    .void{margin-top:3.5rem}
+    .void .big{font-size:2.2rem}
+    .founder blockquote p{font-size:1.95rem;max-width:40ch}
+    .cohort .grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+    form{margin-top:0;padding:2.2rem}
+    footer .row{display:flex;justify-content:space-between}
+    footer div + div{margin-top:0}
+  }
+  @media (prefers-color-scheme:dark){
+    html,body,header,main,footer,section{background-color:#FFF;color:#000}
+    .offer{background-color:#000;color:#FFF}
+    .offer h2{color:#FFF} .offer .t{color:#E8EDEC} .offer .n{color:#7FB3AB}
+    .founder{background-color:#F2F2F2}
+    form,input[type=email]{background-color:#FFF;color:#000}
+    button,.cta{background-color:#0A5A52;color:#FFF}
+    .line,.mk .dot{background-color:#000}
+    .mk.now .dot{background-color:#0A5A52}
+  }
+  @media (prefers-reduced-motion:reduce){.line{animation:none;transform:none}.mk{animation:none;opacity:1}}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <div class="eyebrow">I Hereby Commit</div>
-    <section class="card">
-      <div class="pill">✨ Intentional dating, built for what comes next</div>
-      <h1>Commit to the idea before the app exists.</h1>
-      <p class="sub">
-        We’re building something softer, smarter, and more deliberate than modern dating has any right to be.
-        If you want first access when it opens, leave your email.
-      </p>
 
-      <form id="signup-form">
-        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Enter your email" required />
-        <button id="submit-btn" type="submit">Get early access</button>
+<header class="wrap top">
+  <div class="mark">I Hereby <em>Commit</em></div>
+  <div class="loc">Cohort 1 &middot; San Francisco</div>
+</header>
+
+<main>
+
+  <section class="wrap hero">
+    <h1>Sixty years of matchmaking. Not one controlled trial.</h1>
+    <p class="lede">Humans have been letting machines pick their partners since punch card dating in 1965. Dating companies have published research when it flattered them &mdash; but not one has ever run the controlled trial that could have proved them wrong. So we built an app to run it, and we need a hundred people to help.</p>
+    <a class="cta" href="#join">Apply for Cohort 1</a>
+  </section>
+
+  <section class="offer">
+    <div class="wrap grid">
+      <h2>You will meet all fifty. Not a shortlist.</h2>
+      <div>
+        <div class="row"><span class="n">4</span><span class="t"><b>Sunday evenings.</b> One hour each, in January. Dates are fixed before you start.</span></div>
+        <div class="row"><span class="n">52</span><span class="t"><b>video dates.</b> Three minutes each, thirteen a night. Every single person on the other side of your cohort.</span></div>
+        <div class="row"><span class="n">1</span><span class="t"><b>match.</b> Chosen by an algorithm that has never been tried on dating, from preferences you earned rather than declared.</span></div>
+        <div class="row"><span class="n">0</span><span class="t"><b>swiping.</b> No profiles to browse, no messages to answer, nothing to check between sessions.</span></div>
+        <p class="kick">Four hours in January. That&rsquo;s the whole thing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap era" aria-label="Six decades of matchmaking">
+    <div class="track">
+      <div class="line" aria-hidden="true"></div>
+      <div class="marks">
+        <div class="mk" style="animation-delay:.4s"><span class="dot"></span><span class="y">1965</span><span class="w">Operation Match, punch cards</span></div>
+        <div class="mk" style="animation-delay:.52s"><span class="dot"></span><span class="y">1976</span><span class="w">Great Expectations, VHS tapes</span></div>
+        <div class="mk" style="animation-delay:.64s"><span class="dot"></span><span class="y">1995</span><span class="w">Match.com</span></div>
+        <div class="mk" style="animation-delay:.76s"><span class="dot"></span><span class="y">2000</span><span class="w">eHarmony</span></div>
+        <div class="mk" style="animation-delay:.88s"><span class="dot"></span><span class="y">2004</span><span class="w">OkCupid</span></div>
+        <div class="mk" style="animation-delay:1s"><span class="dot"></span><span class="y">2012</span><span class="w">Tinder</span></div>
+        <div class="mk" style="animation-delay:1.1s"><span class="dot"></span><span class="y">2013</span><span class="w">Hinge</span></div>
+        <div class="mk now" style="animation-delay:1.25s"><span class="dot"></span><span class="y">2027</span><span class="w">Cohort 1, San Francisco</span></div>
+      </div>
+    </div>
+    <div class="void">
+      <p class="big">Under all of them, not a single controlled trial of whether any of it works.</p>
+      <p class="small">eHarmony published in PNAS. Tawkify published last year. Every one of those studies was observational &mdash; comparing people who chose to sign up against people who didn&rsquo;t. Nobody has ever randomised anything.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="why">
+      <div class="q">
+        <h3>Why everyone?</h3>
+        <p>Because a shortlist tells you nothing. If we picked who you met, we could never know whether it worked &mdash; we would only be measuring our own guess. Meeting all fifty is the only way to find out who you actually respond to, and it is the only way anyone can tell the difference between a good match and a good mood.</p>
+      </div>
+      <div class="q">
+        <h3>Why three minutes?</h3>
+        <p>It is long enough to know something and short enough to do fifty-two of them. And the research is consistent: the sooner two people meet, the better it goes. Weeks of messaging first makes things worse, not better, because you build an impression reality can&rsquo;t match.</p>
+      </div>
+      <div class="q">
+        <h3>Why an algorithm nobody has tried?</h3>
+        <p>Deferred acceptance won the Nobel in 2012 and runs the medical residency match. It is literally called the stable marriage problem. It has never once been used on dating, because it needs real, relatively-ranked preferences &mdash; and nobody has bothered to collect any. After fifty-two dates, you will have given us yours.</p>
+      </div>
+      <div class="q">
+        <h3>What do I get out of it?</h3>
+        <p>A ranked list of fifty people you actually met, an introduction to the one the algorithm says fits, and a model of your own taste that will probably surprise you. Also: whatever we find, we publish &mdash; including if it turns out none of this works.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="founder">
+    <div class="wrap">
+      <blockquote>
+        <p>I built a dating app that led to thousands of marriages, but I can&rsquo;t tell you how many, or what made those couples work and others fail. No one in our industry can.</p>
+        <p>The industry spends billions on features and almost nothing finding out whether any of them work. This is what I&rsquo;d build if the goal were aligning incentives with users and moving the science forward, instead of growing a subscription base.</p>
+        <cite>Amanda Bradford, founder</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="wrap cohort" id="join">
+    <div class="grid">
+      <div>
+        <h2 style="font-size:1.7rem">Cohort 1</h2>
+        <dl class="facts">
+          <div><dt>Where</dt><dd>San Francisco, in person for the final two weeks</dd></div>
+          <div><dt>Who</dt><dd>100 people &mdash; 50 women, 50 men</dd></div>
+          <div><dt>When</dt><dd>Four Sundays in January 2027</dd></div>
+          <div><dt>Time</dt><dd>One hour a week, four weeks</dd></div>
+          <div><dt>Verified</dt><dd>Government ID and a background check, everyone</dd></div>
+          <div><dt>For</dt><dd>People who want to marry</dd></div>
+        </dl>
+        <p style="margin-top:1.2rem;font-size:.9rem;color:#4A4A4A">Applications are reviewed. We are looking for people who will finish &mdash; missing one evening means missing thirteen people, and we can&rsquo;t reschedule you into someone else&rsquo;s.</p>
+      </div>
+
+      <form id="join-form" novalidate>
+        <h3>Apply for Cohort 1</h3>
+        <p class="sub">Leave your email and we&rsquo;ll send the application when it opens in October.</p>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" required>
+          <button type="submit">Apply</button>
+        </div>
+        <div class="done" role="status">
+          <b>You&rsquo;re on the list.</b>
+          We&rsquo;ll write in October when applications open. Nothing before then.
+        </div>
+        <small>Free to apply. We&rsquo;ll only email about the cohort, and you can leave the list in one click.</small>
       </form>
-      <div class="status" id="status"></div>
+    </div>
+  </section>
 
-      <div class="fine">
-        No spam. Just launch updates, early invites, and the occasional note when we have something actually worth your attention.
-      </div>
+</main>
 
-    <a class="btn signal" href="consent-research.html" onclick="mark(true)">Join the study</a>
-    <a class="btn ghost" href="compare.html" onclick="mark(false)">Just use the app</a>
-      <div class="quote">
-        “Humans have been letting machines optimize everything except the one thing that matters most.”
-      </div>
-    </section>
-  </main>
-
-  <script>
-    const SUPABASE_URL = "https://kxyqdzkoyuzszcyfvpee.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4eXFkemtveXV6c3pjeWZ2cGVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MTIwNTAsImV4cCI6MjA3OTM4ODA1MH0.Ewj9y9Bdv96Z0e_HkoY0fUjDdl1euHOKWJIoB0XMSLg";
-
-    const form = document.getElementById('signup-form');
-    const emailInput = document.getElementById('email');
-    const button = document.getElementById('submit-btn');
-    const statusEl = document.getElementById('status');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim().toLowerCase();
-      if (!email) return;
-
-      button.disabled = true;
-      statusEl.textContent = "Saving your spot...";
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/ihrerebycommit_signups`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify([{
-            email,
-            source: 'iherebycommit.com',
-            user_agent: navigator.userAgent,
-            referrer: document.referrer || null
-          }])
-        });
-
-        if (res.ok) {
-          form.reset();
-          statusEl.textContent = "You’re in. We’ll let you know when it’s ready.";
-        } else if (res.status === 409) {
-          statusEl.textContent = "You’re already on the list.";
-        } else {
-          const text = await res.text();
-          console.error(text);
-          statusEl.textContent = "Something went wrong. Try again in a sec.";
-        }
-      } catch (err) {
-        console.error(err);
-        statusEl.textContent = "Something went wrong. Try again in a sec.";
-      } finally {
-        button.disabled = false;
-      }
-    });
-  </script>
+<footer class="wrap">
+  <div class="row">
+    <div>I Hereby Commit &mdash; a dating app built as a research study.</div>
+    <div><a href="mailto:hello@iherebycommit.com">hello@iherebycommit.com</a></div>
+  </div>
+</footer>
 
 <script>
-(function () {
-  const KEY = "iherebycommit_gate_v1";
-  const PASS = "1234";
-  if (sessionStorage.getItem(KEY) === "ok") return;
-  const entered = window.prompt("Enter password");
-  if (entered === PASS) {
-    sessionStorage.setItem(KEY, "ok");
-    return;
-  }
-  document.documentElement.innerHTML = "<head><title>Protected</title></head><body style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;padding:40px;background:#f6ede4;color:#25160f;'><h1>Protected</h1><p>Wrong password.</p></body>";
-})();
+  document.getElementById('join-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var el = document.getElementById('email');
+    if(!el.checkValidity()){ el.reportValidity(); return; }
+    this.classList.add('sent');
+  });
 </script>
-
 </body>
 </html>
