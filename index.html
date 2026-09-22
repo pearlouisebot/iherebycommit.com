@@ -87,13 +87,8 @@
     }
 
     /* ---- Progress Bar ---- */
-    .progress-container {
-      padding: 20px 0 0;
-    }
-    .progress-steps {
-      display: flex;
-      gap: 4px;
-    }
+    .progress-container { padding: 20px 0 0; }
+    .progress-steps { display: flex; gap: 4px; }
     .progress-step {
       flex: 1;
       height: 3px;
@@ -114,10 +109,7 @@
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-    .applying-badge strong {
-      color: var(--accent);
-      font-weight: 700;
-    }
+    .applying-badge strong { color: var(--accent); font-weight: 700; }
     .applying-badge .change-link {
       color: var(--muted);
       text-decoration: underline;
@@ -133,11 +125,7 @@
     .applying-badge .change-link:hover { color: var(--text); }
 
     /* ---- Screens ---- */
-    .screen {
-      display: none;
-      flex-direction: column;
-      flex: 1;
-    }
+    .screen { display: none; flex-direction: column; flex: 1; }
     .screen.active { display: flex; }
 
     .screen-content {
@@ -164,7 +152,6 @@
       color: var(--text);
       margin-bottom: 24px;
     }
-
     .screen-headline .accent { color: var(--accent); }
 
     /* ---- Landing ---- */
@@ -173,7 +160,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 40px 0 40px;
+      padding: 40px 0;
     }
 
     #screen-0 .main-headline {
@@ -183,10 +170,7 @@
       letter-spacing: 0.03em;
       margin-bottom: 20px;
     }
-
-    #screen-0 .main-headline .line2 {
-      color: var(--accent);
-    }
+    #screen-0 .main-headline .line2 { color: var(--accent); }
 
     .pledge-text {
       font-family: 'Space Mono', monospace;
@@ -209,11 +193,7 @@
     .count-badge.visible { display: block; }
     .count-badge span { color: var(--accent); font-weight: 700; }
 
-    .landing-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .landing-buttons { display: flex; flex-direction: column; gap: 12px; }
 
     /* ---- Buttons ---- */
     .btn {
@@ -227,22 +207,12 @@
       transition: all 0.15s;
       text-align: center;
     }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-    }
+    .btn-primary { background: var(--accent); color: var(--bg); }
     .btn-primary:hover { background: #d8ff40; }
     .btn-primary:active { transform: scale(0.98); }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--dim);
-    }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--dim); }
     .btn-outline:hover { border-color: var(--text); }
     .btn-outline:active { transform: scale(0.98); }
-
     .btn-ghost {
       background: transparent;
       color: var(--muted);
@@ -271,10 +241,7 @@
     }
 
     /* ---- Inputs ---- */
-    .field-group {
-      margin-bottom: 20px;
-    }
-
+    .field-group { margin-bottom: 20px; }
     .field-label {
       display: block;
       font-size: 10px;
@@ -283,7 +250,6 @@
       color: var(--muted);
       margin-bottom: 8px;
     }
-
     .field-input {
       width: 100%;
       background: transparent;
@@ -300,11 +266,7 @@
     .field-input:focus { border-color: var(--accent); }
     .field-input.error { border-color: var(--error); }
     .field-input::placeholder { color: var(--dim); }
-
-    .field-input option {
-      background: #1a1a1a;
-      color: var(--text);
-    }
+    .field-input option { background: #1a1a1a; color: var(--text); }
 
     .field-error {
       font-size: 11px;
@@ -314,18 +276,41 @@
     }
     .field-error.visible { display: block; }
 
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    /* ---- Toggle Buttons (yes/no) ---- */
-    .toggle-group {
+    /* ---- LinkedIn prefix ---- */
+    .linkedin-prefix-wrap {
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
+      align-items: center;
+      border: 1px solid var(--dim);
+      border-radius: var(--radius);
+      transition: border-color 0.15s;
+      overflow: hidden;
     }
+    .linkedin-prefix-wrap:focus-within { border-color: var(--accent); }
+    .linkedin-prefix-wrap.error { border-color: var(--error); }
+    .linkedin-prefix-text {
+      padding: 14px 0 14px 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .linkedin-username-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 16px;
+      padding: 14px 16px 14px 2px;
+    }
+    .linkedin-username-input::placeholder { color: var(--dim); }
+
+    /* ---- Toggle Buttons ---- */
+    .toggle-group { display: flex; gap: 8px; margin-bottom: 20px; }
     .toggle-btn {
       flex: 1;
       padding: 16px;
@@ -341,11 +326,7 @@
       text-align: center;
     }
     .toggle-btn:hover { border-color: var(--muted); }
-    .toggle-btn.selected {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--bg);
-    }
+    .toggle-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
     /* ---- Checkbox ---- */
     .checkbox-group {
@@ -363,16 +344,10 @@
       accent-color: var(--accent);
       cursor: pointer;
     }
-    .checkbox-label {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
+    .checkbox-label { font-size: 12px; color: var(--muted); line-height: 1.5; }
 
-    /* ---- Social handle preview ---- */
-    .handle-prefix {
-      position: relative;
-    }
+    /* ---- Handle prefix (@) ---- */
+    .handle-prefix { position: relative; }
     .handle-prefix .at-sign {
       position: absolute;
       left: 16px;
@@ -383,17 +358,10 @@
       font-size: 16px;
       pointer-events: none;
     }
-    .handle-prefix .field-input {
-      padding-left: 30px;
-    }
+    .handle-prefix .field-input { padding-left: 30px; }
 
     /* ---- Inline validation ---- */
-    .field-valid {
-      font-size: 11px;
-      color: var(--accent);
-      margin-top: 6px;
-      display: none;
-    }
+    .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
     /* ---- Under-18 screen ---- */
@@ -421,12 +389,7 @@
       color: var(--muted);
       margin-bottom: 32px;
     }
-    .confirm-text {
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--text);
-      margin-bottom: 32px;
-    }
+    .confirm-text { font-size: 14px; line-height: 1.8; color: var(--text); margin-bottom: 32px; }
     .redact-field {
       background: var(--text);
       color: var(--text);
@@ -434,20 +397,6 @@
       padding: 0 4px;
       user-select: none;
       display: inline-block;
-    }
-    .recruit-section {
-      margin-top: 8px;
-    }
-
-    /* ---- Status-specific landing ---- */
-    .status-indicator {
-      position: fixed;
-      top: 16px;
-      right: 24px;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
     }
 
     /* ---- Error toast ---- */
@@ -470,55 +419,20 @@
     }
     #error-toast.visible { display: block; }
 
-    /* ---- Loading state ---- */
-    .btn-loading {
-      opacity: 0.6;
-      pointer-events: none;
-    }
-    .btn-loading::after {
-      content: '...';
-      animation: ellipsis 1s infinite;
-    }
-    @keyframes ellipsis {
-      0%  { content: '.'; }
-      33% { content: '..'; }
-      66% { content: '...'; }
-    }
+    /* ---- Loading ---- */
+    .btn-loading { opacity: 0.6; pointer-events: none; }
 
-    /* ---- Screen transitions ---- */
-    .screen {
-      animation: none;
-    }
-    .screen.slide-in {
-      animation: slideIn 0.2s ease-out;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    .screen.slide-back {
-      animation: slideBack 0.2s ease-out;
-    }
-    @keyframes slideBack {
-      from { opacity: 0; transform: translateX(-20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
+    /* ---- Transitions ---- */
+    .screen.slide-in { animation: slideIn 0.2s ease-out; }
+    .screen.slide-back { animation: slideBack 0.2s ease-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideBack { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
     /* ---- Divider ---- */
-    .section-divider {
-      height: 1px;
-      background: var(--dim);
-      margin: 20px 0;
-    }
+    .section-divider { height: 1px; background: var(--dim); margin: 20px 0; }
 
     /* ---- Optional tag ---- */
-    .optional-tag {
-      font-size: 9px;
-      color: var(--dim);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-left: 6px;
-    }
+    .optional-tag { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-left: 6px; }
   </style>
 </head>
 <body>
@@ -534,7 +448,7 @@
         <div class="line2">COMMIT</div>
       </div>
       <p class="pledge-text">
-        Science has been studying love with sophomores in need of a psych credit. We're running the study that changes that. Real adults. Real relationships. Real data.
+        Science has been studying love with sophomores in need of a psych credit. The online dating industry hasn't bothered to track anything past the match. We're fixing both by running a first-of-its-kind experiment designed to get the right data and put you on the right dates.
       </p>
       <div id="count-badge" class="count-badge">
         <span id="count-num">0</span> people already on the list.
@@ -546,42 +460,37 @@
     </div>
   </div>
 
-  <!-- SCREEN 1: NAME -->
+  <!-- SCREEN 1: NAME + BIRTHDAY + EMAIL -->
   <div id="screen-1" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-1"></div></div>
     <div id="badge-1" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
-      <div class="screen-headline">WHAT'S<br>YOUR<br><span class="accent">NAME?</span></div>
-      <div class="field-group">
-        <label class="field-label">First name</label>
-        <input class="field-input" id="first_name" type="text" placeholder="Pearl" autocomplete="given-name">
-        <div class="field-error" id="err-first_name">First name required</div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Last name</label>
-        <input class="field-input" id="last_name" type="text" placeholder="Bradford" autocomplete="family-name">
-        <div class="field-error" id="err-last_name">Last name required</div>
-      </div>
-    </div>
-    <div class="bottom-action">
-      <button class="btn btn-primary" onclick="goNext(1)">NEXT</button>
-      <button class="btn-ghost" onclick="goBack(1)">← BACK</button>
-    </div>
-  </div>
+      <div class="screen-headline">WHO<br>ARE<br><span class="accent">YOU?</span></div>
 
-  <!-- SCREEN 2: BIRTHDATE -->
-  <div id="screen-2" class="screen">
-    <div class="progress-container"><div class="progress-steps" id="progress-2"></div></div>
-    <div id="badge-2" class="applying-badge"></div>
-    <div class="screen-content">
-      <div class="screen-label">Step 2 of <span class="step-total"></span></div>
-      <div class="screen-headline">DATE OF<br><span class="accent">BIRTH</span></div>
-      <div class="field-group">
-        <label class="field-label">Birthdate</label>
-        <input class="field-input" id="birthdate" type="date" autocomplete="bday">
-        <div class="field-error" id="err-birthdate">Please enter your birthdate</div>
+      <div id="screen1-fields">
+        <div class="field-group">
+          <label class="field-label">First name</label>
+          <input class="field-input" id="first_name" type="text" placeholder="Pearl" autocomplete="given-name">
+          <div class="field-error" id="err-first_name">First name required</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Last name</label>
+          <input class="field-input" id="last_name" type="text" placeholder="Bradford" autocomplete="family-name">
+          <div class="field-error" id="err-last_name">Last name required</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Date of birth</label>
+          <input class="field-input" id="birthdate" type="date" autocomplete="bday">
+          <div class="field-error" id="err-birthdate">Please enter your date of birth</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Email address</label>
+          <input class="field-input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
+          <div class="field-error" id="err-email">Valid email required</div>
+        </div>
       </div>
+
       <div id="under18-msg">
         <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
         <p style="font-size:13px;color:var(--muted);line-height:1.7;">
@@ -590,60 +499,88 @@
         <button class="btn btn-outline" style="margin-top:8px;" onclick="resetUnder18()">← START OVER</button>
       </div>
     </div>
-    <div class="bottom-action" id="birthdate-next-btn">
-      <button class="btn btn-primary" onclick="goNext(2)">NEXT</button>
-      <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
+    <div class="bottom-action" id="screen1-next-btn">
+      <button class="btn btn-primary" onclick="goNext(1)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(1)">← BACK</button>
     </div>
   </div>
 
-  <!-- SCREEN 3: CITY -->
+  <!-- SCREEN 3: LOCATION -->
   <div id="screen-3" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
     <div id="badge-3" class="applying-badge"></div>
     <div class="screen-content">
-      <div class="screen-label">Step 3 of <span class="step-total"></span></div>
+      <div class="screen-label">Step 2 of <span class="step-total"></span></div>
       <div class="screen-headline">WHERE<br>DO YOU<br><span class="accent">LIVE?</span></div>
       <div class="field-group">
-        <label class="field-label">City</label>
-        <select class="field-input" id="city_select" onchange="onCitySelect()">
-          <option value="">— Select your city —</option>
-          <option>Austin, TX</option>
-          <option>New York, NY</option>
-          <option>Los Angeles, CA</option>
-          <option>San Francisco, CA</option>
-          <option>Chicago, IL</option>
-          <option>Miami, FL</option>
-          <option>Seattle, WA</option>
-          <option>Boston, MA</option>
-          <option>Denver, CO</option>
-          <option>Atlanta, GA</option>
-          <option>Nashville, TN</option>
-          <option>Portland, OR</option>
-          <option>Washington, DC</option>
-          <option>Dallas, TX</option>
-          <option>Houston, TX</option>
-          <option>Phoenix, AZ</option>
-          <option>Minneapolis, MN</option>
-          <option>San Diego, CA</option>
-          <option>Philadelphia, PA</option>
-          <option>Salt Lake City, UT</option>
-          <option>Las Vegas, NV</option>
-          <option>Charlotte, NC</option>
-          <option>Raleigh, NC</option>
-          <option>Detroit, MI</option>
-          <option>New Orleans, LA</option>
-          <option>Pittsburgh, PA</option>
-          <option>Richmond, VA</option>
-          <option>Kansas City, MO</option>
-          <option>San Antonio, TX</option>
-          <option>International</option>
-          <option value="other">Other</option>
+        <label class="field-label">Country</label>
+        <select class="field-input" id="country">
+          <option value="United States">United States</option>
+          <option value="Afghanistan">Afghanistan</option>
+          <option value="Albania">Albania</option>
+          <option value="Algeria">Algeria</option>
+          <option value="Argentina">Argentina</option>
+          <option value="Australia">Australia</option>
+          <option value="Austria">Austria</option>
+          <option value="Belgium">Belgium</option>
+          <option value="Brazil">Brazil</option>
+          <option value="Canada">Canada</option>
+          <option value="Chile">Chile</option>
+          <option value="China">China</option>
+          <option value="Colombia">Colombia</option>
+          <option value="Croatia">Croatia</option>
+          <option value="Czech Republic">Czech Republic</option>
+          <option value="Denmark">Denmark</option>
+          <option value="Egypt">Egypt</option>
+          <option value="Finland">Finland</option>
+          <option value="France">France</option>
+          <option value="Germany">Germany</option>
+          <option value="Greece">Greece</option>
+          <option value="Hungary">Hungary</option>
+          <option value="India">India</option>
+          <option value="Indonesia">Indonesia</option>
+          <option value="Ireland">Ireland</option>
+          <option value="Israel">Israel</option>
+          <option value="Italy">Italy</option>
+          <option value="Japan">Japan</option>
+          <option value="Jordan">Jordan</option>
+          <option value="Kenya">Kenya</option>
+          <option value="Malaysia">Malaysia</option>
+          <option value="Mexico">Mexico</option>
+          <option value="Morocco">Morocco</option>
+          <option value="Netherlands">Netherlands</option>
+          <option value="New Zealand">New Zealand</option>
+          <option value="Nigeria">Nigeria</option>
+          <option value="Norway">Norway</option>
+          <option value="Pakistan">Pakistan</option>
+          <option value="Peru">Peru</option>
+          <option value="Philippines">Philippines</option>
+          <option value="Poland">Poland</option>
+          <option value="Portugal">Portugal</option>
+          <option value="Romania">Romania</option>
+          <option value="Russia">Russia</option>
+          <option value="Saudi Arabia">Saudi Arabia</option>
+          <option value="Singapore">Singapore</option>
+          <option value="South Africa">South Africa</option>
+          <option value="South Korea">South Korea</option>
+          <option value="Spain">Spain</option>
+          <option value="Sweden">Sweden</option>
+          <option value="Switzerland">Switzerland</option>
+          <option value="Taiwan">Taiwan</option>
+          <option value="Thailand">Thailand</option>
+          <option value="Turkey">Turkey</option>
+          <option value="Ukraine">Ukraine</option>
+          <option value="United Arab Emirates">United Arab Emirates</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Vietnam">Vietnam</option>
+          <option value="Other">Other</option>
         </select>
-        <div class="field-error" id="err-city">Please select your city</div>
+        <div class="field-error" id="err-country">Please select your country</div>
       </div>
-      <div class="field-group" id="city-other-group" style="display:none;">
-        <label class="field-label">Your city</label>
-        <input class="field-input" id="city_other" type="text" placeholder="e.g. Boise, ID">
+      <div class="field-group">
+        <label class="field-label">ZIP / Postal Code</label>
+        <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code">
+        <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
       </div>
     </div>
     <div class="bottom-action">
@@ -657,7 +594,7 @@
     <div class="progress-container"><div class="progress-steps" id="progress-4"></div></div>
     <div id="badge-4" class="applying-badge"></div>
     <div class="screen-content">
-      <div class="screen-label">Step 4 of <span class="step-total"></span></div>
+      <div class="screen-label">Step <span id="rel-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR<br><span class="accent">RELATION-<br>SHIP</span></div>
       <div class="field-group">
         <label class="field-label">Relationship stage</label>
@@ -718,7 +655,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 6: CONTACT -->
+  <!-- SCREEN 6: CONTACT (phone only) -->
   <div id="screen-6" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-6"></div></div>
     <div id="badge-6" class="applying-badge"></div>
@@ -726,14 +663,9 @@
       <div class="screen-label">Step <span id="contact-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">HOW TO<br><span class="accent">REACH<br>YOU</span></div>
       <div class="field-group">
-        <label class="field-label">Email address</label>
-        <input class="field-input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
-        <div class="field-error" id="err-email">Valid email required</div>
-      </div>
-      <div class="field-group">
         <label class="field-label">Phone number</label>
         <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel">
-        <div class="field-error" id="err-phone">Valid US phone number required</div>
+        <div class="field-error" id="err-phone">Valid phone number required</div>
       </div>
       <label class="checkbox-group">
         <input type="checkbox" id="sms_consent">
@@ -750,17 +682,23 @@
   <div id="screen-7" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-7"></div></div>
     <div id="badge-7" class="applying-badge"></div>
-    <div class="screen-content">
+    <div class="screen-content" style="padding-bottom: 160px;">
       <div class="screen-label">Step <span id="social-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR<br>PUBLIC<br><span class="accent">SELF</span></div>
+
       <div class="field-group">
         <label class="field-label">LinkedIn <span style="color:var(--accent);font-size:10px;">REQUIRED</span></label>
-        <input class="field-input" id="linkedin_url" type="text" placeholder="linkedin.com/in/yourname" autocomplete="url">
-        <div class="field-error" id="err-linkedin_url">Valid LinkedIn URL or handle required</div>
-        <div class="field-valid" id="ok-linkedin_url">✓ Looks good</div>
+        <div class="linkedin-prefix-wrap" id="linkedin-wrap">
+          <span class="linkedin-prefix-text">linkedin.com/in/</span>
+          <input class="linkedin-username-input" id="linkedin_username" type="text" placeholder="yourname" autocomplete="off" oninput="validateLinkedInInline()">
+        </div>
+        <div class="field-error" id="err-linkedin_username">LinkedIn username required</div>
+        <div class="field-valid" id="ok-linkedin_username">✓ Looks good</div>
       </div>
+
       <div class="section-divider"></div>
       <div class="field-label" style="margin-bottom:16px;">Other profiles <span class="optional-tag">optional</span></div>
+
       <div class="field-group">
         <label class="field-label">Instagram</label>
         <div class="handle-prefix">
@@ -775,7 +713,7 @@
           <input class="field-input" id="x_handle" type="text" placeholder="yourhandle">
         </div>
       </div>
-      <div class="field-group">
+      <div class="field-group" style="margin-bottom: 0;">
         <label class="field-label">TikTok</label>
         <div class="handle-prefix">
           <span class="at-sign">@</span>
@@ -802,9 +740,7 @@
       <div class="screen-label">APPLICATION RECEIVED</div>
       <div class="subject-number" id="confirm-subject-num">#00001</div>
       <div class="subject-label">YOUR SUBJECT NUMBER</div>
-      <div class="confirm-text" id="confirm-text">
-        <!-- Filled dynamically -->
-      </div>
+      <div class="confirm-text" id="confirm-text"></div>
       <div class="recruit-section">
         <div class="field-label" style="margin-bottom:12px;">Know someone who should apply?</div>
         <button class="btn btn-outline" onclick="shareLink()">SEND THEM THE LINK</button>
@@ -812,7 +748,6 @@
     </div>
   </div>
 
-  <!-- Error toast -->
   <div id="error-toast"></div>
 
 </div><!-- /app -->
@@ -823,55 +758,41 @@
 // ============================================================
 const SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcm15cW1wcW5sZW1rd2RuZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjQxNTQsImV4cCI6MjEwNTY0MDE1NH0.z_tuUoAayHWHiGdL5tp0DwHYvB23d0-mBj55Lmth4h8';
-
 const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 
 // ============================================================
 // STATE
 // ============================================================
 const state = {
-  status: null,          // 'single' | 'partnered'
+  status: null,
   currentScreen: 0,
-  hasChildren: null,     // true | false
-  wantsChildren: null,   // 'yes' | 'no' | 'not_sure'
+  hasChildren: null,
+  wantsChildren: null,
   turnstileToken: null,
   submitting: false,
 };
 
 // ============================================================
-// SCREEN CONFIG
-// Steps for progress bar (excluding screen 0 = landing, screen 8 = confirmation)
-// Singles path: 1,2,3,5,6,7  (screens 1-3, then 5-7)
-// Couples path: 1,2,3,4,5,6,7
+// PATHS
+// Screen 2 removed — birthdate + email now on screen 1
+// Singles:  1, 3, 5, 6, 7
+// Couples:  1, 3, 4, 5, 6, 7
 // ============================================================
 function getPath() {
-  if (state.status === 'partnered') {
-    return [1,2,3,4,5,6,7];
-  }
-  return [1,2,3,5,6,7];
+  return state.status === 'partnered' ? [1,3,4,5,6,7] : [1,3,5,6,7];
 }
-
-function getStepNum(screenId) {
-  return getPath().indexOf(screenId) + 1;
-}
-
-function totalSteps() {
-  return getPath().length;
-}
+function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
+function totalSteps() { return getPath().length; }
 
 // ============================================================
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   loadCount();
-  // Restore min date for birthdate
   const bdInput = document.getElementById('birthdate');
   const max = new Date();
   max.setFullYear(max.getFullYear() - 18);
   bdInput.max = max.toISOString().split('T')[0];
-
-  // LinkedIn inline validation
-  document.getElementById('linkedin_url').addEventListener('input', validateLinkedInInline);
 });
 
 async function loadCount() {
@@ -917,10 +838,9 @@ function renderProgress(screenId) {
   const el = document.getElementById('progress-' + screenId);
   if (!el) return;
   const path = getPath();
-  const total = path.length;
   const stepIdx = path.indexOf(screenId);
   let html = '';
-  for (let i = 0; i < total; i++) {
+  for (let i = 0; i < path.length; i++) {
     let cls = 'progress-step';
     if (i < stepIdx) cls += ' done';
     else if (i === stepIdx) cls += ' active';
@@ -930,20 +850,19 @@ function renderProgress(screenId) {
 }
 
 function renderStepNums(screenId) {
-  const step = getStepNum(screenId);
   const total = totalSteps();
-  // Screen-specific step num spans
-  ['kids-step-num','contact-step-num','social-step-num'].forEach(id => {
+  document.querySelectorAll('.screen.active .step-total').forEach(el => {
+    el.textContent = total;
+  });
+  ['rel-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       const parentScreen = el.closest('.screen');
-      const sId = parseInt(parentScreen.id.replace('screen-',''));
-      el.textContent = getStepNum(sId);
+      if (parentScreen) {
+        const sId = parseInt(parentScreen.id.replace('screen-',''));
+        el.textContent = getStepNum(sId);
+      }
     }
-  });
-  // All .step-total spans in active screen
-  document.querySelectorAll('.screen.active .step-total').forEach(el => {
-    el.textContent = total;
   });
 }
 
@@ -955,7 +874,6 @@ function startAs(status) {
 function changeStatus() {
   const newStatus = state.status === 'partnered' ? 'single' : 'partnered';
   state.status = newStatus;
-  // Clear partner fields if switching to single
   if (newStatus === 'single') {
     ['relationship_stage','partner_name','partner_email'].forEach(id => {
       const el = document.getElementById(id);
@@ -964,52 +882,52 @@ function changeStatus() {
   }
   renderBadge(state.currentScreen);
   renderProgress(state.currentScreen);
-  // If on screen 4 and now single, jump to screen 5
-  if (state.currentScreen === 4 && newStatus === 'single') {
-    showScreen(3, 'back');
-  }
+  if (state.currentScreen === 4 && newStatus === 'single') showScreen(3, 'back');
 }
 
 function getNextScreen(currentId) {
   const path = getPath();
   const idx = path.indexOf(currentId);
-  if (idx === -1 || idx >= path.length - 1) return 8; // confirmation
+  if (idx === -1 || idx >= path.length - 1) return 8;
   return path[idx + 1];
 }
 
 function getPrevScreen(currentId) {
   const path = getPath();
   const idx = path.indexOf(currentId);
-  if (idx <= 0) return 0; // landing
+  if (idx <= 0) return 0;
   return path[idx - 1];
 }
 
-function goNext(screenId) {
+async function goNext(screenId) {
   if (!validateScreen(screenId)) return;
-  const next = getNextScreen(screenId);
-  showScreen(next, 'forward');
+
+  // Save lead to DB after step 1 (fire and forget)
+  if (screenId === 1) saveLead();
+
+  showScreen(getNextScreen(screenId), 'forward');
 }
 
 function goBack(screenId) {
-  const prev = getPrevScreen(screenId);
-  showScreen(prev, 'back');
+  showScreen(getPrevScreen(screenId), 'back');
 }
 
 // ============================================================
-// CITY SELECT
+// PARTIAL SAVE (fire and forget)
 // ============================================================
-function onCitySelect() {
-  const val = document.getElementById('city_select').value;
-  const otherGroup = document.getElementById('city-other-group');
-  otherGroup.style.display = val === 'other' ? 'block' : 'none';
-}
-
-function getCity() {
-  const val = document.getElementById('city_select').value;
-  if (val === 'other') {
-    return document.getElementById('city_other').value.trim();
-  }
-  return val;
+function saveLead() {
+  try {
+    fetch(FUNCTIONS_URL + '/save-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      body: JSON.stringify({
+        first_name: document.getElementById('first_name').value.trim(),
+        last_name: document.getElementById('last_name').value.trim(),
+        birthdate: document.getElementById('birthdate').value,
+        email: document.getElementById('email').value.trim().toLowerCase(),
+      }),
+    });
+  } catch(e) {}
 }
 
 // ============================================================
@@ -1020,16 +938,10 @@ function setHasChildren(val) {
   document.getElementById('btn-has-yes').classList.toggle('selected', val === true);
   document.getElementById('btn-has-no').classList.toggle('selected', val === false);
   hideError('has_children');
-  // Show wants-children section
   document.getElementById('wants-children-section').style.display = 'block';
-  // Update label
-  const lbl = document.getElementById('wants-children-label');
-  lbl.textContent = val ? 'Do you want more children?' : 'Do you want children?';
-  // Reset wants selection
+  document.getElementById('wants-children-label').textContent = val ? 'Do you want more children?' : 'Do you want children?';
   state.wantsChildren = null;
-  ['yes','no','notsure'].forEach(k => {
-    document.getElementById('btn-wants-' + k).classList.remove('selected');
-  });
+  ['yes','no','notsure'].forEach(k => document.getElementById('btn-wants-' + k).classList.remove('selected'));
 }
 
 function setWantsChildren(val) {
@@ -1044,15 +956,18 @@ function setWantsChildren(val) {
 // LINKEDIN VALIDATION
 // ============================================================
 function validateLinkedInInline() {
-  const val = document.getElementById('linkedin_url').value.trim();
-  const errEl = document.getElementById('err-linkedin_url');
-  const okEl = document.getElementById('ok-linkedin_url');
+  const val = document.getElementById('linkedin_username').value.trim();
+  const errEl = document.getElementById('err-linkedin_username');
+  const okEl = document.getElementById('ok-linkedin_username');
+  const wrap = document.getElementById('linkedin-wrap');
   if (!val) {
-    errEl.classList.remove('visible'); okEl.classList.remove('visible'); return;
+    errEl.classList.remove('visible'); okEl.classList.remove('visible');
+    wrap.classList.remove('error'); return;
   }
-  const valid = /linkedin\.com\/in\/[a-zA-Z0-9\-]+/.test(val) || /^[a-zA-Z0-9\-]+$/.test(val);
+  const valid = /^[a-zA-Z0-9\-]+$/.test(val);
   errEl.classList.toggle('visible', !valid);
   okEl.classList.toggle('visible', valid);
+  wrap.classList.toggle('error', !valid);
 }
 
 // ============================================================
@@ -1064,17 +979,13 @@ function showError(field, msg) {
   const input = document.getElementById(field);
   if (input) input.classList.add('error');
 }
-
 function hideError(field) {
   const el = document.getElementById('err-' + field);
   if (el) el.classList.remove('visible');
   const input = document.getElementById(field);
   if (input) input.classList.remove('error');
 }
-
-function isValidEmail(e) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
-}
+function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
 function validateScreen(screenId) {
   let ok = true;
@@ -1082,32 +993,34 @@ function validateScreen(screenId) {
   if (screenId === 1) {
     const fn = document.getElementById('first_name').value.trim();
     const ln = document.getElementById('last_name').value.trim();
-    if (!fn) { showError('first_name'); ok = false; } else hideError('first_name');
-    if (!ln) { showError('last_name'); ok = false; } else hideError('last_name');
-  }
-
-  if (screenId === 2) {
     const bd = document.getElementById('birthdate').value;
-    if (!bd) { showError('birthdate', 'Please enter your birthdate'); ok = false; return false; }
-    hideError('birthdate');
-    const age = getAge(bd);
-    if (age < 18) {
-      showUnder18();
-      return false;
+    const em = document.getElementById('email').value.trim();
+
+    if (!fn) { showError('first_name', 'First name required'); ok = false; } else hideError('first_name');
+    if (!ln) { showError('last_name', 'Last name required'); ok = false; } else hideError('last_name');
+
+    if (!bd) { showError('birthdate', 'Please enter your date of birth'); ok = false; }
+    else {
+      hideError('birthdate');
+      if (getAge(bd) < 18) { showUnder18(); return false; }
     }
+
+    if (!em || !isValidEmail(em)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
   }
 
   if (screenId === 3) {
-    const city = getCity();
-    if (!city) { showError('city', 'Please select your city'); ok = false; } else hideError('city');
+    const country = document.getElementById('country').value;
+    const postal = document.getElementById('postal_code').value.trim();
+    if (!country) { showError('country', 'Please select your country'); ok = false; } else hideError('country');
+    if (!postal) { showError('postal_code', 'ZIP / Postal code required'); ok = false; } else hideError('postal_code');
   }
 
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
     const pn = document.getElementById('partner_name').value.trim();
     const pe = document.getElementById('partner_email').value.trim();
-    if (!rs) { showError('relationship_stage'); ok = false; } else hideError('relationship_stage');
-    if (!pn) { showError('partner_name'); ok = false; } else hideError('partner_name');
+    if (!rs) { showError('relationship_stage', 'Please select a stage'); ok = false; } else hideError('relationship_stage');
+    if (!pn) { showError('partner_name', 'Partner name required'); ok = false; } else hideError('partner_name');
     if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
   }
 
@@ -1117,16 +1030,22 @@ function validateScreen(screenId) {
   }
 
   if (screenId === 6) {
-    const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
-    if (!email || !isValidEmail(email)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
-    if (!phone || !normalizePhone(phone)) { showError('phone', 'Valid US phone required'); ok = false; } else hideError('phone');
+    if (!phone || !normalizePhone(phone)) { showError('phone', 'Valid phone number required'); ok = false; } else hideError('phone');
   }
 
   if (screenId === 7) {
-    const li = document.getElementById('linkedin_url').value.trim();
-    const valid = li && (/linkedin\.com\/in\/[a-zA-Z0-9\-]+/.test(li) || /^[a-zA-Z0-9\-]+$/.test(li));
-    if (!valid) { showError('linkedin_url', 'Valid LinkedIn URL or handle required'); ok = false; } else hideError('linkedin_url');
+    const username = document.getElementById('linkedin_username').value.trim();
+    const valid = username && /^[a-zA-Z0-9\-]+$/.test(username);
+    const wrap = document.getElementById('linkedin-wrap');
+    if (!valid) {
+      showError('linkedin_username', 'LinkedIn username required');
+      wrap.classList.add('error');
+      ok = false;
+    } else {
+      hideError('linkedin_username');
+      wrap.classList.remove('error');
+    }
   }
 
   return ok;
@@ -1136,6 +1055,7 @@ function normalizePhone(phone) {
   const digits = phone.replace(/\D/g,'');
   if (digits.length === 10) return '+1' + digits;
   if (digits.length === 11 && digits.startsWith('1')) return '+' + digits;
+  if (digits.length >= 7) return '+' + digits; // international
   return null;
 }
 
@@ -1152,15 +1072,15 @@ function getAge(dateStr) {
 // UNDER-18 HANDLING
 // ============================================================
 function showUnder18() {
-  document.getElementById('birthdate').closest('.field-group').style.display = 'none';
+  document.getElementById('screen1-fields').style.display = 'none';
   document.getElementById('under18-msg').classList.add('visible');
-  document.getElementById('birthdate-next-btn').style.display = 'none';
+  document.getElementById('screen1-next-btn').style.display = 'none';
 }
 
 function resetUnder18() {
-  document.getElementById('birthdate').closest('.field-group').style.display = 'block';
+  document.getElementById('screen1-fields').style.display = 'block';
   document.getElementById('under18-msg').classList.remove('visible');
-  document.getElementById('birthdate-next-btn').style.display = '';
+  document.getElementById('screen1-next-btn').style.display = '';
   document.getElementById('birthdate').value = '';
   showScreen(0, 'back');
 }
@@ -1181,19 +1101,10 @@ async function submitForm() {
   btn.classList.add('btn-loading');
   btn.textContent = 'VERIFYING';
 
-  // Check if we already have a Turnstile token
   if (state.turnstileToken) {
     await doSubmit();
   } else {
-    // Trigger Turnstile challenge (invisible mode auto-executes)
-    // The callback onTurnstileSuccess will call doSubmit
-    // Give it 10s max
-    setTimeout(() => {
-      if (state.submitting) {
-        // Fallback: try submitting without token (server will catch it)
-        doSubmit();
-      }
-    }, 10000);
+    setTimeout(() => { if (state.submitting) doSubmit(); }, 10000);
   }
 }
 
@@ -1201,18 +1112,21 @@ async function doSubmit() {
   const btn = document.getElementById('submit-btn');
   btn.textContent = 'SUBMITTING';
 
+  const username = document.getElementById('linkedin_username').value.trim().replace(/^@/, '');
+
   const body = {
     first_name: document.getElementById('first_name').value.trim(),
     last_name: document.getElementById('last_name').value.trim(),
     birthdate: document.getElementById('birthdate').value,
-    city: getCity(),
+    email: document.getElementById('email').value.trim().toLowerCase(),
+    country: document.getElementById('country').value,
+    postal_code: document.getElementById('postal_code').value.trim(),
     status: state.status,
     has_children: state.hasChildren,
     wants_children: state.wantsChildren,
-    email: document.getElementById('email').value.trim().toLowerCase(),
     phone: document.getElementById('phone').value.trim(),
     sms_consent: document.getElementById('sms_consent').checked,
-    linkedin_url: document.getElementById('linkedin_url').value.trim(),
+    linkedin_url: 'https://www.linkedin.com/in/' + username,
     instagram: document.getElementById('instagram').value.trim() || null,
     x_handle: document.getElementById('x_handle').value.trim() || null,
     tiktok: document.getElementById('tiktok').value.trim() || null,
@@ -1228,10 +1142,7 @@ async function doSubmit() {
   try {
     const resp = await fetch(FUNCTIONS_URL + '/submit-application', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-      },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify(body),
     });
 
@@ -1245,7 +1156,7 @@ async function doSubmit() {
       btn.textContent = 'SUBMIT APPLICATION';
       state.submitting = false;
     }
-  } catch (e) {
+  } catch(e) {
     showToast('Network error. Please check your connection and try again.');
     btn.classList.remove('btn-loading');
     btn.textContent = 'SUBMIT APPLICATION';
@@ -1257,9 +1168,7 @@ async function doSubmit() {
 // CONFIRMATION
 // ============================================================
 function showConfirmation(subjectNumber, isDuplicate) {
-  const numEl = document.getElementById('confirm-subject-num');
-  numEl.textContent = '#' + String(subjectNumber).padStart(5, '0');
-
+  document.getElementById('confirm-subject-num').textContent = '#' + String(subjectNumber).padStart(5, '0');
   const textEl = document.getElementById('confirm-text');
   const name = document.getElementById('first_name').value.trim();
 
@@ -1280,17 +1189,9 @@ function showConfirmation(subjectNumber, isDuplicate) {
 function shareLink() {
   const url = 'https://iherebycommit.com';
   if (navigator.share) {
-    navigator.share({
-      title: 'I Hereby Commit',
-      text: "I just applied for an independent relationship study. Science is running the study that changes how we understand love. Check it out:",
-      url: url,
-    }).catch(() => {});
+    navigator.share({ title: 'I Hereby Commit', text: "I just applied for an independent relationship study. Check it out:", url }).catch(() => {});
   } else {
-    navigator.clipboard.writeText(url).then(() => {
-      showToast('Link copied to clipboard!');
-    }).catch(() => {
-      window.open(url, '_blank');
-    });
+    navigator.clipboard.writeText(url).then(() => showToast('Link copied!')).catch(() => window.open(url, '_blank'));
   }
 }
 
