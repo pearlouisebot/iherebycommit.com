@@ -939,7 +939,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFnModal();
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
-  if (bf) bf.style.display = '';
+  if (bf) bf.style.display = 'block';
 });
 
 async function loadCount() {
@@ -1220,7 +1220,7 @@ function showScreen(id, direction) {
   const dlo = document.getElementById('desktop-overlay');
   if (dlo) dlo.style.display = onLanding ? '' : 'none';
   const bf = document.getElementById('below-fold');
-  if (bf) bf.style.display = onLanding ? '' : 'none';
+  if (bf) bf.style.display = onLanding ? 'block' : 'none';
 
   if (id > 0 && id < 8) { renderBadge(id); renderProgress(id); renderStepNums(id); }
   window.scrollTo(0, 0);
