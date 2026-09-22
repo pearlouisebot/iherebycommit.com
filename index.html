@@ -937,6 +937,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initCarousel();
   initFnModal();
+  // Show below-fold on initial load (page starts on screen 0)
+  const bf = document.getElementById('below-fold');
+  if (bf) bf.style.display = '';
 });
 
 async function loadCount() {
