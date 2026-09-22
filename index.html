@@ -69,6 +69,7 @@
       min-height: 100vh; display: flex;
       flex-direction: column; padding: 0 24px; position: relative;
     }
+    body.landing-active #app { min-height: auto; }
     @media (min-width: 640px) and (max-width: 1023px) { #app { max-width: 640px; } }
 
     /* Progress Bar */
@@ -230,7 +231,7 @@
 
     .phone-carousel-wrap { margin-bottom: 14px; }
     .phone-carousel-wrap .carousel-outer { }
-    .phone-carousel-wrap .c-slide { font-size: 68px; }
+    .phone-carousel-wrap .c-slide { font-size: clamp(36px, 9.5vw, 48px); }
 
     .phone-c-dots { margin-top: 12px; }
 
