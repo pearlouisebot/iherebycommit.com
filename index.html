@@ -511,7 +511,7 @@
     <div id="badge-3" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step 2 of <span class="step-total"></span></div>
-      <div class="screen-headline">WHERE DO YOU <span class="accent">LIVE?</span></div>
+      <div class="screen-headline">WHERE YOU <span class="accent">LIVE & DATE</span></div>
       <div class="field-group">
         <label class="field-label">Country</label>
         <select class="field-input" id="country">
@@ -581,6 +581,43 @@
         <label class="field-label">ZIP / Postal Code</label>
         <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code">
         <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
+        <select class="field-input" id="open_to_city">
+          <option value="">— Select a city —</option>
+          <option>Austin, TX</option>
+          <option>New York, NY</option>
+          <option>Los Angeles, CA</option>
+          <option>San Francisco, CA</option>
+          <option>Chicago, IL</option>
+          <option>Miami, FL</option>
+          <option>Seattle, WA</option>
+          <option>Boston, MA</option>
+          <option>Denver, CO</option>
+          <option>Atlanta, GA</option>
+          <option>Nashville, TN</option>
+          <option>Portland, OR</option>
+          <option>Washington, DC</option>
+          <option>Dallas, TX</option>
+          <option>Houston, TX</option>
+          <option>Phoenix, AZ</option>
+          <option>Minneapolis, MN</option>
+          <option>San Diego, CA</option>
+          <option>Philadelphia, PA</option>
+          <option>Salt Lake City, UT</option>
+          <option>Las Vegas, NV</option>
+          <option>Charlotte, NC</option>
+          <option>Raleigh, NC</option>
+          <option>Detroit, MI</option>
+          <option>New Orleans, LA</option>
+          <option>Pittsburgh, PA</option>
+          <option>Richmond, VA</option>
+          <option>Kansas City, MO</option>
+          <option>San Antonio, TX</option>
+          <option>International</option>
+          <option>Anywhere</option>
+        </select>
       </div>
     </div>
     <div class="bottom-action">
@@ -1147,6 +1184,7 @@ async function doSubmit() {
     email: document.getElementById('email').value.trim().toLowerCase(),
     country: document.getElementById('country').value,
     postal_code: document.getElementById('postal_code').value.trim(),
+    open_to_city: document.getElementById('open_to_city').value || null,
     status: state.status,
     has_children: state.hasChildren,
     wants_children: state.wantsChildren,
