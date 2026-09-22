@@ -69,7 +69,9 @@
       min-height: 100vh; display: flex;
       flex-direction: column; padding: 0 24px; position: relative;
     }
-    body.landing-active #app { min-height: auto; }
+    body.landing-active #app { min-height: 0; height: auto; }
+    body.landing-active #screen-0 { flex: none; height: auto; display: block; }
+    body.landing-active #screen-0 .lp-phone { flex: none; height: auto; }
     @media (min-width: 640px) and (max-width: 1023px) { #app { max-width: 640px; } }
 
     /* Progress Bar */
