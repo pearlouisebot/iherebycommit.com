@@ -1295,7 +1295,7 @@ function getPrevScreen(currentId) {
 
 async function goNext(screenId) {
   if (!validateScreen(screenId)) return;
-  if (screenId === 1) saveLead();
+  saveLead(); // progressive save on every Next
   showScreen(getNextScreen(screenId), 'forward');
 }
 
@@ -1307,18 +1307,36 @@ function goBack(screenId) {
 // PARTIAL SAVE
 // ============================================================
 function saveLead() {
-  try {
-    fetch(FUNCTIONS_URL + '/save-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
-      body: JSON.stringify({
-        first_name: document.getElementById('first_name').value.trim(),
-        last_name: document.getElementById('last_name').value.trim(),
-        birthdate: document.getElementById('birthdate').value,
-        email: document.getElementById('email').value.trim().toLowerCase(),
-      }),
-    });
-  } catch(e) {}
+  const email = document.getElementById('email')?.value?.trim().toLowerCase();
+  if (!email) return;
+  const get = (id) => { const el = document.getElementById(id); return el?.value?.trim() || null; };
+  const data = {
+    email,
+    first_name: get('first_name'),
+    last_name: get('last_name'),
+    birthdate: document.getElementById('birthdate')?.value || null,
+    status: state.status || null,
+    country: get('country'),
+    postal_code: get('postal_code'),
+    open_to_city: get('open_to_city'),
+    relationship_stage: get('relationship_stage'),
+    partner_name: get('partner_name'),
+    partner_email: get('partner_email'),
+    has_children: state.hasChildren,
+    wants_children: state.wantsChildren || null,
+    fertility_preservation: state.fertilityPreservation || null,
+    phone: get('phone'),
+    sms_consent: document.getElementById('sms_consent')?.checked || null,
+    linkedin_username: get('linkedin_username'),
+    instagram: get('instagram'),
+    x_handle: get('x_handle'),
+    tiktok: get('tiktok'),
+  };
+  fetch(FUNCTIONS_URL + '/save-lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+    body: JSON.stringify(data),
+  }).catch(() => {});
 }
 
 // ============================================================
