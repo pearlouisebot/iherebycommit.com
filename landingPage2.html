@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I Hereby Commit</title>
+
+  <!-- OG Meta Tags -->
+  <meta property="og:title" content="I Hereby Commit">
+  <meta property="og:description" content="Science has been studying love with sophomores in need of a psych credit. We're running the study that changes that.">
+  <meta property="og:image" content="https://iherebycommit.com/og-image.png">
+  <meta property="og:url" content="https://iherebycommit.com">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="I Hereby Commit">
+  <meta name="twitter:description" content="Science has been studying love with sophomores in need of a psych credit. We're running the study that changes that.">
+  <meta name="twitter:image" content="https://iherebycommit.com/og-image.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Cloudflare Turnstile -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --text: #f0ece0;
+      --accent: #c8f135;
+      --muted: #888;
+      --dim: #333;
+      --error: #ff4f4f;
+      --radius: 4px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Film grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      animation: grain 0.3s steps(1) infinite;
+    }
+
+    @keyframes grain {
+      0%  { transform: translate(0,0); }
+      10% { transform: translate(-2%,-3%); }
+      20% { transform: translate(3%,1%); }
+      30% { transform: translate(-1%,4%); }
+      40% { transform: translate(4%,-2%); }
+      50% { transform: translate(-3%,3%); }
+      60% { transform: translate(2%,-1%); }
+      70% { transform: translate(-4%,2%); }
+      80% { transform: translate(1%,-4%); }
+      90% { transform: translate(-2%,1%); }
+      100% { transform: translate(3%,-3%); }
+    }
+
+    #app {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 24px;
+      position: relative;
+    }
+
+    /* ---- Progress Bar ---- */
+    .progress-container {
+      padding: 20px 0 0;
+    }
+    .progress-steps {
+      display: flex;
+      gap: 4px;
+    }
+    .progress-step {
+      flex: 1;
+      height: 3px;
+      background: var(--dim);
+      transition: background 0.3s;
+    }
+    .progress-step.done { background: var(--accent); }
+    .progress-step.active { background: var(--text); }
+
+    /* ---- Applying-as badge ---- */
+    .applying-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 0 0;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .applying-badge strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .applying-badge .change-link {
+      color: var(--muted);
+      text-decoration: underline;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0;
+    }
+    .applying-badge .change-link:hover { color: var(--text); }
+
+    /* ---- Screens ---- */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+    .screen.active { display: flex; }
+
+    .screen-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0 120px;
+    }
+
+    .screen-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .screen-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .screen-headline .accent { color: var(--accent); }
+
+    /* ---- Landing ---- */
+    #screen-0 .landing-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 0 40px;
+    }
+
+    #screen-0 .main-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      line-height: 0.9;
+      letter-spacing: 0.03em;
+      margin-bottom: 20px;
+    }
+
+    #screen-0 .main-headline .line2 {
+      color: var(--accent);
+    }
+
+    .pledge-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 32px;
+      border-left: 2px solid var(--dim);
+      padding-left: 16px;
+    }
+
+    .count-badge {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+      display: none;
+    }
+    .count-badge.visible { display: block; }
+    .count-badge span { color: var(--accent); font-weight: 700; }
+
+    .landing-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ---- Buttons ---- */
+    .btn {
+      width: 100%;
+      padding: 18px 24px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .btn-primary:hover { background: #d8ff40; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--dim);
+    }
+    .btn-outline:hover { border-color: var(--text); }
+    .btn-outline:active { transform: scale(0.98); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      padding: 12px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-ghost:hover { color: var(--text); }
+
+    /* ---- Fixed bottom action ---- */
+    .bottom-action {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      padding: 16px 24px 32px;
+      background: linear-gradient(to top, var(--bg) 70%, transparent);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ---- Inputs ---- */
+    .field-group {
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .field-input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--dim);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 16px;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    .field-input:focus { border-color: var(--accent); }
+    .field-input.error { border-color: var(--error); }
+    .field-input::placeholder { color: var(--dim); }
+
+    .field-input option {
+      background: #1a1a1a;
+      color: var(--text);
+    }
+
+    .field-error {
+      font-size: 11px;
+      color: var(--error);
+      margin-top: 6px;
+      display: none;
+    }
+    .field-error.visible { display: block; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ---- Toggle Buttons (yes/no) ---- */
+    .toggle-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 16px;
+      background: transparent;
+      border: 1px solid var(--dim);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .toggle-btn:hover { border-color: var(--muted); }
+    .toggle-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    /* ---- Checkbox ---- */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .checkbox-label {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ---- Social handle preview ---- */
+    .handle-prefix {
+      position: relative;
+    }
+    .handle-prefix .at-sign {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 16px;
+      pointer-events: none;
+    }
+    .handle-prefix .field-input {
+      padding-left: 30px;
+    }
+
+    /* ---- Inline validation ---- */
+    .field-valid {
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 6px;
+      display: none;
+    }
+    .field-valid.visible { display: block; }
+
+    /* ---- Under-18 screen ---- */
+    #under18-msg {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 32px 0;
+    }
+    #under18-msg.visible { display: flex; }
+
+    /* ---- Confirmation Screen ---- */
+    .subject-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .subject-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .confirm-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 32px;
+    }
+    .redact-field {
+      background: var(--text);
+      color: var(--text);
+      border-radius: 2px;
+      padding: 0 4px;
+      user-select: none;
+      display: inline-block;
+    }
+    .recruit-section {
+      margin-top: 8px;
+    }
+
+    /* ---- Status-specific landing ---- */
+    .status-indicator {
+      position: fixed;
+      top: 16px;
+      right: 24px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ---- Error toast ---- */
+    #error-toast {
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--error);
+      color: white;
+      padding: 12px 20px;
+      font-size: 13px;
+      font-family: 'Space Mono', monospace;
+      border-radius: var(--radius);
+      max-width: 380px;
+      width: calc(100% - 48px);
+      z-index: 1000;
+      display: none;
+      text-align: center;
+    }
+    #error-toast.visible { display: block; }
+
+    /* ---- Loading state ---- */
+    .btn-loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .btn-loading::after {
+      content: '...';
+      animation: ellipsis 1s infinite;
+    }
+    @keyframes ellipsis {
+      0%  { content: '.'; }
+      33% { content: '..'; }
+      66% { content: '...'; }
+    }
+
+    /* ---- Screen transitions ---- */
+    .screen {
+      animation: none;
+    }
+    .screen.slide-in {
+      animation: slideIn 0.2s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .screen.slide-back {
+      animation: slideBack 0.2s ease-out;
+    }
+    @keyframes slideBack {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ---- Divider ---- */
+    .section-divider {
+      height: 1px;
+      background: var(--dim);
+      margin: 20px 0;
+    }
+
+    /* ---- Optional tag ---- */
+    .optional-tag {
+      font-size: 9px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- SCREEN 0: LANDING -->
+  <div id="screen-0" class="screen active">
+    <div class="landing-wrapper">
+      <div class="screen-label">An independent research study</div>
+      <div class="main-headline">
+        <div>I HEREBY</div>
+        <div class="line2">COMMIT</div>
+      </div>
+      <p class="pledge-text">
+        Science has been studying love with sophomores in need of a psych credit. We're running the study that changes that. Real adults. Real relationships. Real data.
+      </p>
+      <div id="count-badge" class="count-badge">
+        <span id="count-num">0</span> people already on the list.
+      </div>
+      <div class="landing-buttons">
+        <button class="btn btn-primary" onclick="startAs('single')">APPLY AS A SINGLE</button>
+        <button class="btn btn-outline" onclick="startAs('partnered')">APPLY AS A COUPLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: NAME -->
+  <div id="screen-1" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-1"></div></div>
+    <div id="badge-1" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step 1 of <span class="step-total"></span></div>
+      <div class="screen-headline">WHAT'S<br>YOUR<br><span class="accent">NAME?</span></div>
+      <div class="field-group">
+        <label class="field-label">First name</label>
+        <input class="field-input" id="first_name" type="text" placeholder="Pearl" autocomplete="given-name">
+        <div class="field-error" id="err-first_name">First name required</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Last name</label>
+        <input class="field-input" id="last_name" type="text" placeholder="Bradford" autocomplete="family-name">
+        <div class="field-error" id="err-last_name">Last name required</div>
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" onclick="goNext(1)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(1)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: BIRTHDATE -->
+  <div id="screen-2" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-2"></div></div>
+    <div id="badge-2" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step 2 of <span class="step-total"></span></div>
+      <div class="screen-headline">DATE OF<br><span class="accent">BIRTH</span></div>
+      <div class="field-group">
+        <label class="field-label">Birthdate</label>
+        <input class="field-input" id="birthdate" type="date" autocomplete="bday">
+        <div class="field-error" id="err-birthdate">Please enter your birthdate</div>
+      </div>
+      <div id="under18-msg">
+        <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;">
+          This study is open to adults 18 and older. Come back when you're ready.
+        </p>
+        <button class="btn btn-outline" style="margin-top:8px;" onclick="resetUnder18()">← START OVER</button>
+      </div>
+    </div>
+    <div class="bottom-action" id="birthdate-next-btn">
+      <button class="btn btn-primary" onclick="goNext(2)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: CITY -->
+  <div id="screen-3" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
+    <div id="badge-3" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step 3 of <span class="step-total"></span></div>
+      <div class="screen-headline">WHERE<br>DO YOU<br><span class="accent">LIVE?</span></div>
+      <div class="field-group">
+        <label class="field-label">City</label>
+        <select class="field-input" id="city_select" onchange="onCitySelect()">
+          <option value="">— Select your city —</option>
+          <option>Austin, TX</option>
+          <option>New York, NY</option>
+          <option>Los Angeles, CA</option>
+          <option>San Francisco, CA</option>
+          <option>Chicago, IL</option>
+          <option>Miami, FL</option>
+          <option>Seattle, WA</option>
+          <option>Boston, MA</option>
+          <option>Denver, CO</option>
+          <option>Atlanta, GA</option>
+          <option>Nashville, TN</option>
+          <option>Portland, OR</option>
+          <option>Washington, DC</option>
+          <option>Dallas, TX</option>
+          <option>Houston, TX</option>
+          <option>Phoenix, AZ</option>
+          <option>Minneapolis, MN</option>
+          <option>San Diego, CA</option>
+          <option>Philadelphia, PA</option>
+          <option>Salt Lake City, UT</option>
+          <option>Las Vegas, NV</option>
+          <option>Charlotte, NC</option>
+          <option>Raleigh, NC</option>
+          <option>Detroit, MI</option>
+          <option>New Orleans, LA</option>
+          <option>Pittsburgh, PA</option>
+          <option>Richmond, VA</option>
+          <option>Kansas City, MO</option>
+          <option>San Antonio, TX</option>
+          <option>International</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="field-error" id="err-city">Please select your city</div>
+      </div>
+      <div class="field-group" id="city-other-group" style="display:none;">
+        <label class="field-label">Your city</label>
+        <input class="field-input" id="city_other" type="text" placeholder="e.g. Boise, ID">
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" onclick="goNext(3)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(3)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: RELATIONSHIP (Couples only) -->
+  <div id="screen-4" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-4"></div></div>
+    <div id="badge-4" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step 4 of <span class="step-total"></span></div>
+      <div class="screen-headline">YOUR<br><span class="accent">RELATION-<br>SHIP</span></div>
+      <div class="field-group">
+        <label class="field-label">Relationship stage</label>
+        <select class="field-input" id="relationship_stage">
+          <option value="">— Select —</option>
+          <option value="dating">Dating</option>
+          <option value="engaged">Engaged</option>
+          <option value="domestic_partnership">Domestic Partnership</option>
+          <option value="married">Married</option>
+        </select>
+        <div class="field-error" id="err-relationship_stage">Please select a stage</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Partner's name</label>
+        <input class="field-input" id="partner_name" type="text" placeholder="Their first name is fine">
+        <div class="field-error" id="err-partner_name">Partner name required</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Partner's email</label>
+        <input class="field-input" id="partner_email" type="email" placeholder="they@example.com">
+        <div class="field-error" id="err-partner_email">Valid email required</div>
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" onclick="goNext(4)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(4)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: KIDS -->
+  <div id="screen-5" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-5"></div></div>
+    <div id="badge-5" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step <span id="kids-step-num"></span> of <span class="step-total"></span></div>
+      <div class="screen-headline">CHILDREN</div>
+
+      <div class="field-label" style="margin-bottom:12px;">Do you have children?</div>
+      <div class="toggle-group" id="has-children-group">
+        <button class="toggle-btn" id="btn-has-yes" onclick="setHasChildren(true)">YES</button>
+        <button class="toggle-btn" id="btn-has-no" onclick="setHasChildren(false)">NO</button>
+      </div>
+      <div class="field-error" id="err-has_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
+
+      <div id="wants-children-section" style="display:none;">
+        <div class="field-label" id="wants-children-label" style="margin-bottom:12px;">Do you want children?</div>
+        <div class="toggle-group" id="wants-children-group">
+          <button class="toggle-btn" id="btn-wants-yes" onclick="setWantsChildren('yes')">YES</button>
+          <button class="toggle-btn" id="btn-wants-no" onclick="setWantsChildren('no')">NO</button>
+          <button class="toggle-btn" id="btn-wants-notsure" onclick="setWantsChildren('not_sure')">NOT SURE</button>
+        </div>
+        <div class="field-error" id="err-wants_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" onclick="goNext(5)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(5)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: CONTACT -->
+  <div id="screen-6" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-6"></div></div>
+    <div id="badge-6" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step <span id="contact-step-num"></span> of <span class="step-total"></span></div>
+      <div class="screen-headline">HOW TO<br><span class="accent">REACH<br>YOU</span></div>
+      <div class="field-group">
+        <label class="field-label">Email address</label>
+        <input class="field-input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
+        <div class="field-error" id="err-email">Valid email required</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Phone number</label>
+        <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel">
+        <div class="field-error" id="err-phone">Valid US phone number required</div>
+      </div>
+      <label class="checkbox-group">
+        <input type="checkbox" id="sms_consent">
+        <span class="checkbox-label">I consent to receive text messages about this study and updates. Standard messaging rates may apply.</span>
+      </label>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" onclick="goNext(6)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(6)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 7: SOCIAL / LINKEDIN -->
+  <div id="screen-7" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-7"></div></div>
+    <div id="badge-7" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step <span id="social-step-num"></span> of <span class="step-total"></span></div>
+      <div class="screen-headline">YOUR<br>PUBLIC<br><span class="accent">SELF</span></div>
+      <div class="field-group">
+        <label class="field-label">LinkedIn <span style="color:var(--accent);font-size:10px;">REQUIRED</span></label>
+        <input class="field-input" id="linkedin_url" type="text" placeholder="linkedin.com/in/yourname" autocomplete="url">
+        <div class="field-error" id="err-linkedin_url">Valid LinkedIn URL or handle required</div>
+        <div class="field-valid" id="ok-linkedin_url">✓ Looks good</div>
+      </div>
+      <div class="section-divider"></div>
+      <div class="field-label" style="margin-bottom:16px;">Other profiles <span class="optional-tag">optional</span></div>
+      <div class="field-group">
+        <label class="field-label">Instagram</label>
+        <div class="handle-prefix">
+          <span class="at-sign">@</span>
+          <input class="field-input" id="instagram" type="text" placeholder="yourhandle">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">X / Twitter</label>
+        <div class="handle-prefix">
+          <span class="at-sign">@</span>
+          <input class="field-input" id="x_handle" type="text" placeholder="yourhandle">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">TikTok</label>
+        <div class="handle-prefix">
+          <span class="at-sign">@</span>
+          <input class="field-input" id="tiktok" type="text" placeholder="yourhandle">
+        </div>
+      </div>
+
+      <!-- Invisible Turnstile widget -->
+      <div id="cf-turnstile-widget" class="cf-turnstile"
+        data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9"
+        data-callback="onTurnstileSuccess"
+        data-size="invisible">
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
+      <button class="btn-ghost" onclick="goBack(7)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 8: CONFIRMATION -->
+  <div id="screen-8" class="screen">
+    <div class="screen-content" style="padding-top:48px;">
+      <div class="screen-label">APPLICATION RECEIVED</div>
+      <div class="subject-number" id="confirm-subject-num">#00001</div>
+      <div class="subject-label">YOUR SUBJECT NUMBER</div>
+      <div class="confirm-text" id="confirm-text">
+        <!-- Filled dynamically -->
+      </div>
+      <div class="recruit-section">
+        <div class="field-label" style="margin-bottom:12px;">Know someone who should apply?</div>
+        <button class="btn btn-outline" onclick="shareLink()">SEND THEM THE LINK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error toast -->
+  <div id="error-toast"></div>
+
+</div><!-- /app -->
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcm15cW1wcW5sZW1rd2RuZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjQxNTQsImV4cCI6MjEwNTY0MDE1NH0.z_tuUoAayHWHiGdL5tp0DwHYvB23d0-mBj55Lmth4h8';
+
+const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
+
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  status: null,          // 'single' | 'partnered'
+  currentScreen: 0,
+  hasChildren: null,     // true | false
+  wantsChildren: null,   // 'yes' | 'no' | 'not_sure'
+  turnstileToken: null,
+  submitting: false,
+};
+
+// ============================================================
+// SCREEN CONFIG
+// Steps for progress bar (excluding screen 0 = landing, screen 8 = confirmation)
+// Singles path: 1,2,3,5,6,7  (screens 1-3, then 5-7)
+// Couples path: 1,2,3,4,5,6,7
+// ============================================================
+function getPath() {
+  if (state.status === 'partnered') {
+    return [1,2,3,4,5,6,7];
+  }
+  return [1,2,3,5,6,7];
+}
+
+function getStepNum(screenId) {
+  return getPath().indexOf(screenId) + 1;
+}
+
+function totalSteps() {
+  return getPath().length;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadCount();
+  // Restore min date for birthdate
+  const bdInput = document.getElementById('birthdate');
+  const max = new Date();
+  max.setFullYear(max.getFullYear() - 18);
+  bdInput.max = max.toISOString().split('T')[0];
+
+  // LinkedIn inline validation
+  document.getElementById('linkedin_url').addEventListener('input', validateLinkedInInline);
+});
+
+async function loadCount() {
+  try {
+    const resp = await fetch(FUNCTIONS_URL + '/application-count', {
+      headers: { 'apikey': SUPABASE_ANON_KEY }
+    });
+    const data = await resp.json();
+    if (data.count >= 100) {
+      document.getElementById('count-num').textContent = data.count.toLocaleString();
+      document.getElementById('count-badge').classList.add('visible');
+    }
+  } catch(e) {}
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showScreen(id, direction) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active','slide-in','slide-back');
+  });
+  const el = document.getElementById('screen-' + id);
+  el.classList.add('active');
+  el.classList.add(direction === 'back' ? 'slide-back' : 'slide-in');
+  state.currentScreen = id;
+  if (id > 0 && id < 8) {
+    renderBadge(id);
+    renderProgress(id);
+    renderStepNums(id);
+  }
+  window.scrollTo(0,0);
+}
+
+function renderBadge(screenId) {
+  const el = document.getElementById('badge-' + screenId);
+  if (!el) return;
+  const label = state.status === 'partnered' ? 'Couple' : 'Single';
+  el.innerHTML = `Applying as: <strong>${label}</strong> &nbsp;·&nbsp; <button class="change-link" onclick="changeStatus()">change</button>`;
+}
+
+function renderProgress(screenId) {
+  const el = document.getElementById('progress-' + screenId);
+  if (!el) return;
+  const path = getPath();
+  const total = path.length;
+  const stepIdx = path.indexOf(screenId);
+  let html = '';
+  for (let i = 0; i < total; i++) {
+    let cls = 'progress-step';
+    if (i < stepIdx) cls += ' done';
+    else if (i === stepIdx) cls += ' active';
+    html += `<div class="${cls}"></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderStepNums(screenId) {
+  const step = getStepNum(screenId);
+  const total = totalSteps();
+  // Screen-specific step num spans
+  ['kids-step-num','contact-step-num','social-step-num'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const parentScreen = el.closest('.screen');
+      const sId = parseInt(parentScreen.id.replace('screen-',''));
+      el.textContent = getStepNum(sId);
+    }
+  });
+  // All .step-total spans in active screen
+  document.querySelectorAll('.screen.active .step-total').forEach(el => {
+    el.textContent = total;
+  });
+}
+
+function startAs(status) {
+  state.status = status;
+  showScreen(1, 'forward');
+}
+
+function changeStatus() {
+  const newStatus = state.status === 'partnered' ? 'single' : 'partnered';
+  state.status = newStatus;
+  // Clear partner fields if switching to single
+  if (newStatus === 'single') {
+    ['relationship_stage','partner_name','partner_email'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
+  renderBadge(state.currentScreen);
+  renderProgress(state.currentScreen);
+  // If on screen 4 and now single, jump to screen 5
+  if (state.currentScreen === 4 && newStatus === 'single') {
+    showScreen(3, 'back');
+  }
+}
+
+function getNextScreen(currentId) {
+  const path = getPath();
+  const idx = path.indexOf(currentId);
+  if (idx === -1 || idx >= path.length - 1) return 8; // confirmation
+  return path[idx + 1];
+}
+
+function getPrevScreen(currentId) {
+  const path = getPath();
+  const idx = path.indexOf(currentId);
+  if (idx <= 0) return 0; // landing
+  return path[idx - 1];
+}
+
+function goNext(screenId) {
+  if (!validateScreen(screenId)) return;
+  const next = getNextScreen(screenId);
+  showScreen(next, 'forward');
+}
+
+function goBack(screenId) {
+  const prev = getPrevScreen(screenId);
+  showScreen(prev, 'back');
+}
+
+// ============================================================
+// CITY SELECT
+// ============================================================
+function onCitySelect() {
+  const val = document.getElementById('city_select').value;
+  const otherGroup = document.getElementById('city-other-group');
+  otherGroup.style.display = val === 'other' ? 'block' : 'none';
+}
+
+function getCity() {
+  const val = document.getElementById('city_select').value;
+  if (val === 'other') {
+    return document.getElementById('city_other').value.trim();
+  }
+  return val;
+}
+
+// ============================================================
+// KIDS
+// ============================================================
+function setHasChildren(val) {
+  state.hasChildren = val;
+  document.getElementById('btn-has-yes').classList.toggle('selected', val === true);
+  document.getElementById('btn-has-no').classList.toggle('selected', val === false);
+  hideError('has_children');
+  // Show wants-children section
+  document.getElementById('wants-children-section').style.display = 'block';
+  // Update label
+  const lbl = document.getElementById('wants-children-label');
+  lbl.textContent = val ? 'Do you want more children?' : 'Do you want children?';
+  // Reset wants selection
+  state.wantsChildren = null;
+  ['yes','no','notsure'].forEach(k => {
+    document.getElementById('btn-wants-' + k).classList.remove('selected');
+  });
+}
+
+function setWantsChildren(val) {
+  state.wantsChildren = val;
+  document.getElementById('btn-wants-yes').classList.toggle('selected', val === 'yes');
+  document.getElementById('btn-wants-no').classList.toggle('selected', val === 'no');
+  document.getElementById('btn-wants-notsure').classList.toggle('selected', val === 'not_sure');
+  hideError('wants_children');
+}
+
+// ============================================================
+// LINKEDIN VALIDATION
+// ============================================================
+function validateLinkedInInline() {
+  const val = document.getElementById('linkedin_url').value.trim();
+  const errEl = document.getElementById('err-linkedin_url');
+  const okEl = document.getElementById('ok-linkedin_url');
+  if (!val) {
+    errEl.classList.remove('visible'); okEl.classList.remove('visible'); return;
+  }
+  const valid = /linkedin\.com\/in\/[a-zA-Z0-9\-]+/.test(val) || /^[a-zA-Z0-9\-]+$/.test(val);
+  errEl.classList.toggle('visible', !valid);
+  okEl.classList.toggle('visible', valid);
+}
+
+// ============================================================
+// VALIDATION
+// ============================================================
+function showError(field, msg) {
+  const el = document.getElementById('err-' + field);
+  if (el) { if (msg) el.textContent = msg; el.classList.add('visible'); }
+  const input = document.getElementById(field);
+  if (input) input.classList.add('error');
+}
+
+function hideError(field) {
+  const el = document.getElementById('err-' + field);
+  if (el) el.classList.remove('visible');
+  const input = document.getElementById(field);
+  if (input) input.classList.remove('error');
+}
+
+function isValidEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+function validateScreen(screenId) {
+  let ok = true;
+
+  if (screenId === 1) {
+    const fn = document.getElementById('first_name').value.trim();
+    const ln = document.getElementById('last_name').value.trim();
+    if (!fn) { showError('first_name'); ok = false; } else hideError('first_name');
+    if (!ln) { showError('last_name'); ok = false; } else hideError('last_name');
+  }
+
+  if (screenId === 2) {
+    const bd = document.getElementById('birthdate').value;
+    if (!bd) { showError('birthdate', 'Please enter your birthdate'); ok = false; return false; }
+    hideError('birthdate');
+    const age = getAge(bd);
+    if (age < 18) {
+      showUnder18();
+      return false;
+    }
+  }
+
+  if (screenId === 3) {
+    const city = getCity();
+    if (!city) { showError('city', 'Please select your city'); ok = false; } else hideError('city');
+  }
+
+  if (screenId === 4) {
+    const rs = document.getElementById('relationship_stage').value;
+    const pn = document.getElementById('partner_name').value.trim();
+    const pe = document.getElementById('partner_email').value.trim();
+    if (!rs) { showError('relationship_stage'); ok = false; } else hideError('relationship_stage');
+    if (!pn) { showError('partner_name'); ok = false; } else hideError('partner_name');
+    if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
+  }
+
+  if (screenId === 5) {
+    if (state.hasChildren === null) { showError('has_children', 'Please answer above'); ok = false; } else hideError('has_children');
+    if (state.hasChildren !== null && !state.wantsChildren) { showError('wants_children', 'Please answer above'); ok = false; } else if (state.wantsChildren) hideError('wants_children');
+  }
+
+  if (screenId === 6) {
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    if (!email || !isValidEmail(email)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
+    if (!phone || !normalizePhone(phone)) { showError('phone', 'Valid US phone required'); ok = false; } else hideError('phone');
+  }
+
+  if (screenId === 7) {
+    const li = document.getElementById('linkedin_url').value.trim();
+    const valid = li && (/linkedin\.com\/in\/[a-zA-Z0-9\-]+/.test(li) || /^[a-zA-Z0-9\-]+$/.test(li));
+    if (!valid) { showError('linkedin_url', 'Valid LinkedIn URL or handle required'); ok = false; } else hideError('linkedin_url');
+  }
+
+  return ok;
+}
+
+function normalizePhone(phone) {
+  const digits = phone.replace(/\D/g,'');
+  if (digits.length === 10) return '+1' + digits;
+  if (digits.length === 11 && digits.startsWith('1')) return '+' + digits;
+  return null;
+}
+
+function getAge(dateStr) {
+  const bd = new Date(dateStr);
+  const today = new Date();
+  let age = today.getFullYear() - bd.getFullYear();
+  const m = today.getMonth() - bd.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < bd.getDate())) age--;
+  return age;
+}
+
+// ============================================================
+// UNDER-18 HANDLING
+// ============================================================
+function showUnder18() {
+  document.getElementById('birthdate').closest('.field-group').style.display = 'none';
+  document.getElementById('under18-msg').classList.add('visible');
+  document.getElementById('birthdate-next-btn').style.display = 'none';
+}
+
+function resetUnder18() {
+  document.getElementById('birthdate').closest('.field-group').style.display = 'block';
+  document.getElementById('under18-msg').classList.remove('visible');
+  document.getElementById('birthdate-next-btn').style.display = '';
+  document.getElementById('birthdate').value = '';
+  showScreen(0, 'back');
+}
+
+// ============================================================
+// FORM SUBMISSION
+// ============================================================
+function onTurnstileSuccess(token) {
+  state.turnstileToken = token;
+  if (state.submitting) doSubmit();
+}
+
+async function submitForm() {
+  if (!validateScreen(7)) return;
+  state.submitting = true;
+
+  const btn = document.getElementById('submit-btn');
+  btn.classList.add('btn-loading');
+  btn.textContent = 'VERIFYING';
+
+  // Check if we already have a Turnstile token
+  if (state.turnstileToken) {
+    await doSubmit();
+  } else {
+    // Trigger Turnstile challenge (invisible mode auto-executes)
+    // The callback onTurnstileSuccess will call doSubmit
+    // Give it 10s max
+    setTimeout(() => {
+      if (state.submitting) {
+        // Fallback: try submitting without token (server will catch it)
+        doSubmit();
+      }
+    }, 10000);
+  }
+}
+
+async function doSubmit() {
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'SUBMITTING';
+
+  const body = {
+    first_name: document.getElementById('first_name').value.trim(),
+    last_name: document.getElementById('last_name').value.trim(),
+    birthdate: document.getElementById('birthdate').value,
+    city: getCity(),
+    status: state.status,
+    has_children: state.hasChildren,
+    wants_children: state.wantsChildren,
+    email: document.getElementById('email').value.trim().toLowerCase(),
+    phone: document.getElementById('phone').value.trim(),
+    sms_consent: document.getElementById('sms_consent').checked,
+    linkedin_url: document.getElementById('linkedin_url').value.trim(),
+    instagram: document.getElementById('instagram').value.trim() || null,
+    x_handle: document.getElementById('x_handle').value.trim() || null,
+    tiktok: document.getElementById('tiktok').value.trim() || null,
+    turnstileToken: state.turnstileToken || '',
+  };
+
+  if (state.status === 'partnered') {
+    body.relationship_stage = document.getElementById('relationship_stage').value;
+    body.partner_name = document.getElementById('partner_name').value.trim();
+    body.partner_email = document.getElementById('partner_email').value.trim().toLowerCase();
+  }
+
+  try {
+    const resp = await fetch(FUNCTIONS_URL + '/submit-application', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await resp.json();
+
+    if (resp.status === 200 || resp.status === 409) {
+      showConfirmation(data.subject_number, resp.status === 409);
+    } else {
+      showToast(data.error || 'Something went wrong. Please try again.');
+      btn.classList.remove('btn-loading');
+      btn.textContent = 'SUBMIT APPLICATION';
+      state.submitting = false;
+    }
+  } catch (e) {
+    showToast('Network error. Please check your connection and try again.');
+    btn.classList.remove('btn-loading');
+    btn.textContent = 'SUBMIT APPLICATION';
+    state.submitting = false;
+  }
+}
+
+// ============================================================
+// CONFIRMATION
+// ============================================================
+function showConfirmation(subjectNumber, isDuplicate) {
+  const numEl = document.getElementById('confirm-subject-num');
+  numEl.textContent = '#' + String(subjectNumber).padStart(5, '0');
+
+  const textEl = document.getElementById('confirm-text');
+  const name = document.getElementById('first_name').value.trim();
+
+  if (state.status === 'partnered') {
+    const partnerName = document.getElementById('partner_name').value.trim();
+    textEl.innerHTML = isDuplicate
+      ? `You and <span class="redact-field">${partnerName}</span> are already on file. Your subject number is above. We'll be in touch when the study launches.`
+      : `${name} and <span class="redact-field">${partnerName}</span> — you're in the record. Your subject number is above. Science is coming for your love life.`;
+  } else {
+    textEl.innerHTML = isDuplicate
+      ? `${name}, you're already in our system. Your subject number is above. We'll reach out when the study launches.`
+      : `${name} — you're subject #${subjectNumber}. You just volunteered to let science study your love life. We respect that enormously.`;
+  }
+
+  showScreen(8, 'forward');
+}
+
+function shareLink() {
+  const url = 'https://iherebycommit.com';
+  if (navigator.share) {
+    navigator.share({
+      title: 'I Hereby Commit',
+      text: "I just applied for an independent relationship study. Science is running the study that changes how we understand love. Check it out:",
+      url: url,
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('Link copied to clipboard!');
+    }).catch(() => {
+      window.open(url, '_blank');
+    });
+  }
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function showToast(msg) {
+  const el = document.getElementById('error-toast');
+  el.textContent = msg;
+  el.classList.add('visible');
+  setTimeout(() => el.classList.remove('visible'), 5000);
+}
+</script>
+
+</body>
+</html>
