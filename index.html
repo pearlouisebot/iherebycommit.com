@@ -880,7 +880,7 @@ async function loadCount() {
       headers: { 'apikey': SUPABASE_ANON_KEY }
     });
     const data = await resp.json();
-    if (data.count > 0) {
+    if (data.count >= 100) {
       document.getElementById('count-num').textContent = data.count.toLocaleString();
       document.getElementById('count-badge').classList.add('visible');
     }
