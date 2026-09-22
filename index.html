@@ -648,6 +648,14 @@
         </div>
         <div class="field-error" id="err-wants_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
       </div>
+
+      <div class="field-label" style="margin-bottom:12px;">Have you invested in fertility preservation?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="btn-fertility-yes" onclick="setFertility('yes')">YES</button>
+        <button class="toggle-btn" id="btn-fertility-no" onclick="setFertility('no')">NO</button>
+        <button class="toggle-btn" id="btn-fertility-considering" onclick="setFertility('considering')">CONSIDERING</button>
+      </div>
+      <div class="field-error" id="err-fertility" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(5)">NEXT</button>
@@ -765,6 +773,7 @@ const state = {
   currentScreen: 0,
   hasChildren: null,
   wantsChildren: null,
+  fertilityPreservation: null,
   turnstileToken: null,
   submitting: false,
 };
@@ -949,6 +958,14 @@ function setWantsChildren(val) {
   hideError('wants_children');
 }
 
+function setFertility(val) {
+  state.fertilityPreservation = val;
+  document.getElementById('btn-fertility-yes').classList.toggle('selected', val === 'yes');
+  document.getElementById('btn-fertility-no').classList.toggle('selected', val === 'no');
+  document.getElementById('btn-fertility-considering').classList.toggle('selected', val === 'considering');
+  hideError('fertility');
+}
+
 // ============================================================
 // LINKEDIN VALIDATION
 // ============================================================
@@ -1024,6 +1041,7 @@ function validateScreen(screenId) {
   if (screenId === 5) {
     if (state.hasChildren === null) { showError('has_children', 'Please answer above'); ok = false; } else hideError('has_children');
     if (state.hasChildren !== null && !state.wantsChildren) { showError('wants_children', 'Please answer above'); ok = false; } else if (state.wantsChildren) hideError('wants_children');
+    if (!state.fertilityPreservation) { showError('fertility', 'Please answer above'); ok = false; } else hideError('fertility');
   }
 
   if (screenId === 6) {
@@ -1123,6 +1141,7 @@ async function doSubmit() {
     wants_children: state.wantsChildren,
     phone: document.getElementById('phone').value.trim(),
     sms_consent: document.getElementById('sms_consent').checked,
+    fertility_preservation: state.fertilityPreservation,
     linkedin_url: 'https://www.linkedin.com/in/' + username,
     instagram: document.getElementById('instagram').value.trim() || null,
     x_handle: document.getElementById('x_handle').value.trim() || null,
