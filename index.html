@@ -1478,8 +1478,16 @@ async function submitForm() {
   const btn = document.getElementById('submit-btn');
   btn.classList.add('btn-loading');
   btn.textContent = 'VERIFYING';
-  if (state.turnstileToken) { await doSubmit(); }
-  else { setTimeout(() => { if (state.submitting) doSubmit(); }, 10000); }
+  if (state.turnstileToken) {
+    await doSubmit();
+  } else {
+    // Explicitly trigger the invisible widget
+    if (window.turnstile) {
+      try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
+    }
+    // Fallback: proceed after 8s regardless
+    setTimeout(() => { if (state.submitting) doSubmit(); }, 8000);
+  }
 }
 
 async function doSubmit() {
