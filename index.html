@@ -2,472 +2,619 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>I Hereby Commit</title>
 
-  <!-- OG Meta Tags -->
   <meta property="og:title" content="I Hereby Commit">
-  <meta property="og:description" content="Science has been studying love with sophomores more in need of a psych credit than a significant other. The online dating industry hasn't bothered to track or study anything post match.">
+  <meta property="og:description" content="It's the biggest decision of your life. It's never been studied like one.">
   <meta property="og:image" content="https://iherebycommit.com/og-image.png">
   <meta property="og:url" content="https://iherebycommit.com">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="I Hereby Commit">
-  <meta name="twitter:description" content="Science has been studying love with sophomores more in need of a psych credit than a significant other. The online dating industry hasn't bothered to track or study anything post match.">
+  <meta name="twitter:description" content="It's the biggest decision of your life. It's never been studied like one.">
   <meta name="twitter:image" content="https://iherebycommit.com/og-image.png">
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-  <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <style>
+    /* ===== RESET & BASE ===== */
     :root {
       --bg: #0e0e0e;
       --text: #f0ece0;
+      --body: #9a978c;
       --accent: #c8f135;
+      --orange: #FF7A2F;
       --muted: #888;
       --dim: #333;
       --error: #ff4f4f;
       --radius: 4px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body {
-      min-height: 100%;
       background: var(--bg);
       color: var(--text);
       font-family: 'Space Mono', monospace;
       font-size: 14px;
       line-height: 1.5;
     }
+    a { color: inherit; text-decoration: none; }
 
-    /* Film grain overlay */
+    /* Film grain */
     body::before {
       content: '';
-      position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.04;
+      position: fixed; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      pointer-events: none; z-index: 9999; opacity: 0.04;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       background-size: 256px 256px;
       animation: grain 0.3s steps(1) infinite;
     }
-
     @keyframes grain {
-      0%  { transform: translate(0,0); }
-      10% { transform: translate(-2%,-3%); }
-      20% { transform: translate(3%,1%); }
-      30% { transform: translate(-1%,4%); }
-      40% { transform: translate(4%,-2%); }
-      50% { transform: translate(-3%,3%); }
-      60% { transform: translate(2%,-1%); }
-      70% { transform: translate(-4%,2%); }
-      80% { transform: translate(1%,-4%); }
-      90% { transform: translate(-2%,1%); }
-      100% { transform: translate(3%,-3%); }
+      0%  { transform:translate(0,0); } 10% { transform:translate(-2%,-3%); }
+      20% { transform:translate(3%,1%); } 30% { transform:translate(-1%,4%); }
+      40% { transform:translate(4%,-2%); } 50% { transform:translate(-3%,3%); }
+      60% { transform:translate(2%,-1%); } 70% { transform:translate(-4%,2%); }
+      80% { transform:translate(1%,-4%); } 90% { transform:translate(-2%,1%); }
+      100% { transform:translate(3%,-3%); }
     }
 
+    /* ===== FORM APP CONTAINER ===== */
     #app {
-      max-width: 430px;
-      margin: 0 auto;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 0 24px;
-      position: relative;
+      max-width: 430px; margin: 0 auto;
+      min-height: 100vh; display: flex;
+      flex-direction: column; padding: 0 24px; position: relative;
     }
+    @media (min-width: 640px) and (max-width: 1023px) { #app { max-width: 640px; } }
 
-    /* ---- Progress Bar ---- */
+    /* Progress Bar */
     .progress-container { padding: 20px 0 0; }
     .progress-steps { display: flex; gap: 4px; }
-    .progress-step {
-      flex: 1;
-      height: 3px;
-      background: var(--dim);
-      transition: background 0.3s;
-    }
+    .progress-step { flex: 1; height: 3px; background: var(--dim); transition: background 0.3s; }
     .progress-step.done { background: var(--accent); }
     .progress-step.active { background: var(--text); }
 
-    /* ---- Applying-as badge ---- */
-    .applying-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 0 0;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
+    /* Applying-as badge */
+    .applying-badge { display: flex; align-items: center; gap: 8px; padding: 12px 0 0; font-size: 11px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
     .applying-badge strong { color: var(--accent); font-weight: 700; }
-    .applying-badge .change-link {
-      color: var(--muted);
-      text-decoration: underline;
-      cursor: pointer;
-      border: none;
-      background: none;
-      font: inherit;
-      font-size: 11px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 0;
-    }
+    .applying-badge .change-link { color: var(--muted); text-decoration: underline; cursor: pointer; border: none; background: none; font: inherit; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; padding: 0; }
     .applying-badge .change-link:hover { color: var(--text); }
 
-    /* ---- Screens ---- */
+    /* Screens */
     .screen { display: none; flex-direction: column; flex: 1; }
     .screen.active { display: flex; }
-
-    .screen-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 24px 0 120px;
-    }
-
-    .screen-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .screen-headline {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 52px;
-      line-height: 0.95;
-      letter-spacing: 0.02em;
-      color: var(--text);
-      margin-bottom: 24px;
-    }
+    .screen-content { flex: 1; display: flex; flex-direction: column; padding: 24px 0 120px; }
+    .screen-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .screen-headline { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 0.95; letter-spacing: 0.02em; color: var(--text); margin-bottom: 24px; }
     .screen-headline .accent { color: var(--accent); }
 
-    /* ---- Landing ---- */
-    #screen-0 .landing-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px 0;
-    }
-
-    #screen-0 .main-headline {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 80px;
-      line-height: 0.9;
-      letter-spacing: 0.03em;
-      margin-bottom: 20px;
-    }
-    #screen-0 .main-headline .line2 { color: var(--accent); }
-
-    .pledge-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      line-height: 1.65;
-      color: var(--muted);
-      margin-bottom: 32px;
-      border-left: 2px solid var(--dim);
-      padding-left: 16px;
-    }
-
-    .count-badge {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 32px;
-      display: none;
-    }
-    .count-badge.visible { display: block; }
-    .count-badge span { color: var(--accent); font-weight: 700; }
-
-    .landing-buttons { display: flex; flex-direction: column; gap: 12px; }
-
-    /* ---- Buttons ---- */
-    .btn {
-      width: 100%;
-      padding: 18px 24px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      letter-spacing: 0.1em;
-      border: none;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-align: center;
-    }
+    /* Buttons */
+    .btn { width: 100%; padding: 18px 24px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.1em; border: none; cursor: pointer; transition: all 0.15s; text-align: center; }
     .btn-primary { background: var(--accent); color: var(--bg); }
     .btn-primary:hover { background: #d8ff40; }
     .btn-primary:active { transform: scale(0.98); }
     .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--dim); }
     .btn-outline:hover { border-color: var(--text); }
-    .btn-outline:active { transform: scale(0.98); }
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      padding: 12px;
-      border: none;
-      cursor: pointer;
-    }
+    .btn-ghost { background: transparent; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.08em; padding: 12px; border: none; cursor: pointer; }
     .btn-ghost:hover { color: var(--text); }
 
-    /* ---- Fixed bottom action ---- */
-    .bottom-action {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 430px;
-      padding: 16px 24px 32px;
-      background: linear-gradient(to top, var(--bg) 70%, transparent);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    /* Fixed bottom action (form screens) */
+    .bottom-action { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 16px 24px 32px; background: linear-gradient(to top, var(--bg) 70%, transparent); display: flex; flex-direction: column; gap: 8px; }
+    @media (min-width: 640px) and (max-width: 1023px) { .bottom-action { max-width: 640px; } }
 
-    /* ---- Inputs ---- */
+    /* Inputs */
     .field-group { margin-bottom: 20px; }
-    .field-label {
-      display: block;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .field-input {
-      width: 100%;
-      background: transparent;
-      border: 1px solid var(--dim);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-size: 16px;
-      padding: 14px 16px;
-      outline: none;
-      transition: border-color 0.15s;
-      -webkit-appearance: none;
-    }
+    .field-label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .field-input { width: 100%; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
     .field-input:focus { border-color: var(--accent); }
     .field-input.error { border-color: var(--error); }
     .field-input::placeholder { color: var(--dim); }
     .field-input option { background: #1a1a1a; color: var(--text); }
-
-    .field-error {
-      font-size: 11px;
-      color: var(--error);
-      margin-top: 6px;
-      display: none;
-    }
+    .field-error { font-size: 11px; color: var(--error); margin-top: 6px; display: none; }
     .field-error.visible { display: block; }
-
-    /* ---- LinkedIn prefix ---- */
-    .linkedin-prefix-wrap {
-      display: flex;
-      align-items: center;
-      border: 1px solid var(--dim);
-      border-radius: var(--radius);
-      transition: border-color 0.15s;
-      overflow: hidden;
-    }
-    .linkedin-prefix-wrap:focus-within { border-color: var(--accent); }
-    .linkedin-prefix-wrap.error { border-color: var(--error); }
-    .linkedin-prefix-text {
-      padding: 14px 0 14px 16px;
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-      user-select: none;
-      flex-shrink: 0;
-    }
-    .linkedin-username-input {
-      flex: 1;
-      min-width: 0;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-size: 16px;
-      padding: 14px 16px 14px 2px;
-    }
-    .linkedin-username-input::placeholder { color: var(--dim); }
-
-    /* ---- Toggle Buttons ---- */
-    .toggle-group { display: flex; gap: 8px; margin-bottom: 20px; }
-    .toggle-btn {
-      flex: 1;
-      padding: 16px;
-      background: transparent;
-      border: 1px solid var(--dim);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-align: center;
-    }
-    .toggle-btn:hover { border-color: var(--muted); }
-    .toggle-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-
-    /* ---- Checkbox ---- */
-    .checkbox-group {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-    .checkbox-group input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      margin-top: 2px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-    .checkbox-label { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-    /* ---- Handle prefix (@) ---- */
-    .handle-prefix { position: relative; }
-    .handle-prefix .at-sign {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      font-size: 16px;
-      pointer-events: none;
-    }
-    .handle-prefix .field-input { padding-left: 30px; }
-
-    /* ---- Inline validation ---- */
     .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
-    /* ---- Under-18 screen ---- */
-    #under18-msg {
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 32px 0;
-    }
+    /* LinkedIn prefix */
+    .linkedin-prefix-wrap { display: flex; align-items: center; border: 1px solid var(--dim); border-radius: var(--radius); transition: border-color 0.15s; overflow: hidden; }
+    .linkedin-prefix-wrap:focus-within { border-color: var(--accent); }
+    .linkedin-prefix-wrap.error { border-color: var(--error); }
+    .linkedin-prefix-text { padding: 14px 0 14px 16px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); white-space: nowrap; user-select: none; flex-shrink: 0; }
+    .linkedin-username-input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px 14px 2px; }
+    .linkedin-username-input::placeholder { color: var(--dim); }
+
+    /* Toggles */
+    .toggle-group { display: flex; gap: 8px; margin-bottom: 20px; }
+    .toggle-btn { flex: 1; padding: 16px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .toggle-btn:hover { border-color: var(--muted); }
+    .toggle-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+    /* Checkbox */
+    .checkbox-group { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin-bottom: 20px; }
+    .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+    .checkbox-label { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* Handle prefix */
+    .handle-prefix { position: relative; }
+    .handle-prefix .at-sign { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-family: 'Space Mono', monospace; font-size: 16px; pointer-events: none; }
+    .handle-prefix .field-input { padding-left: 30px; }
+
+    /* Under-18 */
+    #under18-msg { display: none; flex-direction: column; align-items: flex-start; gap: 16px; padding: 32px 0; }
     #under18-msg.visible { display: flex; }
 
-    /* ---- Confirmation Screen ---- */
-    .subject-number {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 72px;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .subject-label {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 32px;
-    }
+    /* Confirmation */
+    .subject-number { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+    .subject-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
     .confirm-text { font-size: 14px; line-height: 1.8; color: var(--text); margin-bottom: 32px; }
-    .redact-field {
-      background: var(--text);
-      color: var(--text);
-      border-radius: 2px;
-      padding: 0 4px;
-      user-select: none;
-      display: inline-block;
-    }
+    .redact-field { background: var(--text); color: var(--text); border-radius: 2px; padding: 0 4px; user-select: none; display: inline-block; }
 
-    /* ---- Error toast ---- */
-    #error-toast {
-      position: fixed;
-      bottom: 120px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--error);
-      color: white;
-      padding: 12px 20px;
-      font-size: 13px;
-      font-family: 'Space Mono', monospace;
-      border-radius: var(--radius);
-      max-width: 380px;
-      width: calc(100% - 48px);
-      z-index: 1000;
-      display: none;
-      text-align: center;
-    }
+    /* Error toast */
+    #error-toast { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%); background: var(--error); color: white; padding: 12px 20px; font-size: 13px; font-family: 'Space Mono', monospace; border-radius: var(--radius); max-width: 380px; width: calc(100% - 48px); z-index: 1000; display: none; text-align: center; }
     #error-toast.visible { display: block; }
 
-    /* ---- Loading ---- */
+    /* Loading */
     .btn-loading { opacity: 0.6; pointer-events: none; }
 
-    /* ---- Transitions ---- */
+    /* Transitions */
     .screen.slide-in { animation: slideIn 0.2s ease-out; }
     .screen.slide-back { animation: slideBack 0.2s ease-out; }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes slideBack { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes slideBack { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
 
-    /* ---- Divider ---- */
+    /* Divider, optional tag */
     .section-divider { height: 1px; background: var(--dim); margin: 20px 0; }
-
-    /* ---- Optional tag ---- */
     .optional-tag { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-left: 6px; }
+
+    /* ===================================================
+       LANDING PAGE STYLES
+       =================================================== */
+
+    /* Wordmark */
+    .wordmark-wrap { display: inline-block; line-height: 1; }
+    .wordmark-text { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.06em; display: block; }
+    .wm-white { color: #f0ece0; }
+    .wm-green { color: #c8f135; }
+    .wordmark-wrap::after { content: ''; display: block; height: 3px; background: #c8f135; margin-top: 2px; }
+
+    /* Carousel shared */
+    .carousel-outer { position: relative; overflow: hidden; }
+    .carousel-track { position: relative; }
+    .c-slide {
+      position: absolute; top: 0; left: 0; width: 100%;
+      opacity: 0; transition: opacity 0.3s ease;
+      font-family: 'Bebas Neue', sans-serif;
+      line-height: 0.92; color: #f0ece0;
+      pointer-events: none;
+    }
+    .c-slide.active { opacity: 1; pointer-events: auto; }
+    .c-slide .cl-g { color: #c8f135; }
+
+    /* Dots */
+    .c-dots { display: flex; align-items: center; gap: 8px; }
+    .c-dot {
+      width: 6px; height: 6px; border-radius: 3px;
+      background: #444; border: none; cursor: pointer; padding: 0;
+      transition: width 0.25s, background 0.25s;
+      /* 44px tap target */
+      position: relative;
+    }
+    .c-dot::before { content: ''; position: absolute; inset: -19px -10px; }
+    .c-dot.active { width: 24px; background: #c8f135; }
+
+    /* Arrow buttons (desktop) */
+    .c-arrow { width: 44px; height: 44px; border: 1px solid #333; background: transparent; color: #f0ece0; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
+    .c-arrow:hover { border-color: #888; }
+
+    /* ---- PHONE LANDING (< 1024px) ---- */
+    #screen-0 .lp-phone {
+      display: flex; flex-direction: column;
+      padding: 16px 0 0;
+      flex: 1;
+    }
+    .lp-top-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #888;
+      margin-bottom: 16px;
+    }
+    .lp-dot-green { color: #c8f135; }
+    .lp-scientist { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+
+    #screen-0 .lp-phone .wordmark-text { font-size: 38px; }
+    #screen-0 .lp-phone .wordmark-wrap { margin-bottom: 12px; }
+
+    .phone-carousel-wrap { margin-bottom: 14px; }
+    .phone-carousel-wrap .carousel-outer { }
+    .phone-carousel-wrap .c-slide { font-size: 68px; }
+
+    .phone-c-dots { margin-top: 12px; }
+
+    @media (min-width: 640px) and (max-width: 1023px) {
+      #screen-0 .lp-phone .wordmark-text { font-size: 52px; }
+      .phone-carousel-wrap .c-slide { font-size: 88px; }
+      .c-dot.active { width: 32px; }
+    }
+
+    .lp-subhead {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; line-height: 1.7;
+      color: #9a978c;
+      border-left: 2px solid #333;
+      padding-left: 16px;
+      margin-bottom: 16px;
+    }
+    .lp-subhead strong { color: #f0ece0; font-weight: 700; }
+    .lp-subhead sup.fn-ref { color: #c8f135; font-size: 9px; cursor: pointer; vertical-align: super; line-height: 0; }
+    .lp-subhead sup.fn-ref:hover { text-decoration: underline; }
+
+    .lp-priority { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; margin-bottom: 24px; }
+
+    .lp-bottom-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #888;
+      padding-bottom: 16px;
+    }
+    .lp-bottom-row a { color: #888; }
+    .lp-bottom-row a:hover { color: #f0ece0; }
+
+    /* Sticky apply bar (phone + tablet) */
+    #sticky-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+      background: #0e0e0e; border-top: 1px solid #333;
+      padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      transition: transform 0.2s ease;
+    }
+    #sticky-bar.hidden { transform: translateY(110%); pointer-events: none; }
+    .sticky-btn {
+      min-height: 56px; border: none; cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+      letter-spacing: 0.08em; color: #0e0e0e;
+      transition: opacity 0.15s;
+    }
+    .sticky-btn:active { opacity: 0.85; }
+    .sticky-btn-single { background: #c8f135; }
+    .sticky-btn-couple { background: #FF7A2F; }
+
+    /* Add bottom padding on phone screen-0 to account for sticky bar */
+    #screen-0 .lp-phone { padding-bottom: 100px; }
+
+    /* ---- DESKTOP LANDING (≥ 1024px) ---- */
+    #desktop-overlay {
+      display: none;
+    }
+    @media (min-width: 1024px) {
+      /* Hide sticky bar on desktop */
+      #sticky-bar { display: none !important; }
+
+      /* Show desktop overlay when landing is active */
+      body.landing-active #desktop-overlay {
+        display: flex;
+        flex-direction: column;
+        position: fixed; inset: 0; z-index: 200;
+        background: #0e0e0e;
+        overflow-y: auto;
+        min-height: 100vh;
+      }
+
+      /* Hide phone screen-0 on desktop */
+      body.landing-active #app { display: none; }
+
+      /* Show below-fold only when landing active, below overlay */
+      body.landing-active #below-fold { display: block; }
+    }
+
+    /* Desktop overlay layout */
+    .dlo-topbar {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px;
+      font-family: 'Space Mono', monospace; font-size: 11px;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #888;
+      background: #0e0e0e;
+    }
+
+    .dlo-main {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 120px);
+      padding: 40px;
+    }
+
+    .dlo-inner {
+      width: 100%; max-width: 1240px;
+      display: flex; flex-direction: column;
+    }
+
+    .dlo-wordmark { margin-bottom: 10px; }
+    .dlo-wordmark .wordmark-text { font-size: 56px; }
+    .dlo-wordmark .wordmark-wrap::after { height: 4px; margin-top: 3px; }
+
+    /* Desktop carousel */
+    .dlo-carousel-wrap { margin-bottom: 16px; }
+    .dlo-carousel-wrap .c-slide {
+      font-size: clamp(80px, 8.5vw, 124px);
+      line-height: 0.9;
+    }
+
+    /* Carousel nav row (dots left, arrows right) */
+    .dlo-carousel-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 40px;
+    }
+    .dlo-arrows { display: flex; gap: 8px; }
+    .dlo-dots .c-dot.active { width: 32px; }
+
+    /* Content row */
+    .dlo-content-row {
+      display: grid; grid-template-columns: 1fr 340px; gap: 60px; align-items: start;
+    }
+
+    .dlo-subhead {
+      font-family: 'Space Mono', monospace;
+      font-size: 14px; line-height: 1.75;
+      color: #9a978c;
+      border-left: 2px solid #333; padding-left: 16px;
+    }
+    .dlo-subhead strong { color: #f0ece0; font-weight: 700; }
+    .dlo-subhead sup.fn-ref { color: #c8f135; font-size: 9px; cursor: pointer; vertical-align: super; line-height: 0; }
+    .dlo-subhead sup.fn-ref:hover { text-decoration: underline; }
+
+    .dlo-cta-col { display: flex; flex-direction: column; gap: 0; }
+    .dlo-cta-label { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: #f0ece0; line-height: 1.5; margin-bottom: 16px; }
+    .dlo-apply-single {
+      min-height: 60px; border: none; cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.08em;
+      background: #c8f135; color: #0e0e0e; width: 100%;
+      transition: background 0.15s; margin-bottom: 8px;
+    }
+    .dlo-apply-single:hover { background: #d8ff40; }
+    .dlo-apply-couple {
+      min-height: 60px; border: none; cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.08em;
+      background: #FF7A2F; color: #0e0e0e; width: 100%;
+      transition: opacity 0.15s; margin-bottom: 12px;
+    }
+    .dlo-apply-couple:hover { opacity: 0.88; }
+    .dlo-priority { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; }
+
+    .dlo-bottombar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px;
+      font-family: 'Space Mono', monospace; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #888;
+    }
+    .dlo-bottombar a { color: #888; }
+    .dlo-bottombar a:hover { color: #f0ece0; }
+
+    /* Short laptop: shrink carousel */
+    @media (min-width: 1024px) and (max-height: 849px) {
+      .dlo-carousel-wrap .c-slide { font-size: clamp(80px, 7vw, 96px); }
+      .dlo-main { padding: 20px 40px; min-height: calc(100vh - 100px); }
+    }
+
+    /* ===== BELOW FOLD ===== */
+    #below-fold {
+      display: none;
+      background: #0e0e0e;
+    }
+    .bfold-inner {
+      max-width: 920px; margin: 0 auto;
+      padding: 80px 24px;
+      display: flex; flex-direction: column; gap: 64px;
+    }
+
+    /* Pledge card */
+    .pledge-card {
+      border: 1px solid #f0ece0;
+      background: #171715;
+      padding: 28px;
+    }
+    .pledge-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #888; margin-bottom: 16px; }
+    .pledge-headline { font-family: 'Bebas Neue', sans-serif; font-size: 40px; line-height: 1.0; color: #f0ece0; }
+    .pledge-headline-green { font-family: 'Bebas Neue', sans-serif; font-size: 40px; line-height: 1.0; color: #c8f135; margin-bottom: 28px; }
+    .pledge-sig { display: flex; align-items: flex-end; gap: 0; margin-top: 8px; }
+    .pledge-x { font-family: 'Space Mono', monospace; font-size: 16px; color: #888; flex-shrink: 0; margin-right: 8px; line-height: 1; }
+    .pledge-sig-line { flex: 1; height: 1px; background: #888; margin-bottom: 4px; }
+    .pledge-sig-label { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; margin-left: 8px; flex-shrink: 0; line-height: 1; margin-bottom: 0; padding-bottom: 2px; }
+
+    /* Myths */
+    .myths-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #888; margin-bottom: 24px; }
+    .myths-grid { display: flex; flex-direction: column; gap: 16px; }
+    .myth-card { border: 1px solid #333; padding: 20px; position: relative; }
+    .myth-stamp { position: absolute; top: 12px; right: 12px; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: #888; border: 1px solid #555; padding: 2px 5px; transform: rotate(7deg); }
+    .myth-text { font-family: 'Space Mono', monospace; font-size: 12px; color: #888; text-decoration: line-through; margin-bottom: 10px; padding-right: 40px; }
+    .myth-reality { font-family: 'Bebas Neue', sans-serif; font-size: 26px; line-height: 1.05; color: #f0ece0; margin-bottom: 8px; }
+    .myth-oneliner { font-family: 'Space Mono', monospace; font-size: 12px; color: #9a978c; line-height: 1.6; }
+    .myth-reality sup.fn-ref { color: #c8f135; font-size: 9px; cursor: pointer; vertical-align: super; line-height: 0; }
+    .myth-reality sup.fn-ref:hover { text-decoration: underline; }
+
+    /* Desktop CTA repeat */
+    .bfold-desktop-cta { display: none; }
+
+    /* Footer */
+    .bfold-footer { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; line-height: 1.8; }
+    .bfold-footer ol { padding-left: 20px; margin-bottom: 16px; }
+    .bfold-footer li { margin-bottom: 6px; }
+    .bfold-footer em { font-style: italic; }
+    .bfold-footer .bfold-legal { margin-top: 20px; padding-top: 20px; border-top: 1px solid #222; }
+
+    @media (min-width: 1024px) {
+      .pledge-headline { font-size: 56px; }
+      .pledge-headline-green { font-size: 56px; }
+      .myths-grid { flex-direction: row; }
+      .myth-card { flex: 1; }
+      .bfold-desktop-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+      .bfold-cta-label { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: #f0ece0; max-width: 480px; }
+      .bfold-apply-btns { display: flex; gap: 12px; }
+      .bfold-apply-single { min-height: 56px; padding: 0 32px; border: none; cursor: pointer; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.08em; background: #c8f135; color: #0e0e0e; transition: background 0.15s; }
+      .bfold-apply-single:hover { background: #d8ff40; }
+      .bfold-apply-couple { min-height: 56px; padding: 0 32px; border: none; cursor: pointer; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.08em; background: #FF7A2F; color: #0e0e0e; transition: opacity 0.15s; }
+      .bfold-apply-couple:hover { opacity: 0.88; }
+    }
+
+    /* ===== FOOTNOTE MODAL ===== */
+    #fn-modal {
+      display: none;
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(0,0,0,0.7);
+    }
+    #fn-modal.open { display: flex; align-items: flex-end; justify-content: center; }
+    .fn-modal-sheet {
+      width: 100%; max-height: 85vh; overflow-y: auto;
+      background: #1a1a18; border-top: 2px solid #c8f135;
+      border-radius: 12px 12px 0 0; padding: 28px 24px 40px;
+      position: relative;
+    }
+    .fn-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #888; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px; }
+    .fn-close:hover { color: #f0ece0; }
+    .fn-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #c8f135; margin-bottom: 12px; }
+    .fn-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #f0ece0; line-height: 1.05; margin-bottom: 6px; }
+    .fn-byline { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; margin-bottom: 16px; }
+    .fn-intro { font-family: 'Space Mono', monospace; font-size: 12px; color: #9a978c; line-height: 1.65; margin-bottom: 16px; }
+    .fn-findings { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .fn-finding { display: flex; gap: 12px; }
+    .fn-num { font-family: 'Space Mono', monospace; font-size: 10px; color: #c8f135; flex-shrink: 0; margin-top: 2px; }
+    .fn-finding-text { font-family: 'Space Mono', monospace; font-size: 12px; color: #f0ece0; line-height: 1.65; }
+    .fn-link-btn { font-family: 'Space Mono', monospace; font-size: 12px; color: #c8f135; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0; }
+    .fn-link-btn:hover { color: #d8ff40; }
+
+    @media (min-width: 1024px) {
+      #fn-modal.open { align-items: center; }
+      .fn-modal-sheet { max-width: 560px; border-radius: 8px; border-top: 2px solid #c8f135; }
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      .c-slide { transition: none; }
+    }
   </style>
 </head>
-<body>
+<body class="landing-active">
 
-<div id="app">
+<!-- ===== STICKY APPLY BAR (phone/tablet only) ===== -->
+<div id="sticky-bar">
+  <button class="sticky-btn sticky-btn-single" onclick="startAs('single')">APPLY · SINGLE</button>
+  <button class="sticky-btn sticky-btn-couple" onclick="startAs('partnered')">APPLY · COUPLE</button>
+</div>
 
-  <!-- SCREEN 0: LANDING -->
-  <div id="screen-0" class="screen active">
-    <div class="landing-wrapper">
-      <div class="screen-label">An independent research study</div>
-      <div class="main-headline">
-        <div>I HEREBY</div>
-        <div class="line2">COMMIT</div>
+<!-- ===== DESKTOP LANDING OVERLAY ===== -->
+<div id="desktop-overlay">
+  <div class="dlo-topbar">
+    <span>BUILT WITH RELATIONSHIP SCIENTISTS</span>
+    <span><span class="lp-dot-green">●</span> APPLICATIONS OPEN · COHORT 01</span>
+  </div>
+
+  <div class="dlo-main">
+    <div class="dlo-inner">
+      <!-- Wordmark -->
+      <div class="dlo-wordmark">
+        <span class="wordmark-wrap">
+          <span class="wordmark-text"><span class="wm-white">I HEREBY </span><span class="wm-green">COMMIT</span></span>
+        </span>
       </div>
-      <p class="pledge-text">
-        Science has been studying love with sophomores more in need of a psych credit than a significant other. The online dating industry hasn't bothered to track or study anything post match. We're solving for both by running a first-of-its-kind experiment designed with scientists to finally get the right data AND put you on the right dates.
-      </p>
-      <div id="count-badge" class="count-badge">
-        <span id="count-num">0</span> people already on the list.
+
+      <!-- Carousel -->
+      <div class="dlo-carousel-wrap">
+        <div class="carousel-outer" id="dlo-carousel-outer">
+          <div class="carousel-track" id="dlo-track"></div>
+        </div>
       </div>
-      <div class="landing-buttons">
-        <button class="btn btn-primary" onclick="startAs('single')">APPLY AS A SINGLE</button>
-        <button class="btn btn-outline" onclick="startAs('partnered')">APPLY AS A COUPLE</button>
+
+      <!-- Nav row: dots left, arrows right -->
+      <div class="dlo-carousel-nav">
+        <div class="c-dots dlo-dots" id="dlo-dots"></div>
+        <div class="dlo-arrows">
+          <button class="c-arrow" id="dlo-prev" aria-label="Previous slide">←</button>
+          <button class="c-arrow" id="dlo-next" aria-label="Next slide">→</button>
+        </div>
+      </div>
+
+      <!-- Content row -->
+      <div class="dlo-content-row">
+        <p class="dlo-subhead">
+          Science has been studying love with sophomores more in need of a psych credit than a life partner.<sup class="fn-ref" data-fn="1">¹</sup> The online dating industry stops paying attention at the match. We're fixing both with a first-of-its-kind experiment designed with scientists, to finally get the right data <strong>and</strong> put you on the right dates.
+        </p>
+        <div class="dlo-cta-col">
+          <p class="dlo-cta-label">Apply to be part of our first-of-its-kind study on what makes a match last.</p>
+          <button class="dlo-apply-single" onclick="startAs('single')">APPLY AS A SINGLE</button>
+          <button class="dlo-apply-couple" onclick="startAs('partnered')">APPLY AS A COUPLE</button>
+          <p class="dlo-priority">Applications are reviewed in order. Earlier applicants get priority.</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- SCREEN 1: NAME + BIRTHDAY + EMAIL -->
+  <div class="dlo-bottombar">
+    <a href="#below-fold" onclick="scrollToScience(event)">↓ THE SCIENCE</a>
+    <span></span>
+  </div>
+</div>
+
+<!-- ===== FOOTNOTE MODAL ===== -->
+<div id="fn-modal" role="dialog" aria-modal="true" aria-label="Footnote">
+  <div class="fn-modal-sheet" id="fn-sheet">
+    <button class="fn-close" onclick="closeFn()" aria-label="Close">×</button>
+    <div class="fn-eyebrow" id="fn-eyebrow"></div>
+    <div class="fn-title" id="fn-title"></div>
+    <div class="fn-byline" id="fn-byline"></div>
+    <div class="fn-intro" id="fn-intro"></div>
+    <div class="fn-findings" id="fn-findings"></div>
+    <a id="fn-read-link" href="#" target="_blank" rel="noopener"><button class="fn-link-btn">Read the paper →</button></a>
+  </div>
+</div>
+
+<!-- ===== APP (form screens) ===== -->
+<div id="app">
+
+  <!-- SCREEN 0: LANDING (phone layout) -->
+  <div id="screen-0" class="screen active">
+    <div class="lp-phone">
+      <!-- Top row -->
+      <div class="lp-top-row">
+        <span><span class="lp-dot-green">●</span> APPLICATIONS OPEN</span>
+        <span>COHORT 01</span>
+      </div>
+      <!-- Scientist label -->
+      <div class="lp-scientist">BUILT WITH RELATIONSHIP SCIENTISTS</div>
+      <!-- Wordmark -->
+      <span class="wordmark-wrap">
+        <span class="wordmark-text"><span class="wm-white">I HEREBY </span><span class="wm-green">COMMIT</span></span>
+      </span>
+      <!-- Carousel -->
+      <div class="phone-carousel-wrap">
+        <div class="carousel-outer" id="phone-carousel-outer">
+          <div class="carousel-track" id="phone-track"></div>
+        </div>
+      </div>
+      <!-- Dots -->
+      <div class="c-dots phone-c-dots" id="phone-dots"></div>
+      <!-- Subhead -->
+      <p class="lp-subhead" style="margin-top:16px;">
+        Science has been studying love with sophomores more in need of a psych credit than a life partner.<sup class="fn-ref" data-fn="1">¹</sup> The online dating industry stops paying attention at the match. We're fixing both with a first-of-its-kind experiment designed with scientists, to finally get the right data <strong>and</strong> put you on the right dates.
+      </p>
+      <!-- Priority -->
+      <p class="lp-priority">Applications are reviewed in order. Earlier applicants get priority.</p>
+      <!-- Bottom row -->
+      <div class="lp-bottom-row">
+        <a href="#below-fold" onclick="scrollToScience(event)">↓ THE SCIENCE</a>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: WHO ARE YOU (Name + Birthday + Email) -->
   <div id="screen-1" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-1"></div></div>
     <div id="badge-1" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
       <div class="screen-headline">WHO ARE <span class="accent">YOU?</span></div>
-
       <div id="screen1-fields">
         <div class="field-group">
           <label class="field-label">First name</label>
@@ -490,12 +637,9 @@
           <div class="field-error" id="err-email">Valid email required</div>
         </div>
       </div>
-
       <div id="under18-msg">
         <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;">
-          This study is open to adults 18 and older. Come back when you're ready.
-        </p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;">This study is open to adults 18 and older. Come back when you're ready.</p>
         <button class="btn btn-outline" style="margin-top:8px;" onclick="resetUnder18()">← START OVER</button>
       </div>
     </div>
@@ -505,7 +649,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 3: LOCATION -->
+  <!-- SCREEN 3: WHERE YOU LIVE & DATE -->
   <div id="screen-3" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
     <div id="badge-3" class="applying-badge"></div>
@@ -516,64 +660,7 @@
         <label class="field-label">Country</label>
         <select class="field-input" id="country">
           <option value="United States">United States</option>
-          <option value="Afghanistan">Afghanistan</option>
-          <option value="Albania">Albania</option>
-          <option value="Algeria">Algeria</option>
-          <option value="Argentina">Argentina</option>
-          <option value="Australia">Australia</option>
-          <option value="Austria">Austria</option>
-          <option value="Belgium">Belgium</option>
-          <option value="Brazil">Brazil</option>
-          <option value="Canada">Canada</option>
-          <option value="Chile">Chile</option>
-          <option value="China">China</option>
-          <option value="Colombia">Colombia</option>
-          <option value="Croatia">Croatia</option>
-          <option value="Czech Republic">Czech Republic</option>
-          <option value="Denmark">Denmark</option>
-          <option value="Egypt">Egypt</option>
-          <option value="Finland">Finland</option>
-          <option value="France">France</option>
-          <option value="Germany">Germany</option>
-          <option value="Greece">Greece</option>
-          <option value="Hungary">Hungary</option>
-          <option value="India">India</option>
-          <option value="Indonesia">Indonesia</option>
-          <option value="Ireland">Ireland</option>
-          <option value="Israel">Israel</option>
-          <option value="Italy">Italy</option>
-          <option value="Japan">Japan</option>
-          <option value="Jordan">Jordan</option>
-          <option value="Kenya">Kenya</option>
-          <option value="Malaysia">Malaysia</option>
-          <option value="Mexico">Mexico</option>
-          <option value="Morocco">Morocco</option>
-          <option value="Netherlands">Netherlands</option>
-          <option value="New Zealand">New Zealand</option>
-          <option value="Nigeria">Nigeria</option>
-          <option value="Norway">Norway</option>
-          <option value="Pakistan">Pakistan</option>
-          <option value="Peru">Peru</option>
-          <option value="Philippines">Philippines</option>
-          <option value="Poland">Poland</option>
-          <option value="Portugal">Portugal</option>
-          <option value="Romania">Romania</option>
-          <option value="Russia">Russia</option>
-          <option value="Saudi Arabia">Saudi Arabia</option>
-          <option value="Singapore">Singapore</option>
-          <option value="South Africa">South Africa</option>
-          <option value="South Korea">South Korea</option>
-          <option value="Spain">Spain</option>
-          <option value="Sweden">Sweden</option>
-          <option value="Switzerland">Switzerland</option>
-          <option value="Taiwan">Taiwan</option>
-          <option value="Thailand">Thailand</option>
-          <option value="Turkey">Turkey</option>
-          <option value="Ukraine">Ukraine</option>
-          <option value="United Arab Emirates">United Arab Emirates</option>
-          <option value="United Kingdom">United Kingdom</option>
-          <option value="Vietnam">Vietnam</option>
-          <option value="Other">Other</option>
+          <option value="Afghanistan">Afghanistan</option><option value="Albania">Albania</option><option value="Algeria">Algeria</option><option value="Argentina">Argentina</option><option value="Australia">Australia</option><option value="Austria">Austria</option><option value="Belgium">Belgium</option><option value="Brazil">Brazil</option><option value="Canada">Canada</option><option value="Chile">Chile</option><option value="China">China</option><option value="Colombia">Colombia</option><option value="Croatia">Croatia</option><option value="Czech Republic">Czech Republic</option><option value="Denmark">Denmark</option><option value="Egypt">Egypt</option><option value="Finland">Finland</option><option value="France">France</option><option value="Germany">Germany</option><option value="Greece">Greece</option><option value="Hungary">Hungary</option><option value="India">India</option><option value="Indonesia">Indonesia</option><option value="Ireland">Ireland</option><option value="Israel">Israel</option><option value="Italy">Italy</option><option value="Japan">Japan</option><option value="Jordan">Jordan</option><option value="Kenya">Kenya</option><option value="Malaysia">Malaysia</option><option value="Mexico">Mexico</option><option value="Morocco">Morocco</option><option value="Netherlands">Netherlands</option><option value="New Zealand">New Zealand</option><option value="Nigeria">Nigeria</option><option value="Norway">Norway</option><option value="Pakistan">Pakistan</option><option value="Peru">Peru</option><option value="Philippines">Philippines</option><option value="Poland">Poland</option><option value="Portugal">Portugal</option><option value="Romania">Romania</option><option value="Russia">Russia</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Singapore">Singapore</option><option value="South Africa">South Africa</option><option value="South Korea">South Korea</option><option value="Spain">Spain</option><option value="Sweden">Sweden</option><option value="Switzerland">Switzerland</option><option value="Taiwan">Taiwan</option><option value="Thailand">Thailand</option><option value="Turkey">Turkey</option><option value="Ukraine">Ukraine</option><option value="United Arab Emirates">United Arab Emirates</option><option value="United Kingdom">United Kingdom</option><option value="Vietnam">Vietnam</option><option value="Other">Other</option>
         </select>
         <div class="field-error" id="err-country">Please select your country</div>
       </div>
@@ -586,37 +673,7 @@
         <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
         <select class="field-input" id="open_to_city">
           <option value="">— Select a city —</option>
-          <option>Austin, TX</option>
-          <option>New York, NY</option>
-          <option>Los Angeles, CA</option>
-          <option>San Francisco, CA</option>
-          <option>Chicago, IL</option>
-          <option>Miami, FL</option>
-          <option>Seattle, WA</option>
-          <option>Boston, MA</option>
-          <option>Denver, CO</option>
-          <option>Atlanta, GA</option>
-          <option>Nashville, TN</option>
-          <option>Portland, OR</option>
-          <option>Washington, DC</option>
-          <option>Dallas, TX</option>
-          <option>Houston, TX</option>
-          <option>Phoenix, AZ</option>
-          <option>Minneapolis, MN</option>
-          <option>San Diego, CA</option>
-          <option>Philadelphia, PA</option>
-          <option>Salt Lake City, UT</option>
-          <option>Las Vegas, NV</option>
-          <option>Charlotte, NC</option>
-          <option>Raleigh, NC</option>
-          <option>Detroit, MI</option>
-          <option>New Orleans, LA</option>
-          <option>Pittsburgh, PA</option>
-          <option>Richmond, VA</option>
-          <option>Kansas City, MO</option>
-          <option>San Antonio, TX</option>
-          <option>International</option>
-          <option>Anywhere</option>
+          <option>Austin, TX</option><option>New York, NY</option><option>Los Angeles, CA</option><option>San Francisco, CA</option><option>Chicago, IL</option><option>Miami, FL</option><option>Seattle, WA</option><option>Boston, MA</option><option>Denver, CO</option><option>Atlanta, GA</option><option>Nashville, TN</option><option>Portland, OR</option><option>Washington, DC</option><option>Dallas, TX</option><option>Houston, TX</option><option>Phoenix, AZ</option><option>Minneapolis, MN</option><option>San Diego, CA</option><option>Philadelphia, PA</option><option>Salt Lake City, UT</option><option>Las Vegas, NV</option><option>Charlotte, NC</option><option>Raleigh, NC</option><option>Detroit, MI</option><option>New Orleans, LA</option><option>Pittsburgh, PA</option><option>Richmond, VA</option><option>Kansas City, MO</option><option>San Antonio, TX</option><option>International</option><option>Anywhere</option>
         </select>
       </div>
     </div>
@@ -661,31 +718,28 @@
     </div>
   </div>
 
-  <!-- SCREEN 5: KIDS -->
+  <!-- SCREEN 5: CHILDREN -->
   <div id="screen-5" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-5"></div></div>
     <div id="badge-5" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step <span id="kids-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">CHILDREN</div>
-
       <div class="field-label" style="margin-bottom:12px;">Do you have children?</div>
-      <div class="toggle-group" id="has-children-group">
+      <div class="toggle-group">
         <button class="toggle-btn" id="btn-has-yes" onclick="setHasChildren(true)">YES</button>
         <button class="toggle-btn" id="btn-has-no" onclick="setHasChildren(false)">NO</button>
       </div>
       <div class="field-error" id="err-has_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
-
       <div id="wants-children-section" style="display:none;">
         <div class="field-label" id="wants-children-label" style="margin-bottom:12px;">Do you want children?</div>
-        <div class="toggle-group" id="wants-children-group">
+        <div class="toggle-group">
           <button class="toggle-btn" id="btn-wants-yes" onclick="setWantsChildren('yes')">YES</button>
           <button class="toggle-btn" id="btn-wants-no" onclick="setWantsChildren('no')">NO</button>
           <button class="toggle-btn" id="btn-wants-notsure" onclick="setWantsChildren('not_sure')">NOT SURE</button>
         </div>
         <div class="field-error" id="err-wants_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
       </div>
-
       <div id="fertility-section" style="display:none;">
         <div class="field-label" style="margin-bottom:12px;">Have you invested in fertility preservation?</div>
         <div class="toggle-group">
@@ -702,7 +756,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 6: CONTACT (phone only) -->
+  <!-- SCREEN 6: WE'LL TEXT YOU WHEN WE'RE LIVE -->
   <div id="screen-6" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-6"></div></div>
     <div id="badge-6" class="applying-badge"></div>
@@ -725,14 +779,13 @@
     </div>
   </div>
 
-  <!-- SCREEN 7: SOCIAL / LINKEDIN -->
+  <!-- SCREEN 7: YOUR PUBLIC SELF -->
   <div id="screen-7" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-7"></div></div>
     <div id="badge-7" class="applying-badge"></div>
-    <div class="screen-content" style="padding-bottom: 160px;">
+    <div class="screen-content" style="padding-bottom:160px;">
       <div class="screen-label">Step <span id="social-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR PUBLIC <span class="accent">SELF</span></div>
-
       <div class="field-group">
         <label class="field-label">LinkedIn <span style="color:var(--accent);font-size:10px;">REQUIRED</span></label>
         <div class="linkedin-prefix-wrap" id="linkedin-wrap">
@@ -742,35 +795,19 @@
         <div class="field-error" id="err-linkedin_username">LinkedIn username required</div>
         <div class="field-valid" id="ok-linkedin_username">✓ Looks good</div>
       </div>
-
       <div class="field-group">
         <label class="field-label">Instagram</label>
-        <div class="handle-prefix">
-          <span class="at-sign">@</span>
-          <input class="field-input" id="instagram" type="text" placeholder="yourhandle">
-        </div>
+        <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="instagram" type="text" placeholder="yourhandle"></div>
       </div>
       <div class="field-group">
         <label class="field-label">X / Twitter</label>
-        <div class="handle-prefix">
-          <span class="at-sign">@</span>
-          <input class="field-input" id="x_handle" type="text" placeholder="yourhandle">
-        </div>
+        <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="x_handle" type="text" placeholder="yourhandle"></div>
       </div>
-      <div class="field-group" style="margin-bottom: 0;">
+      <div class="field-group" style="margin-bottom:0;">
         <label class="field-label">TikTok</label>
-        <div class="handle-prefix">
-          <span class="at-sign">@</span>
-          <input class="field-input" id="tiktok" type="text" placeholder="yourhandle">
-        </div>
+        <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="tiktok" type="text" placeholder="yourhandle"></div>
       </div>
-
-      <!-- Invisible Turnstile widget -->
-      <div id="cf-turnstile-widget" class="cf-turnstile"
-        data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9"
-        data-callback="onTurnstileSuccess"
-        data-size="invisible">
-      </div>
+      <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
@@ -793,15 +830,78 @@
   </div>
 
   <div id="error-toast"></div>
-
 </div><!-- /app -->
+
+<!-- ===== BELOW FOLD ===== -->
+<div id="below-fold">
+  <div class="bfold-inner">
+
+    <!-- THE PLEDGE -->
+    <section class="pledge-card">
+      <div class="pledge-label">THE PLEDGE</div>
+      <div class="pledge-headline">I hereby commit my love life to science.</div>
+      <div class="pledge-headline-green">For the good of humanity.</div>
+      <div class="pledge-sig">
+        <span class="pledge-x">X</span>
+        <div class="pledge-sig-line"></div>
+        <span class="pledge-sig-label">Signature</span>
+      </div>
+    </section>
+
+    <!-- MYTHS -->
+    <section>
+      <div class="myths-label">WHAT YOU THINK SCIENCE KNOWS</div>
+      <div class="myths-grid">
+        <div class="myth-card">
+          <div class="myth-stamp">MYTH</div>
+          <div class="myth-text">Couples last when they speak each other's love language.</div>
+          <div class="myth-reality">There's little evidence love languages exist.<sup class="fn-ref" data-fn="2">²</sup></div>
+          <div class="myth-oneliner">People appreciate all five, and matching yours doesn't reliably make couples happier.</div>
+        </div>
+        <div class="myth-card">
+          <div class="myth-stamp">MYTH</div>
+          <div class="myth-text">Introverts belong with introverts. Or with extroverts.</div>
+          <div class="myth-reality">It barely matters.<sup class="fn-ref" data-fn="3">³</sup></div>
+          <div class="myth-oneliner">Personality similarity explains less than half a percent of how satisfied married couples are.</div>
+        </div>
+        <div class="myth-card">
+          <div class="myth-stamp">MYTH</div>
+          <div class="myth-text">The right questionnaire can find your match.</div>
+          <div class="myth-reality">Chemistry can't be predicted on paper.<sup class="fn-ref" data-fn="4">⁴</sup></div>
+          <div class="myth-oneliner">Given 100+ traits and preferences, machine learning could predict who's generally desirable — but not which two people would click.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Desktop CTA repeat -->
+    <div class="bfold-desktop-cta">
+      <p class="bfold-cta-label">Apply to be part of our first-of-its-kind study on what makes a match last.</p>
+      <div class="bfold-apply-btns">
+        <button class="bfold-apply-single" onclick="startAs('single')">APPLY AS A SINGLE</button>
+        <button class="bfold-apply-couple" onclick="startAs('partnered')">APPLY AS A COUPLE</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bfold-footer">
+      <ol>
+        <li>Henrich, Heine &amp; Norenzayan (2010), <em>Behavioral and Brain Sciences</em>.</li>
+        <li>Impett, Park &amp; Muise (2024), <em>Current Directions in Psychological Science</em>.</li>
+        <li>Dyrenforth, Kashy, Donnellan &amp; Lucas (2010), <em>Journal of Personality and Social Psychology</em>.</li>
+        <li>Joel, Eastwick &amp; Finkel (2017), <em>Psychological Science</em>.</li>
+      </ol>
+      <div class="bfold-legal">I Hereby Commit is a project of Hatch Labs Holdings LLC.</div>
+    </footer>
+
+  </div>
+</div>
 
 <script>
 // ============================================================
 // CONFIG
 // ============================================================
 const SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcm15cW1wcW5sZW1rd2RuZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjQxNTQsImV4cCI6MjEwNTY0MDE1NH0.z_tuUoAayHWHiGdL5tp0DwHYvB23d0-mBj55Lmth4h8';
+const SUPABASE_ANON_KEY = 'eyJhbG…h4h8';
 const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 
 // ============================================================
@@ -819,13 +919,8 @@ const state = {
 
 // ============================================================
 // PATHS
-// Screen 2 removed — birthdate + email now on screen 1
-// Singles:  1, 3, 5, 6, 7
-// Couples:  1, 3, 4, 5, 6, 7
 // ============================================================
-function getPath() {
-  return state.status === 'partnered' ? [1,3,4,5,6,7] : [1,3,5,6,7];
-}
+function getPath() { return state.status === 'partnered' ? [1,3,4,5,6,7] : [1,3,5,6,7]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 function totalSteps() { return getPath().length; }
 
@@ -835,41 +930,297 @@ function totalSteps() { return getPath().length; }
 document.addEventListener('DOMContentLoaded', () => {
   loadCount();
   const bdInput = document.getElementById('birthdate');
-  const max = new Date();
-  max.setFullYear(max.getFullYear() - 18);
-  bdInput.max = max.toISOString().split('T')[0];
+  if (bdInput) {
+    const max = new Date();
+    max.setFullYear(max.getFullYear() - 18);
+    bdInput.max = max.toISOString().split('T')[0];
+  }
+  initCarousel();
+  initFnModal();
 });
 
 async function loadCount() {
   try {
-    const resp = await fetch(FUNCTIONS_URL + '/application-count', {
-      headers: { 'apikey': SUPABASE_ANON_KEY }
-    });
+    const resp = await fetch(FUNCTIONS_URL + '/application-count', { headers: { 'apikey': SUPABASE_ANON_KEY } });
     const data = await resp.json();
     if (data.count >= 100) {
-      document.getElementById('count-num').textContent = data.count.toLocaleString();
-      document.getElementById('count-badge').classList.add('visible');
+      const els = document.querySelectorAll('.count-num');
+      els.forEach(el => el.textContent = data.count.toLocaleString());
     }
   } catch(e) {}
 }
 
 // ============================================================
-// NAVIGATION
+// LANDING SCROLL
+// ============================================================
+function scrollToScience(e) {
+  e.preventDefault();
+  const bf = document.getElementById('below-fold');
+  if (bf) bf.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ============================================================
+// CAROUSEL
+// ============================================================
+const SLIDES_HTML = [
+  `It's the biggest decision of your life.<br><span class="cl-g">It's never been studied like one.</span>`,
+  `It's time to solve for<br><span class="cl-g">relationship retention,</span><br>not app retention.`,
+  `Getting a match is easy.<br><span class="cl-g">Picking a life partner isn't.</span>`,
+  `It's 2026. Dating apps<br><span class="cl-g">still</span><br>can't predict who'll last.`,
+  `An algorithm picked your last match.<br><span class="cl-g">Nobody checked if it worked.</span>`,
+  `Which matches turn into marriages that last?<br><span class="cl-g">Nobody knows. Yet.</span>`,
+  `Stop looksmaxxing.<br><span class="cl-g">Start longevity-maxxing.</span>`,
+];
+
+const carousel = {
+  idx: 0,
+  timer: null,
+  interacted: false,
+  paused: false,
+};
+
+function initCarousel() {
+  const phoneTrack = document.getElementById('phone-track');
+  const dloTrack = document.getElementById('dlo-track');
+  const phoneDots = document.getElementById('phone-dots');
+  const dloDots = document.getElementById('dlo-dots');
+
+  if (!phoneTrack) return;
+
+  // Build slides in both tracks
+  SLIDES_HTML.forEach((html, i) => {
+    [phoneTrack, dloTrack].forEach(track => {
+      if (!track) return;
+      const slide = document.createElement('div');
+      slide.className = 'c-slide' + (i === 0 ? ' active' : '');
+      slide.innerHTML = html;
+      track.appendChild(slide);
+    });
+  });
+
+  // Build dots in both dot containers
+  [phoneDots, dloDots].forEach((dotsEl, isDesktop) => {
+    if (!dotsEl) return;
+    SLIDES_HTML.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'c-dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      btn.addEventListener('click', () => { carousel.interacted = true; stopAuto(); goSlide(i); });
+      dotsEl.appendChild(btn);
+    });
+  });
+
+  // Set carousel heights after fonts load
+  document.fonts.ready.then(() => setCarouselHeight());
+  window.addEventListener('resize', setCarouselHeight);
+
+  // Touch / swipe (phone track)
+  let touchStartX = 0, touchStartY = 0;
+  const phoneOuter = document.getElementById('phone-carousel-outer');
+  if (phoneOuter) {
+    phoneOuter.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, { passive: true });
+    phoneOuter.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        carousel.interacted = true; stopAuto();
+        dx < 0 ? goSlide((carousel.idx + 1) % SLIDES_HTML.length) : goSlide((carousel.idx - 1 + SLIDES_HTML.length) % SLIDES_HTML.length);
+      }
+    }, { passive: true });
+  }
+
+  // Desktop arrows
+  const prev = document.getElementById('dlo-prev');
+  const next = document.getElementById('dlo-next');
+  if (prev) prev.addEventListener('click', () => { carousel.interacted = true; stopAuto(); goSlide((carousel.idx - 1 + SLIDES_HTML.length) % SLIDES_HTML.length); });
+  if (next) next.addEventListener('click', () => { carousel.interacted = true; stopAuto(); goSlide((carousel.idx + 1) % SLIDES_HTML.length); });
+
+  // Desktop arrow keys + hover pause
+  const dloOuter = document.getElementById('dlo-carousel-outer');
+  if (dloOuter) {
+    dloOuter.addEventListener('mouseenter', () => { carousel.paused = true; });
+    dloOuter.addEventListener('mouseleave', () => { carousel.paused = false; });
+  }
+  document.addEventListener('keydown', e => {
+    if (state.currentScreen !== 0) return;
+    if (e.key === 'ArrowLeft') { carousel.interacted = true; stopAuto(); goSlide((carousel.idx - 1 + SLIDES_HTML.length) % SLIDES_HTML.length); }
+    if (e.key === 'ArrowRight') { carousel.interacted = true; stopAuto(); goSlide((carousel.idx + 1) % SLIDES_HTML.length); }
+  });
+
+  // Auto-advance
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reducedMotion) startAuto();
+}
+
+function setCarouselHeight() {
+  ['phone-track','dlo-track'].forEach(id => {
+    const track = document.getElementById(id);
+    if (!track) return;
+    const slides = track.querySelectorAll('.c-slide');
+    slides.forEach(s => { s.style.position = 'static'; s.style.opacity = '1'; s.style.visibility = 'visible'; });
+    let maxH = 0;
+    slides.forEach(s => { if (s.offsetHeight > maxH) maxH = s.offsetHeight; });
+    track.style.height = maxH + 'px';
+    slides.forEach(s => { s.style.position = ''; s.style.opacity = ''; s.style.visibility = ''; });
+    // Re-apply active state
+    slides.forEach((s, i) => {
+      s.style.opacity = i === carousel.idx ? '1' : '0';
+      s.style.position = i === carousel.idx ? 'relative' : 'absolute';
+    });
+  });
+}
+
+function goSlide(idx) {
+  const tracks = [document.getElementById('phone-track'), document.getElementById('dlo-track')];
+  const dotContainers = [document.getElementById('phone-dots'), document.getElementById('dlo-dots')];
+  tracks.forEach(track => {
+    if (!track) return;
+    const slides = track.querySelectorAll('.c-slide');
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === idx);
+      s.style.opacity = i === idx ? '1' : '0';
+      s.style.position = i === idx ? 'relative' : 'absolute';
+    });
+  });
+  dotContainers.forEach(dotsEl => {
+    if (!dotsEl) return;
+    dotsEl.querySelectorAll('.c-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  });
+  carousel.idx = idx;
+}
+
+function startAuto() {
+  carousel.timer = setInterval(() => {
+    if (!carousel.interacted && !carousel.paused) {
+      goSlide((carousel.idx + 1) % SLIDES_HTML.length);
+    }
+  }, 5000);
+}
+
+function stopAuto() {
+  clearInterval(carousel.timer);
+  carousel.timer = null;
+}
+
+// ============================================================
+// FOOTNOTE MODAL
+// ============================================================
+const FOOTNOTES = {
+  1: {
+    label: 'FOOTNOTE 1 · THE STUDY',
+    title: 'The Weirdest People in the World?',
+    byline: 'Henrich, Heine & Norenzayan (2010)',
+    intro: 'A review of who psychology actually studies. What it found:',
+    findings: [
+      'In top psychology journals from 2003–2007, 96% of study subjects came from Western, educated, industrialized, rich, democratic ("WEIRD") societies (Arnett, 2008).',
+      'Psychology undergraduates were the only subjects in 67% of U.S. studies.',
+      'These subjects are among the least representative people to base conclusions about human nature on.'
+    ],
+    url: 'https://doi.org/10.1017/S0140525X0999152X'
+  },
+  2: {
+    label: 'FOOTNOTE 2 · THE STUDY',
+    title: 'Popular Psychology Through a Scientific Lens: Evaluating Love Languages From a Relationship Science Perspective',
+    byline: 'Impett, Park & Muise (2024)',
+    intro: 'A review of the research on Chapman\'s 5 Love Languages. What it found:',
+    findings: [
+      'People appreciate all five ways of receiving love, not just one.',
+      'The five overlap heavily, which questions whether they\'re distinct at all.',
+      'Researchers haven\'t found a consistent link between matching love languages and relationship satisfaction.'
+    ],
+    url: 'https://doi.org/10.1177/09637214231217663'
+  },
+  3: {
+    label: 'FOOTNOTE 3 · THE STUDY',
+    title: 'Predicting Relationship and Life Satisfaction From Personality in Nationally Representative Samples From Three Countries',
+    byline: 'Dyrenforth, Kashy, Donnellan & Lucas (2010)',
+    intro: 'Three large national samples of married couples, from Australia, the UK and Germany. What it found:',
+    findings: [
+      'Your own personality explained about 6% of your relationship satisfaction.',
+      'Your partner\'s personality explained 1–3%.',
+      'How similar your personalities were explained less than 0.5%.'
+    ],
+    url: 'https://doi.org/10.1037/a0020385'
+  },
+  4: {
+    label: 'FOOTNOTE 4 · THE STUDY',
+    title: 'Is Romantic Desire Predictable? Machine Learning Applied to Initial Romantic Attraction',
+    byline: 'Joel, Eastwick & Finkel (2017)',
+    intro: 'Speed daters answered 100+ questions about their traits and preferences, then went on four-minute dates. What it found:',
+    findings: [
+      'Machine learning could predict who tends to like others and who tends to be liked.',
+      'It could not predict which two particular people would be a match.',
+      'Compatibility is hard to predict before two people meet.'
+    ],
+    url: 'https://doi.org/10.1177/0956797617714580'
+  }
+};
+
+function initFnModal() {
+  // Delegate click on all fn-ref superscripts
+  document.addEventListener('click', e => {
+    const ref = e.target.closest('.fn-ref');
+    if (ref) { e.preventDefault(); openFn(parseInt(ref.dataset.fn)); }
+  });
+  // Close on backdrop click
+  document.getElementById('fn-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('fn-modal')) closeFn();
+  });
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeFn();
+  });
+}
+
+function openFn(num) {
+  const fn = FOOTNOTES[num];
+  if (!fn) return;
+  document.getElementById('fn-eyebrow').textContent = fn.label;
+  document.getElementById('fn-title').textContent = fn.title;
+  document.getElementById('fn-byline').textContent = fn.byline;
+  document.getElementById('fn-intro').textContent = fn.intro;
+  const findingsEl = document.getElementById('fn-findings');
+  findingsEl.innerHTML = '';
+  fn.findings.forEach((f, i) => {
+    findingsEl.innerHTML += `<div class="fn-finding"><span class="fn-num">0${i+1}</span><span class="fn-finding-text">${f}</span></div>`;
+  });
+  document.getElementById('fn-read-link').href = fn.url;
+  const modal = document.getElementById('fn-modal');
+  modal.classList.add('open');
+  document.getElementById('sticky-bar').style.display = 'none';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFn() {
+  const modal = document.getElementById('fn-modal');
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  if (state.currentScreen === 0) {
+    document.getElementById('sticky-bar').style.display = '';
+  }
+}
+
+// ============================================================
+// SCREEN NAVIGATION
 // ============================================================
 function showScreen(id, direction) {
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.remove('active','slide-in','slide-back');
-  });
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active','slide-in','slide-back'));
   const el = document.getElementById('screen-' + id);
   el.classList.add('active');
   el.classList.add(direction === 'back' ? 'slide-back' : 'slide-in');
   state.currentScreen = id;
-  if (id > 0 && id < 8) {
-    renderBadge(id);
-    renderProgress(id);
-    renderStepNums(id);
-  }
-  window.scrollTo(0,0);
+
+  // Landing vs form
+  const onLanding = id === 0;
+  document.body.classList.toggle('landing-active', onLanding);
+  document.getElementById('sticky-bar').style.display = onLanding ? '' : 'none';
+  const dlo = document.getElementById('desktop-overlay');
+  if (dlo) dlo.style.display = onLanding ? '' : 'none';
+  const bf = document.getElementById('below-fold');
+  if (bf) bf.style.display = onLanding ? '' : 'none';
+
+  if (id > 0 && id < 8) { renderBadge(id); renderProgress(id); renderStepNums(id); }
+  window.scrollTo(0, 0);
 }
 
 function renderBadge(screenId) {
@@ -896,17 +1247,12 @@ function renderProgress(screenId) {
 
 function renderStepNums(screenId) {
   const total = totalSteps();
-  document.querySelectorAll('.screen.active .step-total').forEach(el => {
-    el.textContent = total;
-  });
+  document.querySelectorAll('.screen.active .step-total').forEach(el => el.textContent = total);
   ['rel-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       const parentScreen = el.closest('.screen');
-      if (parentScreen) {
-        const sId = parseInt(parentScreen.id.replace('screen-',''));
-        el.textContent = getStepNum(sId);
-      }
+      if (parentScreen) el.textContent = getStepNum(parseInt(parentScreen.id.replace('screen-','')));
     }
   });
 }
@@ -917,17 +1263,13 @@ function startAs(status) {
 }
 
 function changeStatus() {
-  const newStatus = state.status === 'partnered' ? 'single' : 'partnered';
-  state.status = newStatus;
-  if (newStatus === 'single') {
-    ['relationship_stage','partner_name','partner_email'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
+  state.status = state.status === 'partnered' ? 'single' : 'partnered';
+  if (state.status === 'single') {
+    ['relationship_stage','partner_name','partner_email'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   }
   renderBadge(state.currentScreen);
   renderProgress(state.currentScreen);
-  if (state.currentScreen === 4 && newStatus === 'single') showScreen(3, 'back');
+  if (state.currentScreen === 4 && state.status === 'single') showScreen(3, 'back');
 }
 
 function getNextScreen(currentId) {
@@ -946,10 +1288,7 @@ function getPrevScreen(currentId) {
 
 async function goNext(screenId) {
   if (!validateScreen(screenId)) return;
-
-  // Save lead to DB after step 1 (fire and forget)
   if (screenId === 1) saveLead();
-
   showScreen(getNextScreen(screenId), 'forward');
 }
 
@@ -958,7 +1297,7 @@ function goBack(screenId) {
 }
 
 // ============================================================
-// PARTIAL SAVE (fire and forget)
+// PARTIAL SAVE
 // ============================================================
 function saveLead() {
   try {
@@ -995,7 +1334,6 @@ function setWantsChildren(val) {
   document.getElementById('btn-wants-no').classList.toggle('selected', val === 'no');
   document.getElementById('btn-wants-notsure').classList.toggle('selected', val === 'not_sure');
   hideError('wants_children');
-  // Show fertility question only if yes or not sure
   const showFertility = val === 'yes' || val === 'not_sure';
   document.getElementById('fertility-section').style.display = showFertility ? 'block' : 'none';
   if (!showFertility) {
@@ -1014,17 +1352,14 @@ function setFertility(val) {
 }
 
 // ============================================================
-// LINKEDIN VALIDATION
+// LINKEDIN
 // ============================================================
 function validateLinkedInInline() {
   const val = document.getElementById('linkedin_username').value.trim();
   const errEl = document.getElementById('err-linkedin_username');
   const okEl = document.getElementById('ok-linkedin_username');
   const wrap = document.getElementById('linkedin-wrap');
-  if (!val) {
-    errEl.classList.remove('visible'); okEl.classList.remove('visible');
-    wrap.classList.remove('error'); return;
-  }
+  if (!val) { errEl.classList.remove('visible'); okEl.classList.remove('visible'); wrap.classList.remove('error'); return; }
   const valid = /^[a-zA-Z0-9\-]+$/.test(val);
   errEl.classList.toggle('visible', !valid);
   okEl.classList.toggle('visible', valid);
@@ -1050,32 +1385,23 @@ function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
 function validateScreen(screenId) {
   let ok = true;
-
   if (screenId === 1) {
     const fn = document.getElementById('first_name').value.trim();
     const ln = document.getElementById('last_name').value.trim();
     const bd = document.getElementById('birthdate').value;
     const em = document.getElementById('email').value.trim();
-
     if (!fn) { showError('first_name', 'First name required'); ok = false; } else hideError('first_name');
     if (!ln) { showError('last_name', 'Last name required'); ok = false; } else hideError('last_name');
-
     if (!bd) { showError('birthdate', 'Please enter your date of birth'); ok = false; }
-    else {
-      hideError('birthdate');
-      if (getAge(bd) < 18) { showUnder18(); return false; }
-    }
-
+    else { hideError('birthdate'); if (getAge(bd) < 18) { showUnder18(); return false; } }
     if (!em || !isValidEmail(em)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
   }
-
   if (screenId === 3) {
     const country = document.getElementById('country').value;
     const postal = document.getElementById('postal_code').value.trim();
     if (!country) { showError('country', 'Please select your country'); ok = false; } else hideError('country');
     if (!postal) { showError('postal_code', 'ZIP / Postal code required'); ok = false; } else hideError('postal_code');
   }
-
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
     const pn = document.getElementById('partner_name').value.trim();
@@ -1084,33 +1410,23 @@ function validateScreen(screenId) {
     if (!pn) { showError('partner_name', 'Partner name required'); ok = false; } else hideError('partner_name');
     if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
   }
-
   if (screenId === 5) {
     if (state.hasChildren === null) { showError('has_children', 'Please answer above'); ok = false; } else hideError('has_children');
     if (state.hasChildren !== null && !state.wantsChildren) { showError('wants_children', 'Please answer above'); ok = false; } else if (state.wantsChildren) hideError('wants_children');
     const fertilityVisible = document.getElementById('fertility-section').style.display !== 'none';
     if (fertilityVisible && !state.fertilityPreservation) { showError('fertility', 'Please answer above'); ok = false; } else hideError('fertility');
   }
-
   if (screenId === 6) {
     const phone = document.getElementById('phone').value.trim();
     if (!phone || !normalizePhone(phone)) { showError('phone', 'Valid phone number required'); ok = false; } else hideError('phone');
   }
-
   if (screenId === 7) {
     const username = document.getElementById('linkedin_username').value.trim();
     const valid = username && /^[a-zA-Z0-9\-]+$/.test(username);
     const wrap = document.getElementById('linkedin-wrap');
-    if (!valid) {
-      showError('linkedin_username', 'LinkedIn username required');
-      wrap.classList.add('error');
-      ok = false;
-    } else {
-      hideError('linkedin_username');
-      wrap.classList.remove('error');
-    }
+    if (!valid) { showError('linkedin_username', 'LinkedIn username required'); wrap.classList.add('error'); ok = false; }
+    else { hideError('linkedin_username'); wrap.classList.remove('error'); }
   }
-
   return ok;
 }
 
@@ -1118,7 +1434,7 @@ function normalizePhone(phone) {
   const digits = phone.replace(/\D/g,'');
   if (digits.length === 10) return '+1' + digits;
   if (digits.length === 11 && digits.startsWith('1')) return '+' + digits;
-  if (digits.length >= 7) return '+' + digits; // international
+  if (digits.length >= 7) return '+' + digits;
   return null;
 }
 
@@ -1131,9 +1447,6 @@ function getAge(dateStr) {
   return age;
 }
 
-// ============================================================
-// UNDER-18 HANDLING
-// ============================================================
 function showUnder18() {
   document.getElementById('screen1-fields').style.display = 'none';
   document.getElementById('under18-msg').classList.add('visible');
@@ -1149,7 +1462,7 @@ function resetUnder18() {
 }
 
 // ============================================================
-// FORM SUBMISSION
+// SUBMISSION
 // ============================================================
 function onTurnstileSuccess(token) {
   state.turnstileToken = token;
@@ -1159,24 +1472,17 @@ function onTurnstileSuccess(token) {
 async function submitForm() {
   if (!validateScreen(7)) return;
   state.submitting = true;
-
   const btn = document.getElementById('submit-btn');
   btn.classList.add('btn-loading');
   btn.textContent = 'VERIFYING';
-
-  if (state.turnstileToken) {
-    await doSubmit();
-  } else {
-    setTimeout(() => { if (state.submitting) doSubmit(); }, 10000);
-  }
+  if (state.turnstileToken) { await doSubmit(); }
+  else { setTimeout(() => { if (state.submitting) doSubmit(); }, 10000); }
 }
 
 async function doSubmit() {
   const btn = document.getElementById('submit-btn');
   btn.textContent = 'SUBMITTING';
-
   const username = document.getElementById('linkedin_username').value.trim().replace(/^@/, '');
-
   const body = {
     first_name: document.getElementById('first_name').value.trim(),
     last_name: document.getElementById('last_name').value.trim(),
@@ -1188,81 +1494,65 @@ async function doSubmit() {
     status: state.status,
     has_children: state.hasChildren,
     wants_children: state.wantsChildren,
+    fertility_preservation: state.fertilityPreservation,
     phone: document.getElementById('phone').value.trim(),
     sms_consent: document.getElementById('sms_consent').checked,
-    fertility_preservation: state.fertilityPreservation,
     linkedin_url: 'https://www.linkedin.com/in/' + username,
     instagram: document.getElementById('instagram').value.trim() || null,
     x_handle: document.getElementById('x_handle').value.trim() || null,
     tiktok: document.getElementById('tiktok').value.trim() || null,
     turnstileToken: state.turnstileToken || '',
   };
-
   if (state.status === 'partnered') {
     body.relationship_stage = document.getElementById('relationship_stage').value;
     body.partner_name = document.getElementById('partner_name').value.trim();
     body.partner_email = document.getElementById('partner_email').value.trim().toLowerCase();
   }
-
   try {
     const resp = await fetch(FUNCTIONS_URL + '/submit-application', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify(body),
     });
-
     const data = await resp.json();
-
     if (resp.status === 200 || resp.status === 409) {
       showConfirmation(data.subject_number, resp.status === 409);
     } else {
       showToast(data.error || 'Something went wrong. Please try again.');
-      btn.classList.remove('btn-loading');
-      btn.textContent = 'SUBMIT APPLICATION';
-      state.submitting = false;
+      btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false;
     }
   } catch(e) {
     showToast('Network error. Please check your connection and try again.');
-    btn.classList.remove('btn-loading');
-    btn.textContent = 'SUBMIT APPLICATION';
-    state.submitting = false;
+    btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false;
   }
 }
 
-// ============================================================
-// CONFIRMATION
-// ============================================================
 function showConfirmation(subjectNumber, isDuplicate) {
   document.getElementById('confirm-subject-num').textContent = '#' + String(subjectNumber).padStart(5, '0');
-  const textEl = document.getElementById('confirm-text');
   const name = document.getElementById('first_name').value.trim();
-
+  const textEl = document.getElementById('confirm-text');
   if (state.status === 'partnered') {
-    const partnerName = document.getElementById('partner_name').value.trim();
+    const pn = document.getElementById('partner_name').value.trim();
     textEl.innerHTML = isDuplicate
-      ? `You and <span class="redact-field">${partnerName}</span> are already on file. Your subject number is above. We'll be in touch when the study launches.`
-      : `${name} and <span class="redact-field">${partnerName}</span> — you're in the record. Your subject number is above. Science is coming for your love life.`;
+      ? `You and <span class="redact-field">${pn}</span> are already on file. Your subject number is above.`
+      : `${name} and <span class="redact-field">${pn}</span> — you're in the record. Science is coming for your love life.`;
   } else {
     textEl.innerHTML = isDuplicate
-      ? `${name}, you're already in our system. Your subject number is above. We'll reach out when the study launches.`
+      ? `${name}, you're already in our system. Your subject number is above.`
       : `${name} — you're subject #${subjectNumber}. You just volunteered to let science study your love life. We respect that enormously.`;
   }
-
   showScreen(8, 'forward');
 }
 
 function shareLink() {
   const url = 'https://iherebycommit.com';
   if (navigator.share) {
-    navigator.share({ title: 'I Hereby Commit', text: "I just applied for an independent relationship study. Check it out:", url }).catch(() => {});
+    navigator.share({ title: 'I Hereby Commit', text: 'I just applied for an independent relationship study.', url }).catch(()=>{});
   } else {
     navigator.clipboard.writeText(url).then(() => showToast('Link copied!')).catch(() => window.open(url, '_blank'));
   }
 }
 
-// ============================================================
-// UTILS
-// ============================================================
 function showToast(msg) {
   const el = document.getElementById('error-toast');
   el.textContent = msg;
@@ -1270,6 +1560,5 @@ function showToast(msg) {
   setTimeout(() => el.classList.remove('visible'), 5000);
 }
 </script>
-
 </body>
 </html>
