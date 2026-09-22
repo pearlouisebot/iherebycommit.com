@@ -649,13 +649,15 @@
         <div class="field-error" id="err-wants_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
       </div>
 
-      <div class="field-label" style="margin-bottom:12px;">Have you invested in fertility preservation?</div>
-      <div class="toggle-group">
-        <button class="toggle-btn" id="btn-fertility-yes" onclick="setFertility('yes')">YES</button>
-        <button class="toggle-btn" id="btn-fertility-no" onclick="setFertility('no')">NO</button>
-        <button class="toggle-btn" id="btn-fertility-considering" onclick="setFertility('considering')">CONSIDERING</button>
+      <div id="fertility-section" style="display:none;">
+        <div class="field-label" style="margin-bottom:12px;">Have you invested in fertility preservation?</div>
+        <div class="toggle-group">
+          <button class="toggle-btn" id="btn-fertility-yes" onclick="setFertility('yes')">YES</button>
+          <button class="toggle-btn" id="btn-fertility-no" onclick="setFertility('no')">NO</button>
+          <button class="toggle-btn" id="btn-fertility-considering" onclick="setFertility('considering')">CONSIDERING</button>
+        </div>
+        <div class="field-error" id="err-fertility" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
       </div>
-      <div class="field-error" id="err-fertility" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(5)">NEXT</button>
@@ -956,6 +958,14 @@ function setWantsChildren(val) {
   document.getElementById('btn-wants-no').classList.toggle('selected', val === 'no');
   document.getElementById('btn-wants-notsure').classList.toggle('selected', val === 'not_sure');
   hideError('wants_children');
+  // Show fertility question only if yes or not sure
+  const showFertility = val === 'yes' || val === 'not_sure';
+  document.getElementById('fertility-section').style.display = showFertility ? 'block' : 'none';
+  if (!showFertility) {
+    state.fertilityPreservation = null;
+    ['yes','no','considering'].forEach(k => document.getElementById('btn-fertility-' + k).classList.remove('selected'));
+    hideError('fertility');
+  }
 }
 
 function setFertility(val) {
@@ -1041,7 +1051,8 @@ function validateScreen(screenId) {
   if (screenId === 5) {
     if (state.hasChildren === null) { showError('has_children', 'Please answer above'); ok = false; } else hideError('has_children');
     if (state.hasChildren !== null && !state.wantsChildren) { showError('wants_children', 'Please answer above'); ok = false; } else if (state.wantsChildren) hideError('wants_children');
-    if (!state.fertilityPreservation) { showError('fertility', 'Please answer above'); ok = false; } else hideError('fertility');
+    const fertilityVisible = document.getElementById('fertility-section').style.display !== 'none';
+    if (fertilityVisible && !state.fertilityPreservation) { showError('fertility', 'Please answer above'); ok = false; } else hideError('fertility');
   }
 
   if (screenId === 6) {
