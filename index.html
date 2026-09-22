@@ -948,7 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadCount() {
   try {
-    const resp = await fetch(FUNCTIONS_URL + '/application-count', { headers: { 'apikey': SUPABASE_ANON_KEY } });
+    const resp = await fetch(FUNCTIONS_URL + '/application-count', { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } });
     const data = await resp.json();
     if (data.count >= 100) {
       const els = document.querySelectorAll('.count-num');
@@ -1310,7 +1310,7 @@ function saveLead() {
   try {
     fetch(FUNCTIONS_URL + '/save-lead', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
       body: JSON.stringify({
         first_name: document.getElementById('first_name').value.trim(),
         last_name: document.getElementById('last_name').value.trim(),
@@ -1526,7 +1526,7 @@ async function doSubmit() {
   try {
     const resp = await fetch(FUNCTIONS_URL + '/submit-application', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
       body: JSON.stringify(body),
     });
     const data = await resp.json();
