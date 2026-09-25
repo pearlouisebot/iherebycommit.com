@@ -521,6 +521,80 @@
     }
     .legal-consent-text a { color: var(--muted); text-decoration: underline; }
     .legal-consent-text a:hover { color: var(--text); }
+
+    /* ===== MULTI-SELECT CITY PICKER ===== */
+    .multiselect-wrap { position: relative; }
+    .multiselect-input-area {
+      min-height: 52px;
+      border: 1px solid var(--dim);
+      border-radius: var(--radius);
+      padding: 8px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      cursor: text;
+      transition: border-color 0.15s;
+    }
+    .multiselect-input-area:focus-within { border-color: var(--accent); }
+    .multiselect-chip {
+      background: #2a2a28;
+      border: 1px solid #444;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      padding: 3px 6px 3px 10px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .multiselect-chip-remove {
+      background: none; border: none;
+      color: var(--muted); cursor: pointer;
+      font-size: 16px; line-height: 1; padding: 0;
+      display: flex; align-items: center;
+    }
+    .multiselect-chip-remove:hover { color: var(--text); }
+    .multiselect-search {
+      flex: 1; min-width: 100px;
+      background: transparent; border: none; outline: none;
+      color: var(--text);
+      font-family: 'Space Mono', monospace; font-size: 14px;
+      padding: 4px 0;
+    }
+    .multiselect-search::placeholder { color: var(--muted); }
+    .multiselect-dropdown {
+      display: none;
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: #1a1a18;
+      border: 1px solid var(--dim);
+      border-radius: var(--radius);
+      max-height: 220px; overflow-y: auto;
+      z-index: 200;
+    }
+    .multiselect-dropdown.open { display: block; }
+    .multiselect-option {
+      padding: 10px 14px;
+      font-family: 'Space Mono', monospace; font-size: 13px;
+      color: var(--body); cursor: pointer;
+      transition: background 0.1s, color 0.1s;
+    }
+    .multiselect-option:hover { background: #2a2a28; color: var(--text); }
+    .multiselect-empty {
+      padding: 10px 14px;
+      font-family: 'Space Mono', monospace; font-size: 13px;
+      color: var(--muted); font-style: italic;
+    }
+    /* Zip→city lookup display */
+    .zip-city-display {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; color: var(--accent);
+      margin-top: 6px; min-height: 18px;
+      letter-spacing: 0.04em;
+    }
   </style>
 </head>
 <body class="landing-active">
@@ -658,17 +732,15 @@
             <div class="field-error" id="err-last_name">Required</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div class="field-group">
-            <label class="field-label">Date of birth</label>
-            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="min-height:52px;font-size:14px;padding:14px 10px;">
-            <div class="field-error" id="err-birthdate">Required</div>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Email</label>
-            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email" style="font-size:14px;padding:14px 10px;">
-            <div class="field-error" id="err-email">Valid email required</div>
-          </div>
+        <div class="field-group">
+          <label class="field-label">Date of birth</label>
+          <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="min-height:52px;font-size:14px;padding:14px 10px;">
+          <div class="field-error" id="err-birthdate">Required</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Email</label>
+          <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+          <div class="field-error" id="err-email">Valid email required</div>
         </div>
         <div class="field-group">
           <label class="field-label">I am a</label>
@@ -697,9 +769,9 @@
   <div id="screen-3" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
     <div id="badge-3" class="applying-badge"></div>
-    <div class="screen-content">
+    <div class="screen-content" style="padding-bottom:160px;">
       <div class="screen-label">Step 2 of <span class="step-total"></span></div>
-      <div class="screen-headline">WHERE YOU <span class="accent">LIVE & DATE</span></div>
+      <div class="screen-headline">WHERE YOU<br><span class="accent">LIVE & DATE</span></div>
       <div class="field-group">
         <label class="field-label">Country</label>
         <select class="field-input" id="country">
@@ -710,15 +782,18 @@
       </div>
       <div class="field-group">
         <label class="field-label">ZIP / Postal Code</label>
-        <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code">
+        <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
         <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
+        <div id="zip-city-display" class="zip-city-display"></div>
       </div>
-      <div class="field-group">
+      <div class="field-group" style="margin-bottom:20px;">
         <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
-        <select class="field-input" id="open_to_city">
-          <option value="">— Select a city —</option>
-          <option>Austin, TX</option><option>New York, NY</option><option>Los Angeles, CA</option><option>San Francisco, CA</option><option>Chicago, IL</option><option>Miami, FL</option><option>Seattle, WA</option><option>Boston, MA</option><option>Denver, CO</option><option>Atlanta, GA</option><option>Nashville, TN</option><option>Portland, OR</option><option>Washington, DC</option><option>Dallas, TX</option><option>Houston, TX</option><option>Phoenix, AZ</option><option>Minneapolis, MN</option><option>San Diego, CA</option><option>Philadelphia, PA</option><option>Salt Lake City, UT</option><option>Las Vegas, NV</option><option>Charlotte, NC</option><option>Raleigh, NC</option><option>Detroit, MI</option><option>New Orleans, LA</option><option>Pittsburgh, PA</option><option>Richmond, VA</option><option>Kansas City, MO</option><option>San Antonio, TX</option><option>International</option><option>Anywhere</option>
-        </select>
+        <div class="multiselect-wrap" id="city-picker-wrap">
+          <div class="multiselect-input-area">
+            <input class="multiselect-search" id="open_to_city_search" type="text" placeholder="Type to search cities…" autocomplete="off">
+          </div>
+          <div class="multiselect-dropdown"></div>
+        </div>
       </div>
     </div>
     <div class="bottom-action">
@@ -966,6 +1041,7 @@ const state = {
   fertilityPreservation: null,
   turnstileToken: null,
   submitting: false,
+  zipCity: null,
 };
 
 // ============================================================
@@ -988,6 +1064,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initCarousel();
   initFnModal();
+  initCityPicker();
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = 'block';
@@ -1579,7 +1656,8 @@ async function doSubmit() {
     email: document.getElementById('email').value.trim().toLowerCase(),
     country: document.getElementById('country').value,
     postal_code: document.getElementById('postal_code').value.trim(),
-    open_to_city: document.getElementById('open_to_city').value || null,
+    open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
+    zip_generated_city: state.zipCity || null,
     status: state.status,
     has_children: state.hasChildren,
     wants_children: state.wantsChildren,
@@ -1649,6 +1727,130 @@ function showToast(msg) {
   el.textContent = msg;
   el.classList.add('visible');
   setTimeout(() => el.classList.remove('visible'), 5000);
+}
+
+// ============================================================
+// MULTI-SELECT CITY PICKER
+// ============================================================
+const CITY_OPTIONS = [
+  'Austin, TX','New York, NY','Los Angeles, CA','San Francisco, CA',
+  'Chicago, IL','Miami, FL','Seattle, WA','Boston, MA','Denver, CO',
+  'Atlanta, GA','Nashville, TN','Portland, OR','Washington, DC',
+  'Dallas, TX','Houston, TX','Phoenix, AZ','Minneapolis, MN',
+  'San Diego, CA','Philadelphia, PA','Salt Lake City, UT','Las Vegas, NV',
+  'Charlotte, NC','Raleigh, NC','Detroit, MI','New Orleans, LA',
+  'Pittsburgh, PA','Richmond, VA','Kansas City, MO','San Antonio, TX',
+  'International','Anywhere'
+];
+const cityPickerState = { selected: [] };
+
+function initCityPicker() {
+  const wrap = document.getElementById('city-picker-wrap');
+  if (!wrap) return;
+  const search = wrap.querySelector('.multiselect-search');
+  const dropdown = wrap.querySelector('.multiselect-dropdown');
+  const inputArea = wrap.querySelector('.multiselect-input-area');
+  search.addEventListener('focus', () => {
+    dropdown.classList.add('open');
+    _renderCityDropdown(search.value);
+  });
+  search.addEventListener('input', () => _renderCityDropdown(search.value));
+  search.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { dropdown.classList.remove('open'); search.blur(); }
+  });
+  inputArea.addEventListener('click', e => { if (e.target !== search) search.focus(); });
+  document.addEventListener('click', e => {
+    if (!wrap.contains(e.target)) {
+      dropdown.classList.remove('open');
+      search.value = '';
+    }
+  });
+}
+
+function _renderCityDropdown(query) {
+  const wrap = document.getElementById('city-picker-wrap');
+  if (!wrap) return;
+  const dropdown = wrap.querySelector('.multiselect-dropdown');
+  const q = (query || '').toLowerCase();
+  const filtered = CITY_OPTIONS.filter(c => c.toLowerCase().includes(q) && !cityPickerState.selected.includes(c));
+  dropdown.innerHTML = filtered.length === 0
+    ? '<div class="multiselect-empty">No cities found</div>'
+    : filtered.map(c => `<div class="multiselect-option" onmousedown="event.preventDefault();_selectCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>').join('');
+}
+
+function _selectCity(city) {
+  if (!cityPickerState.selected.includes(city)) {
+    cityPickerState.selected.push(city);
+    _renderCityChips();
+  }
+  const wrap = document.getElementById('city-picker-wrap');
+  const search = wrap.querySelector('.multiselect-search');
+  search.value = '';
+  _renderCityDropdown('');
+}
+
+function _removeCityChip(city) {
+  cityPickerState.selected = cityPickerState.selected.filter(c => c !== city);
+  _renderCityChips();
+  const wrap = document.getElementById('city-picker-wrap');
+  const search = wrap && wrap.querySelector('.multiselect-search');
+  if (search) _renderCityDropdown(search.value);
+}
+
+function _renderCityChips() {
+  const wrap = document.getElementById('city-picker-wrap');
+  if (!wrap) return;
+  const inputArea = wrap.querySelector('.multiselect-input-area');
+  const search = wrap.querySelector('.multiselect-search');
+  Array.from(inputArea.children).forEach(el => { if (el !== search) el.remove(); });
+  cityPickerState.selected.forEach(c => {
+    const chip = document.createElement('span');
+    chip.className = 'multiselect-chip';
+    chip.innerHTML = c + `<button class="multiselect-chip-remove" onmousedown="event.preventDefault();_removeCityChip('${c.replace(/'/g, "\\'")}')">\u00d7</button>`;
+    inputArea.insertBefore(chip, search);
+  });
+}
+
+// ============================================================
+// ZIP → CITY LOOKUP
+// ============================================================
+const _ZIP_CC = {
+  'United States':'us','Canada':'ca','Australia':'au','United Kingdom':'gb',
+  'Germany':'de','France':'fr','Italy':'it','Spain':'es','Netherlands':'nl',
+  'Belgium':'be','Austria':'at','Switzerland':'ch','Poland':'pl',
+  'Czech Republic':'cz','Denmark':'dk','Norway':'no','Sweden':'se',
+  'Finland':'fi','Portugal':'pt','Brazil':'br','Mexico':'mx',
+  'India':'in','South Korea':'kr','Japan':'jp','Singapore':'sg',
+  'New Zealand':'nz','South Africa':'za','Philippines':'ph'
+};
+let _zipTimer = null;
+
+function onZipInput() {
+  clearTimeout(_zipTimer);
+  const display = document.getElementById('zip-city-display');
+  const zip = document.getElementById('postal_code').value.trim();
+  if (zip.length < 4) { if (display) display.textContent = ''; state.zipCity = null; return; }
+  _zipTimer = setTimeout(() => _doZipLookup(zip), 600);
+}
+
+async function _doZipLookup(zip) {
+  const display = document.getElementById('zip-city-display');
+  const country = document.getElementById('country').value;
+  const cc = _ZIP_CC[country];
+  if (!cc) { if (display) display.textContent = ''; state.zipCity = null; return; }
+  try {
+    const r = await fetch(`https://api.zippopotam.us/${cc}/${encodeURIComponent(zip)}`);
+    if (!r.ok) { if (display) display.textContent = ''; state.zipCity = null; return; }
+    const d = await r.json();
+    const place = d.places && d.places[0];
+    if (place) {
+      const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
+      state.zipCity = city;
+      if (display) display.textContent = '\uD83D\uDCCD ' + city;
+    } else {
+      if (display) display.textContent = ''; state.zipCity = null;
+    }
+  } catch(e) { if (display) display.textContent = ''; state.zipCity = null; }
 }
 </script>
 </body>
