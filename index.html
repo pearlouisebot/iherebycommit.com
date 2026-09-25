@@ -498,6 +498,29 @@
     @media (prefers-reduced-motion: reduce) {
       .c-slide { transition: none; }
     }
+
+    /* ===== LEGAL LINKS ===== */
+    .legal-links {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      padding: 4px 0 2px;
+    }
+    .legal-links a { color: var(--muted); }
+    .legal-links a:hover { color: var(--text); }
+    .legal-consent-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: center;
+      padding: 0 4px 8px;
+    }
+    .legal-consent-text a { color: var(--muted); text-decoration: underline; }
+    .legal-consent-text a:hover { color: var(--text); }
   </style>
 </head>
 <body class="landing-active">
@@ -558,7 +581,7 @@
 
   <div class="dlo-bottombar">
     <a href="#below-fold">↓ THE SCIENCE</a>
-    <span></span>
+    <span><a href="/privacy">PRIVACY</a> · <a href="/terms">TERMS</a></span>
   </div>
 </div>
 
@@ -610,7 +633,7 @@
       <!-- Bottom row -->
       <div class="lp-bottom-row">
         <a href="#below-fold">↓ THE SCIENCE</a>
-        <span></span>
+        <span><a href="/privacy">PRIVACY</a> · <a href="/terms">TERMS</a></span>
       </div>
     </div>
   </div>
@@ -666,6 +689,7 @@
     <div class="bottom-action" id="screen1-next-btn">
       <button class="btn btn-primary" onclick="goNext(1)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(1)">← BACK</button>
+      <div class="legal-links"><a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></div>
     </div>
   </div>
 
@@ -700,6 +724,7 @@
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(3)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(3)">← BACK</button>
+      <div class="legal-links"><a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></div>
     </div>
   </div>
 
@@ -735,6 +760,7 @@
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(4)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(4)">← BACK</button>
+      <div class="legal-links"><a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></div>
     </div>
   </div>
 
@@ -773,6 +799,7 @@
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(5)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(5)">← BACK</button>
+      <div class="legal-links"><a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></div>
     </div>
   </div>
 
@@ -790,12 +817,13 @@
       </div>
       <label class="checkbox-group">
         <input type="checkbox" id="sms_consent">
-        <span class="checkbox-label">I consent to receive text messages about this study and updates. Standard messaging rates may apply.</span>
+        <span class="checkbox-label">Text me updates about the study. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent isn't required to apply. See our <a href="/privacy" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
       </label>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(6)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(6)">← BACK</button>
+      <div class="legal-links"><a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></div>
     </div>
   </div>
 
@@ -830,8 +858,10 @@
       <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
     </div>
     <div class="bottom-action">
+      <p class="legal-consent-text">By applying, you agree to our <a href="/terms" target="_blank" rel="noopener">Terms</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>. We may also email you about other Hatch Labs apps — unsubscribe anytime.</p>
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(7)">← BACK</button>
+      <div class="legal-links"><a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></div>
     </div>
   </div>
 
@@ -1561,6 +1591,8 @@ async function doSubmit() {
     x_handle: document.getElementById('x_handle').value.trim() || null,
     tiktok: document.getElementById('tiktok').value.trim() || null,
     turnstileToken: state.turnstileToken || '',
+    terms_version: '2026-10-01',
+    terms_accepted_at: new Date().toISOString(),
   };
   if (state.status === 'partnered') {
     body.relationship_stage = document.getElementById('relationship_stage').value;
