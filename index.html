@@ -588,6 +588,7 @@
       font-family: 'Space Mono', monospace; font-size: 13px;
       color: var(--muted); font-style: italic;
     }
+    .multiselect-add-option { color: var(--accent); }
     /* Partner notice + tip box */
     .partner-notice {
       font-family: 'Space Mono', monospace;
@@ -795,20 +796,22 @@
     <div class="screen-content" style="padding-bottom:160px;">
       <div class="screen-label">Step 2 of <span class="step-total"></span></div>
       <div class="screen-headline">WHERE YOU<br><span class="accent">LIVE & DATE</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div class="field-group">
         <label class="field-label">Country</label>
-        <select class="field-input" id="country">
+        <select class="field-input" id="country" onchange="_onCountryChange()">
           <option value="United States">United States</option>
           <option value="Afghanistan">Afghanistan</option><option value="Albania">Albania</option><option value="Algeria">Algeria</option><option value="Argentina">Argentina</option><option value="Australia">Australia</option><option value="Austria">Austria</option><option value="Belgium">Belgium</option><option value="Brazil">Brazil</option><option value="Canada">Canada</option><option value="Chile">Chile</option><option value="China">China</option><option value="Colombia">Colombia</option><option value="Croatia">Croatia</option><option value="Czech Republic">Czech Republic</option><option value="Denmark">Denmark</option><option value="Egypt">Egypt</option><option value="Finland">Finland</option><option value="France">France</option><option value="Germany">Germany</option><option value="Greece">Greece</option><option value="Hungary">Hungary</option><option value="India">India</option><option value="Indonesia">Indonesia</option><option value="Ireland">Ireland</option><option value="Israel">Israel</option><option value="Italy">Italy</option><option value="Japan">Japan</option><option value="Jordan">Jordan</option><option value="Kenya">Kenya</option><option value="Malaysia">Malaysia</option><option value="Mexico">Mexico</option><option value="Morocco">Morocco</option><option value="Netherlands">Netherlands</option><option value="New Zealand">New Zealand</option><option value="Nigeria">Nigeria</option><option value="Norway">Norway</option><option value="Pakistan">Pakistan</option><option value="Peru">Peru</option><option value="Philippines">Philippines</option><option value="Poland">Poland</option><option value="Portugal">Portugal</option><option value="Romania">Romania</option><option value="Russia">Russia</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Singapore">Singapore</option><option value="South Africa">South Africa</option><option value="South Korea">South Korea</option><option value="Spain">Spain</option><option value="Sweden">Sweden</option><option value="Switzerland">Switzerland</option><option value="Taiwan">Taiwan</option><option value="Thailand">Thailand</option><option value="Turkey">Turkey</option><option value="Ukraine">Ukraine</option><option value="United Arab Emirates">United Arab Emirates</option><option value="United Kingdom">United Kingdom</option><option value="Vietnam">Vietnam</option><option value="Other">Other</option>
         </select>
         <div class="field-error" id="err-country">Please select your country</div>
       </div>
       <div class="field-group">
-        <label class="field-label">ZIP / Postal Code</label>
+        <label class="field-label">Zip / Postal</label>
         <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
         <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
         <div id="zip-city-display" class="zip-city-display"></div>
       </div>
+      </div><!-- /country-zip grid -->
       <div class="field-group" style="margin-bottom:20px;">
         <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
         <div class="multiselect-wrap" id="city-picker-wrap">
@@ -1763,16 +1766,49 @@ function showToast(msg) {
 // ============================================================
 // MULTI-SELECT CITY PICKER
 // ============================================================
-const CITY_OPTIONS = [
-  'Austin, TX','New York, NY','Los Angeles, CA','San Francisco, CA',
-  'Chicago, IL','Miami, FL','Seattle, WA','Boston, MA','Denver, CO',
-  'Atlanta, GA','Nashville, TN','Portland, OR','Washington, DC',
-  'Dallas, TX','Houston, TX','Phoenix, AZ','Minneapolis, MN',
-  'San Diego, CA','Philadelphia, PA','Salt Lake City, UT','Las Vegas, NV',
-  'Charlotte, NC','Raleigh, NC','Detroit, MI','New Orleans, LA',
-  'Pittsburgh, PA','Richmond, VA','Kansas City, MO','San Antonio, TX',
-  'International','Anywhere'
+const US_CITIES = [
+  'Atlanta, GA','Austin, TX','Boston, MA-Manchester, NH','Charlotte, NC',
+  'Chicago, IL','Cincinnati, OH','Cleveland-Akron (Canton), OH','Columbus, OH',
+  'Dallas-Ft. Worth, TX','Denver, CO','Detroit, MI','Hartford & New Haven, CT',
+  'Houston, TX','Indianapolis, IN','Kansas City, MO','Las Vegas, NV',
+  'Los Angeles, CA','Miami-Ft. Lauderdale, FL','Minneapolis-St. Paul, MN',
+  'Nashville, TN','New York, NY','Oklahoma City, OK',
+  'Orlando-Daytona Beach-Melbourne, FL','Philadelphia, PA','Phoenix, AZ',
+  'Pittsburgh, PA','Portland, OR','Raleigh-Durham (Fayetteville), NC',
+  'Sacramento-Stockton-Modesto, CA','Salt Lake City, UT','San Antonio, TX',
+  'San Diego, CA','San Francisco-Oakland-San Jose, CA','Seattle-Tacoma, WA',
+  'St. Louis, MO','Tampa-St Petersburg (Sarasota), FL',
+  'Washington, DC (Hagerstown, MD)'
 ];
+
+const CITIES_BY_COUNTRY = {
+  'United Kingdom': ['London, United Kingdom','Manchester, United Kingdom','Oxford, United Kingdom'],
+  'India': ['Ahmedabad, India','Bengaluru, India','Mumbai, Maharashtra','New Delhi, India'],
+  'Canada': ['Montreal, Canada','Toronto, Ontario','Vancouver, British Columbia'],
+  'Germany': ['Berlin','Frankfurt am Main, Hessen'],
+  'Nigeria': ['Lagos, Nigeria'],
+  'Kenya': ['Nairobi, Kenya'],
+  'France': ['Paris, France'],
+  'South Africa': ['Johannesburg, South Africa'],
+  'Turkey': ['Istanbul'],
+  'Philippines': ['Manila, Philippines'],
+  'Israel': ['Tel Aviv, Israel'],
+  'Colombia': ['Bogot\u00e1'],
+  'Mexico': ['Mexico City, Mexico'],
+  'Brazil': ['S\u00e3o Paulo, Brazil'],
+  'United Arab Emirates': ['Dubai'],
+};
+
+const ALL_INTL_CITIES = Object.values(CITIES_BY_COUNTRY).flat().sort();
+
+function _getCityList() {
+  const country = document.getElementById('country')?.value || 'United States';
+  if (country === 'United States') return US_CITIES;
+  const specific = CITIES_BY_COUNTRY[country];
+  if (specific && specific.length > 0) return [...specific].sort();
+  return ALL_INTL_CITIES;
+}
+
 const cityPickerState = { selected: [] };
 
 function initCityPicker() {
@@ -1788,6 +1824,11 @@ function initCityPicker() {
   search.addEventListener('input', () => _renderCityDropdown(search.value));
   search.addEventListener('keydown', e => {
     if (e.key === 'Escape') { dropdown.classList.remove('open'); search.blur(); }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const q = search.value.trim();
+      if (q) { _selectCity(q); }
+    }
   });
   inputArea.addEventListener('click', e => { if (e.target !== search) search.focus(); });
   document.addEventListener('click', e => {
@@ -1798,15 +1839,31 @@ function initCityPicker() {
   });
 }
 
+function _onCountryChange() {
+  const wrap = document.getElementById('city-picker-wrap');
+  const search = wrap && wrap.querySelector('.multiselect-search');
+  _renderCityDropdown(search ? search.value : '');
+  // Re-run zip lookup if postal code already entered
+  if (document.getElementById('postal_code')?.value.trim()) onZipInput();
+}
+
 function _renderCityDropdown(query) {
   const wrap = document.getElementById('city-picker-wrap');
   if (!wrap) return;
   const dropdown = wrap.querySelector('.multiselect-dropdown');
-  const q = (query || '').toLowerCase();
-  const filtered = CITY_OPTIONS.filter(c => c.toLowerCase().includes(q) && !cityPickerState.selected.includes(c));
-  dropdown.innerHTML = filtered.length === 0
-    ? '<div class="multiselect-empty">No cities found</div>'
-    : filtered.map(c => `<div class="multiselect-option" onmousedown="event.preventDefault();_selectCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>').join('');
+  const q = (query || '').trim();
+  const cityList = _getCityList();
+  const filtered = cityList.filter(c =>
+    c.toLowerCase().includes(q.toLowerCase()) && !cityPickerState.selected.includes(c)
+  );
+  let html = filtered.map(c =>
+    `<div class="multiselect-option" onmousedown="event.preventDefault();_selectCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
+  ).join('');
+  // Free-form: offer "+ Add" if typed text isn't in the list
+  if (q && !cityList.some(c => c.toLowerCase() === q.toLowerCase()) && !cityPickerState.selected.some(c => c.toLowerCase() === q.toLowerCase())) {
+    html += `<div class="multiselect-option multiselect-add-option" onmousedown="event.preventDefault();_selectCity('${q.replace(/'/g, "\\'")}')">+ Add \u201c${q}\u201d</div>`;
+  }
+  dropdown.innerHTML = html || '<div class="multiselect-empty">No cities found</div>';
 }
 
 function _selectCity(city) {
