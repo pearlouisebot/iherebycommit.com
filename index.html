@@ -771,10 +771,20 @@
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Zip Code</label>
-            <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
+            <label class="field-label" id="location-label">Zip Code</label>
+            <div id="location-zip-wrap">
+              <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
+            </div>
+            <div id="location-city-wrap" style="display:none; position:relative;">
+              <input class="field-input" id="location_city_input" type="text" placeholder="Type a city…" autocomplete="off" oninput="_renderLocationCityDropdown(this.value)" onfocus="_renderLocationCityDropdown(this.value)">
+              <div class="multiselect-dropdown location-city-dropdown" id="location-city-dropdown"></div>
+            </div>
             <div class="field-error" id="err-postal_code">Zip code required</div>
-            <div id="zip-city-display" class="zip-city-display" style="display:none;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; min-height:18px;">
+              <span id="zip-city-display" class="zip-city-display" style="display:none;"></span>
+              <span id="location-city-confirmed" style="display:none; font-size:11px; color:var(--accent); font-family:'Space Mono',monospace; letter-spacing:0.04em;"></span>
+              <button type="button" id="location-mode-toggle" onclick="toggleLocationMode()" style="font-size:11px; color:#888; text-decoration:underline; background:none; border:none; cursor:pointer; padding:0; margin-left:auto; flex-shrink:0;">International? Click here</button>
+            </div>
           </div>
         </div>
         <div class="field-group" style="margin-bottom:12px;">
@@ -802,14 +812,7 @@
     <div class="screen-content">
       <div class="screen-label">Step 2 of <span class="step-total"></span></div>
       <div class="screen-headline">WHERE YOU<br><span class="accent">LIVE & DATE</span></div>
-      <div class="field-group">
-        <label class="field-label">Country</label>
-        <select class="field-input" id="country" onchange="_onCountryChange()">
-          <option value="United States">United States</option>
-          <option value="Afghanistan">Afghanistan</option><option value="Albania">Albania</option><option value="Algeria">Algeria</option><option value="Argentina">Argentina</option><option value="Australia">Australia</option><option value="Austria">Austria</option><option value="Belgium">Belgium</option><option value="Brazil">Brazil</option><option value="Canada">Canada</option><option value="Chile">Chile</option><option value="China">China</option><option value="Colombia">Colombia</option><option value="Croatia">Croatia</option><option value="Czech Republic">Czech Republic</option><option value="Denmark">Denmark</option><option value="Egypt">Egypt</option><option value="Finland">Finland</option><option value="France">France</option><option value="Germany">Germany</option><option value="Greece">Greece</option><option value="Hungary">Hungary</option><option value="India">India</option><option value="Indonesia">Indonesia</option><option value="Ireland">Ireland</option><option value="Israel">Israel</option><option value="Italy">Italy</option><option value="Japan">Japan</option><option value="Jordan">Jordan</option><option value="Kenya">Kenya</option><option value="Malaysia">Malaysia</option><option value="Mexico">Mexico</option><option value="Morocco">Morocco</option><option value="Netherlands">Netherlands</option><option value="New Zealand">New Zealand</option><option value="Nigeria">Nigeria</option><option value="Norway">Norway</option><option value="Pakistan">Pakistan</option><option value="Peru">Peru</option><option value="Philippines">Philippines</option><option value="Poland">Poland</option><option value="Portugal">Portugal</option><option value="Romania">Romania</option><option value="Russia">Russia</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Singapore">Singapore</option><option value="South Africa">South Africa</option><option value="South Korea">South Korea</option><option value="Spain">Spain</option><option value="Sweden">Sweden</option><option value="Switzerland">Switzerland</option><option value="Taiwan">Taiwan</option><option value="Thailand">Thailand</option><option value="Turkey">Turkey</option><option value="Ukraine">Ukraine</option><option value="United Arab Emirates">United Arab Emirates</option><option value="United Kingdom">United Kingdom</option><option value="Vietnam">Vietnam</option><option value="Other">Other</option>
-        </select>
-        <div class="field-error" id="err-country">Please select your country</div>
-      </div>
+
       <div id="cities-single-section" class="field-group" style="margin-bottom:20px;">
         <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
         <div class="multiselect-wrap" id="city-picker-wrap">
@@ -1091,6 +1094,10 @@ const state = {
   zipCity: null,
   zipLatLong: null,
   livesWithPartner: null,
+  locationMode: 'zip', // 'zip' | 'city'
+  locationCity: null,
+  locationStateRegion: null,
+  locationCountry: null,
 };
 let partnerCity = null;
 
@@ -1510,8 +1517,10 @@ function saveLead() {
     birthdate: document.getElementById('birthdate')?.value || null,
     gender: state.gender || null,
     status: state.status || null,
-    country: get('country'),
-    postal_code: get('postal_code'),
+    country: state.locationMode === 'zip' ? 'United States' : (state.locationCountry || null),
+    postal_code: state.locationMode === 'zip' ? (get('postal_code') || null) : null,
+    zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (state.locationCity || null),
+    location_state_region: state.locationMode === 'city' ? (state.locationStateRegion || null) : null,
     open_to_city: get('open_to_city'),
     relationship_stage: get('relationship_stage'),
     partner_name: get('partner_name'),
@@ -1621,12 +1630,15 @@ function validateScreen(screenId) {
     else { hideError('birthdate'); if (getAge(bd) < 18) { showUnder18(); return false; } }
     if (!em || !isValidEmail(em)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
     if (!state.gender) { showError('gender', 'Please select one'); ok = false; } else hideError('gender');
-    const postal1 = document.getElementById('postal_code').value.trim();
-    if (!postal1) { showError('postal_code', 'Zip code required'); ok = false; } else hideError('postal_code');
+    if (state.locationMode === 'zip') {
+      const postal1 = document.getElementById('postal_code').value.trim();
+      if (!postal1) { showError('postal_code', 'Zip code required'); ok = false; } else hideError('postal_code');
+    } else {
+      if (!state.locationCity) { showError('postal_code', 'Please select a city from the list'); ok = false; } else hideError('postal_code');
+    }
   }
   if (screenId === 3) {
-    const country = document.getElementById('country').value;
-    if (!country) { showError('country', 'Please select your country'); ok = false; } else hideError('country');
+    // No required fields on this screen
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
@@ -1723,11 +1735,12 @@ async function doSubmit() {
     last_name: document.getElementById('last_name').value.trim(),
     birthdate: document.getElementById('birthdate').value,
     email: document.getElementById('email').value.trim().toLowerCase(),
-    country: document.getElementById('country').value,
-    postal_code: document.getElementById('postal_code').value.trim(),
+    country: state.locationMode === 'zip' ? 'United States' : (state.locationCountry || null),
+    postal_code: state.locationMode === 'zip' ? document.getElementById('postal_code').value.trim() : null,
+    zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (state.locationCity || null),
+    zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
+    location_state_region: state.locationMode === 'city' ? (state.locationStateRegion || null) : null,
     open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
-    zip_generated_city: state.zipCity || null,
-    zip_generated_lat_long: state.zipLatLong || null,
     lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
@@ -1837,13 +1850,80 @@ const CITIES_BY_COUNTRY = {
 };
 
 const ALL_INTL_CITIES = Object.values(CITIES_BY_COUNTRY).flat().sort();
+const ALL_LOCATION_CITIES = [...US_CITIES, ...ALL_INTL_CITIES].sort();
 
 function _getCityList() {
-  const country = document.getElementById('country')?.value || 'United States';
-  if (country === 'United States') return US_CITIES;
-  const specific = CITIES_BY_COUNTRY[country];
-  if (specific && specific.length > 0) return [...specific].sort();
-  return ALL_INTL_CITIES;
+  return ALL_LOCATION_CITIES;
+}
+
+function _parseCityEntry(entry) {
+  if (US_CITIES.includes(entry)) {
+    const parts = entry.split(', ');
+    return { city: parts[0], stateRegion: parts[1] || null, country: 'United States' };
+  }
+  for (const [country, cities] of Object.entries(CITIES_BY_COUNTRY)) {
+    if (cities.includes(entry)) {
+      const parts = entry.split(', ');
+      const city = parts[0];
+      let stateRegion = null;
+      if (parts.length >= 2) {
+        const lastPart = parts[parts.length - 1];
+        stateRegion = (lastPart === country) ? null : parts[1];
+      }
+      return { city, stateRegion, country };
+    }
+  }
+  return { city: entry, stateRegion: null, country: null };
+}
+
+function toggleLocationMode() {
+  state.locationMode = state.locationMode === 'zip' ? 'city' : 'zip';
+  const isCity = state.locationMode === 'city';
+  document.getElementById('location-label').textContent = isCity ? 'City' : 'Zip Code';
+  document.getElementById('location-zip-wrap').style.display = isCity ? 'none' : '';
+  document.getElementById('location-city-wrap').style.display = isCity ? '' : 'none';
+  document.getElementById('zip-city-display').style.display = 'none';
+  document.getElementById('location-city-confirmed').style.display = 'none';
+  document.getElementById('location-mode-toggle').textContent = isCity ? 'Enter a ZIP code instead' : 'International? Click here';
+  hideError('postal_code');
+  if (isCity) {
+    state.zipCity = null; state.zipLatLong = null;
+    document.getElementById('postal_code').value = '';
+    setTimeout(() => document.getElementById('location_city_input')?.focus(), 50);
+  } else {
+    state.locationCity = null; state.locationStateRegion = null; state.locationCountry = null;
+    const inp = document.getElementById('location_city_input');
+    if (inp) inp.value = '';
+    const dd = document.getElementById('location-city-dropdown');
+    if (dd) dd.classList.remove('open');
+  }
+}
+
+function _renderLocationCityDropdown(query) {
+  const dropdown = document.getElementById('location-city-dropdown');
+  if (!dropdown) return;
+  const q = (query || '').trim();
+  const filtered = q
+    ? ALL_LOCATION_CITIES.filter(c => c.toLowerCase().includes(q.toLowerCase())).slice(0, 25)
+    : ALL_LOCATION_CITIES.slice(0, 25);
+  dropdown.innerHTML = filtered.map(c =>
+    `<div class="multiselect-option" onmousedown="event.preventDefault();_setLocationCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
+  ).join('') || '<div class="multiselect-empty">No cities found</div>';
+  dropdown.classList.add('open');
+}
+
+function _setLocationCity(entry) {
+  const parsed = _parseCityEntry(entry);
+  state.locationCity = parsed.city;
+  state.locationStateRegion = parsed.stateRegion;
+  state.locationCountry = parsed.country;
+  const inp = document.getElementById('location_city_input');
+  if (inp) inp.value = entry;
+  const dd = document.getElementById('location-city-dropdown');
+  if (dd) dd.classList.remove('open');
+  const confirmed = document.getElementById('location-city-confirmed');
+  if (confirmed) { confirmed.textContent = '\uD83D\uDCCD ' + entry; confirmed.style.display = ''; }
+  hideError('postal_code');
 }
 
 const cityPickerState = { selected: [] };
@@ -1876,13 +1956,7 @@ function initCityPicker() {
   });
 }
 
-function _onCountryChange() {
-  const wrap = document.getElementById('city-picker-wrap');
-  const search = wrap && wrap.querySelector('.multiselect-search');
-  _renderCityDropdown(search ? search.value : '');
-  // Re-run zip lookup if postal code already entered
-  if (document.getElementById('postal_code')?.value.trim()) onZipInput();
-}
+
 
 function _renderCityDropdown(query) {
   const wrap = document.getElementById('city-picker-wrap');
@@ -1968,6 +2042,11 @@ function initPartnerCityPicker() {
       const dd = wrap.querySelector('.partner-city-dropdown');
       if (dd) dd.classList.remove('open');
     }
+    const locWrap = document.getElementById('location-city-wrap');
+    if (locWrap && !locWrap.contains(e.target)) {
+      const dd = document.getElementById('location-city-dropdown');
+      if (dd) dd.classList.remove('open');
+    }
   });
 }
 
@@ -2020,24 +2099,31 @@ function onZipInput() {
 
 async function _doZipLookup(zip) {
   const display = document.getElementById('zip-city-display');
-  const countryEl = document.getElementById('country');
-  const country = (countryEl && countryEl.value) || 'United States';
-  const cc = _ZIP_CC[country] || 'us';
-  if (!cc) { if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; return; }
   try {
-    const r = await fetch(`https://api.zippopotam.us/${cc}/${encodeURIComponent(zip)}`);
-    if (!r.ok) { if (display) display.textContent = ''; state.zipCity = null; return; }
+    const r = await fetch(`https://api.zippopotam.us/us/${encodeURIComponent(zip)}`);
+    if (!r.ok) {
+      if (display) { display.textContent = ''; display.style.display = 'none'; }
+      state.zipCity = null; state.zipLatLong = null;
+      showError('postal_code', 'ZIP code not found');
+      return;
+    }
     const d = await r.json();
     const place = d.places && d.places[0];
     if (place) {
       const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
       state.zipCity = city;
       state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
-      if (display) { display.textContent = '\uD83D\uDCCD ' + city; display.style.display = 'block'; }
+      if (display) { display.textContent = '\uD83D\uDCCD ' + city; display.style.display = ''; }
+      hideError('postal_code');
     } else {
-      if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; state.zipLatLong = null;
+      if (display) { display.textContent = ''; display.style.display = 'none'; }
+      state.zipCity = null; state.zipLatLong = null;
+      showError('postal_code', 'ZIP code not found');
     }
-  } catch(e) { if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; state.zipLatLong = null; }
+  } catch(e) {
+    if (display) { display.textContent = ''; display.style.display = 'none'; }
+    state.zipCity = null; state.zipLatLong = null;
+  }
 }
 </script>
 </body>
