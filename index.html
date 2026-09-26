@@ -188,6 +188,25 @@
       text-align: right;
     }
     .q-row-caret { color: var(--muted); font-size: 11px; flex-shrink: 0; }
+    /* Two short collapsed answers share one row once both are confirmed. */
+    .q-pair { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+    .q-pair > .q { margin-bottom: 0; }
+    .q-pair.q-pair-ready {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+      align-items: stretch;
+    }
+    .q-pair.q-pair-ready > .q { min-width: 0; }
+    .q-pair.q-pair-ready .q-row { min-width: 0; gap: 6px; padding: 10px 8px; }
+    .q-pair.q-pair-ready .q-row-label,
+    .q-pair.q-pair-ready .q-row-value {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .q-pair.q-pair-ready .q-row-label { flex: 0 1 auto; letter-spacing: 0.04em; font-size: 9px; }
+    .q-pair.q-pair-ready .q-row-value { flex: 1 1 0; min-width: 0; text-align: right; }
     .q-panel { display: none; }
     .q.q-open .q-panel, .q.q-editing .q-panel { display: block; }
     .q.q-done .q-row { display: flex; }
@@ -901,6 +920,7 @@
           </div>
         </div>
 
+        <div class="q-pair" data-q-pair="first_name,last_name">
         <div class="q" id="q-first_name" data-q="first_name" data-kind="text">
           <button type="button" class="q-row" onclick="qEdit('first_name')" aria-label="Edit first name">
             <span class="q-row-label">First name</span>
@@ -926,6 +946,7 @@
             <div class="field-error" id="err-last_name">Required</div>
             <button type="button" class="q-mini" onclick="qConfirm('last_name')">NEXT</button>
           </div>
+        </div>
         </div>
 
         <div class="q" id="q-birthdate" data-q="birthdate" data-kind="text">
@@ -2419,6 +2440,7 @@ function qSync(screenId, opts) {
     if (lab) lab.textContent = state.locationMode === 'zip' ? 'Zip' : 'City';
   }
   qUpdateNext(screenId);
+  qSyncPairs();
   if (opts && opts.focus && openId) {
     const el = document.getElementById('q-' + openId);
     const input = el && el.querySelector('input:not([type="checkbox"])');
@@ -2426,6 +2448,16 @@ function qSync(screenId, opts) {
       setTimeout(() => { try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); } }, 40);
     }
   }
+}
+function qSyncPairs() {
+  document.querySelectorAll('.q-pair').forEach(pair => {
+    const ids = (pair.getAttribute('data-q-pair') || '').split(',').map(s => s.trim()).filter(Boolean);
+    const ready = ids.length > 1 && ids.every(id => {
+      const el = document.getElementById('q-' + id);
+      return el && el.classList.contains('q-done');
+    });
+    pair.classList.toggle('q-pair-ready', ready);
+  });
 }
 function qUpdateNext(screenId) {
   const always = screenId === 3 || screenId === 6;
