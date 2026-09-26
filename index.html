@@ -775,8 +775,9 @@
             <div id="location-zip-wrap">
               <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
             </div>
-            <div id="location-city-wrap" style="display:none;">
-              <input class="field-input" id="intl_city_input" type="text" placeholder="e.g. Wichita, London, Lagos…" autocomplete="address-level2" oninput="onIntlCityInput()">
+            <div id="location-city-wrap" style="display:none; position:relative;">
+              <input class="field-input" id="intl_city_input" type="text" placeholder="e.g. London, Dubai, Toronto…" autocomplete="off" oninput="onIntlCityInput()" onfocus="onIntlCityInput()">
+              <div class="multiselect-dropdown" id="intl-city-dropdown"></div>
             </div>
             <div class="field-error" id="err-postal_code">Zip code required</div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; min-height:18px;">
@@ -1899,10 +1900,43 @@ function toggleLocationMode() {
   setTimeout(() => document.getElementById('intl_city_input')?.focus(), 50);
 }
 
+const TOP_INTL_CITIES = [
+  'London, United Kingdom','Paris, France','Tokyo, Japan','Dubai, United Arab Emirates',
+  'Singapore','Sydney, Australia','Toronto, Canada','Berlin, Germany','Amsterdam, Netherlands',
+  'Mexico City, Mexico','São Paulo, Brazil','Seoul, South Korea','Mumbai, India','Melbourne, Australia',
+  'Zurich, Switzerland','Madrid, Spain','Barcelona, Spain','Rome, Italy','Vienna, Austria',
+  'Brussels, Belgium','Stockholm, Sweden','Copenhagen, Denmark','Oslo, Norway','Helsinki, Finland',
+  'Dublin, Ireland','Lisbon, Portugal','Warsaw, Poland','Prague, Czech Republic','Budapest, Hungary',
+  'Istanbul, Turkey','Cairo, Egypt','Lagos, Nigeria','Nairobi, Kenya','Johannesburg, South Africa',
+  'Cape Town, South Africa','Tel Aviv, Israel','Riyadh, Saudi Arabia','Abu Dhabi, United Arab Emirates',
+  'New Delhi, India','Bengaluru, India','Bangkok, Thailand','Kuala Lumpur, Malaysia',
+  'Jakarta, Indonesia','Manila, Philippines','Hong Kong','Shanghai, China','Beijing, China',
+  'Osaka, Japan','Montreal, Canada','Vancouver, Canada','Auckland, New Zealand',
+  'Buenos Aires, Argentina','Santiago, Chile','Bogotá, Colombia','Lima, Peru',
+];
+
 function onIntlCityInput() {
   const val = document.getElementById('intl_city_input').value.trim();
   state.zipCity = val || null;
   if (val) hideError('postal_code');
+  const dd = document.getElementById('intl-city-dropdown');
+  if (!dd) return;
+  if (!val) { dd.classList.remove('open'); dd.innerHTML = ''; return; }
+  const matches = TOP_INTL_CITIES.filter(c => c.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
+  if (!matches.length) { dd.classList.remove('open'); dd.innerHTML = ''; return; }
+  dd.innerHTML = matches.map(c =>
+    `<div class="multiselect-option" onmousedown="event.preventDefault();_pickIntlCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
+  ).join('');
+  dd.classList.add('open');
+}
+
+function _pickIntlCity(city) {
+  const inp = document.getElementById('intl_city_input');
+  if (inp) inp.value = city;
+  state.zipCity = city;
+  const dd = document.getElementById('intl-city-dropdown');
+  if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; }
+  hideError('postal_code');
 }
 
 const cityPickerState = { selected: [] };
@@ -2020,6 +2054,11 @@ function initPartnerCityPicker() {
     if (wrap && !wrap.contains(e.target)) {
       const dd = wrap.querySelector('.partner-city-dropdown');
       if (dd) dd.classList.remove('open');
+    }
+    const intlWrap = document.getElementById('location-city-wrap');
+    if (intlWrap && !intlWrap.contains(e.target)) {
+      const dd = document.getElementById('intl-city-dropdown');
+      if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; }
     }
 
   });
