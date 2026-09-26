@@ -90,7 +90,7 @@
     /* Screens */
     .screen { display: none; flex-direction: column; flex: 1; }
     .screen.active { display: flex; }
-    .screen-content { flex: 1; display: flex; flex-direction: column; padding: 24px 0 280px; }
+    .screen-content { flex: 1; display: flex; flex-direction: column; padding: 24px 0 340px; }
     .screen-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
     .screen-headline { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 0.95; letter-spacing: 0.02em; color: var(--text); margin-bottom: 24px; }
     .screen-headline .accent { color: var(--accent); }
@@ -106,7 +106,7 @@
     .btn-ghost:hover { color: var(--text); }
 
     /* Fixed bottom action (form screens) */
-    .bottom-action { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 24px 24px 32px; background: linear-gradient(to top, var(--bg) 70%, transparent); display: flex; flex-direction: column; gap: 8px; }
+    .bottom-action { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 16px 24px calc(32px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to top, var(--bg) 70%, transparent); display: flex; flex-direction: column; gap: 4px; }
     @media (min-width: 640px) and (max-width: 1023px) { .bottom-action { max-width: 640px; } }
 
     /* Inputs */
@@ -133,7 +133,7 @@
 
     /* Toggles */
     .toggle-group { display: flex; gap: 8px; margin-bottom: 12px; }
-    .toggle-btn { flex: 1; padding: 14px 16px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .toggle-btn { flex: 1; padding: 14px 8px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; text-align: center; white-space: nowrap; }
     .toggle-btn:hover { border-color: var(--muted); }
     .toggle-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
