@@ -904,13 +904,17 @@
       </div>
       <div class="field-error" id="err-has_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
       <div id="wants-children-section" style="display:none;">
-        <div class="field-label" id="wants-children-label" style="margin-bottom:12px;">Do you want children?</div>
-        <div class="toggle-group">
-          <button class="toggle-btn" id="btn-wants-yes" onclick="setWantsChildren('yes')">YES</button>
-          <button class="toggle-btn" id="btn-wants-no" onclick="setWantsChildren('no')">NO</button>
-          <button class="toggle-btn" id="btn-wants-notsure" onclick="setWantsChildren('not_sure')">NOT SURE</button>
+        <div class="field-group">
+          <label class="field-label" id="wants-children-label">Do you want children?</label>
+          <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
+            <option value="">— Select —</option>
+            <option value="yes">Yes</option>
+            <option value="open_either_way">Open either way</option>
+            <option value="not_sure">Not sure</option>
+            <option value="no">No</option>
+          </select>
+          <div class="field-error" id="err-wants_children">Please make a selection</div>
         </div>
-        <div class="field-error" id="err-wants_children" style="margin-top:-12px;margin-bottom:12px;">Please answer above</div>
       </div>
       <div id="fertility-section" style="display:none;">
         <div class="field-label" style="margin-bottom:12px;">Have you invested in fertility preservation?</div>
@@ -1556,14 +1560,12 @@ function setHasChildren(val) {
   document.getElementById('wants-children-section').style.display = 'block';
   document.getElementById('wants-children-label').textContent = val ? 'Do you want more children?' : 'Do you want children?';
   state.wantsChildren = null;
-  ['yes','no','notsure'].forEach(k => document.getElementById('btn-wants-' + k).classList.remove('selected'));
+  const wcsEl = document.getElementById('wants_children_select');
+  if (wcsEl) wcsEl.value = '';
 }
 
 function setWantsChildren(val) {
   state.wantsChildren = val;
-  document.getElementById('btn-wants-yes').classList.toggle('selected', val === 'yes');
-  document.getElementById('btn-wants-no').classList.toggle('selected', val === 'no');
-  document.getElementById('btn-wants-notsure').classList.toggle('selected', val === 'not_sure');
   hideError('wants_children');
   const showFertility = val === 'yes' || val === 'not_sure';
   document.getElementById('fertility-section').style.display = showFertility ? 'block' : 'none';
