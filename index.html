@@ -756,15 +756,17 @@
             <div class="field-error" id="err-last_name">Required</div>
           </div>
         </div>
-        <div class="field-group">
-          <label class="field-label">Date of birth</label>
-          <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="min-height:52px;font-size:14px;padding:14px 10px;">
-          <div class="field-error" id="err-birthdate">Required</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Email</label>
-          <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-          <div class="field-error" id="err-email">Valid email required</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="field-group">
+            <label class="field-label">Date of birth</label>
+            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="min-height:52px;font-size:14px;padding:14px 10px;">
+            <div class="field-error" id="err-birthdate">Required</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Email</label>
+            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email" style="font-size:14px;padding:14px 10px;">
+            <div class="field-error" id="err-email">Valid email required</div>
+          </div>
         </div>
         <div class="field-group">
           <label class="field-label">I am a</label>
