@@ -1497,7 +1497,7 @@ function getPrevScreen(currentId) {
 
 async function goNext(screenId) {
   if (!validateScreen(screenId)) return;
-  saveLead(); // progressive save on every Next
+  await saveLead(); // await so partialLeadId is set before the next NEXT can fire
   showScreen(getNextScreen(screenId), 'forward');
 }
 
@@ -1523,7 +1523,7 @@ async function saveLead() {
     postal_code: state.locationMode === 'zip' ? (get('postal_code') || null) : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.zipLatLong || null,
-    open_to_city: get('open_to_city'),
+    open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
     lives_with_partner: state.livesWithPartner || null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     relationship_stage: get('relationship_stage'),
