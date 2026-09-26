@@ -321,6 +321,7 @@
     input[type=range].range-input::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); pointer-events: all; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     input[type=range].range-input::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); pointer-events: all; cursor: pointer; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     .age-range-vals { display: flex; justify-content: space-between; font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; margin-bottom: 6px; color: var(--text); }
+    .slider-bubble { position: absolute; top: -28px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
     /* Location city rows */
     .location-city-row { display: flex; align-items: center; background: #1a1a1a; border: 1px solid var(--dim); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
 
@@ -1096,13 +1097,11 @@
           </button>
           <div class="q-panel">
             <label class="field-label">Age Range</label>
-            <div class="age-range-vals">
-              <span id="age_min_label">28</span>
-              <span id="age_max_label">38</span>
-            </div>
-            <div class="range-slider-wrap">
+            <div class="range-slider-wrap" style="margin-top:32px;">
               <div class="range-track"></div>
               <div class="range-fill" id="range-fill"></div>
+              <span id="age_min_label" class="slider-bubble">28</span>
+              <span id="age_max_label" class="slider-bubble">38</span>
               <input type="range" id="age_min" class="range-input" min="21" max="80" step="1" value="28" oninput="onAgeRangeInput(this,'min')">
               <input type="range" id="age_max" class="range-input" min="21" max="80" step="1" value="38" oninput="onAgeRangeInput(this,'max')">
             </div>
@@ -1118,13 +1117,11 @@
           </button>
           <div class="q-panel">
             <label class="field-label">Partner Height <span class="optional-tag">optional</span></label>
-            <div class="age-range-vals">
-              <span id="height_min_label">5'0"</span>
-              <span id="height_max_label">6'6"</span>
-            </div>
-            <div class="range-slider-wrap">
+            <div class="range-slider-wrap" style="margin-top:32px;">
               <div class="range-track"></div>
               <div class="range-fill" id="height-range-fill"></div>
+              <span id="height_min_label" class="slider-bubble">5'0"</span>
+              <span id="height_max_label" class="slider-bubble">6'6"</span>
               <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" oninput="onHeightRangeInput(this,'min')">
               <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
             </div>
@@ -1394,7 +1391,7 @@
           <div class="field-error" id="err-phone">Valid phone number required</div>
           <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
             <input type="checkbox" id="sms_consent" disabled>
-            <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent will be collected prior to enrolling you in the study. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
+            <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. We will ask you for additional consents prior to enrolling you in any research study. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
           </label>
           <button type="button" class="q-mini" onclick="qConfirm('phone')">NEXT</button>
         </div>
@@ -1917,6 +1914,7 @@ function showScreen(id, direction) {
     try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
   }
 
+  if (id === 1) { _buildHeightSelect(); }
   if (id === 5) { syncFamilyDrip(); }
 
   // Adjust screen 3 for singles vs couples
@@ -2173,6 +2171,7 @@ function syncFamilyDrip() {
   if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : _datingOnly ? 'Ideally, when would you like to be dating someone?' : 'Ideally, when would you like to be in a relationship?';
   const tlSel = document.getElementById('relationship_timeline');
   if (tlSel) {
+    // "Don't Want Relationship" — casual only
     const existingDwr = tlSel.querySelector('option[value="dont_want_relationship"]');
     if (_casualOnly && !existingDwr) {
       const opt = document.createElement('option');
@@ -2186,6 +2185,22 @@ function syncFamilyDrip() {
         tlSel.value = '';
         if (typeof qPassed !== 'undefined') qPassed.delete('timeline');
       }
+    }
+    // Marriage-specific longer-horizon options
+    const MARRIAGE_OPTS = [{v:'1_2_years',t:'1–2 years'},{v:'3_5_years',t:'3–5 years'},{v:'5_plus_years',t:'5+ years'},{v:'10_plus_years',t:'10+ years'}];
+    if (_hasMarriage) {
+      MARRIAGE_OPTS.forEach(({v,t}) => { if (!tlSel.querySelector(`option[value="${v}"]`)) { const o=document.createElement('option'); o.value=v; o.textContent=t; tlSel.appendChild(o); } });
+    } else {
+      MARRIAGE_OPTS.forEach(({v}) => {
+        const o = tlSel.querySelector(`option[value="${v}"]`);
+        if (!o) return;
+        o.remove();
+        if (state.relationshipTimeline === v) {
+          state.relationshipTimeline = null;
+          tlSel.value = '';
+          if (typeof qPassed !== 'undefined') qPassed.delete('timeline');
+        }
+      });
     }
   }
   if (!lookingForNeedsTimeline()) {
@@ -2641,6 +2656,12 @@ function qSync(screenId, opts) {
   if (screenId === 1) {
     const lab = document.getElementById('q-location-row-label');
     if (lab) lab.textContent = state.locationMode === 'zip' ? 'Zip' : 'City';
+  }
+  if (screenId === 3) {
+    requestAnimationFrame(() => {
+      if (typeof _updateAgeLabels === 'function') _updateAgeLabels();
+      if (typeof _updateHeightLabels === 'function') _updateHeightLabels();
+    });
   }
   qUpdateNext(screenId);
   qSyncPairs();
@@ -3287,8 +3308,24 @@ function onAgeRangeInput(el, which) {
   const minL = document.getElementById('age_min_label'); if (minL) minL.textContent = minVal;
   const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = maxVal >= 80 ? '80+' : maxVal;
   _updateRangeFill();
+  _updateSliderLabel(minL, document.getElementById('age_min'));
+  _updateSliderLabel(maxL, document.getElementById('age_max'));
 }
 
+function _updateSliderLabel(labelEl, inputEl) {
+  if (!labelEl || !inputEl) return;
+  const w = inputEl.offsetWidth; if (!w) return;
+  const min = parseFloat(inputEl.min), max = parseFloat(inputEl.max), val = parseFloat(inputEl.value), thumbW = 26;
+  labelEl.style.left = ((val - min) / (max - min) * (w - thumbW) + thumbW / 2) + 'px';
+}
+function _updateAgeLabels() {
+  _updateSliderLabel(document.getElementById('age_min_label'), document.getElementById('age_min'));
+  _updateSliderLabel(document.getElementById('age_max_label'), document.getElementById('age_max'));
+}
+function _updateHeightLabels() {
+  _updateSliderLabel(document.getElementById('height_min_label'), document.getElementById('height_min_in'));
+  _updateSliderLabel(document.getElementById('height_max_label'), document.getElementById('height_max_in'));
+}
 function _updateRangeFill() {
   const minEl = document.getElementById('age_min'), maxEl = document.getElementById('age_max'), fill = document.getElementById('range-fill');
   if (!minEl || !maxEl || !fill) return;
@@ -3297,6 +3334,7 @@ function _updateRangeFill() {
   const rightPct = ((parseInt(maxEl.value) - 21) / range) * 100;
   fill.style.left = leftPct + '%';
   fill.style.width = (rightPct - leftPct) + '%';
+  _updateAgeLabels();
 }
 
 function _fmtHeight(inches) { return Math.floor(inches / 12) + "'" + (inches % 12) + '"'; }
@@ -3311,6 +3349,8 @@ function onHeightRangeInput(el, which) {
   const minL = document.getElementById('height_min_label'); if (minL) minL.textContent = _fmtHeight(minVal);
   const maxL = document.getElementById('height_max_label'); if (maxL) maxL.textContent = _fmtHeight(maxVal);
   _updateHeightFill();
+  _updateSliderLabel(minL, document.getElementById('height_min_in'));
+  _updateSliderLabel(maxL, document.getElementById('height_max_in'));
 }
 
 function _updateHeightFill() {
@@ -3321,11 +3361,15 @@ function _updateHeightFill() {
   const rightPct = ((parseInt(maxEl.value) - 58) / range) * 100;
   fill.style.left = leftPct + '%';
   fill.style.width = (rightPct - leftPct) + '%';
+  _updateHeightLabels();
 }
 
 function initHeightSlider() {
   if (!state.heightPrefMinCm) {
-    const userHeightCm = state.heightCm || (state.gender === 'man' ? 175 : 160);
+    // Read height from DOM as primary (most reliable); fall back to state then gender default
+    const _hEl = document.getElementById('height_ftin');
+    const domHeightCm = (_hEl && _hEl.value) ? parseInt(_hEl.value) : null;
+    const userHeightCm = domHeightCm || state.heightCm || (state.gender === 'man' ? 175 : 160);
     const userHeightIn = Math.round(userHeightCm / 2.54);
     const seeking = state.genderSeeking;
     let minIn, maxIn;
@@ -3348,6 +3392,7 @@ function initHeightSlider() {
     if (maxL) maxL.textContent = _fmtHeight(maxIn);
   }
   _updateHeightFill();
+  requestAnimationFrame(_updateHeightLabels);
 }
 
 function setDefaultAges() {
@@ -3360,6 +3405,7 @@ function setDefaultAges() {
   const minL = document.getElementById('age_min_label'); if (minL) minL.textContent = state.ageMin;
   const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = state.ageMax >= 80 ? '80+' : state.ageMax;
   _updateRangeFill();
+  requestAnimationFrame(_updateAgeLabels);
 }
 
 function initCityPicker() {
