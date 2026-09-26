@@ -790,12 +790,7 @@
             </div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:12px;align-items:start;">
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Email</label>
-            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-            <div class="field-error" id="err-email">Valid email required</div>
-          </div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;margin-bottom:12px;align-items:start;">
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Height</label>
             <div id="height-us-wrap">
@@ -806,6 +801,11 @@
             <div id="height-cm-wrap" style="display:none;">
               <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;width:80px;" oninput="onHeightCmChange()">
             </div>
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label">Email</label>
+            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+            <div class="field-error" id="err-email">Valid email required</div>
           </div>
         </div>
       </div>
@@ -1588,6 +1588,15 @@ function setGender(val) {
   const btn = document.getElementById('btn-gender-' + val.replace('-',''));
   if (btn) btn.classList.add('selected');
   hideError('gender');
+  // Set default height if user hasn't picked one yet
+  if (!state.heightCm) {
+    const defaultCm = val === 'man' ? 175 : val === 'woman' ? 160 : null;
+    if (defaultCm) {
+      state.heightCm = defaultCm;
+      const sel = document.getElementById('height_ftin');
+      if (sel) sel.value = defaultCm;
+    }
+  }
 }
 
 function setHasChildren(val) {
