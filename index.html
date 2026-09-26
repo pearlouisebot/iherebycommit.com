@@ -1098,6 +1098,7 @@ const state = {
   intlPostal: null,
   locationCountry: null,
   landingHeadline: window.location.href,
+  sessionId: null,
 };
 let partnerCity = null;
 
@@ -1466,6 +1467,7 @@ function renderStepNums(screenId) {
 
 function startAs(status) {
   state.status = status;
+  state.sessionId = crypto.randomUUID(); // fresh session per application run
   showScreen(1, 'forward');
 }
 
@@ -1507,8 +1509,8 @@ function goBack(screenId) {
 // PARTIAL SAVE
 // ============================================================
 async function saveLead() {
-  const email = document.getElementById('email')?.value?.trim().toLowerCase();
-  if (!email) return;
+  if (!state.sessionId) return; // not started yet
+  const email = document.getElementById('email')?.value?.trim().toLowerCase() || null;
   const get = (id) => { const el = document.getElementById(id); return el?.value?.trim() || null; };
   const data = {
     email,
@@ -1537,6 +1539,7 @@ async function saveLead() {
     x_handle: get('x_handle'),
     tiktok: get('tiktok'),
     landing_headline: state.landingHeadline || null,
+    session_id: state.sessionId || null,
   };
   try {
     const res = await fetch(FUNCTIONS_URL + '/save-lead', {
@@ -1769,6 +1772,7 @@ async function doSubmit() {
     tiktok: document.getElementById('tiktok').value.trim() || null,
     gender: state.gender || null,
     landing_headline: state.landingHeadline || null,
+    session_id: state.sessionId || null,
     turnstileToken: state.turnstileToken || '',
     terms_version: '2026-10-01',
     terms_accepted_at: new Date().toISOString(),
