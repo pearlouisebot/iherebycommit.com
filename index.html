@@ -845,15 +845,26 @@
     <div id="badge-3" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step <span id="live-step-num"></span> of <span class="step-total"></span></div>
-      <div class="screen-headline">WHERE YOU<br><span class="accent">LIVE & DATE</span></div>
+      <div class="screen-headline">WHAT YOU<br><span class="accent">WANT</span></div>
 
-      <div id="cities-single-section" class="field-group" style="margin-bottom:20px;">
-        <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
-        <div class="multiselect-wrap" id="city-picker-wrap">
-          <div class="multiselect-input-area">
-            <input class="multiselect-search" id="open_to_city_search" type="text" placeholder="Type to search cities…" autocomplete="off">
+      <div id="cities-single-section" style="">
+        <div class="field-group" style="margin-bottom:20px;">
+          <label class="field-label">Location</label>
+          <div class="multiselect-wrap" id="city-picker-wrap">
+            <div class="multiselect-input-area">
+              <input class="multiselect-search" id="open_to_city_search" type="text" placeholder="Type to search cities…" autocomplete="off">
+            </div>
+            <div class="multiselect-dropdown"></div>
           </div>
-          <div class="multiselect-dropdown"></div>
+        </div>
+        <div class="field-group" style="margin-bottom:20px;">
+          <label class="field-label">Partner age range</label>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input class="field-input" id="age_min" type="number" min="18" max="99" style="width:72px;text-align:center;padding:10px 6px;" oninput="state.ageMin=parseInt(this.value)||null">
+            <span style="color:var(--muted,#888);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.04em;flex-shrink:0;">to</span>
+            <input class="field-input" id="age_max" type="number" min="18" max="99" style="width:72px;text-align:center;padding:10px 6px;" oninput="state.ageMax=parseInt(this.value)||null">
+          </div>
+          <div class="field-error" id="err-age_range"></div>
         </div>
       </div>
       <div id="cities-couple-section" style="display:none;">
@@ -1167,6 +1178,8 @@ const state = {
   landingHeadline: window.location.href,
   partialLeadId: null, // DB id of the in-progress partial_leads row
   heightCm: null,
+  ageMin: null,
+  ageMax: null,
   // Gender defaults (5'9"/5'3", 1996-01-01) look identical to a real choice,
   // so "user touched" is tracked separately from the current value.
   heightTouched: false,
@@ -1503,11 +1516,28 @@ function showScreen(id, direction) {
     const hl = document.querySelector('#screen-3 .screen-headline');
     if (hl) hl.innerHTML = state.status === 'partnered'
       ? 'WHERE YOU &amp; YOUR<br><span class="accent">PARTNER LIVE</span>'
-      : 'WHERE YOU<br><span class="accent">LIVE &amp; DATE</span>';
+      : 'WHAT YOU<br><span class="accent">WANT</span>';
     const s = document.getElementById('cities-single-section');
     const c = document.getElementById('cities-couple-section');
     if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
     if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
+    // Pre-populate current city in location picker for singles (first visit only)
+    if (state.status !== 'partnered') {
+      const currentCity = state.zipCity;
+      if (currentCity && !cityPickerState.selected.includes(currentCity)) {
+        cityPickerState.selected.unshift(currentCity);
+        renderCityPicker();
+      }
+      // Set age defaults from birthdate (once only, if inputs are empty)
+      const bd = document.getElementById('birthdate')?.value;
+      if (bd) {
+        const userAge = getAge(bd);
+        const minEl = document.getElementById('age_min');
+        const maxEl = document.getElementById('age_max');
+        if (minEl && !minEl.value) { state.ageMin = Math.max(18, userAge - 10); minEl.value = state.ageMin; }
+        if (maxEl && !maxEl.value) { state.ageMax = userAge + 10; maxEl.value = state.ageMax; }
+      }
+    }
   }
 }
 
@@ -1604,6 +1634,8 @@ async function saveLead() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.zipLatLong || null,
     open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
+    age_min: parseInt(document.getElementById('age_min')?.value || '') || null,
+    age_max: parseInt(document.getElementById('age_max')?.value || '') || null,
     lives_with_partner: state.livesWithPartner || null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     relationship_stage: get('relationship_stage'),
@@ -1799,7 +1831,13 @@ function validateScreen(screenId) {
     }
   }
   if (screenId === 3) {
-    // No required fields on this screen
+    if (state.status !== 'partnered') {
+      const minVal = parseInt(document.getElementById('age_min')?.value || '');
+      const maxVal = parseInt(document.getElementById('age_max')?.value || '');
+      if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
+        showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
+      } else { hideError('age_range'); }
+    }
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
@@ -1913,6 +1951,8 @@ async function doSubmit() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
     open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
+    age_min: parseInt(document.getElementById('age_min')?.value || '') || null,
+    age_max: parseInt(document.getElementById('age_max')?.value || '') || null,
     lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
