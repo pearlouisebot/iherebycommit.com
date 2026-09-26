@@ -1832,21 +1832,32 @@ const US_CITIES = [
 ];
 
 const CITIES_BY_COUNTRY = {
-  'United Kingdom': ['London, United Kingdom','Manchester, United Kingdom','Oxford, United Kingdom'],
-  'India': ['Ahmedabad, India','Bengaluru, India','Mumbai, Maharashtra','New Delhi, India'],
-  'Canada': ['Montreal, Canada','Toronto, Ontario','Vancouver, British Columbia'],
-  'Germany': ['Berlin','Frankfurt am Main, Hessen'],
-  'Nigeria': ['Lagos, Nigeria'],
+  'United Kingdom': ['London, United Kingdom','Manchester, United Kingdom','Edinburgh, United Kingdom','Oxford, United Kingdom'],
+  'India': ['Ahmedabad, India','Bengaluru, India','Mumbai, India','New Delhi, India','Pune, India'],
+  'Canada': ['Calgary, Alberta, Canada','Montreal, Quebec, Canada','Toronto, Ontario, Canada','Vancouver, British Columbia, Canada'],
+  'Germany': ['Berlin, Germany','Frankfurt, Germany','Munich, Germany'],
+  'Nigeria': ['Lagos, Nigeria','Abuja, Nigeria'],
   'Kenya': ['Nairobi, Kenya'],
-  'France': ['Paris, France'],
-  'South Africa': ['Johannesburg, South Africa'],
-  'Turkey': ['Istanbul'],
+  'France': ['Paris, France','Lyon, France'],
+  'South Africa': ['Cape Town, South Africa','Johannesburg, South Africa'],
+  'Turkey': ['Istanbul, Turkey','Ankara, Turkey'],
   'Philippines': ['Manila, Philippines'],
   'Israel': ['Tel Aviv, Israel'],
-  'Colombia': ['Bogot\u00e1'],
-  'Mexico': ['Mexico City, Mexico'],
-  'Brazil': ['S\u00e3o Paulo, Brazil'],
-  'United Arab Emirates': ['Dubai'],
+  'Colombia': ['Bogot\u00e1, Colombia','Medell\u00edn, Colombia'],
+  'Mexico': ['Mexico City, Mexico','Guadalajara, Mexico','Monterrey, Mexico'],
+  'Brazil': ['S\u00e3o Paulo, Brazil','Rio de Janeiro, Brazil'],
+  'United Arab Emirates': ['Dubai, United Arab Emirates','Abu Dhabi, United Arab Emirates'],
+  'Australia': ['Sydney, Australia','Melbourne, Australia','Brisbane, Australia','Perth, Australia'],
+  'Netherlands': ['Amsterdam, Netherlands'],
+  'Singapore': ['Singapore, Singapore'],
+  'Japan': ['Tokyo, Japan','Osaka, Japan'],
+  'South Korea': ['Seoul, South Korea'],
+  'Sweden': ['Stockholm, Sweden'],
+  'Spain': ['Madrid, Spain','Barcelona, Spain'],
+  'Portugal': ['Lisbon, Portugal'],
+  'Ireland': ['Dublin, Ireland'],
+  'New Zealand': ['Auckland, New Zealand'],
+  'Argentina': ['Buenos Aires, Argentina'],
 };
 
 const ALL_INTL_CITIES = Object.values(CITIES_BY_COUNTRY).flat().sort();
@@ -1866,9 +1877,10 @@ function _parseCityEntry(entry) {
       const parts = entry.split(', ');
       const city = parts[0];
       let stateRegion = null;
-      if (parts.length >= 2) {
-        const lastPart = parts[parts.length - 1];
-        stateRegion = (lastPart === country) ? null : parts[1];
+      if (parts.length >= 3) {
+        stateRegion = parts[1]; // e.g. "Toronto, Ontario, Canada" → Ontario
+      } else if (parts.length === 2 && parts[1] !== country) {
+        stateRegion = parts[1]; // e.g. "Mumbai, Maharashtra" (legacy) → Maharashtra
       }
       return { city, stateRegion, country };
     }
