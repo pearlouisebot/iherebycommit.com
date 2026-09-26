@@ -106,7 +106,7 @@
     .btn-ghost:hover { color: var(--text); }
 
     /* Fixed bottom action (form screens) */
-    .bottom-action { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 16px 24px 32px; background: linear-gradient(to top, var(--bg) 70%, transparent); display: flex; flex-direction: column; gap: 8px; }
+    .bottom-action { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 24px 24px 32px; background: linear-gradient(to top, var(--bg) 70%, transparent); display: flex; flex-direction: column; gap: 8px; }
     @media (min-width: 640px) and (max-width: 1023px) { .bottom-action { max-width: 640px; } }
 
     /* Inputs */
@@ -771,12 +771,11 @@
         </div>
         <div class="field-group" style="margin-bottom:12px;">
             <label class="field-label">Gender</label>
-            <select class="field-input" id="gender_select" onchange="setGender(this.value)">
-              <option value="">— Select —</option>
-              <option value="man">Man</option>
-              <option value="woman">Woman</option>
-              <option value="non-binary">Non-binary</option>
-            </select>
+            <div class="toggle-group" style="margin-bottom:0;">
+              <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
+              <button class="toggle-btn" id="btn-gender-woman" onclick="setGender('woman')">WOMAN</button>
+              <button class="toggle-btn" id="btn-gender-nonbinary" onclick="setGender('non-binary')">NON-BINARY</button>
+            </div>
             <div class="field-error" id="err-gender">Please select one</div>
           </div>
           <div class="field-group" style="margin-bottom:12px;">
@@ -1540,6 +1539,9 @@ function saveLead() {
 // ============================================================
 function setGender(val) {
   state.gender = val;
+  ['man','woman','nonbinary'].forEach(k => { const el = document.getElementById('btn-gender-' + k); if (el) el.classList.remove('selected'); });
+  const btn = document.getElementById('btn-gender-' + val.replace('-',''));
+  if (btn) btn.classList.add('selected');
   hideError('gender');
 }
 
