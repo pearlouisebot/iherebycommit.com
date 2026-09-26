@@ -744,6 +744,15 @@
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
       <div class="screen-headline">WHO YOU <span class="accent">ARE</span></div>
       <div id="screen1-fields">
+        <div class="field-group" style="margin-bottom:12px;">
+          <label class="field-label">I AM A</label>
+          <div class="toggle-group" style="margin-bottom:0;">
+            <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
+            <button class="toggle-btn" id="btn-gender-woman" onclick="setGender('woman')">WOMAN</button>
+            <button class="toggle-btn" id="btn-gender-nonbinary" onclick="setGender('non-binary')">NON-BINARY</button>
+          </div>
+          <div class="field-error" id="err-gender">Please select one</div>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">First name</label>
@@ -770,19 +779,10 @@
           </div>
         </div>
         <div class="field-group" style="margin-bottom:12px;">
-            <label class="field-label">Gender</label>
-            <div class="toggle-group" style="margin-bottom:0;">
-              <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
-              <button class="toggle-btn" id="btn-gender-woman" onclick="setGender('woman')">WOMAN</button>
-              <button class="toggle-btn" id="btn-gender-nonbinary" onclick="setGender('non-binary')">NON-BINARY</button>
-            </div>
-            <div class="field-error" id="err-gender">Please select one</div>
-          </div>
-          <div class="field-group" style="margin-bottom:12px;">
-            <label class="field-label">Email</label>
-            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-            <div class="field-error" id="err-email">Valid email required</div>
-          </div>
+          <label class="field-label">Email</label>
+          <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+          <div class="field-error" id="err-email">Valid email required</div>
+        </div>
       </div>
       <div id="under18-msg">
         <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
