@@ -90,7 +90,7 @@
     /* Screens */
     .screen { display: none; flex-direction: column; flex: 1; }
     .screen.active { display: flex; }
-    .screen-content { flex: 1; display: flex; flex-direction: column; padding: 24px 0 240px; }
+    .screen-content { flex: 1; display: flex; flex-direction: column; padding: 24px 0 280px; }
     .screen-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
     .screen-headline { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 0.95; letter-spacing: 0.02em; color: var(--text); margin-bottom: 24px; }
     .screen-headline .accent { color: var(--accent); }
@@ -133,7 +133,7 @@
 
     /* Toggles */
     .toggle-group { display: flex; gap: 8px; margin-bottom: 12px; }
-    .toggle-btn { flex: 1; padding: 16px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .toggle-btn { flex: 1; padding: 14px 16px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; text-align: center; }
     .toggle-btn:hover { border-color: var(--muted); }
     .toggle-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
@@ -740,7 +740,7 @@
   <div id="screen-1" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-1"></div></div>
     <div id="badge-1" class="applying-badge"></div>
-    <div class="screen-content" style="padding-bottom:280px;">
+    <div class="screen-content">
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
       <div class="screen-headline">WHO YOU <span class="accent">ARE</span></div>
       <div id="screen1-fields">
@@ -800,7 +800,7 @@
   <div id="screen-3" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
     <div id="badge-3" class="applying-badge"></div>
-    <div class="screen-content" style="padding-bottom:160px;">
+    <div class="screen-content">
       <div class="screen-label">Step 2 of <span class="step-total"></span></div>
       <div class="screen-headline">WHERE YOU<br><span class="accent">LIVE & DATE</span></div>
       <div class="field-group">
@@ -954,7 +954,7 @@
   <div id="screen-7" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-7"></div></div>
     <div id="badge-7" class="applying-badge"></div>
-    <div class="screen-content" style="padding-bottom:160px;">
+    <div class="screen-content">
       <div class="screen-label">Step <span id="social-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR PUBLIC <span class="accent">SELF</span></div>
       <div class="field-group">
