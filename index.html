@@ -225,7 +225,9 @@
       justify-content: center;
       white-space: normal;
       line-height: 1.05;
+      transition: background-color 80ms ease, border-color 80ms ease, color 80ms ease, transform 90ms ease;
     }
+    .q-choices .toggle-btn:active { transform: scale(0.97); }
     .q-choices-row .toggle-btn { font-size: 16px; letter-spacing: 0.04em; }
     .q-choices-grid .toggle-btn { font-size: 17px; }
     .q-choices.error .toggle-btn:not(.selected) { border-color: var(--error); }
@@ -645,6 +647,8 @@
     @media (prefers-reduced-motion: reduce) {
       .c-slide { transition: none; }
       .q.q-reveal { animation: none; }
+      .q-choices .toggle-btn,
+      .q-choices .toggle-btn:active { transition: none; transform: none; }
     }
 
     /* ===== LEGAL LINKS ===== */
@@ -2336,7 +2340,46 @@ function qValidate(id) {
       return !def.required || def.answered();
   }
 }
-function qConfirm(id) {
+const Q_CHOICE_DELAY = 800;
+const qChoiceTimers = {};
+function qMarkChoicePressed(id) {
+  const el = document.getElementById('q-' + id);
+  const active = document.activeElement;
+  if (!el || !active || !el.contains(active) || !active.classList.contains('toggle-btn')) return;
+  el.querySelectorAll('.q-choices .toggle-btn').forEach(b => {
+    const on = b === active;
+    b.classList.toggle('selected', on);
+    if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+document.addEventListener('pointerdown', (e) => {
+  const btn = e.target.closest('.q.q-open[data-kind="choice"] .q-choices .toggle-btn');
+  if (!btn) return;
+  const group = btn.closest('.q-choices');
+  if (!group) return;
+  group.querySelectorAll('.toggle-btn').forEach(b => {
+    const on = b === btn;
+    b.classList.toggle('selected', on);
+    if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}, true);
+function qConfirm(id, immediate) {
+  const el = document.getElementById('q-' + id);
+  if (!immediate && el && el.getAttribute('data-kind') === 'choice' && el.classList.contains('q-open')) {
+    const def = qDef(id);
+    if (def && def.answered()) {
+      qMarkChoicePressed(id);
+      if (qChoiceTimers[id]) clearTimeout(qChoiceTimers[id]);
+      qChoiceTimers[id] = setTimeout(() => {
+        qChoiceTimers[id] = null;
+        const node = document.getElementById('q-' + id);
+        if (!node || !node.classList.contains('q-open')) return;
+        if (state.currentScreen !== qScreenOf(id)) return;
+        qConfirm(id, true);
+      }, Q_CHOICE_DELAY);
+      return true;
+    }
+  }
   if (!qValidate(id)) return false;
   // Accepting the shown height counts as setting it, including when it matches
   // the gender default. Until then, a later gender choice can still update it.
@@ -2356,6 +2399,7 @@ function qEdit(id) {
   const def = qDef(id);
   if (!def) return;
   if (qMultiTimers[id]) { clearTimeout(qMultiTimers[id]); qMultiTimers[id] = null; }
+  if (qChoiceTimers[id]) { clearTimeout(qChoiceTimers[id]); qChoiceTimers[id] = null; }
   qEditing = id;
   if (def.syncEdit) def.syncEdit();
   qSync(def.screen);
