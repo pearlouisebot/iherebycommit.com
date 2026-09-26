@@ -1516,7 +1516,7 @@ function saveLead() {
     birthdate: document.getElementById('birthdate')?.value || null,
     gender: state.gender || null,
     status: state.status || null,
-    country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : null,
+    country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : (state.locationCountry || null),
     postal_code: state.locationMode === 'zip' ? (get('postal_code') || null) : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     open_to_city: get('open_to_city'),
@@ -1734,7 +1734,7 @@ async function doSubmit() {
     last_name: document.getElementById('last_name').value.trim(),
     birthdate: document.getElementById('birthdate').value,
     email: document.getElementById('email').value.trim().toLowerCase(),
-    country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : null,
+    country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : (state.locationCountry || null),
     postal_code: state.locationMode === 'zip' ? document.getElementById('postal_code').value.trim() : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
@@ -1900,32 +1900,69 @@ function toggleLocationMode() {
   setTimeout(() => document.getElementById('intl_city_input')?.focus(), 50);
 }
 
+// Format matches zippopotam.us output (place name + state abbreviation).
+// Countries with clear abbrevs use them; others use City, Country for readability.
 const TOP_INTL_CITIES = [
-  'Abu Dhabi, United Arab Emirates','Ahmedabad, India','Amsterdam, Netherlands','Athens, Greece',
-  'Auckland, New Zealand','Bangkok, Thailand','Barcelona, Spain','Beijing, China',
-  'Bengaluru, India','Belo Horizonte, Brazil','Berlin, Germany','Birmingham, United Kingdom',
-  'Bogot\u00e1, Colombia','Bras\u00edlia, Brazil','Brisbane, Australia','Brussels, Belgium',
-  'Budapest, Hungary','Buenos Aires, Argentina','Calgary, Canada','Cape Town, South Africa',
-  'Cardiff, United Kingdom','Casablanca, Morocco','Chennai, India','Copenhagen, Denmark',
-  'Curitiba, Brazil','New Delhi, India','Doha, Qatar','Dubai, United Arab Emirates',
-  'Dublin, Ireland','Edinburgh, United Kingdom','Edmonton, Canada','Florian\u00f3polis, Brazil',
-  'Frankfurt, Germany','Guadalajara, Mexico','Hamburg, Germany','Hamilton, Canada',
-  'Helsinki, Finland','Ho Chi Minh City, Vietnam','Hong Kong','Hyderabad, India',
-  'Istanbul, Turkey','Jakarta, Indonesia','Johannesburg, South Africa','Kingston, Canada',
-  'Kolkata, India','Kuala Lumpur, Malaysia','Kuwait City, Kuwait','Kyiv, Ukraine',
-  'Lagos, Nigeria','Lima, Peru','Lisbon, Portugal','London, United Kingdom','Lyon, France',
-  'Madrid, Spain','Manchester, United Kingdom','Manila, Philippines','Marseille, France',
-  'Melbourne, Australia','Mexico City, Mexico','Milan, Italy','Montr\u00e9al, Canada',
-  'Moscow, Russia','Mumbai, India','Munich, Germany','Nairobi, Kenya',
-  'Newcastle, United Kingdom','Oslo, Norway','Ottawa, Canada','Oxford, United Kingdom',
-  'Paris, France','Perth, Australia','Porto, Portugal','Porto Alegre, Brazil',
-  'Pune, India','Quezon City, Philippines','Rio de Janeiro, Brazil','Riyadh, Saudi Arabia',
-  'Rome, Italy','Santiago, Chile','S\u00e3o Paulo, Brazil','Seoul, South Korea',
-  'Shanghai, China','Singapore','Stockholm, Sweden','Sydney, Australia',
-  'Taipei, Taiwan','Tehran, Iran','Tel Aviv, Israel','Tokyo, Japan',
-  'Toronto, Canada','Utrecht, Netherlands','Vancouver, Canada','Waterloo, Canada',
-  'Wellington, New Zealand','Winnipeg, Canada','Zurich, Switzerland',
+  // UK — ENG / SCT / WLS
+  'London, ENG','Manchester, ENG','Birmingham, ENG','Oxford, ENG',
+  'Newcastle upon Tyne, ENG','Edinburgh, SCT','Cardiff, WLS',
+  // Canada — province abbreviations
+  'Toronto, ON','Vancouver, BC','Montreal, QC','Ottawa, ON',
+  'Calgary, AB','Edmonton, AB','Hamilton, ON','Waterloo, ON',
+  'Winnipeg, MB','Kingston, ON',
+  // Australia — state abbreviations
+  'Sydney, NSW','Melbourne, VIC','Brisbane, QLD','Perth, WA',
+  // New Zealand
+  'Auckland, New Zealand','Wellington, New Zealand',
+  // India — state abbreviations
+  'Mumbai, MH','New Delhi, DL','Bengaluru, KA','Hyderabad, TG',
+  'Chennai, TN','Kolkata, WB','Ahmedabad, GJ','Pune, MH',
+  // Brazil — state abbreviations
+  'S\u00e3o Paulo, SP','Rio de Janeiro, RJ','Bras\u00edlia, DF',
+  'Belo Horizonte, MG','Curitiba, PR','Porto Alegre, RS','Florian\u00f3polis, SC',
+  // Germany — Bundesland abbreviations
+  'Berlin, BE','Frankfurt am Main, HE','Hamburg, HH','Munich, BY',
+  // Mexico
+  'Mexico City, CMX','Guadalajara, JAL',
+  // Everything else — City, Country (zippopotam codes are non-obvious)
+  'Abu Dhabi, United Arab Emirates','Amsterdam, Netherlands','Athens, Greece',
+  'Bangkok, Thailand','Barcelona, Spain','Beijing, China','Bogot\u00e1, Colombia',
+  'Brussels, Belgium','Budapest, Hungary','Buenos Aires, Argentina',
+  'Cape Town, South Africa','Casablanca, Morocco','Copenhagen, Denmark',
+  'Doha, Qatar','Dubai, United Arab Emirates','Dublin, Ireland',
+  'Helsinki, Finland','Ho Chi Minh City, Vietnam','Hong Kong',
+  'Istanbul, Turkey','Jakarta, Indonesia','Johannesburg, South Africa',
+  'Kuala Lumpur, Malaysia','Kuwait City, Kuwait','Kyiv, Ukraine',
+  'Lagos, Nigeria','Lima, Peru','Lisbon, Portugal','Lyon, France',
+  'Madrid, Spain','Manila, Philippines','Marseille, France',
+  'Milan, Italy','Moscow, Russia','Nairobi, Kenya','Oslo, Norway',
+  'Paris, France','Porto, Portugal','Quezon City, Philippines',
+  'Riyadh, Saudi Arabia','Rome, Italy','Santiago, Chile',
+  'Seoul, South Korea','Shanghai, China','Singapore',
+  'Stockholm, Sweden','Taipei, Taiwan','Tehran, Iran',
+  'Tel Aviv, Israel','Tokyo, Japan','Utrecht, Netherlands','Zurich, Switzerland',
 ].sort();
+
+// Country lookup for dropdown picks so we can populate state.locationCountry
+const CITY_COUNTRY_MAP = {
+  'London, ENG':'United Kingdom','Manchester, ENG':'United Kingdom',
+  'Birmingham, ENG':'United Kingdom','Oxford, ENG':'United Kingdom',
+  'Newcastle upon Tyne, ENG':'United Kingdom','Edinburgh, SCT':'United Kingdom',
+  'Cardiff, WLS':'United Kingdom',
+  'Toronto, ON':'Canada','Vancouver, BC':'Canada','Montreal, QC':'Canada',
+  'Ottawa, ON':'Canada','Calgary, AB':'Canada','Edmonton, AB':'Canada',
+  'Hamilton, ON':'Canada','Waterloo, ON':'Canada','Winnipeg, MB':'Canada','Kingston, ON':'Canada',
+  'Sydney, NSW':'Australia','Melbourne, VIC':'Australia','Brisbane, QLD':'Australia','Perth, WA':'Australia',
+  'Auckland, New Zealand':'New Zealand','Wellington, New Zealand':'New Zealand',
+  'Mumbai, MH':'India','New Delhi, DL':'India','Bengaluru, KA':'India',
+  'Hyderabad, TG':'India','Chennai, TN':'India','Kolkata, WB':'India',
+  'Ahmedabad, GJ':'India','Pune, MH':'India',
+  'S\u00e3o Paulo, SP':'Brazil','Rio de Janeiro, RJ':'Brazil','Bras\u00edlia, DF':'Brazil',
+  'Belo Horizonte, MG':'Brazil','Curitiba, PR':'Brazil','Porto Alegre, RS':'Brazil',
+  'Florian\u00f3polis, SC':'Brazil',
+  'Berlin, BE':'Germany','Frankfurt am Main, HE':'Germany','Hamburg, HH':'Germany','Munich, BY':'Germany',
+  'Mexico City, CMX':'Mexico','Guadalajara, JAL':'Mexico',
+};
 
 function onIntlCityInput() {
   const val = document.getElementById('intl_city_input').value.trim();
@@ -1946,6 +1983,7 @@ function _pickIntlCity(city) {
   const inp = document.getElementById('intl_city_input');
   if (inp) inp.value = city;
   state.zipCity = city;
+  state.locationCountry = CITY_COUNTRY_MAP[city] || null;
   const dd = document.getElementById('intl-city-dropdown');
   if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; }
   hideError('postal_code');
