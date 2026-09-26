@@ -112,7 +112,7 @@
     .field-group { margin-bottom: 12px; }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; }
     .field-label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-    .field-input { width: 100%; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
+    .field-input { width: 100%; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px; min-height: 54px; box-sizing: border-box; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
     .field-input:focus { border-color: var(--accent); }
     .field-input.error { border-color: var(--error); }
     .field-input::placeholder { color: var(--dim); }
@@ -767,7 +767,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Date of birth</label>
-            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="min-height:52px;font-size:14px;padding:14px 10px;">
+            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group" style="margin-bottom:0;">
