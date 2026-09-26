@@ -1901,19 +1901,34 @@ function toggleLocationMode() {
 }
 
 const TOP_INTL_CITIES = [
-  'London, United Kingdom','Paris, France','Tokyo, Japan','Dubai, United Arab Emirates',
-  'Singapore','Sydney, Australia','Toronto, Canada','Berlin, Germany','Amsterdam, Netherlands',
-  'Mexico City, Mexico','São Paulo, Brazil','Seoul, South Korea','Mumbai, India','Melbourne, Australia',
-  'Zurich, Switzerland','Madrid, Spain','Barcelona, Spain','Rome, Italy','Vienna, Austria',
-  'Brussels, Belgium','Stockholm, Sweden','Copenhagen, Denmark','Oslo, Norway','Helsinki, Finland',
-  'Dublin, Ireland','Lisbon, Portugal','Warsaw, Poland','Prague, Czech Republic','Budapest, Hungary',
-  'Istanbul, Turkey','Cairo, Egypt','Lagos, Nigeria','Nairobi, Kenya','Johannesburg, South Africa',
-  'Cape Town, South Africa','Tel Aviv, Israel','Riyadh, Saudi Arabia','Abu Dhabi, United Arab Emirates',
-  'New Delhi, India','Bengaluru, India','Bangkok, Thailand','Kuala Lumpur, Malaysia',
-  'Jakarta, Indonesia','Manila, Philippines','Hong Kong','Shanghai, China','Beijing, China',
-  'Osaka, Japan','Montreal, Canada','Vancouver, Canada','Auckland, New Zealand',
-  'Buenos Aires, Argentina','Santiago, Chile','Bogotá, Colombia','Lima, Peru',
-];
+  // Asia-Pacific
+  'Tokyo, Japan','Delhi, India','Shanghai, China','Mumbai, India','Osaka, Japan',
+  'Beijing, China','Dhaka, Bangladesh','Kolkata, India','Manila, Philippines','Bangalore, India',
+  'Karachi, Pakistan','Jakarta, Indonesia','Bangkok, Thailand','Seoul, South Korea','Chennai, India',
+  'Hyderabad, India','Lahore, Pakistan','Ahmedabad, India','Ho Chi Minh City, Vietnam','Pune, India',
+  'Kuala Lumpur, Malaysia','Singapore','Hong Kong','Yangon, Myanmar','Colombo, Sri Lanka',
+  'Kathmandu, Nepal','Sydney, Australia','Melbourne, Australia','Auckland, New Zealand',
+  // Middle East & Central Asia
+  'Tehran, Iran','Baghdad, Iraq','Riyadh, Saudi Arabia','Dubai, United Arab Emirates',
+  'Abu Dhabi, United Arab Emirates','Istanbul, Turkey','Ankara, Turkey','Doha, Qatar',
+  'Kuwait City, Kuwait','Muscat, Oman','Beirut, Lebanon','Amman, Jordan','Tel Aviv, Israel','Kabul, Afghanistan',
+  // Africa
+  'Cairo, Egypt','Lagos, Nigeria','Kinshasa, Democratic Republic of Congo','Luanda, Angola',
+  'Dar es Salaam, Tanzania','Johannesburg, South Africa','Abidjan, C\u00f4te d\u2019Ivoire',
+  'Khartoum, Sudan','Addis Ababa, Ethiopia','Nairobi, Kenya','Casablanca, Morocco',
+  'Cape Town, South Africa','Dakar, Senegal','Accra, Ghana','Kampala, Uganda',
+  'Abuja, Nigeria','Kigali, Rwanda',
+  // Europe
+  'Moscow, Russia','London, United Kingdom','Paris, France','Berlin, Germany','Madrid, Spain',
+  'Rome, Italy','Kyiv, Ukraine','Bucharest, Romania','Warsaw, Poland','Budapest, Hungary',
+  'Vienna, Austria','Athens, Greece','Barcelona, Spain','Milan, Italy','Prague, Czech Republic',
+  'Lisbon, Portugal','Stockholm, Sweden','Brussels, Belgium','Amsterdam, Netherlands',
+  'Copenhagen, Denmark','Oslo, Norway','Dublin, Ireland','Helsinki, Finland','Zurich, Switzerland',
+  // Americas
+  'S\u00e3o Paulo, Brazil','Mexico City, Mexico','Buenos Aires, Argentina','Rio de Janeiro, Brazil',
+  'Bogot\u00e1, Colombia','Lima, Peru','Santiago, Chile','Guadalajara, Mexico','Monterrey, Mexico',
+  'Medell\u00edn, Colombia','Toronto, Canada','Montreal, Canada','Vancouver, Canada',
+].sort();
 
 function onIntlCityInput() {
   const val = document.getElementById('intl_city_input').value.trim();
