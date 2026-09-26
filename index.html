@@ -771,7 +771,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Date of birth</label>
-            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01">
+            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group" style="margin-bottom:0;">
@@ -1135,6 +1135,10 @@ const state = {
   landingHeadline: window.location.href,
   partialLeadId: null, // DB id of the in-progress partial_leads row
   heightCm: null,
+  // Gender defaults (5'9"/5'3", 1996-01-01) look identical to a real choice,
+  // so "user touched" is tracked separately from the current value.
+  heightTouched: false,
+  birthdateTouched: false,
 };
 let partnerCity = null;
 
@@ -1614,15 +1618,26 @@ function setGender(val) {
   const btn = document.getElementById('btn-gender-' + val.replace('-',''));
   if (btn) btn.classList.add('selected');
   hideError('gender');
-  // Set default height whenever gender changes
-  const defaultCm = val === 'man' ? 175 : val === 'woman' ? 160 : null;
-  if (defaultCm) {
-    state.heightCm = defaultCm;
-    const sel = document.getElementById('height_ftin');
-    if (sel) sel.value = defaultCm;
-    const cmInput = document.getElementById('height_cm_input');
-    if (cmInput && state.locationMode !== 'zip') cmInput.value = defaultCm;
+  // Singles and couples share this screen. Defaults apply only while the
+  // user has not set the field. Switching gender later must not clobber a choice.
+  if (!state.heightTouched) {
+    const defaultCm = val === 'man' ? 175 : val === 'woman' ? 160 : null;
+    if (defaultCm) {
+      state.heightCm = defaultCm;
+      const sel = document.getElementById('height_ftin');
+      if (sel) sel.value = defaultCm;
+      const cmInput = document.getElementById('height_cm_input');
+      if (cmInput && state.locationMode !== 'zip') cmInput.value = defaultCm;
+    }
   }
+  if (!state.birthdateTouched) {
+    const bd = document.getElementById('birthdate');
+    if (bd && !bd.value) bd.value = '1996-01-01';
+  }
+}
+
+function onBirthdateInput() {
+  state.birthdateTouched = true;
 }
 
 function setHasChildren(val) {
@@ -1972,10 +1987,12 @@ function _buildHeightSelect() {
   }
 }
 function onHeightFtInChange() {
+  state.heightTouched = true;
   const val = document.getElementById('height_ftin').value;
   state.heightCm = val ? parseInt(val) : null;
 }
 function onHeightCmChange() {
+  state.heightTouched = true;
   const val = document.getElementById('height_cm_input').value;
   state.heightCm = val ? parseInt(val) : null;
 }
