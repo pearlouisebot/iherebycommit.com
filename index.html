@@ -113,6 +113,23 @@
     .two-col { display: grid; grid-template-columns: 1fr 1fr; }
     .field-label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     #screen-5 .field-label { text-transform: none; }
+    #screen-5 .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    #screen-5 .choice-grid .toggle-btn { white-space: nowrap; min-width: 0; }
+    #screen-5 .choice-grid.error .toggle-btn:not(.selected) { border-color: var(--error); }
+    #screen-5 .kids-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    #screen-5 .kids-pair .field-group { margin-bottom: 0; min-width: 0; }
+    /* Slightly tighter tracking so "Do you want more kids?" stays on one line in a 393px column. */
+    #screen-5 .kids-pair .field-label { letter-spacing: 0.08em; line-height: 1.35; }
+    #screen-5 .kids-pair .field-input { padding-left: 10px; padding-right: 10px; }
     .field-input { width: 100%; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px; min-height: 54px; box-sizing: border-box; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
     .field-input:focus { border-color: var(--accent); }
     .field-input.error { border-color: var(--error); }
@@ -904,34 +921,47 @@
     </div>
   </div>
 
-  <!-- SCREEN 5: CHILDREN -->
+  <!-- SCREEN 5: INTENTIONS & FAMILY -->
   <div id="screen-5" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-5"></div></div>
     <div id="badge-5" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step <span id="kids-step-num"></span> of <span class="step-total"></span></div>
-      <div class="screen-headline">FAMILY &amp; <span class="accent">PLANS</span></div>
+      <div class="screen-headline">INTENTIONS &amp; <span class="accent">FAMILY</span></div>
 
-      <div class="field-group" style="margin-bottom:14px;">
-        <label class="field-label">Do you have kids?</label>
-        <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-        <div class="field-error" id="err-has_children">Please make a selection</div>
+      <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
+        <label class="field-label">Looking for</label>
+        <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
+          <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
+          <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
+          <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
+          <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
+          <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
+        </div>
+        <div class="field-error" id="err-looking_for">Please make a selection</div>
       </div>
 
-      <div class="field-group" style="margin-bottom:14px;">
-        <label class="field-label" id="wants-children-label">Do you want kids?</label>
-        <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-          <option value="open_either_way">Open to either</option>
-          <option value="not_sure">Unsure</option>
-        </select>
-        <div class="field-error" id="err-wants_children">Please make a selection</div>
+      <div class="kids-pair">
+        <div class="field-group">
+          <label class="field-label">Do you have kids?</label>
+          <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
+            <option value="">— Select —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <div class="field-error" id="err-has_children">Please make a selection</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" id="wants-children-label">Do you want kids?</label>
+          <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
+            <option value="">— Select —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="open_either_way">Open to either</option>
+            <option value="not_sure">Unsure</option>
+          </select>
+          <div class="field-error" id="err-wants_children">Please make a selection</div>
+        </div>
       </div>
 
       <div class="field-group" id="fertility-group" style="display:none;margin-bottom:14px;">
@@ -945,16 +975,17 @@
         <div class="field-error" id="err-fertility">Please make a selection</div>
       </div>
 
-      <div class="field-group" id="looking-for-group" style="margin-bottom:0;">
-        <label class="field-label">What are you looking for?</label>
-        <select class="field-input" id="looking_for_select" onchange="setLookingFor(this.value)">
+      <div class="field-group" id="relationship-timeline-group" style="display:none;margin-bottom:0;">
+        <label class="field-label">Ideally, when would you like to be in a relationship?</label>
+        <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value)">
           <option value="">— Select —</option>
-          <option value="dating">Dating</option>
-          <option value="relationship">Relationship</option>
-          <option value="marriage">Marriage</option>
-          <option value="life_partner">Life partner</option>
+          <option value="asap">ASAP</option>
+          <option value="3_months">Next 3 months</option>
+          <option value="6_months">Next 6 months</option>
+          <option value="12_months">Next 12 months</option>
+          <option value="no_timeline">No timeline</option>
         </select>
-        <div class="field-error" id="err-looking_for">Please make a selection</div>
+        <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
       </div>
     </div>
     <div class="bottom-action">
@@ -1123,7 +1154,8 @@ const state = {
   hasChildren: null,
   wantsChildren: null,
   fertilityPreservation: null,
-  lookingFor: null,
+  lookingFor: [],
+  relationshipTimeline: null,
   turnstileToken: null,
   submitting: false,
   zipCity: null,
@@ -1455,10 +1487,11 @@ function showScreen(id, direction) {
     try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
   }
 
-  // Hide "looking for" on screen 5 for couples
+  // Hide "looking for" and relationship timeline on screen 5 for couples
   if (id === 5) {
     const lfGroup = document.getElementById('looking-for-group');
     if (lfGroup) lfGroup.style.display = (state.status === 'partnered') ? 'none' : 'block';
+    syncTimelineQuestion();
   }
 
   // Adjust screen 3 for singles vs couples
@@ -1575,7 +1608,8 @@ async function saveLead() {
     has_children: state.hasChildren,
     wants_children: state.wantsChildren || null,
     fertility_preservation: state.fertilityPreservation || null,
-    looking_for: state.lookingFor || null,
+    looking_for: lookingForPayload(),
+    relationship_timeline: relationshipTimelinePayload(),
     phone: get('phone'),
     sms_consent: document.getElementById('sms_consent')?.checked || null,
     linkedin_username: get('linkedin_username'),
@@ -1643,7 +1677,58 @@ function setWantsChildren(val) {
   }
 }
 function setFertility(val) { state.fertilityPreservation = val || null; hideError('fertility'); }
-function setLookingFor(val) { state.lookingFor = val || null; hideError('looking_for'); }
+
+const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
+const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
+
+function toggleLookingFor(val) {
+  if (!Array.isArray(state.lookingFor)) state.lookingFor = [];
+  const i = state.lookingFor.indexOf(val);
+  if (i === -1) state.lookingFor.push(val);
+  else state.lookingFor.splice(i, 1);
+  const btn = document.getElementById('btn-looking-' + val);
+  if (btn) {
+    const on = state.lookingFor.includes(val);
+    btn.classList.toggle('selected', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  if (state.lookingFor.length) hideError('looking_for');
+  syncTimelineQuestion();
+}
+
+function lookingForNeedsTimeline() {
+  if (state.status === 'partnered') return false;
+  const selected = Array.isArray(state.lookingFor) ? state.lookingFor : [];
+  return TIMELINE_TRIGGERS.some(v => selected.includes(v));
+}
+
+function syncTimelineQuestion() {
+  const group = document.getElementById('relationship-timeline-group');
+  const show = lookingForNeedsTimeline();
+  if (group) group.style.display = show ? 'block' : 'none';
+  if (!show) {
+    state.relationshipTimeline = null;
+    const sel = document.getElementById('relationship_timeline');
+    if (sel) sel.value = '';
+    hideError('relationship_timeline');
+  }
+}
+
+function setRelationshipTimeline(val) {
+  state.relationshipTimeline = val || null;
+  hideError('relationship_timeline');
+}
+
+function lookingForPayload() {
+  if (state.status === 'partnered') return null;
+  if (!Array.isArray(state.lookingFor) || state.lookingFor.length === 0) return null;
+  return LOOKING_FOR_OPTIONS.filter(v => state.lookingFor.includes(v)).join('; ');
+}
+
+function relationshipTimelinePayload() {
+  if (!lookingForNeedsTimeline()) return null;
+  return state.relationshipTimeline || null;
+}
 
 // ============================================================
 // LINKEDIN
@@ -1716,7 +1801,13 @@ function validateScreen(screenId) {
       if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
     } else hideError('fertility');
     if (state.status !== 'partnered') {
-      if (!state.lookingFor) { showError('looking_for', 'Please make a selection'); ok = false; } else hideError('looking_for');
+      if (!Array.isArray(state.lookingFor) || state.lookingFor.length === 0) { showError('looking_for', 'Please make a selection'); ok = false; } else hideError('looking_for');
+      if (lookingForNeedsTimeline()) {
+        if (!state.relationshipTimeline) { showError('relationship_timeline', 'Please make a selection'); ok = false; } else hideError('relationship_timeline');
+      } else hideError('relationship_timeline');
+    } else {
+      hideError('looking_for');
+      hideError('relationship_timeline');
     }
   }
   if (screenId === 6) {
@@ -1813,7 +1904,8 @@ async function doSubmit() {
     has_children: state.hasChildren,
     wants_children: state.wantsChildren || null,
     fertility_preservation: state.fertilityPreservation || null,
-    looking_for: state.lookingFor || null,
+    looking_for: lookingForPayload(),
+    relationship_timeline: relationshipTimelinePayload(),
     phone: document.getElementById('phone').value.trim(),
     sms_consent: document.getElementById('sms_consent').checked,
     linkedin_url: 'https://www.linkedin.com/in/' + username,
