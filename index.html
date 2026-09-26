@@ -812,13 +812,29 @@
         <div id="zip-city-display" class="zip-city-display"></div>
       </div>
       </div><!-- /country-zip grid -->
-      <div class="field-group" style="margin-bottom:20px;">
+      <div id="cities-single-section" class="field-group" style="margin-bottom:20px;">
         <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
         <div class="multiselect-wrap" id="city-picker-wrap">
           <div class="multiselect-input-area">
             <input class="multiselect-search" id="open_to_city_search" type="text" placeholder="Type to search cities…" autocomplete="off">
           </div>
           <div class="multiselect-dropdown"></div>
+        </div>
+      </div>
+      <div id="cities-couple-section" style="display:none;">
+        <div class="field-group">
+          <label class="field-label">Do you live with your partner?</label>
+          <div class="toggle-group" style="margin-bottom:0;">
+            <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner(true)">YES</button>
+            <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner(false)">NO</button>
+          </div>
+        </div>
+        <div id="partner-city-field" class="field-group" style="display:none; margin-bottom:20px;">
+          <label class="field-label">Where does your partner live?</label>
+          <div style="position:relative;" id="partner-city-wrap">
+            <input class="field-input" id="partner_city_input" type="text" placeholder="Type any city…" autocomplete="off" oninput="_renderPartnerCityDropdown(this.value)" onfocus="_renderPartnerCityDropdown(this.value)">
+            <div class="multiselect-dropdown partner-city-dropdown"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1074,7 +1090,9 @@ const state = {
   turnstileToken: null,
   submitting: false,
   zipCity: null,
+  livesWithPartner: null,
 };
+let partnerCity = null;
 
 // ============================================================
 // PATHS
@@ -1097,6 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCarousel();
   initFnModal();
   initCityPicker();
+  initPartnerCityPicker();
   onPhoneInput(); // init SMS checkbox state
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
@@ -1389,6 +1408,18 @@ function showScreen(id, direction) {
   // Pre-warm Turnstile when user reaches the social handles step
   if (id === 7 && window.turnstile && !state.turnstileToken) {
     try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
+  }
+
+  // Adjust screen 3 for singles vs couples
+  if (id === 3) {
+    const hl = document.querySelector('#screen-3 .screen-headline');
+    if (hl) hl.innerHTML = state.status === 'partnered'
+      ? 'WHERE YOU &amp; YOUR<br><span class="accent">PARTNER LIVE</span>'
+      : 'WHERE YOU<br><span class="accent">LIVE &amp; DATE</span>';
+    const s = document.getElementById('cities-single-section');
+    const c = document.getElementById('cities-couple-section');
+    if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
+    if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
   }
 }
 
@@ -1697,6 +1728,8 @@ async function doSubmit() {
     postal_code: document.getElementById('postal_code').value.trim(),
     open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
     zip_generated_city: state.zipCity || null,
+    lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
+    partner_city: (state.status === 'partnered' && state.livesWithPartner === false) ? (partnerCity || null) : null,
     status: state.status,
     has_children: state.hasChildren,
     wants_children: state.wantsChildren,
@@ -1917,6 +1950,53 @@ const _ZIP_CC = {
   'New Zealand':'nz','South Africa':'za','Philippines':'ph'
 };
 let _zipTimer = null;
+
+function setLivesWithPartner(val) {
+  state.livesWithPartner = val;
+  document.getElementById('btn-lives-yes').classList.toggle('selected', val === true);
+  document.getElementById('btn-lives-no').classList.toggle('selected', val === false);
+  const pcf = document.getElementById('partner-city-field');
+  if (pcf) pcf.style.display = val === false ? '' : 'none';
+  if (val === true) { partnerCity = null; const inp = document.getElementById('partner_city_input'); if (inp) inp.value = ''; }
+}
+
+function initPartnerCityPicker() {
+  document.addEventListener('click', e => {
+    const wrap = document.getElementById('partner-city-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      const dd = wrap.querySelector('.partner-city-dropdown');
+      if (dd) dd.classList.remove('open');
+    }
+  });
+}
+
+function _renderPartnerCityDropdown(query) {
+  const wrap = document.getElementById('partner-city-wrap');
+  if (!wrap) return;
+  const dropdown = wrap.querySelector('.partner-city-dropdown');
+  const q = (query || '').trim();
+  const allCities = [...US_CITIES, ...ALL_INTL_CITIES].sort();
+  const filtered = q
+    ? allCities.filter(c => c.toLowerCase().includes(q.toLowerCase())).slice(0, 25)
+    : allCities.slice(0, 25);
+  let html = filtered.map(c =>
+    `<div class="multiselect-option" onmousedown="event.preventDefault();_setPartnerCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
+  ).join('');
+  if (q && !allCities.some(c => c.toLowerCase() === q.toLowerCase())) {
+    html += `<div class="multiselect-option multiselect-add-option" onmousedown="event.preventDefault();_setPartnerCity('${q.replace(/'/g, "\\'")}')">+ Use \u201c${q}\u201d</div>`;
+  }
+  dropdown.innerHTML = html || '<div class="multiselect-empty">Type a city name...</div>';
+  dropdown.classList.add('open');
+}
+
+function _setPartnerCity(city) {
+  partnerCity = city;
+  const inp = document.getElementById('partner_city_input');
+  if (inp) inp.value = city;
+  const wrap = document.getElementById('partner-city-wrap');
+  const dd = wrap && wrap.querySelector('.partner-city-dropdown');
+  if (dd) dd.classList.remove('open');
+}
 
 function onPhoneInput() {
   const phone = document.getElementById('phone');
