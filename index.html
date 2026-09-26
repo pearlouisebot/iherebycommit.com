@@ -1776,10 +1776,7 @@ function toggleLookingFor(val) {
 function lookingForNeedsTimeline() {
   if (state.status === 'partnered') return false;
   const selected = Array.isArray(state.lookingFor) ? state.lookingFor : [];
-  if (selected.length === 0) return false;
-  const hasRelType = TIMELINE_TRIGGERS.some(v => selected.includes(v));
-  const casualOnly = selected.length === 1 && selected[0] === 'casual';
-  return hasRelType || casualOnly;
+  return selected.length > 0; // timeline for every intent
 }
 
 function setRelationshipTimeline(val) {
@@ -1805,7 +1802,8 @@ function syncFamilyDrip() {
   const _hasMarriage = _lf.includes('marriage');
   const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
   const tlLabel = document.querySelector('#relationship-timeline-group .field-label');
-  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : 'Ideally, when would you like to be in a relationship?';
+  const _datingOnly = _lf.length === 1 && _lf[0] === 'dating';
+  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : _datingOnly ? 'Ideally, when would you like to be dating someone?' : 'Ideally, when would you like to be in a relationship?';
   const tlSel = document.getElementById('relationship_timeline');
   if (tlSel) {
     const existingDwr = tlSel.querySelector('option[value="dont_want_relationship"]');
