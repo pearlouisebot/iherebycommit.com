@@ -1091,6 +1091,7 @@ const state = {
   turnstileToken: null,
   submitting: false,
   zipCity: null,
+  zipLatLong: null,
   livesWithPartner: null,
 };
 let partnerCity = null;
@@ -1729,6 +1730,7 @@ async function doSubmit() {
     postal_code: document.getElementById('postal_code').value.trim(),
     open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
     zip_generated_city: state.zipCity || null,
+    zip_generated_lat_long: state.zipLatLong || null,
     lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
@@ -2033,11 +2035,12 @@ async function _doZipLookup(zip) {
     if (place) {
       const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
       state.zipCity = city;
+      state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
       if (display) display.textContent = '\uD83D\uDCCD ' + city;
     } else {
-      if (display) display.textContent = ''; state.zipCity = null;
+      if (display) display.textContent = ''; state.zipCity = null; state.zipLatLong = null;
     }
-  } catch(e) { if (display) display.textContent = ''; state.zipCity = null; }
+  } catch(e) { if (display) display.textContent = ''; state.zipCity = null; state.zipLatLong = null; }
 }
 </script>
 </body>
