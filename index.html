@@ -771,7 +771,7 @@
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label" id="location-label">Zip Code</label>
+            <label class="field-label" id="location-label">US Zip Code</label>
             <div id="location-zip-wrap">
               <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
             </div>
@@ -1879,7 +1879,7 @@ function _parseCityEntry(entry) {
 function toggleLocationMode() {
   state.locationMode = state.locationMode === 'zip' ? 'city' : 'zip';
   const isCity = state.locationMode === 'city';
-  document.getElementById('location-label').textContent = isCity ? 'City' : 'Zip Code';
+  document.getElementById('location-label').textContent = isCity ? 'City' : 'US Zip Code';
   document.getElementById('location-zip-wrap').style.display = isCity ? 'none' : '';
   document.getElementById('location-city-wrap').style.display = isCity ? '' : 'none';
   document.getElementById('zip-city-display').style.display = 'none';
