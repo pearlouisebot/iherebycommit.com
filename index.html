@@ -988,6 +988,12 @@
       <!-- LOOKING FOR: always shown for singles, multi-select -->
       <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
         <label class="field-label">Looking for</label>
+        <div id="looking-for-collapsed" style="display:none;" onclick="expandLookingFor()" role="button" tabindex="0">
+          <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid var(--dim);border-radius:var(--radius);padding:14px 16px;cursor:pointer;">
+            <span id="looking-for-summary-text" style="font-family:'Space Mono',monospace;font-size:13px;color:var(--text);"></span>
+            <span style="font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:0.1em;flex-shrink:0;margin-left:12px;">EDIT</span>
+          </div>
+        </div>
         <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
           <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
           <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
@@ -1762,6 +1768,9 @@ function setFertility(val) { state.fertilityPreservation = val || null; hideErro
 const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
+let _lfCollapseTimer = null;
+const LF_LABELS = { casual: 'Casual', dating: 'Dating', relationship: 'Relationship', marriage: 'Marriage', life_partner: 'Life partner' };
+
 function toggleLookingFor(val) {
   if (!Array.isArray(state.lookingFor)) state.lookingFor = [];
   const i = state.lookingFor.indexOf(val);
@@ -1771,6 +1780,28 @@ function toggleLookingFor(val) {
   if (btn) { btn.classList.toggle('selected', state.lookingFor.includes(val)); btn.setAttribute('aria-pressed', state.lookingFor.includes(val) ? 'true' : 'false'); }
   if (state.lookingFor.length) hideError('looking_for');
   syncFamilyDrip();
+  // Debounce collapse: collapse 500ms after last selection
+  clearTimeout(_lfCollapseTimer);
+  if (state.lookingFor.length > 0) _lfCollapseTimer = setTimeout(collapseLookingFor, 500);
+}
+
+function collapseLookingFor() {
+  const selected = Array.isArray(state.lookingFor) ? state.lookingFor : [];
+  if (selected.length === 0) return;
+  const summaryText = document.getElementById('looking-for-summary-text');
+  if (summaryText) summaryText.textContent = selected.map(v => LF_LABELS[v] || v).join(', ');
+  const grid = document.getElementById('looking_for');
+  const collapsed = document.getElementById('looking-for-collapsed');
+  if (grid) grid.style.display = 'none';
+  if (collapsed) collapsed.style.display = '';
+}
+
+function expandLookingFor() {
+  clearTimeout(_lfCollapseTimer);
+  const grid = document.getElementById('looking_for');
+  const collapsed = document.getElementById('looking-for-collapsed');
+  if (grid) grid.style.display = '';
+  if (collapsed) collapsed.style.display = 'none';
 }
 
 function lookingForNeedsTimeline() {
@@ -1806,6 +1837,7 @@ function syncFamilyDrip() {
   if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : _datingOnly ? 'Ideally, when would you like to be dating someone?' : 'Ideally, when would you like to be in a relationship?';
   const tlSel = document.getElementById('relationship_timeline');
   if (tlSel) {
+    // "Don't Want Relationship" — casual only
     const existingDwr = tlSel.querySelector('option[value="dont_want_relationship"]');
     if (_casualOnly && !existingDwr) {
       const opt = document.createElement('option'); opt.value = 'dont_want_relationship'; opt.textContent = "Don't Want Relationship"; tlSel.appendChild(opt);
@@ -1813,6 +1845,24 @@ function syncFamilyDrip() {
       existingDwr.remove();
       if (state.relationshipTimeline === 'dont_want_relationship') { state.relationshipTimeline = null; tlSel.value = ''; }
     }
+    // Marriage-specific longer-horizon options
+    const MARRIAGE_OPTS = [{v:'1_2_years',t:'1–2 years'},{v:'3_5_years',t:'3–5 years'},{v:'5_plus_years',t:'5+ years'},{v:'10_plus_years',t:'10+ years'}];
+    if (_hasMarriage) {
+      MARRIAGE_OPTS.forEach(({v,t}) => { if (!tlSel.querySelector(`option[value="${v}"]`)) { const o=document.createElement('option'); o.value=v; o.textContent=t; tlSel.appendChild(o); } });
+    } else {
+      MARRIAGE_OPTS.forEach(({v}) => { const o=tlSel.querySelector(`option[value="${v}"]`); if(o){o.remove(); if(state.relationshipTimeline===v){state.relationshipTimeline=null;tlSel.value='';}} });
+    }
+  }
+  // Update collapsed summary if already collapsed
+  const _lfCollapsed = document.getElementById('looking-for-collapsed');
+  if (_lfCollapsed && _lfCollapsed.style.display !== 'none') {
+    const _st = document.getElementById('looking-for-summary-text');
+    if (_st) _st.textContent = _lf.map(v => LF_LABELS[v] || v).join(', ');
+  }
+  // Auto-collapse when returning to screen with prior selections
+  if (hasLF && !partnered) {
+    const _grid = document.getElementById('looking_for'), _col = document.getElementById('looking-for-collapsed');
+    if (_grid && _col && _grid.style.display !== 'none' && _col.style.display === 'none' && !_lfCollapseTimer) { collapseLookingFor(); }
   }
   if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
   // has kids: unlocks after LF + TL prereqs met
