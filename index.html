@@ -776,7 +776,7 @@
               <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
             </div>
             <div id="location-city-wrap" style="display:none;">
-              <input class="field-input" id="intl_postal_code" type="text" placeholder="e.g. SW1A 1AA" autocomplete="postal-code" oninput="onIntlPostalInput()">
+              <input class="field-input" id="intl_city_input" type="text" placeholder="e.g. London, Lagos, Chengdu…" autocomplete="address-level2" oninput="onIntlCityInput()">
             </div>
             <div class="field-error" id="err-postal_code">Zip code required</div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; min-height:18px;">
@@ -1515,9 +1515,9 @@ function saveLead() {
     birthdate: document.getElementById('birthdate')?.value || null,
     gender: state.gender || null,
     status: state.status || null,
-    country: state.locationMode === 'zip' ? 'United States' : (state.locationCountry || null),
-    postal_code: state.locationMode === 'zip' ? (get('postal_code') || null) : (state.intlPostal || null),
-    zip_generated_city: state.zipCity || null,
+    country: state.locationMode === 'zip' ? 'United States' : null,
+    postal_code: state.locationMode === 'zip' ? (get('postal_code') || null) : null,
+    zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     open_to_city: get('open_to_city'),
     relationship_stage: get('relationship_stage'),
     partner_name: get('partner_name'),
@@ -1631,10 +1631,8 @@ function validateScreen(screenId) {
       const postal1 = document.getElementById('postal_code').value.trim();
       if (!postal1) { showError('postal_code', 'Zip code required'); ok = false; } else hideError('postal_code');
     } else {
-      const intlVal = document.getElementById('intl_postal_code')?.value.trim();
-      if (!intlVal) { showError('postal_code', 'Postal code required'); ok = false; }
-      else if (!state.zipCity) { showError('postal_code', 'Postal code not found — try again'); ok = false; }
-      else hideError('postal_code');
+      const cityVal = document.getElementById('intl_city_input')?.value.trim();
+      if (!cityVal) { showError('postal_code', 'Please enter your city'); ok = false; } else hideError('postal_code');
     }
   }
   if (screenId === 3) {
@@ -1735,10 +1733,10 @@ async function doSubmit() {
     last_name: document.getElementById('last_name').value.trim(),
     birthdate: document.getElementById('birthdate').value,
     email: document.getElementById('email').value.trim().toLowerCase(),
-    country: state.locationMode === 'zip' ? 'United States' : (state.locationCountry || null),
-    postal_code: state.locationMode === 'zip' ? document.getElementById('postal_code').value.trim() : (state.intlPostal || null),
-    zip_generated_city: state.zipCity || null,
-    zip_generated_lat_long: state.zipLatLong || null,
+    country: state.locationMode === 'zip' ? 'United States' : null,
+    postal_code: state.locationMode === 'zip' ? document.getElementById('postal_code').value.trim() : null,
+    zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
+    zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
     open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
     lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
@@ -1888,8 +1886,8 @@ function _parseCityEntry(entry) {
 }
 
 function toggleLocationMode() {
-  state.locationMode = 'postal';
-  document.getElementById('location-label').textContent = 'Postal Code';
+  state.locationMode = 'city';
+  document.getElementById('location-label').textContent = 'City';
   document.getElementById('location-zip-wrap').style.display = 'none';
   document.getElementById('location-city-wrap').style.display = '';
   document.getElementById('zip-city-display').style.display = 'none';
@@ -1898,65 +1896,13 @@ function toggleLocationMode() {
   hideError('postal_code');
   state.zipCity = null; state.zipLatLong = null; state.intlPostal = null; state.locationCountry = null;
   document.getElementById('postal_code').value = '';
-  setTimeout(() => document.getElementById('intl_postal_code')?.focus(), 50);
+  setTimeout(() => document.getElementById('intl_city_input')?.focus(), 50);
 }
 
-let _intlPostalTimer = null;
-function onIntlPostalInput() {
-  clearTimeout(_intlPostalTimer);
-  const display = document.getElementById('location-city-confirmed');
-  const val = document.getElementById('intl_postal_code').value.trim();
-  if (display) { display.textContent = ''; display.style.display = 'none'; }
-  state.zipCity = null; state.zipLatLong = null; state.intlPostal = null; state.locationCountry = null;
-  if (val.length < 2) return;
-  hideError('postal_code');
-  _intlPostalTimer = setTimeout(() => _doIntlPostalLookup(val), 700);
-}
-
-function _detectCountryCodes(postal) {
-  const p = postal.trim().toUpperCase().replace(/\s+/g, '');
-  // Canada: A1A1A1
-  if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(p)) return ['ca'];
-  // UK: letters+digits pattern
-  if (/^[A-Z]{1,2}\d{1,2}[A-Z]?\d[A-Z]{2}$/.test(p)) return ['gb'];
-  // Netherlands: 1234AB
-  if (/^\d{4}[A-Z]{2}$/.test(p)) return ['nl'];
-  // 4-digit: AU, NZ, BE, AT, DK
-  if (/^\d{4}$/.test(p)) return ['au', 'nz', 'be', 'at', 'dk'];
-  // 6-digit: India, Singapore (SG uses 6 digits)
-  if (/^\d{6}$/.test(p)) return ['in', 'sg', 'ph'];
-  // Japan: 7-digit or 123-4567
-  if (/^\d{3}-?\d{4}$/.test(p)) return ['jp'];
-  // 5-digit: many European countries
-  if (/^\d{5}$/.test(p)) return ['de', 'fr', 'es', 'it', 'pl', 'mx', 'br', 'pt', 'se', 'fi', 'no', 'cz', 'kr'];
-  // fallback: try broad set
-  return ['gb', 'ca', 'au', 'de', 'fr', 'nl', 'es', 'it', 'br', 'mx', 'nz', 'za', 'in', 'sg', 'jp', 'kr', 'pl', 'se', 'no', 'dk', 'fi', 'be', 'at', 'ch', 'cz', 'pt', 'ph'];
-}
-
-async function _doIntlPostalLookup(postal) {
-  const display = document.getElementById('location-city-confirmed');
-  const candidates = _detectCountryCodes(postal);
-  for (const cc of candidates) {
-    try {
-      const r = await fetch(`https://api.zippopotam.us/${cc}/${encodeURIComponent(postal)}`);
-      if (!r.ok) continue;
-      const d = await r.json();
-      const place = d.places && d.places[0];
-      if (place) {
-        const cityStr = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
-        state.zipCity = cityStr;
-        state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
-        state.intlPostal = d['post code'] || postal;
-        state.locationCountry = d['country'] || null;
-        if (display) { display.textContent = '\uD83D\uDCCD ' + cityStr + (state.locationCountry ? ', ' + state.locationCountry : ''); display.style.display = ''; }
-        hideError('postal_code');
-        return;
-      }
-    } catch(e) {}
-  }
-  state.zipCity = null; state.zipLatLong = null; state.intlPostal = null; state.locationCountry = null;
-  if (display) { display.textContent = ''; display.style.display = 'none'; }
-  showError('postal_code', 'Postal code not found');
+function onIntlCityInput() {
+  const val = document.getElementById('intl_city_input').value.trim();
+  state.zipCity = val || null;
+  if (val) hideError('postal_code');
 }
 
 const cityPickerState = { selected: [] };
