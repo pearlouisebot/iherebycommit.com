@@ -825,8 +825,9 @@
         <div class="field-group">
           <label class="field-label">Do you live with your partner?</label>
           <div class="toggle-group" style="margin-bottom:0;">
-            <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner(true)">YES</button>
-            <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner(false)">NO</button>
+            <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes')">YES</button>
+            <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no')">NO</button>
+            <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time')">PART-TIME</button>
           </div>
         </div>
         <div id="partner-city-field" class="field-group" style="display:none; margin-bottom:20px;">
@@ -1729,7 +1730,7 @@ async function doSubmit() {
     open_to_city: cityPickerState.selected.length > 0 ? JSON.stringify(cityPickerState.selected) : null,
     zip_generated_city: state.zipCity || null,
     lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
-    partner_city: (state.status === 'partnered' && state.livesWithPartner === false) ? (partnerCity || null) : null,
+    partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
     has_children: state.hasChildren,
     wants_children: state.wantsChildren,
@@ -1953,11 +1954,13 @@ let _zipTimer = null;
 
 function setLivesWithPartner(val) {
   state.livesWithPartner = val;
-  document.getElementById('btn-lives-yes').classList.toggle('selected', val === true);
-  document.getElementById('btn-lives-no').classList.toggle('selected', val === false);
+  document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
+  document.getElementById('btn-lives-no').classList.toggle('selected', val === 'no');
+  document.getElementById('btn-lives-parttime').classList.toggle('selected', val === 'part_time');
+  const showCity = val === 'no' || val === 'part_time';
   const pcf = document.getElementById('partner-city-field');
-  if (pcf) pcf.style.display = val === false ? '' : 'none';
-  if (val === true) { partnerCity = null; const inp = document.getElementById('partner_city_input'); if (inp) inp.value = ''; }
+  if (pcf) pcf.style.display = showCity ? '' : 'none';
+  if (!showCity) { partnerCity = null; const inp = document.getElementById('partner_city_input'); if (inp) inp.value = ''; }
 }
 
 function initPartnerCityPicker() {
