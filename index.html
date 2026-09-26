@@ -1079,7 +1079,7 @@
 // CONFIG
 // ============================================================
 const SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcm15cW1wcW5sZW1rd2RuZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjQxNTQsImV4cCI6MjEwNTY0MDE1NH0.z_tuUoAayHWHiGdL5tp0DwHYvB23d0-mBj55Lmth4h8';
+const SUPABASE_ANON_KEY = 'sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
 const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 
 // ============================================================
@@ -1135,7 +1135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadCount() {
   try {
-    const resp = await fetch(FUNCTIONS_URL + '/application-count', { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } });
+    const resp = await fetch(FUNCTIONS_URL + '/application-count', { headers: { 'apikey': SUPABASE_ANON_KEY } });
     const data = await resp.json();
     if (data.count >= 100) {
       const els = document.querySelectorAll('.count-num');
@@ -1547,7 +1547,7 @@ async function saveLead() {
   try {
     const res = await fetch(FUNCTIONS_URL + '/save-lead', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify(data),
     });
     if (res.ok) {
@@ -1791,7 +1791,7 @@ async function doSubmit() {
   try {
     const resp = await fetch(FUNCTIONS_URL + '/submit-application', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify(body),
     });
     const data = await resp.json();
