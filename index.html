@@ -826,7 +826,7 @@
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
     <div id="badge-3" class="applying-badge"></div>
     <div class="screen-content">
-      <div class="screen-label">Step 2 of <span class="step-total"></span></div>
+      <div class="screen-label">Step <span id="live-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">WHERE YOU<br><span class="accent">LIVE & DATE</span></div>
 
       <div id="cities-single-section" class="field-group" style="margin-bottom:20px;">
@@ -911,34 +911,48 @@
       <div class="screen-label">Step <span id="kids-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">FAMILY &amp; <span class="accent">PLANS</span></div>
 
-      <div class="field-group" style="margin-bottom:16px;">
+      <div class="field-group" style="margin-bottom:14px;">
         <label class="field-label">Do you have kids?</label>
-        <div class="toggle-group" style="margin-bottom:0;">
-          <button class="toggle-btn" id="btn-has-yes" onclick="setHasChildren(true)">YES</button>
-          <button class="toggle-btn" id="btn-has-no" onclick="setHasChildren(false)">NO</button>
-        </div>
-        <div class="field-error" id="err-has_children">Please answer above</div>
+        <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
+          <option value="">— Select —</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+        <div class="field-error" id="err-has_children">Please make a selection</div>
       </div>
 
-      <div class="field-group" style="margin-bottom:16px;">
+      <div class="field-group" style="margin-bottom:14px;">
         <label class="field-label" id="wants-children-label">Do you want kids?</label>
-        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-          <button class="toggle-btn" id="btn-wants-yes" onclick="setWantsChildren('yes')">YES</button>
-          <button class="toggle-btn" id="btn-wants-no" onclick="setWantsChildren('no')">NO</button>
-          <button class="toggle-btn" id="btn-wants-open" onclick="setWantsChildren('open_either_way')">OPEN TO EITHER</button>
-          <button class="toggle-btn" id="btn-wants-unsure" onclick="setWantsChildren('not_sure')">UNSURE</button>
-        </div>
+        <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
+          <option value="">— Select —</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="open_either_way">Open to either</option>
+          <option value="not_sure">Unsure</option>
+        </select>
         <div class="field-error" id="err-wants_children">Please make a selection</div>
+      </div>
+
+      <div class="field-group" id="fertility-group" style="display:none;margin-bottom:14px;">
+        <label class="field-label">Have you invested in fertility preservation?</label>
+        <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
+          <option value="">— Select —</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="considering">Considering</option>
+        </select>
+        <div class="field-error" id="err-fertility">Please make a selection</div>
       </div>
 
       <div class="field-group" id="looking-for-group" style="margin-bottom:0;">
         <label class="field-label">What are you looking for?</label>
-        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-          <button class="toggle-btn" id="btn-lf-dating" onclick="setLookingFor('dating')">DATING</button>
-          <button class="toggle-btn" id="btn-lf-relationship" onclick="setLookingFor('relationship')">RELATIONSHIP</button>
-          <button class="toggle-btn" id="btn-lf-marriage" onclick="setLookingFor('marriage')">MARRIAGE</button>
-          <button class="toggle-btn" id="btn-lf-partner" onclick="setLookingFor('life_partner')">LIFE PARTNER</button>
-        </div>
+        <select class="field-input" id="looking_for_select" onchange="setLookingFor(this.value)">
+          <option value="">— Select —</option>
+          <option value="dating">Dating</option>
+          <option value="relationship">Relationship</option>
+          <option value="marriage">Marriage</option>
+          <option value="life_partner">Life partner</option>
+        </select>
         <div class="field-error" id="err-looking_for">Please make a selection</div>
       </div>
     </div>
@@ -1484,7 +1498,7 @@ function renderProgress(screenId) {
 function renderStepNums(screenId) {
   const total = totalSteps();
   document.querySelectorAll('.screen.active .step-total').forEach(el => el.textContent = total);
-  ['rel-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
+  ['rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       const parentScreen = el.closest('.screen');
@@ -1559,6 +1573,7 @@ async function saveLead() {
     partner_email: get('partner_email'),
     has_children: state.hasChildren,
     wants_children: state.wantsChildren || null,
+    fertility_preservation: state.fertilityPreservation || null,
     looking_for: state.lookingFor || null,
     phone: get('phone'),
     sms_consent: document.getElementById('sms_consent')?.checked || null,
@@ -1610,30 +1625,24 @@ function setGender(val) {
 }
 
 function setHasChildren(val) {
-  state.hasChildren = val;
-  document.getElementById('btn-has-yes').classList.toggle('selected', val === true);
-  document.getElementById('btn-has-no').classList.toggle('selected', val === false);
-  document.getElementById('wants-children-label').textContent = val ? 'Do you want more kids?' : 'Do you want kids?';
+  state.hasChildren = val === 'yes' ? true : (val === 'no' ? false : null);
+  document.getElementById('wants-children-label').textContent =
+    state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
   hideError('has_children');
 }
-
 function setWantsChildren(val) {
-  state.wantsChildren = val;
-  var map = { yes: 'btn-wants-yes', no: 'btn-wants-no', open_either_way: 'btn-wants-open', not_sure: 'btn-wants-unsure' };
-  Object.keys(map).forEach(function(k) {
-    document.getElementById(map[k]).classList.toggle('selected', val === k);
-  });
+  state.wantsChildren = val || null;
   hideError('wants_children');
+  var show = (val === 'yes');
+  document.getElementById('fertility-group').style.display = show ? 'block' : 'none';
+  if (!show) {
+    state.fertilityPreservation = null;
+    document.getElementById('fertility_select').value = '';
+    hideError('fertility');
+  }
 }
-
-function setLookingFor(val) {
-  state.lookingFor = val;
-  var map = { dating: 'btn-lf-dating', relationship: 'btn-lf-relationship', marriage: 'btn-lf-marriage', life_partner: 'btn-lf-partner' };
-  Object.keys(map).forEach(function(k) {
-    document.getElementById(map[k]).classList.toggle('selected', val === k);
-  });
-  hideError('looking_for');
-}
+function setFertility(val) { state.fertilityPreservation = val || null; hideError('fertility'); }
+function setLookingFor(val) { state.lookingFor = val || null; hideError('looking_for'); }
 
 // ============================================================
 // LINKEDIN
@@ -1700,8 +1709,11 @@ function validateScreen(screenId) {
     if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
   }
   if (screenId === 5) {
-    if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please answer above'); ok = false; } else hideError('has_children');
+    if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
     if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
+    if (state.wantsChildren === 'yes') {
+      if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
+    } else hideError('fertility');
     if (state.status !== 'partnered') {
       if (!state.lookingFor) { showError('looking_for', 'Please make a selection'); ok = false; } else hideError('looking_for');
     }
@@ -1798,7 +1810,8 @@ async function doSubmit() {
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
     has_children: state.hasChildren,
-    wants_children: state.wantsChildren,
+    wants_children: state.wantsChildren || null,
+    fertility_preservation: state.fertilityPreservation || null,
     looking_for: state.lookingFor || null,
     phone: document.getElementById('phone').value.trim(),
     sms_consent: document.getElementById('sms_consent').checked,
