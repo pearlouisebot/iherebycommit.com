@@ -973,13 +973,14 @@
 
       <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
         <label class="field-label">Looking for</label>
-        <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
-          <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
-          <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
-          <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
-          <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
-          <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
-        </div>
+        <select class="field-input" id="looking_for_select" onchange="setLookingForSelect(this.value)">
+          <option value="">— Select —</option>
+          <option value="casual">Casual</option>
+          <option value="dating">Dating</option>
+          <option value="relationship">Relationship</option>
+          <option value="marriage">Marriage</option>
+          <option value="life_partner">Life partner</option>
+        </select>
         <div class="field-error" id="err-looking_for">Please make a selection</div>
       </div>
 
@@ -1745,17 +1746,17 @@ function setFertility(val) { state.fertilityPreservation = val || null; hideErro
 const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
+function setLookingForSelect(val) {
+  state.lookingFor = val ? [val] : [];
+  if (state.lookingFor.length) hideError('looking_for');
+  syncTimelineQuestion();
+}
+
 function toggleLookingFor(val) {
   if (!Array.isArray(state.lookingFor)) state.lookingFor = [];
   const i = state.lookingFor.indexOf(val);
   if (i === -1) state.lookingFor.push(val);
   else state.lookingFor.splice(i, 1);
-  const btn = document.getElementById('btn-looking-' + val);
-  if (btn) {
-    const on = state.lookingFor.includes(val);
-    btn.classList.toggle('selected', on);
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  }
   if (state.lookingFor.length) hideError('looking_for');
   syncTimelineQuestion();
 }
