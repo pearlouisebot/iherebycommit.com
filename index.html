@@ -1884,7 +1884,7 @@ function toggleLocationMode() {
   document.getElementById('location-city-wrap').style.display = isCity ? '' : 'none';
   document.getElementById('zip-city-display').style.display = 'none';
   document.getElementById('location-city-confirmed').style.display = 'none';
-  document.getElementById('location-mode-toggle').textContent = isCity ? 'Use ZIP instead?' : 'International?';
+  document.getElementById('location-mode-toggle').style.display = isCity ? 'none' : '';
   hideError('postal_code');
   if (isCity) {
     state.zipCity = null; state.zipLatLong = null;
