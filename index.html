@@ -1385,6 +1385,11 @@ function showScreen(id, direction) {
 
   if (id > 0 && id < 8) { renderBadge(id); renderProgress(id); renderStepNums(id); }
   window.scrollTo(0, 0);
+
+  // Pre-warm Turnstile when user reaches the social handles step
+  if (id === 7 && window.turnstile && !state.turnstileToken) {
+    try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
+  }
 }
 
 function renderBadge(screenId) {
@@ -1674,8 +1679,8 @@ async function submitForm() {
     if (window.turnstile) {
       try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
     }
-    // Fallback: proceed after 8s regardless
-    setTimeout(() => { if (state.submitting) doSubmit(); }, 8000);
+    // Fallback: proceed after 3s regardless (Turnstile pre-warmed on step entry)
+    setTimeout(() => { if (state.submitting) doSubmit(); }, 3000);
   }
 }
 
