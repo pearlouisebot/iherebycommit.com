@@ -4,248 +4,121 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terms of Use — I Hereby Commit</title>
-
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="Terms of Use — I Hereby Commit">
   <meta property="og:url" content="https://iherebycommit.com/terms">
   <link rel="canonical" href="https://iherebycommit.com/terms">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
   <style>
-    :root {
-      --bg: #0e0e0e;
-      --text: #f0ece0;
-      --body: #9a978c;
-      --accent: #c8f135;
-      --muted: #888;
-      --dim: #333;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-size: 15px;
-      line-height: 1.7;
-    }
-    a { color: inherit; text-decoration: none; }
-
-    /* Film grain */
-    body::before {
-      content: '';
-      position: fixed; top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      pointer-events: none; z-index: 9999; opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 256px 256px;
-      animation: grain 0.3s steps(1) infinite;
-    }
-    @keyframes grain {
-      0%  { transform:translate(0,0); } 10% { transform:translate(-2%,-3%); }
-      20% { transform:translate(3%,1%); } 30% { transform:translate(-1%,4%); }
-      40% { transform:translate(4%,-2%); } 50% { transform:translate(-3%,3%); }
-      60% { transform:translate(2%,-1%); } 70% { transform:translate(-4%,2%); }
-      80% { transform:translate(1%,-4%); } 90% { transform:translate(-2%,1%); }
-      100% { transform:translate(3%,-3%); }
-    }
-
-    /* Layout */
-    .doc-wrap {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 64px 24px 64px;
-    }
-
-    /* Nav */
-    .doc-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 56px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .doc-back {
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-    .doc-back:hover { color: var(--text); }
-
-    /* Wordmark */
-    .wordmark-wrap { display: inline-block; line-height: 1; }
-    .wordmark-text {
-      font-family: 'Bebas Neue', sans-serif;
-      letter-spacing: 0.06em;
-      display: block;
-      font-size: 22px;
-    }
-    .wm-white { color: #f0ece0; }
-    .wm-green { color: #c8f135; }
-    .wordmark-wrap::after {
-      content: '';
-      display: block;
-      height: 2px;
-      background: #c8f135;
-      margin-top: 2px;
-    }
-
-    /* Page header */
-    .doc-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px;
-      line-height: 1.0;
-      color: var(--text);
-      margin-bottom: 10px;
-    }
-    .doc-effective {
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 40px;
-    }
-    .doc-divider {
-      height: 1px;
-      background: var(--dim);
-    }
-
-    /* Sections */
-    .doc-section { margin-top: 40px; }
-    .doc-section-heading {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      color: var(--text);
-      margin-bottom: 16px;
-      line-height: 1.1;
-    }
-    .doc-p {
-      font-family: 'Space Mono', monospace;
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--body);
-    }
-    .doc-p + .doc-p { margin-top: 16px; }
-
-    /* Accent / email links */
-    a.accent-link { color: var(--accent); }
-    a.accent-link:hover { text-decoration: underline; }
-
-    /* Address block */
-    .doc-address {
-      font-family: 'Space Mono', monospace;
-      font-size: 14px;
-      color: var(--body);
-      line-height: 2.0;
-      margin-top: 12px;
-    }
-
-    @media (max-width: 480px) {
-      .doc-title { font-size: 36px; }
-      .doc-section-heading { font-size: 22px; }
-      .doc-p { font-size: 14px; }
-    }
+    :root { --bg:#0e0e0e; --text:#f0ece0; --body:#9a978c; --accent:#c8f135; --muted:#888; --dim:#333; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html,body { background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; }
+    a { color:inherit; text-decoration:none; }
+    body::before { content:''; position:fixed; top:-50%; left:-50%; width:200%; height:200%; pointer-events:none; z-index:9999; opacity:0.04;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size:256px 256px; animation:grain 0.3s steps(1) infinite; }
+    @keyframes grain { 0%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,1%)} 30%{transform:translate(-1%,4%)} 40%{transform:translate(4%,-2%)} 50%{transform:translate(-3%,3%)} 60%{transform:translate(2%,-1%)} 70%{transform:translate(-4%,2%)} 80%{transform:translate(1%,-4%)} 90%{transform:translate(-2%,1%)} 100%{transform:translate(3%,-3%)} }
+    .doc-wrap { max-width:680px; margin:0 auto; padding:64px 24px; }
+    .doc-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:56px; flex-wrap:wrap; gap:12px; }
+    .doc-back { font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:0.05em; }
+    .doc-back:hover { color:var(--text); }
+    .wordmark-wrap { display:inline-block; line-height:1; }
+    .wordmark-text { font-family:'Bebas Neue',sans-serif; letter-spacing:0.06em; display:block; font-size:22px; }
+    .wm-white { color:#f0ece0; } .wm-green { color:#c8f135; }
+    .wordmark-wrap::after { content:''; display:block; height:2px; background:#c8f135; margin-top:2px; }
+    .doc-title { font-family:'Bebas Neue',sans-serif; font-size:48px; line-height:1.0; color:var(--text); margin-bottom:10px; }
+    .doc-effective { font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); margin-bottom:40px; }
+    .doc-divider { height:1px; background:var(--dim); }
+    .doc-section { margin-top:40px; }
+    .doc-section-heading { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--text); margin-bottom:16px; line-height:1.1; }
+    .doc-p { font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; color:var(--body); }
+    .doc-p + .doc-p { margin-top:16px; }
+    a.accent-link { color:var(--accent); }
+    a.accent-link:hover { text-decoration:underline; }
+    .doc-address { font-family:'Space Mono',monospace; font-size:14px; color:var(--body); line-height:2.0; margin-top:12px; }
+    @media(max-width:480px) { .doc-title{font-size:36px;} .doc-section-heading{font-size:22px;} .doc-p{font-size:14px;} }
   </style>
 </head>
 <body>
   <div class="doc-wrap">
-
-    <!-- Nav -->
     <nav class="doc-nav">
       <a href="https://iherebycommit.com">
-        <span class="wordmark-wrap">
-          <span class="wordmark-text"><span class="wm-white">I HEREBY </span><span class="wm-green">COMMIT</span></span>
-        </span>
+        <span class="wordmark-wrap"><span class="wordmark-text"><span class="wm-white">I HEREBY </span><span class="wm-green">COMMIT</span></span></span>
       </a>
       <a href="https://iherebycommit.com" class="doc-back">← Back to application</a>
     </nav>
 
-    <!-- Page header -->
     <h1 class="doc-title">Terms of Use</h1>
     <p class="doc-effective">Effective: October 1, 2026</p>
     <div class="doc-divider"></div>
 
-    <!-- Intro -->
     <div class="doc-section">
       <p class="doc-p">These terms apply to your use of iherebycommit.com, operated by Hatch Labs Holdings LLC, a Texas limited liability company ("Hatch Labs," "we," "us"). By using the site or submitting an application, you agree to them.</p>
     </div>
 
-    <!-- 1. Who can apply -->
     <div class="doc-section">
       <h2 class="doc-section-heading">1. Who can apply</h2>
       <p class="doc-p">You must be at least 18 years old to apply.</p>
     </div>
 
-    <!-- 2. What applying means -->
     <div class="doc-section">
       <h2 class="doc-section-heading">2. What applying means</h2>
-      <p class="doc-p">Submitting an application puts you on an interest list for our founding cohort (Cohort 01). It does not enroll you in any study, and it doesn't guarantee you'll be selected. Applications are reviewed in the order they're received, and earlier applicants get priority, but selection also depends on the study's needs, such as balancing cities and who applies. Before any study begins, you'll receive full details, eligibility requirements, and a separate informed consent form, and you can decide then whether to take part. You can remove yourself from the list at any time.</p>
+      <p class="doc-p">Submitting an application puts you on an interest list for our founding cohort (Cohort 01). It does not enroll you in any study, and it doesn't guarantee you'll be selected. Applications are reviewed in the order they're received, and earlier applicants get priority, but selection also depends on the study's needs, such as balancing cities and who applies. Before any study begins, you'll receive full details, eligibility requirements, and a separate informed consent form, and you can decide then whether to take part. You can remove yourself from the list at any time. We may publish aggregate, de-identified statistics about applications, such as how many people applied and from where.</p>
     </div>
 
-    <!-- 3. Communications -->
     <div class="doc-section">
       <h2 class="doc-section-heading">3. Communications</h2>
       <p class="doc-p">By applying, you agree that we may email you about the study and about other apps and products from Hatch Labs. You can unsubscribe from marketing emails at any time using the link in any email. We'll only text you if you opted in, and only about the study unless you separately agree otherwise.</p>
     </div>
 
-    <!-- 4. Your information -->
     <div class="doc-section">
-      <h2 class="doc-section-heading">4. Your information</h2>
-      <p class="doc-p">Please give us accurate information about yourself, and apply only for yourself. If you apply as a couple and share your partner's name and email, you confirm that your partner is comfortable with you sharing it and with receiving one invitation email from us when the study opens. Our Privacy Policy explains how we handle everything you submit.</p>
+      <h2 class="doc-section-heading">4. Your information and research</h2>
+      <p class="doc-p">Please give us accurate information about yourself, and apply only for yourself. If you apply as a couple and share your partner's name and email, you confirm that your partner is comfortable with you sharing it and with receiving emails from us about the study.</p>
+      <p class="doc-p">You agree that the information you give us here may be analyzed and, in de-identified form, published as part of research about relationships — including aggregate statistics about applicants and findings drawn from them. Published results never identify you. Joining the study itself is separate: before it begins you'll receive full details and a consent form, and you can decide then whether to take part. Our Privacy Policy explains how we handle everything you submit.</p>
     </div>
 
-    <!-- 5. The science on this site -->
     <div class="doc-section">
       <h2 class="doc-section-heading">5. The science on this site</h2>
       <p class="doc-p">The research summaries and footnotes on this site describe published studies for general information. They are not medical, psychological, or relationship advice. The linked papers belong to their authors and publishers.</p>
     </div>
 
-    <!-- 6. Acceptable use -->
     <div class="doc-section">
       <h2 class="doc-section-heading">6. Acceptable use</h2>
       <p class="doc-p">Don't submit fake or automated applications, apply on someone else's behalf, scrape the site, or interfere with how it works. We may remove applications that break these rules.</p>
     </div>
 
-    <!-- 7. Our content -->
     <div class="doc-section">
       <h2 class="doc-section-heading">7. Our content</h2>
       <p class="doc-p">The I Hereby Commit name, design, and text on this site belong to Hatch Labs Holdings LLC. Please don't copy them without our permission.</p>
     </div>
 
-    <!-- 8. Other Hatch Labs apps -->
     <div class="doc-section">
       <h2 class="doc-section-heading">8. Other Hatch Labs apps</h2>
       <p class="doc-p">Other apps and products from Hatch Labs have their own terms, which you'll be asked to accept when you sign up for them.</p>
     </div>
 
-    <!-- 9. No warranties -->
     <div class="doc-section">
       <h2 class="doc-section-heading">9. No warranties</h2>
       <p class="doc-p">The site is provided "as is" and "as available." We work to keep it accurate and running, but we can't promise it will always be error-free or uninterrupted.</p>
     </div>
 
-    <!-- 10. Limitation of liability -->
     <div class="doc-section">
       <h2 class="doc-section-heading">10. Limitation of liability</h2>
       <p class="doc-p">To the fullest extent the law allows, Hatch Labs isn't liable for any indirect, incidental, special, or consequential damages arising from your use of the site, and our total liability for any claim relating to the site will not exceed one hundred U.S. dollars ($100).</p>
     </div>
 
-    <!-- 11. Governing law -->
     <div class="doc-section">
       <h2 class="doc-section-heading">11. Governing law</h2>
       <p class="doc-p">These terms are governed by the laws of the State of Texas, without regard to its conflict-of-law rules. Any dispute will be resolved in the state or federal courts located in Travis County, Texas.</p>
     </div>
 
-    <!-- 12. Changes -->
     <div class="doc-section">
       <h2 class="doc-section-heading">12. Changes</h2>
       <p class="doc-p">We may update these terms. We'll change the effective date above when we do. Continuing to use the site after an update means you accept the new terms.</p>
     </div>
 
-    <!-- 13. Contact -->
     <div class="doc-section">
       <h2 class="doc-section-heading">13. Contact</h2>
       <div class="doc-address">
@@ -255,7 +128,6 @@
         <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>
       </div>
     </div>
-
   </div>
 </body>
 </html>

@@ -4,69 +4,205 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy — I Hereby Commit</title>
+
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="Privacy Policy — I Hereby Commit">
   <meta property="og:url" content="https://iherebycommit.com/privacy">
   <link rel="canonical" href="https://iherebycommit.com/privacy">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
   <style>
-    :root { --bg:#0e0e0e; --text:#f0ece0; --body:#9a978c; --accent:#c8f135; --muted:#888; --dim:#333; }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    html,body { background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; }
-    a { color:inherit; text-decoration:none; }
-    body::before { content:''; position:fixed; top:-50%; left:-50%; width:200%; height:200%; pointer-events:none; z-index:9999; opacity:0.04;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size:256px 256px; animation:grain 0.3s steps(1) infinite; }
-    @keyframes grain { 0%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,1%)} 30%{transform:translate(-1%,4%)} 40%{transform:translate(4%,-2%)} 50%{transform:translate(-3%,3%)} 60%{transform:translate(2%,-1%)} 70%{transform:translate(-4%,2%)} 80%{transform:translate(1%,-4%)} 90%{transform:translate(-2%,1%)} 100%{transform:translate(3%,-3%)} }
-    .doc-wrap { max-width:680px; margin:0 auto; padding:64px 24px; }
-    .doc-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:56px; flex-wrap:wrap; gap:12px; }
-    .doc-back { font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:0.05em; }
-    .doc-back:hover { color:var(--text); }
-    .wordmark-wrap { display:inline-block; line-height:1; }
-    .wordmark-text { font-family:'Bebas Neue',sans-serif; letter-spacing:0.06em; display:block; font-size:22px; }
-    .wm-white { color:#f0ece0; } .wm-green { color:#c8f135; }
-    .wordmark-wrap::after { content:''; display:block; height:2px; background:#c8f135; margin-top:2px; }
-    .doc-title { font-family:'Bebas Neue',sans-serif; font-size:48px; line-height:1.0; color:var(--text); margin-bottom:10px; }
-    .doc-effective { font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); margin-bottom:40px; }
-    .doc-divider { height:1px; background:var(--dim); }
-    .doc-section { margin-top:40px; }
-    .doc-section-heading { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--text); margin-bottom:16px; line-height:1.1; }
-    .doc-p { font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; color:var(--body); }
-    .doc-p + .doc-p { margin-top:16px; }
-    .doc-list { list-style:none; padding:0 0 0 20px; margin:0; }
-    .doc-list li { font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; color:var(--body); position:relative; margin-bottom:12px; }
-    .doc-list li::before { content:'—'; position:absolute; left:-20px; color:var(--muted); }
-    .doc-list li:last-child { margin-bottom:0; }
-    a.accent-link { color:var(--accent); }
-    a.accent-link:hover { text-decoration:underline; }
-    .doc-address { font-family:'Space Mono',monospace; font-size:14px; color:var(--body); line-height:2.0; margin-top:12px; }
-    @media(max-width:480px) { .doc-title{font-size:36px;} .doc-section-heading{font-size:22px;} .doc-p,.doc-list li{font-size:14px;} }
+    :root {
+      --bg: #0e0e0e;
+      --text: #f0ece0;
+      --body: #9a978c;
+      --accent: #c8f135;
+      --muted: #888;
+      --dim: #333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Film grain */
+    body::before {
+      content: '';
+      position: fixed; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      pointer-events: none; z-index: 9999; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      animation: grain 0.3s steps(1) infinite;
+    }
+    @keyframes grain {
+      0%  { transform:translate(0,0); } 10% { transform:translate(-2%,-3%); }
+      20% { transform:translate(3%,1%); } 30% { transform:translate(-1%,4%); }
+      40% { transform:translate(4%,-2%); } 50% { transform:translate(-3%,3%); }
+      60% { transform:translate(2%,-1%); } 70% { transform:translate(-4%,2%); }
+      80% { transform:translate(1%,-4%); } 90% { transform:translate(-2%,1%); }
+      100% { transform:translate(3%,-3%); }
+    }
+
+    /* Layout */
+    .doc-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 64px 24px 64px;
+    }
+
+    /* Nav */
+    .doc-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 56px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .doc-back {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+    .doc-back:hover { color: var(--text); }
+
+    /* Wordmark */
+    .wordmark-wrap { display: inline-block; line-height: 1; }
+    .wordmark-text {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.06em;
+      display: block;
+      font-size: 22px;
+    }
+    .wm-white { color: #f0ece0; }
+    .wm-green { color: #c8f135; }
+    .wordmark-wrap::after {
+      content: '';
+      display: block;
+      height: 2px;
+      background: #c8f135;
+      margin-top: 2px;
+    }
+
+    /* Page header */
+    .doc-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      line-height: 1.0;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .doc-effective {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+    .doc-divider {
+      height: 1px;
+      background: var(--dim);
+    }
+
+    /* Sections */
+    .doc-section { margin-top: 40px; }
+    .doc-section-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    .doc-p {
+      font-family: 'Space Mono', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--body);
+    }
+    .doc-p + .doc-p { margin-top: 16px; }
+
+    /* Bullet lists */
+    .doc-list {
+      list-style: none;
+      padding: 0 0 0 20px;
+      margin: 0;
+    }
+    .doc-list li {
+      font-family: 'Space Mono', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--body);
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .doc-list li::before {
+      content: '—';
+      position: absolute;
+      left: -20px;
+      color: var(--muted);
+    }
+    .doc-list li:last-child { margin-bottom: 0; }
+
+    /* Accent / email links */
+    a.accent-link {
+      color: var(--accent);
+    }
+    a.accent-link:hover { text-decoration: underline; }
+
+    /* Address block */
+    .doc-address {
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      color: var(--body);
+      line-height: 2.0;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .doc-title { font-size: 36px; }
+      .doc-section-heading { font-size: 22px; }
+      .doc-p, .doc-list li { font-size: 14px; }
+    }
   </style>
 </head>
 <body>
   <div class="doc-wrap">
+
+    <!-- Nav -->
     <nav class="doc-nav">
       <a href="https://iherebycommit.com">
-        <span class="wordmark-wrap"><span class="wordmark-text"><span class="wm-white">I HEREBY </span><span class="wm-green">COMMIT</span></span></span>
+        <span class="wordmark-wrap">
+          <span class="wordmark-text"><span class="wm-white">I HEREBY </span><span class="wm-green">COMMIT</span></span>
+        </span>
       </a>
       <a href="https://iherebycommit.com" class="doc-back">← Back to application</a>
     </nav>
 
+    <!-- Page header -->
     <h1 class="doc-title">Privacy Policy</h1>
     <p class="doc-effective">Effective: October 1, 2026</p>
     <div class="doc-divider"></div>
 
+    <!-- Intro -->
     <div class="doc-section">
       <p class="doc-p">I Hereby Commit is a project of Hatch Labs Holdings LLC, a Texas limited liability company ("Hatch Labs," "we," "us"). This policy explains what we collect when you apply at iherebycommit.com, how we use it, and the choices you have.</p>
     </div>
 
+    <!-- The short version -->
     <div class="doc-section">
       <h2 class="doc-section-heading">The short version</h2>
       <ul class="doc-list">
-        <li>Applying isn't joining the study. Before the study begins, you'll get full details and a separate consent form, and your individual answers become study data only if you agree then.</li>
-        <li>We may publish aggregate statistics about who applied — never anything that identifies you.</li>
+        <li>Applying puts you on an interest list. It does not enroll you in any research study.</li>
+        <li>Before any study begins, you'll receive full details and a separate informed consent form. Nothing you submit here is used as research data unless you later give that consent.</li>
         <li>We never sell your information, and we don't use it for third-party advertising.</li>
         <li>We may email you about other apps and products built by Hatch Labs. You can unsubscribe anytime.</li>
         <li>Scientists only ever receive de-identified, anonymized data — never your name or contact details.</li>
@@ -74,45 +210,50 @@
       </ul>
     </div>
 
+    <!-- What we collect -->
     <div class="doc-section">
       <h2 class="doc-section-heading">What we collect</h2>
-      <p class="doc-p">From you: your name; date of birth; city; whether you're applying as a single or as a couple; if you apply as a couple, your relationship stage and your partner's name and email; whether you have or want children; your email address; your mobile number if you give us one; and the social profile links you choose to share (LinkedIn, and optionally Instagram, X, and TikTok).</p>
+      <p class="doc-p">From you: your name; date of birth; city; whether you're applying as a single or as a couple; if you apply as a couple, your relationship stage and your partner's name and email; whether you have or want children; your email address; your mobile number; and the social profile links you choose to share (LinkedIn, and optionally Instagram, X, and TikTok).</p>
       <p class="doc-p">Automatically: your browser type, the page that referred you to us, which headline you were viewing when you applied, and a one-way scrambled ("hashed") version of your IP address that we use only to block spam. We don't currently use analytics, advertising cookies, or third-party tracking pixels. If that changes, we'll update this policy first.</p>
     </div>
 
+    <!-- How we use it -->
     <div class="doc-section">
       <h2 class="doc-section-heading">How we use it</h2>
       <ul class="doc-list">
         <li>To review applications and contact you about Cohort 01 and the study.</li>
-        <li>To select and balance Cohort 01.</li>
         <li>To send you text messages about the study, only if you opted in.</li>
-        <li>To analyze who is applying and to publish aggregate, de-identified statistics and findings about our applicant pool — for example, how many people applied as couples, which cities they're in, or what they say they want. We never publish anything that identifies an individual.</li>
         <li>To tell you by email about other apps, products, and early-access invitations from Hatch Labs. Every marketing email includes an unsubscribe link. Unsubscribing from marketing doesn't remove you from the study list unless you ask us to.</li>
+        <li>To understand who is applying (for example, how many singles and couples, and from which cities) so we can plan the study.</li>
         <li>To protect the site from bots and abuse.</li>
       </ul>
     </div>
 
+    <!-- Research and de-identification -->
     <div class="doc-section">
-      <h2 class="doc-section-heading">Research, analysis and publishing</h2>
-      <p class="doc-p">We analyze applications to plan and select our cohorts, and we may publish aggregate, de-identified statistics and findings drawn from them — in articles, press, presentations or research write-ups. Published results never include your name, contact details, social profiles, or anything else that identifies you.</p>
-      <p class="doc-p">By applying, you agree that your information may be analyzed and published in de-identified form, as described in our Terms. Using your individual answers as data in the study itself is different: that happens only after you receive full details and give separate informed consent. Scientists we work with receive only de-identified, anonymized data. You can ask us to stop using your information at any time by emailing <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>.</p>
+      <h2 class="doc-section-heading">Research and de-identification</h2>
+      <p class="doc-p">Before we share any information with scientists, we remove your name, contact details, social profile links, and anything else that could identify you. Researchers only ever receive de-identified, anonymized data. We never share identifiable information with researchers.</p>
     </div>
 
+    <!-- Your partner's information -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Your partner's information</h2>
-      <p class="doc-p">If you apply as a couple, you give us your partner's name and email. We use it to connect your application with theirs and to contact your partner about the study: an invitation when it opens, and occasional reminders or updates about joining. Every email we send them includes an unsubscribe link, and we'll stop as soon as they ask. We will never use your partner's information to market other products, and we never sell or share it. Please share their details only if your partner is comfortable with that. Your partner can ask us to delete their information at any time by emailing <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>.</p>
+      <p class="doc-p">If you apply as a couple, you give us your partner's name and email. We use it to connect your application with theirs and to send your partner one email inviting them to join when the study opens. That is the only email we'll send them unless they apply themselves. We will never use your partner's information for marketing. Please share it only if your partner is comfortable with that. Your partner can ask us to delete it at any time by emailing <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>.</p>
     </div>
 
+    <!-- Your social profiles -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Your social profiles</h2>
       <p class="doc-p">We collect links to public profiles so we can confirm applicants are real people when Cohort 01 opens. We never post to your accounts or access anything beyond the public profile you link.</p>
     </div>
 
+    <!-- Text messages -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Text messages</h2>
-      <p class="doc-p">If you opt in, we'll send occasional texts about the study through our messaging provider, Twilio. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help. Agreeing to texts is not a condition of applying, and you don't need to give us a mobile number at all. We will not send you marketing texts about other Hatch Labs products unless you separately agree to receive them. We never share your mobile number or text-message consent with anyone for their own marketing.</p>
+      <p class="doc-p">If you opt in, we'll send occasional texts about the study through our messaging provider, Twilio. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help. Agreeing to texts is not a condition of applying. We will not send you marketing texts about other Hatch Labs products unless you separately agree to receive them. We never share your mobile number or text-message consent with anyone for their own marketing.</p>
     </div>
 
+    <!-- Who we share it with -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Who we share it with</h2>
       <p class="doc-p">We share information only with service providers that help us run this site and our communications, and who may use it only on our behalf:</p>
@@ -126,41 +267,49 @@
       <p class="doc-p" style="margin-top:16px;">We share only de-identified, anonymized data with scientists, as described above. We may disclose information if the law requires it. If Hatch Labs is reorganized or acquired, your information may transfer to the successor, which will be bound by this policy. We do not sell your personal information or share it for targeted advertising.</p>
     </div>
 
+    <!-- How long we keep it -->
     <div class="doc-section">
       <h2 class="doc-section-heading">How long we keep it</h2>
       <p class="doc-p">We keep your information for as long as you remain on our list and it is needed for the purposes described in this policy, including future Hatch Labs studies and products, unless you ask us to delete it sooner. When it's no longer needed, we delete or de-identify it. We may keep a minimal record of an opt-out or deletion request so we can keep honoring it. If you join the study, the study's consent terms will also govern your study data.</p>
     </div>
 
+    <!-- Security -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Security</h2>
       <p class="doc-p">Your information is encrypted in transit and stored in an access-restricted database. No system is perfectly secure, but we work to protect your information and limit who can see it.</p>
     </div>
 
+    <!-- Your choices and rights -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Your choices and rights</h2>
       <p class="doc-p">You can ask to access, correct, or delete your information, get a copy of it, stop marketing emails, or remove yourself from the list by emailing <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>. We'll respond within 45 days. If we decline your request, you can appeal by replying to our response, and we'll answer your appeal within 60 days. Depending on where you live, you may have additional privacy rights under state law; we honor these requests from everyone, wherever you live. We won't treat you differently for making a request.</p>
     </div>
 
+    <!-- Age -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Age</h2>
       <p class="doc-p">This site is for adults 18 and older. We don't knowingly collect information from anyone under 18. If we learn we have, we'll delete it.</p>
     </div>
 
+    <!-- Where your data is stored -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Where your data is stored</h2>
       <p class="doc-p">In the United States.</p>
     </div>
 
+    <!-- Other Hatch Labs apps -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Other Hatch Labs apps</h2>
       <p class="doc-p">Other apps and products from Hatch Labs have their own terms and privacy policies, which you'll be asked to accept when you sign up for them.</p>
     </div>
 
+    <!-- Changes to this policy -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Changes to this policy</h2>
       <p class="doc-p">If we change this policy, we'll update the effective date above. If a change materially affects how we use information you've already given us, we'll email you before it takes effect.</p>
     </div>
 
+    <!-- Contact -->
     <div class="doc-section">
       <h2 class="doc-section-heading">Contact</h2>
       <div class="doc-address">
@@ -170,6 +319,7 @@
         <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>
       </div>
     </div>
+
   </div>
 </body>
 </html>

@@ -588,6 +588,32 @@
       font-family: 'Space Mono', monospace; font-size: 13px;
       color: var(--muted); font-style: italic;
     }
+    /* Partner notice + tip box */
+    .partner-notice {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; color: var(--body); line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .partner-tip-box {
+      border: 1px solid var(--dim);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .partner-tip-box .tip-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 8px;
+    }
+    .partner-tip-box .tip-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px; color: var(--body); line-height: 1.6;
+    }
+    /* Confirmation priority text */
+    .confirm-priority {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; color: var(--body); line-height: 1.7;
+      margin-bottom: 24px;
+    }
     /* Zip→city lookup display */
     .zip-city-display {
       font-family: 'Space Mono', monospace;
@@ -828,6 +854,11 @@
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com">
         <div class="field-error" id="err-partner_email">Valid email required</div>
       </div>
+      <p class="partner-notice">We'll notify your partner when the study goes live.</p>
+      <div class="partner-tip-box">
+        <div class="tip-label">Priority tip</div>
+        <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
+      </div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(4)">NEXT</button>
@@ -883,12 +914,12 @@
       <div class="screen-label">Step <span id="contact-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">WE'LL TEXT YOU<br>WHEN WE'RE <span class="accent">LIVE</span></div>
       <div class="field-group">
-        <label class="field-label">Phone number</label>
-        <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel">
+        <label class="field-label">Phone number <span class="optional-tag">optional</span></label>
+        <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" oninput="onPhoneInput()">
         <div class="field-error" id="err-phone">Valid phone number required</div>
       </div>
-      <label class="checkbox-group">
-        <input type="checkbox" id="sms_consent">
+      <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
+        <input type="checkbox" id="sms_consent" disabled>
         <span class="checkbox-label">Text me updates about the study. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent isn't required to apply. See our <a href="/privacy" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
       </label>
     </div>
@@ -930,7 +961,7 @@
       <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
     </div>
     <div class="bottom-action">
-      <p class="legal-consent-text">By applying, you agree to our <a href="/terms" target="_blank" rel="noopener">Terms</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>. We may also email you about other Hatch Labs apps — unsubscribe anytime.</p>
+      <p class="legal-consent-text">By applying, you agree to our <a href="/terms" target="_blank" rel="noopener">Terms</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</p>
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(7)">← BACK</button>
       <div class="legal-links"><a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></div>
@@ -943,6 +974,7 @@
       <div class="screen-label">APPLICATION RECEIVED</div>
       <div class="subject-number" id="confirm-subject-num">#00001</div>
       <div class="subject-label">YOUR SUBJECT NUMBER</div>
+      <p class="confirm-priority">Applications are reviewed in the order they're received. The earlier you applied, the higher your priority for Cohort 01.</p>
       <div class="confirm-text" id="confirm-text"></div>
       <div class="recruit-section">
         <div class="field-label" style="margin-bottom:12px;">Know someone who should apply?</div>
@@ -1062,6 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCarousel();
   initFnModal();
   initCityPicker();
+  onPhoneInput(); // init SMS checkbox state
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = 'block';
@@ -1573,7 +1606,8 @@ function validateScreen(screenId) {
   }
   if (screenId === 6) {
     const phone = document.getElementById('phone').value.trim();
-    if (!phone || !normalizePhone(phone)) { showError('phone', 'Valid phone number required'); ok = false; } else hideError('phone');
+    // Phone is optional — only validate format if a value was entered
+    if (phone && !normalizePhone(phone)) { showError('phone', 'Enter a valid phone number or leave blank'); ok = false; } else hideError('phone');
   }
   if (screenId === 7) {
     const username = document.getElementById('linkedin_username').value.trim();
@@ -1701,7 +1735,7 @@ function showConfirmation(subjectNumber, isDuplicate) {
     const pn = document.getElementById('partner_name').value.trim();
     textEl.innerHTML = isDuplicate
       ? `You and <span class="redact-field">${pn}</span> are already on file. Your subject number is above.`
-      : `${name} and <span class="redact-field">${pn}</span> — you're in the record. Science is coming for your love life.`;
+      : `${name} and <span class="redact-field">${pn}</span> — you're in the record. When ${pn} applies, they'll be linked to you and share your place in line.`;
   } else {
     textEl.innerHTML = isDuplicate
       ? `${name}, you're already in our system. Your subject number is above.`
@@ -1821,6 +1855,17 @@ const _ZIP_CC = {
   'New Zealand':'nz','South Africa':'za','Philippines':'ph'
 };
 let _zipTimer = null;
+
+function onPhoneInput() {
+  const phone = document.getElementById('phone');
+  const checkbox = document.getElementById('sms_consent');
+  const label = document.getElementById('sms-consent-label');
+  if (!phone || !checkbox) return;
+  const hasPhone = phone.value.trim().length > 0;
+  checkbox.disabled = !hasPhone;
+  if (label) label.style.opacity = hasPhone ? '1' : '0.5';
+  if (!hasPhone) checkbox.checked = false;
+}
 
 function onZipInput() {
   clearTimeout(_zipTimer);
