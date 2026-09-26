@@ -766,7 +766,7 @@
             <label class="field-label">Zip / Postal</label>
             <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
             <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
-            <div id="zip-city-display" class="zip-city-display"></div>
+            <div id="zip-city-display" class="zip-city-display" style="display:none;"></div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:115px 1fr;gap:10px;margin-bottom:12px;">
@@ -2015,15 +2015,16 @@ function onZipInput() {
   clearTimeout(_zipTimer);
   const display = document.getElementById('zip-city-display');
   const zip = document.getElementById('postal_code').value.trim();
-  if (zip.length < 4) { if (display) display.textContent = ''; state.zipCity = null; return; }
+  if (zip.length < 4) { if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; return; }
   _zipTimer = setTimeout(() => _doZipLookup(zip), 600);
 }
 
 async function _doZipLookup(zip) {
   const display = document.getElementById('zip-city-display');
-  const country = document.getElementById('country').value;
-  const cc = _ZIP_CC[country];
-  if (!cc) { if (display) display.textContent = ''; state.zipCity = null; return; }
+  const countryEl = document.getElementById('country');
+  const country = (countryEl && countryEl.value) || 'United States';
+  const cc = _ZIP_CC[country] || 'us';
+  if (!cc) { if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; return; }
   try {
     const r = await fetch(`https://api.zippopotam.us/${cc}/${encodeURIComponent(zip)}`);
     if (!r.ok) { if (display) display.textContent = ''; state.zipCity = null; return; }
@@ -2033,11 +2034,11 @@ async function _doZipLookup(zip) {
       const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
       state.zipCity = city;
       state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
-      if (display) display.textContent = '\uD83D\uDCCD ' + city;
+      if (display) { display.textContent = '\uD83D\uDCCD ' + city; display.style.display = 'block'; }
     } else {
-      if (display) display.textContent = ''; state.zipCity = null; state.zipLatLong = null;
+      if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; state.zipLatLong = null;
     }
-  } catch(e) { if (display) display.textContent = ''; state.zipCity = null; state.zipLatLong = null; }
+  } catch(e) { if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; state.zipLatLong = null; }
 }
 </script>
 </body>
