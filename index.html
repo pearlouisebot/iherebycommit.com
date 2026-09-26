@@ -907,8 +907,8 @@
           <div class="range-slider-wrap">
             <div class="range-track"></div>
             <div class="range-fill" id="height-range-fill"></div>
-            <input type="range" id="height_min_in" class="range-input" min="48" max="84" step="1" value="60" oninput="onHeightRangeInput(this,'min')">
-            <input type="range" id="height_max_in" class="range-input" min="48" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
+            <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" oninput="onHeightRangeInput(this,'min')">
+            <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
           </div>
         </div>
       </div>
@@ -1570,7 +1570,14 @@ function showScreen(id, direction) {
     const c = document.getElementById('cities-couple-section');
     if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
     if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
-    if (state.status !== 'partnered') { renderPrimaryCity(); setDefaultAges(); initHeightSlider(); }
+    if (state.status !== 'partnered') {
+      // Default SEEKING to opposite gender (once only)
+      if (!state.genderSeeking) {
+        const opp = state.gender === 'man' ? 'women' : state.gender === 'woman' ? 'men' : null;
+        if (opp) setGenderSeeking(opp);
+      }
+      renderPrimaryCity(); setDefaultAges(); initHeightSlider();
+    }
   }
 }
 
@@ -2375,12 +2382,12 @@ function onAddCityInput() {
   const q = inp?.value.trim() || '';
   const dd = document.getElementById('add-city-dropdown');
   if (!dd) return;
-  if (!q) { dd.innerHTML = ''; dd.style.display = 'none'; return; }
+  if (!q) { dd.innerHTML = ''; dd.classList.remove('open'); return; }
   const list = _getCityList();
   const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && !additionalCities.includes(c) && c !== state.zipCity).slice(0, 8);
   if (q && !list.some(c => c.toLowerCase() === q.toLowerCase()) && !additionalCities.some(c => c.toLowerCase() === q.toLowerCase())) filtered.push(q);
   dd.innerHTML = filtered.map(c => `<div class="multiselect-option" onmousedown="event.preventDefault();addAdditionalCity(${JSON.stringify(c)})">${c}</div>`).join('');
-  dd.style.display = filtered.length ? '' : 'none';
+  if (filtered.length) dd.classList.add('open'); else dd.classList.remove('open');
 }
 
 function addAdditionalCity(city) {
@@ -2390,7 +2397,7 @@ function addAdditionalCity(city) {
   const inp = document.getElementById('add_city_search_input');
   if (inp) inp.value = '';
   const dd = document.getElementById('add-city-dropdown');
-  if (dd) { dd.innerHTML = ''; dd.style.display = 'none'; }
+  if (dd) { dd.innerHTML = ''; dd.classList.remove('open'); }
 }
 
 function removeAdditionalCity(city) {
@@ -2444,18 +2451,36 @@ function onHeightRangeInput(el, which) {
 function _updateHeightFill() {
   const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in'), fill = document.getElementById('height-range-fill');
   if (!minEl || !maxEl || !fill) return;
-  const range = 84 - 48;
-  const leftPct = ((parseInt(minEl.value) - 48) / range) * 100;
-  const rightPct = ((parseInt(maxEl.value) - 48) / range) * 100;
+  const range = 84 - 58;
+  const leftPct = ((parseInt(minEl.value) - 58) / range) * 100;
+  const rightPct = ((parseInt(maxEl.value) - 58) / range) * 100;
   fill.style.left = leftPct + '%';
   fill.style.width = (rightPct - leftPct) + '%';
 }
 
 function initHeightSlider() {
   if (!state.heightPrefMinCm) {
+    const userHeightCm = state.heightCm || (state.gender === 'man' ? 175 : 160);
+    const userHeightIn = Math.round(userHeightCm / 2.54);
+    const seeking = state.genderSeeking;
+    let minIn, maxIn;
+    if (seeking === 'men') {
+      // Seeking men: her height - 3" to max
+      minIn = Math.max(58, userHeightIn - 3); maxIn = 84;
+    } else if (seeking === 'women') {
+      // Seeking women: min to his height + 3"
+      minIn = 58; maxIn = Math.min(84, userHeightIn + 3);
+    } else {
+      minIn = 60; maxIn = 78; // fallback
+    }
+    state.heightPrefMinCm = Math.round(minIn * 2.54);
+    state.heightPrefMaxCm = Math.round(maxIn * 2.54);
     const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in');
-    if (minEl) state.heightPrefMinCm = Math.round(parseInt(minEl.value) * 2.54);
-    if (maxEl) state.heightPrefMaxCm = Math.round(parseInt(maxEl.value) * 2.54);
+    if (minEl) minEl.value = minIn;
+    if (maxEl) maxEl.value = maxIn;
+    const minL = document.getElementById('height_min_label'), maxL = document.getElementById('height_max_label');
+    if (minL) minL.textContent = _fmtHeight(minIn);
+    if (maxL) maxL.textContent = _fmtHeight(maxIn);
   }
   _updateHeightFill();
 }
