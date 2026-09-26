@@ -771,9 +771,9 @@
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Zip / Postal</label>
+            <label class="field-label">Zip Code</label>
             <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
-            <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
+            <div class="field-error" id="err-postal_code">Zip code required</div>
             <div id="zip-city-display" class="zip-city-display" style="display:none;"></div>
           </div>
         </div>
@@ -1622,7 +1622,7 @@ function validateScreen(screenId) {
     if (!em || !isValidEmail(em)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
     if (!state.gender) { showError('gender', 'Please select one'); ok = false; } else hideError('gender');
     const postal1 = document.getElementById('postal_code').value.trim();
-    if (!postal1) { showError('postal_code', 'ZIP / Postal code required'); ok = false; } else hideError('postal_code');
+    if (!postal1) { showError('postal_code', 'Zip code required'); ok = false; } else hideError('postal_code');
   }
   if (screenId === 3) {
     const country = document.getElementById('country').value;
