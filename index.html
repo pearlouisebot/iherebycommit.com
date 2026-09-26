@@ -985,54 +985,21 @@
       <div class="screen-label">Step <span id="kids-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">INTENTIONS &amp; <span class="accent">FAMILY</span></div>
 
+      <!-- LOOKING FOR: always shown for singles, multi-select -->
       <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
         <label class="field-label">Looking for</label>
-        <select class="field-input" id="looking_for_select" onchange="setLookingForSelect(this.value)">
-          <option value="">— Select —</option>
-          <option value="casual">Casual</option>
-          <option value="dating">Dating</option>
-          <option value="relationship">Relationship</option>
-          <option value="marriage">Marriage</option>
-          <option value="life_partner">Life partner</option>
-        </select>
+        <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
+          <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
+          <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
+          <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
+          <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
+          <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
+        </div>
         <div class="field-error" id="err-looking_for">Please make a selection</div>
       </div>
 
-      <div class="kids-pair">
-        <div class="field-group">
-          <label class="field-label">Do you have kids?</label>
-          <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
-            <option value="">— Select —</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <div class="field-error" id="err-has_children">Please make a selection</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label" id="wants-children-label">Do you want kids?</label>
-          <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
-            <option value="">— Select —</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-            <option value="open_either_way">Open to either</option>
-            <option value="not_sure">Unsure</option>
-          </select>
-          <div class="field-error" id="err-wants_children">Please make a selection</div>
-        </div>
-      </div>
-
-      <div class="field-group" id="fertility-group" style="display:none;margin-bottom:14px;">
-        <label class="field-label">Have you invested in fertility preservation?</label>
-        <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-          <option value="considering">Considering</option>
-        </select>
-        <div class="field-error" id="err-fertility">Please make a selection</div>
-      </div>
-
-      <div class="field-group" id="relationship-timeline-group" style="display:none;margin-bottom:0;">
+      <!-- RELATIONSHIP TIMELINE: drips in after looking_for (conditional) -->
+      <div class="field-group" id="relationship-timeline-group" style="display:none;margin-bottom:14px;">
         <label class="field-label">Ideally, when would you like to be in a relationship?</label>
         <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value)">
           <option value="">— Select —</option>
@@ -1043,6 +1010,42 @@
           <option value="no_timeline">No timeline</option>
         </select>
         <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
+      </div>
+
+      <!-- HAS KIDS: drips in after looking_for (+ timeline if needed) -->
+      <div class="field-group" id="has-children-group" style="display:none;margin-bottom:14px;">
+        <label class="field-label">Do you have kids?</label>
+        <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
+          <option value="">— Select —</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+        <div class="field-error" id="err-has_children">Please make a selection</div>
+      </div>
+
+      <!-- WANTS KIDS: drips in after has_children answered -->
+      <div class="field-group" id="wants-children-group" style="display:none;margin-bottom:14px;">
+        <label class="field-label" id="wants-children-label">Do you want kids?</label>
+        <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
+          <option value="">— Select —</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="open_either_way">Open to either</option>
+          <option value="not_sure">Unsure</option>
+        </select>
+        <div class="field-error" id="err-wants_children">Please make a selection</div>
+      </div>
+
+      <!-- FERTILITY: drips in after wants_children = 'yes' -->
+      <div class="field-group" id="fertility-group" style="display:none;margin-bottom:0;">
+        <label class="field-label">Have you invested in fertility preservation?</label>
+        <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
+          <option value="">— Select —</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="considering">Considering</option>
+        </select>
+        <div class="field-error" id="err-fertility">Please make a selection</div>
       </div>
     </div>
     <div class="bottom-action">
@@ -1069,7 +1072,7 @@
       </label>
     </div>
     <div class="bottom-action">
-      <button class="btn btn-primary" onclick="goNext(6)">NEXT</button>
+      <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(6)">← BACK</button>
     </div>
   </div>
@@ -1106,7 +1109,7 @@
     </div>
     <div class="bottom-action">
       <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
-      <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
+      <button class="btn btn-primary" onclick="goNext(7)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(7)">← BACK</button>
     </div>
   </div>
@@ -1239,7 +1242,7 @@ let partnerCity = null;
 // ============================================================
 // PATHS
 // ============================================================
-function getPath() { return state.status === 'partnered' ? [1,3,4,5,6,7] : [1,5,3,6,7]; }
+function getPath() { return state.status === 'partnered' ? [1,3,4,5,7,6] : [1,5,3,7,6]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 function totalSteps() { return getPath().length; }
 
@@ -1553,12 +1556,7 @@ function showScreen(id, direction) {
     try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
   }
 
-  // Hide "looking for" and relationship timeline on screen 5 for couples
-  if (id === 5) {
-    const lfGroup = document.getElementById('looking-for-group');
-    if (lfGroup) lfGroup.style.display = (state.status === 'partnered') ? 'none' : 'block';
-    syncTimelineQuestion();
-  }
+  if (id === 5) { syncFamilyDrip(); }
 
   // Adjust screen 3 for singles vs couples
   if (id === 3) {
@@ -1751,39 +1749,28 @@ function onBirthdateInput() {
 
 function setHasChildren(val) {
   state.hasChildren = val === 'yes' ? true : (val === 'no' ? false : null);
-  document.getElementById('wants-children-label').textContent =
-    state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
   hideError('has_children');
+  syncFamilyDrip();
 }
 function setWantsChildren(val) {
   state.wantsChildren = val || null;
   hideError('wants_children');
-  var show = (val === 'yes');
-  document.getElementById('fertility-group').style.display = show ? 'block' : 'none';
-  if (!show) {
-    state.fertilityPreservation = null;
-    document.getElementById('fertility_select').value = '';
-    hideError('fertility');
-  }
+  syncFamilyDrip();
 }
 function setFertility(val) { state.fertilityPreservation = val || null; hideError('fertility'); }
 
 const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
-function setLookingForSelect(val) {
-  state.lookingFor = val ? [val] : [];
-  if (state.lookingFor.length) hideError('looking_for');
-  syncTimelineQuestion();
-}
-
 function toggleLookingFor(val) {
   if (!Array.isArray(state.lookingFor)) state.lookingFor = [];
   const i = state.lookingFor.indexOf(val);
   if (i === -1) state.lookingFor.push(val);
   else state.lookingFor.splice(i, 1);
+  const btn = document.getElementById('btn-looking-' + val);
+  if (btn) { btn.classList.toggle('selected', state.lookingFor.includes(val)); btn.setAttribute('aria-pressed', state.lookingFor.includes(val) ? 'true' : 'false'); }
   if (state.lookingFor.length) hideError('looking_for');
-  syncTimelineQuestion();
+  syncFamilyDrip();
 }
 
 function lookingForNeedsTimeline() {
@@ -1792,21 +1779,36 @@ function lookingForNeedsTimeline() {
   return TIMELINE_TRIGGERS.some(v => selected.includes(v));
 }
 
-function syncTimelineQuestion() {
-  const group = document.getElementById('relationship-timeline-group');
-  const show = lookingForNeedsTimeline();
-  if (group) group.style.display = show ? 'block' : 'none';
-  if (!show) {
-    state.relationshipTimeline = null;
-    const sel = document.getElementById('relationship_timeline');
-    if (sel) sel.value = '';
-    hideError('relationship_timeline');
-  }
-}
-
 function setRelationshipTimeline(val) {
   state.relationshipTimeline = val || null;
   hideError('relationship_timeline');
+  syncFamilyDrip();
+}
+
+function syncFamilyDrip() {
+  const partnered = state.status === 'partnered';
+  const hasLF = partnered || (Array.isArray(state.lookingFor) && state.lookingFor.length > 0);
+  const needsTL = lookingForNeedsTimeline();
+  const hasTL = !needsTL || !!state.relationshipTimeline;
+  const hasKidsDone = state.hasChildren !== null && state.hasChildren !== undefined;
+  // looking-for: hidden for couples
+  const lfGroup = document.getElementById('looking-for-group');
+  if (lfGroup) lfGroup.style.display = partnered ? 'none' : 'block';
+  // timeline: singles only, after looking_for filled, conditional
+  const tlGroup = document.getElementById('relationship-timeline-group');
+  if (tlGroup) tlGroup.style.display = (!partnered && hasLF && needsTL) ? 'block' : 'none';
+  if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
+  // has kids: unlocks after LF + TL prereqs met
+  const hcGroup = document.getElementById('has-children-group');
+  if (hcGroup) hcGroup.style.display = (hasLF && hasTL) ? 'block' : 'none';
+  // wants kids: unlocks after has_children answered
+  const wcGroup = document.getElementById('wants-children-group');
+  if (wcGroup) wcGroup.style.display = (hasLF && hasTL && hasKidsDone) ? 'block' : 'none';
+  if (hasKidsDone) { const lbl = document.getElementById('wants-children-label'); if (lbl) lbl.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?'; }
+  // fertility: unlocks after wants_children = 'yes'
+  const fertGroup = document.getElementById('fertility-group');
+  if (fertGroup) fertGroup.style.display = (state.wantsChildren === 'yes') ? 'block' : 'none';
+  if (state.wantsChildren !== 'yes') { state.fertilityPreservation = null; const fs = document.getElementById('fertility_select'); if (fs) fs.value = ''; hideError('fertility'); }
 }
 
 function lookingForPayload() {
@@ -1892,19 +1894,22 @@ function validateScreen(screenId) {
     if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
   }
   if (screenId === 5) {
-    if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
-    if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
-    if (state.wantsChildren === 'yes') {
-      if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
-    } else hideError('fertility');
     if (state.status !== 'partnered') {
       if (!Array.isArray(state.lookingFor) || state.lookingFor.length === 0) { showError('looking_for', 'Please make a selection'); ok = false; } else hideError('looking_for');
-      if (lookingForNeedsTimeline()) {
+      if (lookingForNeedsTimeline() && Array.isArray(state.lookingFor) && state.lookingFor.length > 0) {
         if (!state.relationshipTimeline) { showError('relationship_timeline', 'Please make a selection'); ok = false; } else hideError('relationship_timeline');
       } else hideError('relationship_timeline');
-    } else {
-      hideError('looking_for');
-      hideError('relationship_timeline');
+    } else { hideError('looking_for'); hideError('relationship_timeline'); }
+    const hcVisible = document.getElementById('has-children-group')?.style.display !== 'none';
+    if (hcVisible) {
+      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
+    }
+    const wcVisible = document.getElementById('wants-children-group')?.style.display !== 'none';
+    if (wcVisible) {
+      if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
+      if (state.wantsChildren === 'yes') {
+        if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
+      } else hideError('fertility');
     }
   }
   if (screenId === 6) {
