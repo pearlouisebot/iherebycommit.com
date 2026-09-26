@@ -790,10 +790,23 @@
             </div>
           </div>
         </div>
-        <div class="field-group" style="margin-bottom:12px;">
-          <label class="field-label">Email</label>
-          <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-          <div class="field-error" id="err-email">Valid email required</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:12px;align-items:start;">
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label">Email</label>
+            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+            <div class="field-error" id="err-email">Valid email required</div>
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label">Height</label>
+            <div id="height-us-wrap">
+              <select class="field-input" id="height_ftin" style="font-size:14px;padding:14px 6px;min-width:90px;" onchange="onHeightFtInChange()">
+                <option value="">—</option>
+              </select>
+            </div>
+            <div id="height-cm-wrap" style="display:none;">
+              <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;width:80px;" oninput="onHeightCmChange()">
+            </div>
+          </div>
         </div>
       </div>
       <div id="under18-msg">
@@ -1102,6 +1115,7 @@ const state = {
   locationCountry: null,
   landingHeadline: window.location.href,
   partialLeadId: null, // DB id of the in-progress partial_leads row
+  heightCm: null,
 };
 let partnerCity = null;
 
@@ -1126,6 +1140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCarousel();
   initFnModal();
   initCityPicker();
+  _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
   onPhoneInput(); // init SMS checkbox state
   // Show below-fold on initial load (page starts on screen 0)
@@ -1542,6 +1557,7 @@ async function saveLead() {
     x_handle: get('x_handle'),
     tiktok: get('tiktok'),
     landing_headline: state.landingHeadline || null,
+    height_cm: state.heightCm || null,
   };
   if (state.partialLeadId) data.id = state.partialLeadId;
   try {
@@ -1777,6 +1793,7 @@ async function doSubmit() {
     x_handle: document.getElementById('x_handle').value.trim() || null,
     tiktok: document.getElementById('tiktok').value.trim() || null,
     gender: state.gender || null,
+    height_cm: state.heightCm || null,
     landing_headline: state.landingHeadline || null,
     partial_lead_id: state.partialLeadId || null,
     turnstileToken: state.turnstileToken || '',
@@ -1910,8 +1927,40 @@ function _parseCityEntry(entry) {
   return { city: entry, stateRegion: null, country: null };
 }
 
+// ============================================================
+// HEIGHT
+// ============================================================
+function _buildHeightSelect() {
+  const sel = document.getElementById('height_ftin');
+  if (!sel || sel.options.length > 1) return;
+  // 4'0" (48 in = 122 cm) to 7'0" (84 in = 213 cm)
+  for (let totalIn = 48; totalIn <= 84; totalIn++) {
+    const ft = Math.floor(totalIn / 12);
+    const ins = totalIn % 12;
+    const opt = document.createElement('option');
+    opt.value = Math.round(totalIn * 2.54); // cm
+    opt.textContent = ft + '\u2019' + ins + '\u201d';
+    sel.appendChild(opt);
+  }
+}
+function onHeightFtInChange() {
+  const val = document.getElementById('height_ftin').value;
+  state.heightCm = val ? parseInt(val) : null;
+}
+function onHeightCmChange() {
+  const val = document.getElementById('height_cm_input').value;
+  state.heightCm = val ? parseInt(val) : null;
+}
+function _syncHeightMode(mode) {
+  const isUs = mode === 'zip';
+  document.getElementById('height-us-wrap').style.display = isUs ? '' : 'none';
+  document.getElementById('height-cm-wrap').style.display = isUs ? 'none' : '';
+  if (isUs) _buildHeightSelect();
+}
+
 function toggleLocationMode() {
   state.locationMode = 'city';
+  _syncHeightMode('city');
   document.getElementById('location-label').textContent = 'City';
   document.getElementById('location-zip-wrap').style.display = 'none';
   document.getElementById('location-city-wrap').style.display = '';
