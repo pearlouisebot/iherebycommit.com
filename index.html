@@ -1098,7 +1098,7 @@ const state = {
   intlPostal: null,
   locationCountry: null,
   landingHeadline: window.location.href,
-  sessionId: null,
+  partialLeadId: null, // DB id of the in-progress partial_leads row
 };
 let partnerCity = null;
 
@@ -1467,7 +1467,7 @@ function renderStepNums(screenId) {
 
 function startAs(status) {
   state.status = status;
-  state.sessionId = crypto.randomUUID(); // fresh session per application run
+  state.partialLeadId = null; // each APPLY click starts a fresh partial_leads row
   showScreen(1, 'forward');
 }
 
@@ -1509,7 +1509,7 @@ function goBack(screenId) {
 // PARTIAL SAVE
 // ============================================================
 async function saveLead() {
-  if (!state.sessionId) return; // not started yet
+  if (!state.status) return; // haven't clicked APPLY yet
   const email = document.getElementById('email')?.value?.trim().toLowerCase() || null;
   const get = (id) => { const el = document.getElementById(id); return el?.value?.trim() || null; };
   const data = {
@@ -1539,15 +1539,18 @@ async function saveLead() {
     x_handle: get('x_handle'),
     tiktok: get('tiktok'),
     landing_headline: state.landingHeadline || null,
-    session_id: state.sessionId || null,
   };
+  if (state.partialLeadId) data.id = state.partialLeadId;
   try {
     const res = await fetch(FUNCTIONS_URL + '/save-lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
       body: JSON.stringify(data),
     });
-    if (!res.ok) {
+    if (res.ok) {
+      const json = await res.json();
+      if (json.id) state.partialLeadId = json.id;
+    } else {
       const err = await res.json().catch(() => ({}));
       console.error('save-lead failed', res.status, err);
       showToast('Auto-save failed (' + res.status + '). Your progress may not be saved.');
@@ -1772,7 +1775,7 @@ async function doSubmit() {
     tiktok: document.getElementById('tiktok').value.trim() || null,
     gender: state.gender || null,
     landing_headline: state.landingHeadline || null,
-    session_id: state.sessionId || null,
+    partial_lead_id: state.partialLeadId || null,
     turnstileToken: state.turnstileToken || '',
     terms_version: '2026-10-01',
     terms_accepted_at: new Date().toISOString(),
@@ -1790,9 +1793,7 @@ async function doSubmit() {
     });
     const data = await resp.json();
     if (resp.status === 200) {
-      showConfirmation(data.subject_number, false);
-    } else if (resp.status === 409) {
-      showConfirmation(data.subject_number, true);
+      showConfirmation(data.subject_number);
     } else {
       showToast(data.error || 'Something went wrong. Please try again.');
       btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false;
@@ -1803,19 +1804,15 @@ async function doSubmit() {
   }
 }
 
-function showConfirmation(subjectNumber, isDuplicate) {
+function showConfirmation(subjectNumber) {
   document.getElementById('confirm-subject-num').textContent = '#' + String(subjectNumber).padStart(5, '0');
   const name = document.getElementById('first_name').value.trim();
   const textEl = document.getElementById('confirm-text');
   if (state.status === 'partnered') {
     const pn = document.getElementById('partner_name').value.trim();
-    textEl.innerHTML = isDuplicate
-      ? `You and <span class="redact-field">${pn}</span> are already on file. Your subject number is above.`
-      : `${name} and <span class="redact-field">${pn}</span> — you're in the record. When ${pn} applies, they'll be linked to you and share your place in line.`;
+    textEl.innerHTML = `${name} and <span class="redact-field">${pn}</span> — you're in the record. When ${pn} applies, they'll be linked to you and share your place in line.`;
   } else {
-    textEl.innerHTML = isDuplicate
-      ? `${name}, you're already in our system. Your subject number is above.`
-      : `${name} — you're subject #${subjectNumber}. You just volunteered to let science study your love life. We respect that enormously.`;
+    textEl.innerHTML = `${name} — you're subject #${subjectNumber}. You just volunteered to let science study your love life. We respect that enormously.`;
   }
   showScreen(8, 'forward');
 }
