@@ -2125,8 +2125,10 @@ function _selectCity(city) {
   }
   const wrap = document.getElementById('city-picker-wrap');
   const search = wrap.querySelector('.multiselect-search');
+  const dropdown = wrap.querySelector('.multiselect-dropdown');
   search.value = '';
-  _renderCityDropdown('');
+  search.blur();
+  dropdown.classList.remove('open');
 }
 
 function _removeCityChip(city) {
