@@ -1964,7 +1964,14 @@ function _syncHeightMode(mode) {
   const isUs = mode === 'zip';
   document.getElementById('height-us-wrap').style.display = isUs ? '' : 'none';
   document.getElementById('height-cm-wrap').style.display = isUs ? 'none' : '';
-  if (isUs) _buildHeightSelect();
+  if (isUs) {
+    _buildHeightSelect();
+    const sel = document.getElementById('height_ftin');
+    if (sel && state.heightCm) sel.value = state.heightCm;
+  } else {
+    const cmInput = document.getElementById('height_cm_input');
+    if (cmInput && state.heightCm) cmInput.value = state.heightCm;
+  }
 }
 
 function toggleLocationMode() {
