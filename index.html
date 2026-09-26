@@ -855,7 +855,7 @@
     <div id="badge-3" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step <span id="live-step-num"></span> of <span class="step-total"></span></div>
-      <div class="screen-headline">WHAT YOU<br><span class="accent">WANT</span></div>
+      <div class="screen-headline">WHAT YOU <span class="accent">WANT</span></div>
 
       <div id="cities-single-section" style="">
         <!-- SEEKING -->
@@ -892,10 +892,24 @@
           <div class="range-slider-wrap">
             <div class="range-track"></div>
             <div class="range-fill" id="range-fill"></div>
-            <input type="range" id="age_min" class="range-input" min="18" max="99" step="1" value="28" oninput="onAgeRangeInput(this,'min')">
-            <input type="range" id="age_max" class="range-input" min="18" max="99" step="1" value="38" oninput="onAgeRangeInput(this,'max')">
+            <input type="range" id="age_min" class="range-input" min="21" max="80" step="1" value="28" oninput="onAgeRangeInput(this,'min')">
+            <input type="range" id="age_max" class="range-input" min="21" max="80" step="1" value="38" oninput="onAgeRangeInput(this,'max')">
           </div>
           <div class="field-error" id="err-age_range"></div>
+        </div>
+        <!-- HEIGHT PREFERENCE SLIDER -->
+        <div class="field-group" style="margin-bottom:20px;">
+          <label class="field-label">Partner Height <span class="optional-tag">optional</span></label>
+          <div class="age-range-vals">
+            <span id="height_min_label">5'0"</span>
+            <span id="height_max_label">6'6"</span>
+          </div>
+          <div class="range-slider-wrap">
+            <div class="range-track"></div>
+            <div class="range-fill" id="height-range-fill"></div>
+            <input type="range" id="height_min_in" class="range-input" min="48" max="84" step="1" value="60" oninput="onHeightRangeInput(this,'min')">
+            <input type="range" id="height_max_in" class="range-input" min="48" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
+          </div>
         </div>
       </div>
       <div id="cities-couple-section" style="display:none;">
@@ -1213,6 +1227,8 @@ const state = {
   ageMin: null,
   ageMax: null,
   genderSeeking: null,
+  heightPrefMinCm: null,
+  heightPrefMaxCm: null,
   // Gender defaults (5'9"/5'3", 1996-01-01) look identical to a real choice,
   // so "user touched" is tracked separately from the current value.
   heightTouched: false,
@@ -1549,12 +1565,12 @@ function showScreen(id, direction) {
     const hl = document.querySelector('#screen-3 .screen-headline');
     if (hl) hl.innerHTML = state.status === 'partnered'
       ? 'WHERE YOU &amp; YOUR<br><span class="accent">PARTNER LIVE</span>'
-      : 'WHAT YOU<br><span class="accent">WANT</span>';
+      : 'WHAT YOU <span class="accent">WANT</span>';
     const s = document.getElementById('cities-single-section');
     const c = document.getElementById('cities-couple-section');
     if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
     if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
-    if (state.status !== 'partnered') { renderPrimaryCity(); setDefaultAges(); }
+    if (state.status !== 'partnered') { renderPrimaryCity(); setDefaultAges(); initHeightSlider(); }
   }
 }
 
@@ -1654,6 +1670,8 @@ async function saveLead() {
     age_min: state.ageMin || null,
     age_max: state.ageMax || null,
     gender_seeking: state.genderSeeking || null,
+    height_min_cm: state.heightPrefMinCm || null,
+    height_max_cm: state.heightPrefMaxCm || null,
     lives_with_partner: state.livesWithPartner || null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     relationship_stage: get('relationship_stage'),
@@ -1973,6 +1991,8 @@ async function doSubmit() {
     age_min: state.ageMin || null,
     age_max: state.ageMax || null,
     gender_seeking: state.genderSeeking || null,
+    height_min_cm: state.heightPrefMinCm || null,
+    height_max_cm: state.heightPrefMaxCm || null,
     lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
@@ -2393,18 +2413,51 @@ function onAgeRangeInput(el, which) {
   if (which === 'max' && maxVal < minVal + 1) { maxVal = minVal + 1; maxEl.value = maxVal; }
   state.ageMin = minVal; state.ageMax = maxVal;
   const minL = document.getElementById('age_min_label'); if (minL) minL.textContent = minVal;
-  const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = maxVal;
+  const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = maxVal >= 80 ? '80+' : maxVal;
   _updateRangeFill();
 }
 
 function _updateRangeFill() {
   const minEl = document.getElementById('age_min'), maxEl = document.getElementById('age_max'), fill = document.getElementById('range-fill');
   if (!minEl || !maxEl || !fill) return;
-  const range = 99 - 18;
-  const leftPct = ((parseInt(minEl.value) - 18) / range) * 100;
-  const rightPct = ((parseInt(maxEl.value) - 18) / range) * 100;
+  const range = 80 - 21;
+  const leftPct = ((parseInt(minEl.value) - 21) / range) * 100;
+  const rightPct = ((parseInt(maxEl.value) - 21) / range) * 100;
   fill.style.left = leftPct + '%';
   fill.style.width = (rightPct - leftPct) + '%';
+}
+
+function _fmtHeight(inches) { return Math.floor(inches / 12) + "'" + (inches % 12) + '"'; }
+
+function onHeightRangeInput(el, which) {
+  const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in');
+  let minVal = parseInt(minEl.value), maxVal = parseInt(maxEl.value);
+  if (which === 'min' && minVal > maxVal - 1) { minVal = maxVal - 1; minEl.value = minVal; }
+  if (which === 'max' && maxVal < minVal + 1) { maxVal = minVal + 1; maxEl.value = maxVal; }
+  state.heightPrefMinCm = Math.round(minVal * 2.54);
+  state.heightPrefMaxCm = Math.round(maxVal * 2.54);
+  const minL = document.getElementById('height_min_label'); if (minL) minL.textContent = _fmtHeight(minVal);
+  const maxL = document.getElementById('height_max_label'); if (maxL) maxL.textContent = _fmtHeight(maxVal);
+  _updateHeightFill();
+}
+
+function _updateHeightFill() {
+  const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in'), fill = document.getElementById('height-range-fill');
+  if (!minEl || !maxEl || !fill) return;
+  const range = 84 - 48;
+  const leftPct = ((parseInt(minEl.value) - 48) / range) * 100;
+  const rightPct = ((parseInt(maxEl.value) - 48) / range) * 100;
+  fill.style.left = leftPct + '%';
+  fill.style.width = (rightPct - leftPct) + '%';
+}
+
+function initHeightSlider() {
+  if (!state.heightPrefMinCm) {
+    const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in');
+    if (minEl) state.heightPrefMinCm = Math.round(parseInt(minEl.value) * 2.54);
+    if (maxEl) state.heightPrefMaxCm = Math.round(parseInt(maxEl.value) * 2.54);
+  }
+  _updateHeightFill();
 }
 
 function setDefaultAges() {
@@ -2412,10 +2465,10 @@ function setDefaultAges() {
   if (!bd) return;
   const userAge = getAge(bd);
   const minEl = document.getElementById('age_min'), maxEl = document.getElementById('age_max');
-  if (!state.ageMin) { state.ageMin = Math.max(18, userAge - 10); if (minEl) minEl.value = state.ageMin; }
-  if (!state.ageMax) { state.ageMax = userAge + 10; if (maxEl) maxEl.value = state.ageMax; }
+  if (!state.ageMin) { state.ageMin = Math.max(21, userAge - 10); if (minEl) minEl.value = state.ageMin; }
+  if (!state.ageMax) { state.ageMax = Math.min(80, userAge + 10); if (maxEl) maxEl.value = state.ageMax; }
   const minL = document.getElementById('age_min_label'); if (minL) minL.textContent = state.ageMin;
-  const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = state.ageMax;
+  const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = state.ageMax >= 80 ? '80+' : state.ageMax;
   _updateRangeFill();
 }
 
