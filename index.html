@@ -619,7 +619,7 @@
     .zip-city-display {
       font-family: 'Space Mono', monospace;
       font-size: 11px; color: var(--accent);
-      margin-top: 6px; min-height: 18px;
+      margin-top: 4px; min-height: 0;
       letter-spacing: 0.04em;
     }
   </style>
@@ -744,25 +744,25 @@
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
       <div class="screen-headline">WHO YOU <span class="accent">ARE</span></div>
       <div id="screen1-fields">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div class="field-group">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">First name</label>
             <input class="field-input" id="first_name" type="text" placeholder="Pearl" autocomplete="given-name">
             <div class="field-error" id="err-first_name">Required</div>
           </div>
-          <div class="field-group">
+          <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Last name</label>
             <input class="field-input" id="last_name" type="text" placeholder="Bradford" autocomplete="family-name">
             <div class="field-error" id="err-last_name">Required</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div class="field-group">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Date of birth</label>
             <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="min-height:52px;font-size:14px;padding:14px 10px;">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
-          <div class="field-group">
+          <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Zip / Postal</label>
             <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
             <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
