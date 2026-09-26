@@ -1964,19 +1964,76 @@ const CITY_COUNTRY_MAP = {
   'Mexico City, CMX':'Mexico','Guadalajara, JAL':'Mexico',
 };
 
+function _looksLikePostalCode(text) {
+  const p = text.trim().toUpperCase().replace(/\s+/g, '');
+  if (/^\d{5}(-\d{4})?$/.test(p)) return true;   // US / many EU
+  if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(p)) return true; // Canada
+  if (/^[A-Z]{1,2}\d{1,2}[A-Z]?\d[A-Z]{2}$/.test(p)) return true; // UK
+  if (/^\d{4}[A-Z]{2}$/.test(p)) return true;    // Netherlands
+  if (/^\d{4}$/.test(p)) return true;             // AU/NZ/BE/AT/DK
+  if (/^\d{6}$/.test(p)) return true;             // India/Singapore
+  if (/^\d{3}-?\d{4}$/.test(p)) return true;     // Japan
+  return false;
+}
+
+let _intlCityTimer = null;
 function onIntlCityInput() {
+  clearTimeout(_intlCityTimer);
   const val = document.getElementById('intl_city_input').value.trim();
   state.zipCity = val || null;
+  state.locationCountry = null;
   if (val) hideError('postal_code');
+  // Suggestions dropdown
   const dd = document.getElementById('intl-city-dropdown');
-  if (!dd) return;
-  if (!val) { dd.classList.remove('open'); dd.innerHTML = ''; return; }
-  const matches = TOP_INTL_CITIES.filter(c => c.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
-  if (!matches.length) { dd.classList.remove('open'); dd.innerHTML = ''; return; }
-  dd.innerHTML = matches.map(c =>
-    `<div class="multiselect-option" onmousedown="event.preventDefault();_pickIntlCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
-  ).join('');
-  dd.classList.add('open');
+  if (dd) {
+    if (!val) { dd.classList.remove('open'); dd.innerHTML = ''; }
+    else {
+      const matches = TOP_INTL_CITIES.filter(c => c.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
+      if (matches.length) {
+        dd.innerHTML = matches.map(c =>
+          `<div class="multiselect-option" onmousedown="event.preventDefault();_pickIntlCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
+        ).join('');
+        dd.classList.add('open');
+      } else { dd.classList.remove('open'); dd.innerHTML = ''; }
+    }
+  }
+  // If it looks like a postal code, silently try the zip lookup
+  if (val && _looksLikePostalCode(val)) {
+    _intlCityTimer = setTimeout(() => _resolveIntlCityPostal(val), 700);
+  }
+}
+
+async function _resolveIntlCityPostal(postal) {
+  const inp = document.getElementById('intl_city_input');
+  // Try US first
+  try {
+    const r = await fetch(`https://api.zippopotam.us/us/${encodeURIComponent(postal)}`);
+    if (r.ok) {
+      const d = await r.json();
+      const place = d.places && d.places[0];
+      if (place) {
+        const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
+        state.zipCity = city; state.locationCountry = 'United States';
+        if (inp) inp.value = city; return;
+      }
+    }
+  } catch(e) {}
+  // Try international
+  const candidates = _detectCountryCodes(postal);
+  for (const cc of candidates) {
+    try {
+      const r = await fetch(`https://api.zippopotam.us/${cc}/${encodeURIComponent(postal)}`);
+      if (!r.ok) continue;
+      const d = await r.json();
+      const place = d.places && d.places[0];
+      if (place) {
+        const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
+        state.zipCity = city; state.locationCountry = d['country'] || null;
+        if (inp) inp.value = city; return;
+      }
+    } catch(e) {}
+  }
+  // Nothing found — keep raw text as-is (no error)
 }
 
 function _pickIntlCity(city) {
