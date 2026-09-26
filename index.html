@@ -932,6 +932,7 @@
       <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
         <label class="field-label">Looking for</label>
         <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
+          <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
           <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
           <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
           <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
@@ -1677,7 +1678,7 @@ function setWantsChildren(val) {
 }
 function setFertility(val) { state.fertilityPreservation = val || null; hideError('fertility'); }
 
-const LOOKING_FOR_OPTIONS = ['dating', 'relationship', 'marriage', 'life_partner'];
+const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
 function toggleLookingFor(val) {
