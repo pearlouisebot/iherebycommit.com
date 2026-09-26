@@ -1515,7 +1515,7 @@ function saveLead() {
     birthdate: document.getElementById('birthdate')?.value || null,
     gender: state.gender || null,
     status: state.status || null,
-    country: state.locationMode === 'zip' ? 'United States' : null,
+    country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : null,
     postal_code: state.locationMode === 'zip' ? (get('postal_code') || null) : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     open_to_city: get('open_to_city'),
@@ -1733,7 +1733,7 @@ async function doSubmit() {
     last_name: document.getElementById('last_name').value.trim(),
     birthdate: document.getElementById('birthdate').value,
     email: document.getElementById('email').value.trim().toLowerCase(),
-    country: state.locationMode === 'zip' ? 'United States' : null,
+    country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : null,
     postal_code: state.locationMode === 'zip' ? document.getElementById('postal_code').value.trim() : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
@@ -2072,33 +2072,55 @@ function onZipInput() {
   _zipTimer = setTimeout(() => _doZipLookup(zip), 600);
 }
 
+function _detectCountryCodes(postal) {
+  const p = postal.trim().toUpperCase().replace(/\s+/g, '');
+  if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(p)) return ['ca'];
+  if (/^[A-Z]{1,2}\d{1,2}[A-Z]?\d[A-Z]{2}$/.test(p)) return ['gb'];
+  if (/^\d{4}[A-Z]{2}$/.test(p)) return ['nl'];
+  if (/^\d{4}$/.test(p)) return ['au','nz','be','at','dk'];
+  if (/^\d{6}$/.test(p)) return ['in','sg','ph'];
+  if (/^\d{3}-?\d{4}$/.test(p)) return ['jp'];
+  if (/^\d{5}$/.test(p)) return ['de','fr','es','it','pl','mx','br','pt','se','fi','no','cz','kr'];
+  return ['gb','ca','au','de','fr','nl','es','it','br','mx','nz','za','in','sg','jp','kr','pl','se','no','dk','fi','be','at','ch','cz','pt','ph'];
+}
+
 async function _doZipLookup(zip) {
   const display = document.getElementById('zip-city-display');
+  // Try US first
   try {
     const r = await fetch(`https://api.zippopotam.us/us/${encodeURIComponent(zip)}`);
-    if (!r.ok) {
-      if (display) { display.textContent = ''; display.style.display = 'none'; }
-      state.zipCity = null; state.zipLatLong = null;
-      showError('postal_code', 'ZIP code not found');
-      return;
+    if (r.ok) {
+      const d = await r.json();
+      const place = d.places && d.places[0];
+      if (place) {
+        const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
+        state.zipCity = city; state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
+        state.locationCountry = 'United States';
+        if (display) { display.textContent = '\uD83D\uDCCD ' + city; display.style.display = ''; }
+        hideError('postal_code'); return;
+      }
     }
-    const d = await r.json();
-    const place = d.places && d.places[0];
-    if (place) {
-      const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
-      state.zipCity = city;
-      state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
-      if (display) { display.textContent = '\uD83D\uDCCD ' + city; display.style.display = ''; }
-      hideError('postal_code');
-    } else {
-      if (display) { display.textContent = ''; display.style.display = 'none'; }
-      state.zipCity = null; state.zipLatLong = null;
-      showError('postal_code', 'ZIP code not found');
-    }
-  } catch(e) {
-    if (display) { display.textContent = ''; display.style.display = 'none'; }
-    state.zipCity = null; state.zipLatLong = null;
+  } catch(e) {}
+  // Fallback: try international postal codes
+  const candidates = _detectCountryCodes(zip);
+  for (const cc of candidates) {
+    try {
+      const r = await fetch(`https://api.zippopotam.us/${cc}/${encodeURIComponent(zip)}`);
+      if (!r.ok) continue;
+      const d = await r.json();
+      const place = d.places && d.places[0];
+      if (place) {
+        const city = place['place name'] + (place['state abbreviation'] ? ', ' + place['state abbreviation'] : '');
+        state.zipCity = city; state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
+        state.locationCountry = d['country'] || null;
+        if (display) { display.textContent = '\uD83D\uDCCD ' + city + (state.locationCountry ? ', ' + state.locationCountry : ''); display.style.display = ''; }
+        hideError('postal_code'); return;
+      }
+    } catch(e) {}
   }
+  if (display) { display.textContent = ''; display.style.display = 'none'; }
+  state.zipCity = null; state.zipLatLong = null; state.locationCountry = null;
+  showError('postal_code', 'ZIP code not found');
 }
 </script>
 </body>
