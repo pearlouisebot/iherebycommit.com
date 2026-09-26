@@ -1588,14 +1588,14 @@ function setGender(val) {
   const btn = document.getElementById('btn-gender-' + val.replace('-',''));
   if (btn) btn.classList.add('selected');
   hideError('gender');
-  // Set default height if user hasn't picked one yet
-  if (!state.heightCm) {
-    const defaultCm = val === 'man' ? 175 : val === 'woman' ? 160 : null;
-    if (defaultCm) {
-      state.heightCm = defaultCm;
-      const sel = document.getElementById('height_ftin');
-      if (sel) sel.value = defaultCm;
-    }
+  // Set default height whenever gender changes
+  const defaultCm = val === 'man' ? 175 : val === 'woman' ? 160 : null;
+  if (defaultCm) {
+    state.heightCm = defaultCm;
+    const sel = document.getElementById('height_ftin');
+    if (sel) sel.value = defaultCm;
+    const cmInput = document.getElementById('height_cm_input');
+    if (cmInput && state.locationMode !== 'zip') cmInput.value = defaultCm;
   }
 }
 
