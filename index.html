@@ -1210,7 +1210,6 @@
               <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
             </div>
             <div class="field-error" id="err-looking_for">Please make a selection</div>
-            <button type="button" class="q-mini" data-looking-done disabled onclick="qConfirm('looking_for')">DONE</button>
           </div>
           <div class="q-multi-edit">
             <div class="field-label">Looking for</div>
@@ -1222,8 +1221,36 @@
               <label class="q-check"><input type="checkbox" id="chk-looking-life_partner" onchange="onLookingCheck('life_partner', this.checked)"> Life partner</label>
             </div>
             <div class="field-error" id="err-looking_for-edit" style="display:none;"></div>
-            <button type="button" class="q-mini" data-looking-done disabled onclick="qConfirm('looking_for')">DONE</button>
           </div>
+        </div>
+      </div>
+
+      <div class="q" id="q-timeline" data-q="timeline" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('timeline')" aria-label="Edit relationship timeline">
+          <span class="q-row-label">Timeline</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label">Ideally, when would you like to be in a relationship?</div>
+          <div class="q-choices" id="timeline_choices" role="group" aria-label="Relationship timeline">
+            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('asap'); qConfirm('timeline')">ASAP</button>
+            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('3_months'); qConfirm('timeline')">NEXT 3 MONTHS</button>
+            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('6_months'); qConfirm('timeline')">NEXT 6 MONTHS</button>
+            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('12_months'); qConfirm('timeline')">NEXT 12 MONTHS</button>
+            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('no_timeline'); qConfirm('timeline')">NO TIMELINE</button>
+          </div>
+          <div class="q-native">
+            <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value); qFinishEdit('timeline')" onblur="qCancelEdit('timeline')">
+              <option value="">— Select —</option>
+              <option value="asap">ASAP</option>
+              <option value="3_months">Next 3 months</option>
+              <option value="6_months">Next 6 months</option>
+              <option value="12_months">Next 12 months</option>
+              <option value="no_timeline">No timeline</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
         </div>
       </div>
 
@@ -1302,34 +1329,6 @@
         </div>
       </div>
 
-      <div class="q" id="q-timeline" data-q="timeline" data-kind="choice">
-        <button type="button" class="q-row" onclick="qEdit('timeline')" aria-label="Edit relationship timeline">
-          <span class="q-row-label">Timeline</span>
-          <span class="q-row-value" data-q-value></span>
-          <span class="q-row-caret" aria-hidden="true">▾</span>
-        </button>
-        <div class="q-panel">
-          <div class="field-label">Ideally, when would you like to be in a relationship?</div>
-          <div class="q-choices" id="timeline_choices" role="group" aria-label="Relationship timeline">
-            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('asap'); qConfirm('timeline')">ASAP</button>
-            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('3_months'); qConfirm('timeline')">NEXT 3 MONTHS</button>
-            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('6_months'); qConfirm('timeline')">NEXT 6 MONTHS</button>
-            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('12_months'); qConfirm('timeline')">NEXT 12 MONTHS</button>
-            <button type="button" class="toggle-btn" onclick="setRelationshipTimeline('no_timeline'); qConfirm('timeline')">NO TIMELINE</button>
-          </div>
-          <div class="q-native">
-            <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value); qFinishEdit('timeline')" onblur="qCancelEdit('timeline')">
-              <option value="">— Select —</option>
-              <option value="asap">ASAP</option>
-              <option value="3_months">Next 3 months</option>
-              <option value="6_months">Next 6 months</option>
-              <option value="12_months">Next 12 months</option>
-              <option value="no_timeline">No timeline</option>
-            </select>
-          </div>
-          <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
-        </div>
-      </div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary q-next-hidden" id="screen-next-5" onclick="goNext(5)">NEXT</button>
@@ -2123,6 +2122,7 @@ function toggleLookingFor(val) {
   if (state.lookingFor.length) hideError('looking_for');
   syncTimelineQuestion();
   qSyncLookingChecks();
+  qScheduleMulti('looking_for');
 }
 
 function lookingForNeedsTimeline() {
@@ -2228,6 +2228,8 @@ const QFLOW = {
     { id: 'looking_for', required: true, applicable: () => state.status !== 'partnered', answered: () => Array.isArray(state.lookingFor) && state.lookingFor.length > 0,
       display: () => LOOKING_FOR_OPTIONS.filter(v => state.lookingFor.includes(v)).map(v => LOOKING_FOR_LABELS[v]).join(', '),
       content: () => Array.isArray(state.lookingFor) && state.lookingFor.length > 0, syncEdit: () => qSyncLookingChecks() },
+    { id: 'timeline', required: true, applicable: () => lookingForNeedsTimeline(), answered: () => !!state.relationshipTimeline, display: () => TIMELINE_LABELS[state.relationshipTimeline] || '', content: () => !!state.relationshipTimeline,
+      syncEdit: () => { const s = document.getElementById('relationship_timeline'); if (s) s.value = state.relationshipTimeline || ''; } },
     { id: 'has_children', required: true, applicable: () => true, answered: () => state.hasChildren === true || state.hasChildren === false,
       display: () => state.hasChildren === true ? 'Yes' : (state.hasChildren === false ? 'No' : ''), content: () => state.hasChildren === true || state.hasChildren === false,
       syncEdit: () => { const s = document.getElementById('has_children_select'); if (s) s.value = state.hasChildren === true ? 'yes' : (state.hasChildren === false ? 'no' : ''); } },
@@ -2235,8 +2237,6 @@ const QFLOW = {
       syncEdit: () => { const s = document.getElementById('wants_children_select'); if (s) s.value = state.wantsChildren || ''; } },
     { id: 'fertility', required: true, applicable: () => state.wantsChildren === 'yes', answered: () => !!state.fertilityPreservation, display: () => FERTILITY_LABELS[state.fertilityPreservation] || '', content: () => !!state.fertilityPreservation,
       syncEdit: () => { const s = document.getElementById('fertility_select'); if (s) s.value = state.fertilityPreservation || ''; } },
-    { id: 'timeline', required: true, applicable: () => lookingForNeedsTimeline(), answered: () => !!state.relationshipTimeline, display: () => TIMELINE_LABELS[state.relationshipTimeline] || '', content: () => !!state.relationshipTimeline,
-      syncEdit: () => { const s = document.getElementById('relationship_timeline'); if (s) s.value = state.relationshipTimeline || ''; } },
   ],
   7: [
     { id: 'linkedin', required: true, applicable: () => true, answered: () => /^[a-zA-Z0-9\-]+$/.test(valOf('linkedin_username')), display: () => valOf('linkedin_username'), content: () => !!valOf('linkedin_username') },
@@ -2355,6 +2355,7 @@ function qFinishEdit(id) {
 function qEdit(id) {
   const def = qDef(id);
   if (!def) return;
+  if (qMultiTimers[id]) { clearTimeout(qMultiTimers[id]); qMultiTimers[id] = null; }
   qEditing = id;
   if (def.syncEdit) def.syncEdit();
   qSync(def.screen);
@@ -2403,14 +2404,47 @@ function qSyncLookingChecks() {
     const on = Array.isArray(state.lookingFor) && state.lookingFor.includes(v);
     if (cb) cb.checked = on;
   });
-  const n = Array.isArray(state.lookingFor) ? state.lookingFor.length : 0;
-  document.querySelectorAll('[data-looking-done]').forEach(b => { b.disabled = n === 0; });
 }
+const Q_MULTI_DELAY = 1200;
+const qMultiTimers = {};
+function qScheduleMulti(id) {
+  if (qMultiTimers[id]) {
+    clearTimeout(qMultiTimers[id]);
+    qMultiTimers[id] = null;
+  }
+  const def = qDef(id);
+  if (!def) return;
+  const el = document.getElementById('q-' + id);
+  if (!def.answered()) {
+    if (qPassed.has(id)) qPassed.delete(id);
+    if (el && (el.classList.contains('q-open') || el.classList.contains('q-editing'))) qSync(qScreenOf(id));
+    else qUpdateNext(qScreenOf(id));
+    return;
+  }
+  qMultiTimers[id] = setTimeout(() => {
+    qMultiTimers[id] = null;
+    const node = document.getElementById('q-' + id);
+    if (!node || (!node.classList.contains('q-open') && !node.classList.contains('q-editing'))) return;
+    qConfirm(id);
+  }, Q_MULTI_DELAY);
+}
+document.addEventListener('click', (e) => {
+  if (!qEditing) return;
+  const id = qEditing;
+  const el = document.getElementById('q-' + id);
+  if (!el || el.getAttribute('data-kind') !== 'multi') return;
+  if (el.contains(e.target)) return;
+  if (qMultiTimers[id]) return;
+  const def = qDef(id);
+  if (!def || !def.answered()) return;
+  qConfirm(id);
+});
 function qSync(screenId, opts) {
   const list = QFLOW[screenId];
   if (!list) return;
   let opened = false;
   let openId = null;
+  let holdForEdit = false;
   list.forEach(def => {
     const el = document.getElementById('q-' + def.id);
     if (!el) return;
@@ -2418,11 +2452,12 @@ function qSync(screenId, opts) {
     if (!def.applicable()) return;
     if (qEditing === def.id) {
       el.classList.add('q-editing');
+      if (def.required && !def.answered()) holdForEdit = true;
     } else if (qPassed.has(def.id)) {
       el.classList.add('q-done');
       const v = el.querySelector('[data-q-value]');
       if (v) v.textContent = def.display();
-    } else if (!opened) {
+    } else if (!opened && !holdForEdit) {
       opened = true;
       openId = def.id;
       el.classList.add('q-open');
