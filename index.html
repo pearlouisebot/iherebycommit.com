@@ -2237,7 +2237,7 @@ function onZipInput() {
   clearTimeout(_zipTimer);
   const display = document.getElementById('zip-city-display');
   const zip = document.getElementById('postal_code').value.trim();
-  if (zip.length < 4) { if (display) { display.textContent = ''; display.style.display = 'none'; } state.zipCity = null; return; }
+  if (zip.length < 4) { if (display) { display.textContent = ''; display.style.display = 'none'; } document.getElementById('location-mode-toggle').style.display = ''; state.zipCity = null; return; }
   _zipTimer = setTimeout(() => _doZipLookup(zip), 600);
 }
 
@@ -2266,6 +2266,7 @@ async function _doZipLookup(zip) {
         state.zipCity = city; state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
         state.locationCountry = 'United States';
         if (display) { display.textContent = '\uD83D\uDCCD ' + city; display.style.display = ''; }
+        document.getElementById('location-mode-toggle').style.display = 'none';
         hideError('postal_code'); return;
       }
     }
@@ -2283,11 +2284,13 @@ async function _doZipLookup(zip) {
         state.zipCity = city; state.zipLatLong = (place.latitude && place.longitude) ? place.latitude + ',' + place.longitude : null;
         state.locationCountry = d['country'] || null;
         if (display) { display.textContent = '\uD83D\uDCCD ' + city + (state.locationCountry ? ', ' + state.locationCountry : ''); display.style.display = ''; }
+        document.getElementById('location-mode-toggle').style.display = 'none';
         hideError('postal_code'); return;
       }
     } catch(e) {}
   }
   if (display) { display.textContent = ''; display.style.display = 'none'; }
+  document.getElementById('location-mode-toggle').style.display = '';
   state.zipCity = null; state.zipLatLong = null; state.locationCountry = null;
   showError('postal_code', 'ZIP code not found');
 }
