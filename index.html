@@ -1776,7 +1776,10 @@ function toggleLookingFor(val) {
 function lookingForNeedsTimeline() {
   if (state.status === 'partnered') return false;
   const selected = Array.isArray(state.lookingFor) ? state.lookingFor : [];
-  return TIMELINE_TRIGGERS.some(v => selected.includes(v));
+  if (selected.length === 0) return false;
+  const hasRelType = TIMELINE_TRIGGERS.some(v => selected.includes(v));
+  const casualOnly = selected.length === 1 && selected[0] === 'casual';
+  return hasRelType || casualOnly;
 }
 
 function setRelationshipTimeline(val) {
@@ -1797,6 +1800,22 @@ function syncFamilyDrip() {
   // timeline: singles only, after looking_for filled, conditional
   const tlGroup = document.getElementById('relationship-timeline-group');
   if (tlGroup) tlGroup.style.display = (!partnered && hasLF && needsTL) ? 'block' : 'none';
+  // Update timeline label and options based on looking_for selection
+  const _lf = Array.isArray(state.lookingFor) ? state.lookingFor : [];
+  const _hasMarriage = _lf.includes('marriage');
+  const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
+  const tlLabel = document.querySelector('#relationship-timeline-group .field-label');
+  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : 'Ideally, when would you like to be in a relationship?';
+  const tlSel = document.getElementById('relationship_timeline');
+  if (tlSel) {
+    const existingDwr = tlSel.querySelector('option[value="dont_want_relationship"]');
+    if (_casualOnly && !existingDwr) {
+      const opt = document.createElement('option'); opt.value = 'dont_want_relationship'; opt.textContent = "Don't Want Relationship"; tlSel.appendChild(opt);
+    } else if (!_casualOnly && existingDwr) {
+      existingDwr.remove();
+      if (state.relationshipTimeline === 'dont_want_relationship') { state.relationshipTimeline = null; tlSel.value = ''; }
+    }
+  }
   if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
   // has kids: unlocks after LF + TL prereqs met
   const hcGroup = document.getElementById('has-children-group');
