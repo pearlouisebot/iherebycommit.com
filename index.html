@@ -769,23 +769,21 @@
             <div id="zip-city-display" class="zip-city-display" style="display:none;"></div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:115px 1fr;gap:10px;margin-bottom:12px;">
-          <div class="field-group" style="margin-bottom:0;">
+        <div class="field-group" style="margin-bottom:12px;">
             <label class="field-label">Gender</label>
-            <select class="field-input" id="gender_select" onchange="setGender(this.value)" style="padding-left:10px;padding-right:6px;">
-              <option value="">—</option>
+            <select class="field-input" id="gender_select" onchange="setGender(this.value)">
+              <option value="">— Select —</option>
               <option value="man">Man</option>
               <option value="woman">Woman</option>
               <option value="non-binary">Non-binary</option>
             </select>
-            <div class="field-error" id="err-gender">Required</div>
+            <div class="field-error" id="err-gender">Please select one</div>
           </div>
-          <div class="field-group" style="margin-bottom:0;">
+          <div class="field-group" style="margin-bottom:12px;">
             <label class="field-label">Email</label>
             <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
             <div class="field-error" id="err-email">Valid email required</div>
           </div>
-        </div>
       </div>
       <div id="under18-msg">
         <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
