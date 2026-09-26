@@ -751,7 +751,7 @@
       <!-- Bottom row -->
       <div class="lp-bottom-row">
         <a href="#below-fold">↓ THE SCIENCE</a>
-        <span><a href="/privacy">PRIVACY</a> · <a href="/terms">TERMS</a></span>
+        <span><a href="privacy/">PRIVACY</a> · <a href="terms/">TERMS</a></span>
       </div>
     </div>
   </div>
@@ -788,7 +788,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Date of birth</label>
-            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01">
+            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group" style="margin-bottom:0;">
@@ -1008,7 +1008,7 @@
       </div>
       <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
         <input type="checkbox" id="sms_consent" disabled>
-        <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent will be collected prior to enrolling you in the study. See our <a href="/privacy" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
+        <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent will be collected prior to enrolling you in the study. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
       </label>
     </div>
     <div class="bottom-action">
@@ -1048,7 +1048,7 @@
       <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
     </div>
     <div class="bottom-action">
-      <p class="legal-consent-text">By applying, you agree to our <a href="/terms" target="_blank" rel="noopener">Terms</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+      <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(7)">← BACK</button>
     </div>
@@ -1130,7 +1130,7 @@
         <li>Dyrenforth, Kashy, Donnellan &amp; Lucas (2010), <em>Journal of Personality and Social Psychology</em>.</li>
         <li>Joel, Eastwick &amp; Finkel (2017), <em>Psychological Science</em>.</li>
       </ol>
-      <div class="bfold-legal">I Hereby Commit is a project of Hatch Labs Holdings LLC. &nbsp;·&nbsp; <a href="/privacy">Privacy</a> &nbsp;·&nbsp; <a href="/terms">Terms</a></div>
+      <div class="bfold-legal">I Hereby Commit is a project of Hatch Labs Holdings LLC. &nbsp;·&nbsp; <a href="privacy/">Privacy</a> &nbsp;·&nbsp; <a href="terms/">Terms</a></div>
     </footer>
 
   </div>
@@ -1167,6 +1167,10 @@ const state = {
   landingHeadline: window.location.href,
   partialLeadId: null, // DB id of the in-progress partial_leads row
   heightCm: null,
+  // Gender defaults (5'9"/5'3", 1996-01-01) look identical to a real choice,
+  // so "user touched" is tracked separately from the current value.
+  heightTouched: false,
+  birthdateTouched: false,
 };
 let partnerCity = null;
 
@@ -1648,15 +1652,26 @@ function setGender(val) {
   const btn = document.getElementById('btn-gender-' + val.replace('-',''));
   if (btn) btn.classList.add('selected');
   hideError('gender');
-  // Set default height whenever gender changes
-  const defaultCm = val === 'man' ? 175 : val === 'woman' ? 160 : null;
-  if (defaultCm) {
-    state.heightCm = defaultCm;
-    const sel = document.getElementById('height_ftin');
-    if (sel) sel.value = defaultCm;
-    const cmInput = document.getElementById('height_cm_input');
-    if (cmInput && state.locationMode !== 'zip') cmInput.value = defaultCm;
+  // Singles and couples share this screen. Defaults apply only while the
+  // user has not set the field. Switching gender later must not clobber a choice.
+  if (!state.heightTouched) {
+    const defaultCm = val === 'man' ? 175 : val === 'woman' ? 160 : null;
+    if (defaultCm) {
+      state.heightCm = defaultCm;
+      const sel = document.getElementById('height_ftin');
+      if (sel) sel.value = defaultCm;
+      const cmInput = document.getElementById('height_cm_input');
+      if (cmInput && state.locationMode !== 'zip') cmInput.value = defaultCm;
+    }
   }
+  if (!state.birthdateTouched) {
+    const bd = document.getElementById('birthdate');
+    if (bd && !bd.value) bd.value = '1996-01-01';
+  }
+}
+
+function onBirthdateInput() {
+  state.birthdateTouched = true;
 }
 
 function setHasChildren(val) {
@@ -2064,10 +2079,12 @@ function _buildHeightSelect() {
   }
 }
 function onHeightFtInChange() {
+  state.heightTouched = true;
   const val = document.getElementById('height_ftin').value;
   state.heightCm = val ? parseInt(val) : null;
 }
 function onHeightCmChange() {
+  state.heightTouched = true;
   const val = document.getElementById('height_cm_input').value;
   state.heightCm = val ? parseInt(val) : null;
 }
