@@ -763,19 +763,26 @@
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group">
-            <label class="field-label">Email</label>
-            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email" style="font-size:14px;padding:14px 10px;">
-            <div class="field-error" id="err-email">Valid email required</div>
+            <label class="field-label">Zip / Postal</label>
+            <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
+            <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
+            <div id="zip-city-display" class="zip-city-display"></div>
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label">I am a</label>
-          <div class="toggle-group" style="margin-bottom:0;">
-            <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
-            <button class="toggle-btn" id="btn-gender-woman" onclick="setGender('woman')">WOMAN</button>
-            <button class="toggle-btn" id="btn-gender-nonbinary" onclick="setGender('non-binary')">NON-BINARY</button>
-          </div>
+          <label class="field-label">Gender</label>
+          <select class="field-input" id="gender_select" onchange="setGender(this.value)">
+            <option value="">— Select —</option>
+            <option value="man">Man</option>
+            <option value="woman">Woman</option>
+            <option value="non-binary">Non-binary</option>
+          </select>
           <div class="field-error" id="err-gender">Please select one</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Email</label>
+          <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+          <div class="field-error" id="err-email">Valid email required</div>
         </div>
       </div>
       <div id="under18-msg">
@@ -797,7 +804,6 @@
     <div class="screen-content" style="padding-bottom:160px;">
       <div class="screen-label">Step 2 of <span class="step-total"></span></div>
       <div class="screen-headline">WHERE YOU<br><span class="accent">LIVE & DATE</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div class="field-group">
         <label class="field-label">Country</label>
         <select class="field-input" id="country" onchange="_onCountryChange()">
@@ -806,13 +812,6 @@
         </select>
         <div class="field-error" id="err-country">Please select your country</div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Zip / Postal</label>
-        <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
-        <div class="field-error" id="err-postal_code">ZIP / Postal code required</div>
-        <div id="zip-city-display" class="zip-city-display"></div>
-      </div>
-      </div><!-- /country-zip grid -->
       <div id="cities-single-section" class="field-group" style="margin-bottom:20px;">
         <label class="field-label">Open to other cities? <span class="optional-tag">optional</span></label>
         <div class="multiselect-wrap" id="city-picker-wrap">
@@ -1541,8 +1540,6 @@ function saveLead() {
 // ============================================================
 function setGender(val) {
   state.gender = val;
-  ['man','woman','nonbinary'].forEach(k => document.getElementById('btn-gender-' + k).classList.remove('selected'));
-  document.getElementById('btn-gender-' + val.replace('-','')).classList.add('selected');
   hideError('gender');
 }
 
@@ -1623,12 +1620,12 @@ function validateScreen(screenId) {
     else { hideError('birthdate'); if (getAge(bd) < 18) { showUnder18(); return false; } }
     if (!em || !isValidEmail(em)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
     if (!state.gender) { showError('gender', 'Please select one'); ok = false; } else hideError('gender');
+    const postal1 = document.getElementById('postal_code').value.trim();
+    if (!postal1) { showError('postal_code', 'ZIP / Postal code required'); ok = false; } else hideError('postal_code');
   }
   if (screenId === 3) {
     const country = document.getElementById('country').value;
-    const postal = document.getElementById('postal_code').value.trim();
     if (!country) { showError('country', 'Please select your country'); ok = false; } else hideError('country');
-    if (!postal) { showError('postal_code', 'ZIP / Postal code required'); ok = false; } else hideError('postal_code');
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
