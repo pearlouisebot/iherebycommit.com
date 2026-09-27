@@ -366,6 +366,22 @@
     .institution-row .field-input { flex: 1; min-width: 0; }
     .institution-remove { font-size: 20px; line-height: 1; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0 0 0 4px; flex-shrink: 0; }
     .add-another-btn { font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.04em; background: none; border: none; cursor: pointer; padding: 4px 0 8px; }
+    .degree-cards { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+    .degree-cards:empty { display: none; }
+    .degree-card {
+      display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px;
+      padding: 8px 4px 8px 12px; box-sizing: border-box; text-align: left;
+      background: transparent; border: 1px solid var(--dim); border-radius: var(--radius);
+      color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.35;
+      cursor: pointer;
+    }
+    .degree-card-text { flex: 1; min-width: 0; }
+    .degree-card-remove {
+      min-width: 44px; min-height: 44px; padding: 0; flex-shrink: 0;
+      background: none; border: none; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer;
+    }
+    .degree-step[hidden] { display: none !important; }
+    #degree-type-choices { margin-bottom: 8px; }
     #institutions-label { text-transform: none; letter-spacing: 0.02em; font-size: 13px; line-height: 1.4; }
     .public-fields { display: flex; flex-direction: column; gap: 18px; }
 
@@ -1097,40 +1113,41 @@
           <button type="button" class="q-mini" onclick="qConfirm('professional_title')">NEXT</button>
         </div>
       </div>
-      <div class="q" id="q-highest_degree" data-q="highest_degree" data-kind="choice">
-        <button type="button" class="q-row" onclick="qEdit('highest_degree')" aria-label="Edit highest degree">
-          <span class="q-row-label">Degree</span>
+      <div class="q" id="q-degrees" data-q="degrees" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('degrees')" aria-label="Edit degrees obtained">
+          <span class="q-row-label">Degrees</span>
           <span class="q-row-value" data-q-value></span>
           <span class="q-row-caret" aria-hidden="true">▾</span>
         </button>
         <div class="q-panel">
-          <div class="field-label">Highest degree obtained</div>
-          <div class="q-choices" id="highest_degree_choices" role="group" aria-label="Highest degree obtained"></div>
-          <div class="q-native">
-            <!-- Button labels are this option text. Edit the words here. -->
-            <select class="field-input" id="highest_degree" onchange="setHighestDegree(this.value); qFinishEdit('highest_degree')" onblur="qCancelEdit('highest_degree')">
-              <option value="">— Select —</option>
-              <option value="ged">High school / GED</option>
-              <option value="bachelors">BA/BS</option>
-              <option value="masters">Master's</option>
-              <option value="doctorate">Doctorate</option>
-            </select>
+          <div class="field-label">Degrees Obtained</div>
+          <div id="degree-cards" class="degree-cards"></div>
+          <div id="degree-step-type" class="degree-step">
+            <div class="field-label">Degree</div>
+            <div class="q-choices q-choices-grid" id="degree-type-choices" role="group" aria-label="Degree"></div>
           </div>
-          <div class="field-error" id="err-highest_degree">Please make a selection</div>
-        </div>
-      </div>
-      <div class="q" id="q-institutions" data-q="institutions" data-kind="text">
-        <button type="button" class="q-row" onclick="qEdit('institutions')" aria-label="Edit institutions">
-          <span class="q-row-label" id="institutions-row-label">Institution</span>
-          <span class="q-row-value" data-q-value></span>
-          <span class="q-row-caret" aria-hidden="true">▾</span>
-        </button>
-        <div class="q-panel">
-          <label class="field-label" id="institutions-label" for="institution-0">What institution did you attend?</label>
-          <div id="institutions-fields"></div>
-          <button type="button" class="add-another-btn" id="add-institution-btn" hidden>+ Add another institution</button>
-          <div class="field-error" id="err-institutions">Required</div>
-          <button type="button" class="q-mini" onclick="qConfirm('institutions')">NEXT</button>
+          <div id="degree-step-other" class="degree-step" hidden>
+            <label class="field-label" for="degree-other-input">Degree <span class="optional-tag">optional</span></label>
+            <input class="field-input" id="degree-other-input" type="text" placeholder="Type your degree" autocomplete="off">
+            <button type="button" class="q-mini" id="degree-other-next">NEXT</button>
+          </div>
+          <div id="degree-step-field" class="degree-step" hidden>
+            <label class="field-label" for="degree-field-input">Field of study <span class="optional-tag">optional</span></label>
+            <input class="field-input" id="degree-field-input" type="text" placeholder="e.g. Mathematics" autocomplete="off">
+            <button type="button" class="q-mini" id="degree-field-next">NEXT</button>
+          </div>
+          <div id="degree-step-specialty" class="degree-step" hidden>
+            <label class="field-label" for="degree-specialty-input">Specialty <span class="optional-tag">optional</span></label>
+            <input class="field-input" id="degree-specialty-input" type="text" placeholder="e.g. Pediatrics" autocomplete="off">
+            <button type="button" class="q-mini" id="degree-specialty-next">NEXT</button>
+          </div>
+          <div id="degree-step-institution" class="degree-step" hidden>
+            <label class="field-label" for="degree-institution-input">Institution <span class="optional-tag">optional</span></label>
+            <input class="field-input" id="degree-institution-input" type="text" placeholder="e.g. Harvard" autocomplete="off">
+            <button type="button" class="q-mini" id="degree-institution-add">ADD</button>
+          </div>
+          <button type="button" class="add-another-btn" id="degree-add-another" hidden>+ Add another degree</button>
+          <button type="button" class="q-mini" id="degree-question-next" onclick="qConfirm('degrees')">NEXT</button>
         </div>
       </div>
     </div>
@@ -1691,7 +1708,6 @@ const state = {
   heightTouched: false,
   birthdateTouched: false,
   degreePreference: null,
-  highestDegree: null,
 };
 let partnerCity = null;
 
@@ -2168,7 +2184,8 @@ async function saveLead() {
     landing_headline: state.landingHeadline || null,
     height_cm: state.heightCm || null,
     professional_title: professionalTitlePayload(),
-    highest_degree: state.highestDegree || null,
+    degrees: degreesPayload(),
+    highest_degree: derivedHighestDegree(),
     institutions: institutionsPayload(),
     degree_preference: state.status === 'partnered' ? null : (state.degreePreference || null),
   };
@@ -2309,86 +2326,6 @@ function professionalTitlePayload() {
   return valOf('professional_title') || null;
 }
 
-function degreeAllowsInstitution(deg) {
-  return deg === 'bachelors' || deg === 'masters' || deg === 'doctorate';
-}
-function degreeAllowsManyInstitutions(deg) {
-  return deg === 'masters' || deg === 'doctorate';
-}
-
-let institutions = [''];
-
-function institutionEntries() {
-  const many = degreeAllowsManyInstitutions(state.highestDegree);
-  const list = many ? institutions : institutions.slice(0, 1);
-  return list.map(s => (s || '').trim()).filter(Boolean);
-}
-
-function institutionsPayload() {
-  if (!degreeAllowsInstitution(state.highestDegree)) return null;
-  const joined = institutionEntries().join('; ');
-  return joined || null;
-}
-
-function syncInstitutionPrompt() {
-  const many = degreeAllowsManyInstitutions(state.highestDegree);
-  const question = many ? 'What institutions did you attend?' : 'What institution did you attend?';
-  const label = document.getElementById('institutions-label');
-  const rowLabel = document.getElementById('institutions-row-label');
-  if (label) label.textContent = question;
-  if (rowLabel) rowLabel.textContent = many ? 'Institutions' : 'Institution';
-  const addBtn = document.getElementById('add-institution-btn');
-  if (addBtn) addBtn.hidden = !many;
-  renderInstitutionFields();
-}
-
-function renderInstitutionFields() {
-  const list = document.getElementById('institutions-fields');
-  if (!list) return;
-  if (!institutions.length) institutions = [''];
-  const many = degreeAllowsManyInstitutions(state.highestDegree);
-  const count = many ? institutions.length : 1;
-  list.replaceChildren();
-  for (let i = 0; i < count; i++) {
-    const row = document.createElement('div');
-    row.className = 'institution-row';
-    const input = document.createElement('input');
-    input.className = 'field-input';
-    input.type = 'text';
-    input.id = i === 0 ? 'institution-0' : '';
-    input.placeholder = 'Institution';
-    input.value = institutions[i] || '';
-    input.addEventListener('input', () => { institutions[i] = input.value; });
-    input.addEventListener('keydown', (e) => qOnEnter(e, 'institutions'));
-    input.addEventListener('blur', () => qOnBlur('institutions'));
-    row.appendChild(input);
-    if (many && count > 1) {
-      const remove = document.createElement('button');
-      remove.type = 'button';
-      remove.className = 'institution-remove';
-      remove.textContent = '×';
-      remove.setAttribute('aria-label', 'Remove institution');
-      remove.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        institutions.splice(i, 1);
-        if (!institutions.length) institutions = [''];
-        renderInstitutionFields();
-        document.querySelector('#q-institutions input')?.focus();
-      });
-      row.appendChild(remove);
-    }
-    list.appendChild(row);
-  }
-}
-
-function addInstitutionField() {
-  institutions.push('');
-  renderInstitutionFields();
-  const inputs = document.querySelectorAll('#institutions-fields input');
-  const last = inputs[inputs.length - 1];
-  if (last) last.focus();
-}
-
 function setDegreePreference(val) {
   state.degreePreference = val || null;
   const sel = document.getElementById('degree_preference');
@@ -2396,13 +2333,288 @@ function setDegreePreference(val) {
   hideError('degree_preference');
 }
 
-function setHighestDegree(val) {
-  state.highestDegree = val || null;
-  const sel = document.getElementById('highest_degree');
-  if (sel && val && sel.value !== val) sel.value = val;
-  if (!degreeAllowsInstitution(val) && typeof qPassed !== 'undefined') qPassed.delete('institutions');
-  syncInstitutionPrompt();
-  hideError('highest_degree');
+const DEGREE_DEFS = [
+  { label: 'High school / GED', middle: 'none', rank: 1, school: true },
+  { label: "Associate's", middle: 'field', rank: 2 },
+  { label: 'BA', middle: 'field', rank: 3 },
+  { label: 'BS', middle: 'field', rank: 3 },
+  { label: 'MA', middle: 'field', rank: 4 },
+  { label: 'MS', middle: 'field', rank: 4 },
+  { label: 'MFA', middle: 'field', rank: 4 },
+  { label: 'MBA', middle: 'none', rank: 4 },
+  { label: 'JD', middle: 'none', rank: 5 },
+  { label: 'MD', middle: 'specialty', rank: 5 },
+  { label: 'DDS', middle: 'specialty', rank: 5 },
+  { label: 'DVM', middle: 'specialty', rank: 5 },
+  { label: 'PharmD', middle: 'specialty', rank: 5 },
+  { label: 'EdD', middle: 'field', rank: 5 },
+  { label: 'PhD', middle: 'field', rank: 5 },
+  { label: 'Other', middle: 'field', rank: 0, other: true },
+];
+let obtainedDegrees = [];
+let degreeDraft = null;
+let degreeEditIndex = -1;
+let degreeStep = 'type';
+let degreeWizardLive = false;
+let degreePickTimer = null;
+
+function emptyDegreeDraft() {
+  return { degree: '', field: '', specialty: '', institution: '', middle: 'none', other: false };
+}
+function degreeDefForLabel(label) {
+  return DEGREE_DEFS.find(d => d.label === label) || null;
+}
+function degreeRankOf(entry) {
+  const known = entry && degreeDefForLabel(entry.degree);
+  return known ? known.rank : 0;
+}
+function degreeDisplayName(entry) {
+  if (!entry) return '';
+  if (entry.degree) return entry.degree;
+  return 'Other';
+}
+function formatDegreeCard(entry) {
+  return [degreeDisplayName(entry), entry.field, entry.specialty, entry.institution].filter(Boolean).join(' · ');
+}
+function formatDegreeSummaryItem(entry) {
+  const head = [degreeDisplayName(entry), entry.field || entry.specialty].filter(Boolean).join(' ');
+  if (entry.institution) return head ? head + ', ' + entry.institution : entry.institution;
+  return head;
+}
+function formatDegreesRow() {
+  const items = obtainedDegrees.map(formatDegreeSummaryItem).filter(Boolean);
+  return items.length ? items.join(' · ') : '—';
+}
+function degreesPayload() {
+  if (!obtainedDegrees.length) return null;
+  return obtainedDegrees.map(d => ({
+    degree: d.degree || null,
+    field: d.field || null,
+    specialty: d.specialty || null,
+    institution: d.institution || null,
+  }));
+}
+function derivedHighestDegree() {
+  if (!obtainedDegrees.length) return null;
+  let best = obtainedDegrees[0];
+  let bestRank = degreeRankOf(best);
+  for (let i = 1; i < obtainedDegrees.length; i++) {
+    const rank = degreeRankOf(obtainedDegrees[i]);
+    if (rank > bestRank) { best = obtainedDegrees[i]; bestRank = rank; }
+  }
+  if (bestRank === 0) return best.degree || 'Other';
+  return best.degree || null;
+}
+function institutionsPayload() {
+  const list = obtainedDegrees.map(d => (d.institution || '').trim()).filter(Boolean);
+  return list.length ? list.join('; ') : null;
+}
+function initDegreeButtons() {
+  const box = document.getElementById('degree-type-choices');
+  if (!box || box.childElementCount) return;
+  DEGREE_DEFS.forEach(def => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toggle-btn';
+    btn.textContent = def.label;
+    btn.dataset.degree = def.label;
+    btn.addEventListener('click', () => pickDegreeType(def, btn));
+    box.appendChild(btn);
+  });
+  const bind = (id, fn) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  };
+  bind('degree-other-next', () => {
+    degreeDraft.degree = document.getElementById('degree-other-input').value.trim();
+    degreeStep = 'field';
+    renderDegreeWizard();
+  });
+  bind('degree-field-next', () => {
+    degreeDraft.field = document.getElementById('degree-field-input').value.trim();
+    degreeStep = 'institution';
+    renderDegreeWizard();
+  });
+  bind('degree-specialty-next', () => {
+    degreeDraft.specialty = document.getElementById('degree-specialty-input').value.trim();
+    degreeStep = 'institution';
+    renderDegreeWizard();
+  });
+  bind('degree-institution-add', commitDegreeDraft);
+  bind('degree-add-another', () => {
+    degreeEditIndex = -1;
+    degreeDraft = emptyDegreeDraft();
+    degreeStep = 'type';
+    renderDegreeWizard();
+  });
+  const onEnter = (inputId, fn) => {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      fn();
+    });
+  };
+  onEnter('degree-other-input', () => document.getElementById('degree-other-next').click());
+  onEnter('degree-field-input', () => document.getElementById('degree-field-next').click());
+  onEnter('degree-specialty-input', () => document.getElementById('degree-specialty-next').click());
+  onEnter('degree-institution-input', () => document.getElementById('degree-institution-add').click());
+}
+function pickDegreeType(def, btn) {
+  const box = document.getElementById('degree-type-choices');
+  if (box) box.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('selected', b === btn));
+  if (degreePickTimer) clearTimeout(degreePickTimer);
+  const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : Q_CHOICE_DELAY;
+  degreePickTimer = setTimeout(() => {
+    degreePickTimer = null;
+    const previous = degreeDraft.degree;
+    degreeDraft.other = !!def.other;
+    degreeDraft.middle = def.middle;
+    if (def.other) {
+      if (previous && degreeDefForLabel(previous)) degreeDraft.degree = '';
+      degreeStep = 'other';
+    } else {
+      degreeDraft.degree = def.label;
+      if (previous !== def.label) {
+        degreeDraft.field = '';
+        degreeDraft.specialty = '';
+      }
+      degreeStep = def.middle === 'field' ? 'field' : def.middle === 'specialty' ? 'specialty' : 'institution';
+    }
+    renderDegreeWizard();
+  }, delay);
+}
+function readDegreeInputs() {
+  const other = document.getElementById('degree-other-input');
+  const field = document.getElementById('degree-field-input');
+  const specialty = document.getElementById('degree-specialty-input');
+  const institution = document.getElementById('degree-institution-input');
+  if (degreeStep === 'other' && other) degreeDraft.degree = other.value.trim();
+  if (degreeStep === 'field' && field) degreeDraft.field = field.value.trim();
+  if (degreeStep === 'specialty' && specialty) degreeDraft.specialty = specialty.value.trim();
+  if (degreeStep === 'institution' && institution) degreeDraft.institution = institution.value.trim();
+}
+function commitDegreeDraft() {
+  readDegreeInputs();
+  const entry = {
+    degree: (degreeDraft.degree || '').trim() || null,
+    field: degreeDraft.middle === 'field' ? ((degreeDraft.field || '').trim() || null) : null,
+    specialty: degreeDraft.middle === 'specialty' ? ((degreeDraft.specialty || '').trim() || null) : null,
+    institution: (degreeDraft.institution || '').trim() || null,
+  };
+  if (degreeEditIndex >= 0 && degreeEditIndex < obtainedDegrees.length) obtainedDegrees[degreeEditIndex] = entry;
+  else obtainedDegrees.push(entry);
+  degreeEditIndex = -1;
+  degreeDraft = emptyDegreeDraft();
+  degreeStep = 'idle';
+  renderDegreeWizard();
+  if (typeof qRefresh === 'function') qRefresh('degrees');
+}
+function editDegree(index) {
+  const entry = obtainedDegrees[index];
+  if (!entry) return;
+  const known = degreeDefForLabel(entry.degree);
+  degreeEditIndex = index;
+  degreeDraft = {
+    degree: entry.degree || '',
+    field: entry.field || '',
+    specialty: entry.specialty || '',
+    institution: entry.institution || '',
+    middle: known ? known.middle : 'field',
+    other: !known,
+  };
+  degreeStep = 'type';
+  renderDegreeWizard();
+}
+function removeDegree(index) {
+  obtainedDegrees.splice(index, 1);
+  if (degreeEditIndex === index) {
+    degreeEditIndex = -1;
+    degreeDraft = emptyDegreeDraft();
+    degreeStep = obtainedDegrees.length ? 'idle' : 'type';
+  } else if (degreeEditIndex > index) degreeEditIndex -= 1;
+  renderDegreeWizard();
+  if (typeof qRefresh === 'function') qRefresh('degrees');
+}
+function renderDegreeCards() {
+  const list = document.getElementById('degree-cards');
+  if (!list) return;
+  list.replaceChildren();
+  obtainedDegrees.forEach((entry, index) => {
+    const card = document.createElement('div');
+    card.className = 'degree-card';
+    card.setAttribute('role', 'button');
+    card.tabIndex = 0;
+    const text = document.createElement('span');
+    text.className = 'degree-card-text';
+    text.textContent = formatDegreeCard(entry);
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'degree-card-remove';
+    remove.textContent = '×';
+    remove.setAttribute('aria-label', 'Remove ' + text.textContent);
+    remove.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeDegree(index);
+    });
+    card.addEventListener('click', () => editDegree(index));
+    card.append(text, remove);
+    list.appendChild(card);
+  });
+}
+function renderDegreeWizard() {
+  initDegreeButtons();
+  if (!degreeDraft) degreeDraft = emptyDegreeDraft();
+  const steps = {
+    type: document.getElementById('degree-step-type'),
+    other: document.getElementById('degree-step-other'),
+    field: document.getElementById('degree-step-field'),
+    specialty: document.getElementById('degree-step-specialty'),
+    institution: document.getElementById('degree-step-institution'),
+  };
+  Object.entries(steps).forEach(([name, el]) => { if (el) el.hidden = name !== degreeStep; });
+  const addAnother = document.getElementById('degree-add-another');
+  if (addAnother) addAnother.hidden = degreeStep !== 'idle' || !obtainedDegrees.length;
+  const box = document.getElementById('degree-type-choices');
+  if (box) {
+    const selected = degreeDraft.other ? 'Other' : (degreeDraft.degree || '');
+    box.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('selected', degreeStep !== 'idle' && b.dataset.degree === selected));
+  }
+  const other = document.getElementById('degree-other-input');
+  const field = document.getElementById('degree-field-input');
+  const specialty = document.getElementById('degree-specialty-input');
+  const institution = document.getElementById('degree-institution-input');
+  if (other) { other.disabled = degreeStep !== 'other'; if (degreeStep === 'other') other.value = degreeDraft.degree || ''; }
+  if (field) { field.disabled = degreeStep !== 'field'; if (degreeStep === 'field') field.value = degreeDraft.field || ''; }
+  if (specialty) { specialty.disabled = degreeStep !== 'specialty'; if (degreeStep === 'specialty') specialty.value = degreeDraft.specialty || ''; }
+  if (institution) {
+    institution.disabled = degreeStep !== 'institution';
+    if (degreeStep === 'institution') {
+      institution.value = degreeDraft.institution || '';
+      const known = degreeDefForLabel(degreeDraft.degree);
+      institution.placeholder = known && known.school ? 'e.g. Phillips Exeter' : 'e.g. Harvard';
+    }
+  }
+  renderDegreeCards();
+  const focusId = degreeStep === 'other' ? 'degree-other-input' : degreeStep === 'field' ? 'degree-field-input' : degreeStep === 'specialty' ? 'degree-specialty-input' : degreeStep === 'institution' ? 'degree-institution-input' : '';
+  if (focusId) {
+    const input = document.getElementById(focusId);
+    if (input) setTimeout(() => { try { input.focus({ preventScroll: true }); } catch (err) { input.focus(); } }, 30);
+  }
+}
+function syncDegreesPanel() {
+  const el = document.getElementById('q-degrees');
+  if (!el) return;
+  const open = el.classList.contains('q-open') || el.classList.contains('q-editing');
+  if (!open) { degreeWizardLive = false; return; }
+  if (!degreeWizardLive) {
+    degreeWizardLive = true;
+    degreeEditIndex = -1;
+    degreeDraft = emptyDegreeDraft();
+    degreeStep = obtainedDegrees.length ? 'idle' : 'type';
+  }
+  renderDegreeWizard();
 }
 
 // ============================================================
@@ -2479,9 +2691,7 @@ function formatHandle(id) {
 const QFLOW = {
   2: [
     { id: 'professional_title', required: true, applicable: () => true, answered: () => !!valOf('professional_title'), display: () => valOf('professional_title'), content: () => !!valOf('professional_title') },
-    { id: 'highest_degree', required: true, applicable: () => true, answered: () => !!state.highestDegree, display: () => optText('highest_degree', state.highestDegree), content: () => !!state.highestDegree,
-      syncEdit: () => { const s = document.getElementById('highest_degree'); if (s) s.value = state.highestDegree || ''; } },
-    { id: 'institutions', required: true, applicable: () => degreeAllowsInstitution(state.highestDegree), answered: () => institutionEntries().length > 0, display: () => institutionEntries().join('; '), content: () => institutionEntries().length > 0 },
+    { id: 'degrees', required: false, applicable: () => true, answered: () => true, display: () => formatDegreesRow(), content: () => obtainedDegrees.length > 0 },
   ],
   1: [
     { id: 'gender', required: true, applicable: () => true, answered: () => !!state.gender, display: () => optText('gender_select', state.gender), content: () => !!state.gender,
@@ -2579,7 +2789,6 @@ function qPickChoice(id, value) {
   else if (id === 'has_children') setHasChildren(value);
   else if (id === 'wants_children') setWantsChildren(value);
   else if (id === 'fertility') setFertility(value);
-  else if (id === 'highest_degree') setHighestDegree(value);
   else if (id === 'degree_preference') setDegreePreference(value);
   qConfirm(id);
 }
@@ -2589,7 +2798,6 @@ function qSyncDynamic() {
   qRenderChoices('has_children', 'has_children_select', state.hasChildren === true ? 'yes' : state.hasChildren === false ? 'no' : '');
   qRenderChoices('wants_children', 'wants_children_select', state.wantsChildren || '');
   qRenderChoices('fertility', 'fertility_select', state.fertilityPreservation || '');
-  qRenderChoices('highest_degree', 'highest_degree', state.highestDegree || '');
   qRenderChoices('degree_preference', 'degree_preference', state.degreePreference || '');
 }
 function qValidate(id) {
@@ -2655,12 +2863,6 @@ function qValidate(id) {
     case 'professional_title':
       if (!valOf('professional_title')) { showError('professional_title', 'Required'); return false; }
       hideError('professional_title'); return true;
-    case 'highest_degree':
-      if (!state.highestDegree) { showError('highest_degree', 'Please make a selection'); return false; }
-      hideError('highest_degree'); return true;
-    case 'institutions':
-      if (!institutionEntries().length) { showError('institutions', 'Required'); return false; }
-      hideError('institutions'); return true;
     case 'degree_preference':
       if (!state.degreePreference) { showError('degree_preference', 'Please make a selection'); return false; }
       hideError('degree_preference'); return true;
@@ -2852,12 +3054,12 @@ function qSync(screenId, opts) {
       if (typeof _updateHeightLabels === 'function') _updateHeightLabels();
     });
   }
-  if (screenId === 2 && typeof syncInstitutionPrompt === 'function') syncInstitutionPrompt();
+  if (screenId === 2 && typeof syncDegreesPanel === 'function') syncDegreesPanel();
   qUpdateNext(screenId);
   qSyncPairs();
   if (opts && opts.focus && openId) {
     const el = document.getElementById('q-' + openId);
-    const input = el && el.querySelector('input:not([type="checkbox"]):not([type="range"])');
+    const input = el && el.querySelector('input:not([type="checkbox"]):not([type="range"]):not([disabled])');
     if (input && el.classList.contains('q-open') && el.getAttribute('data-kind') === 'text') {
       setTimeout(() => { try { input.focus({ preventScroll: true }); } catch (err) { input.focus(); } }, 40);
     }
@@ -2872,7 +3074,6 @@ const Q_PAIRS = [
   ['first_name', 'last_name'],
   ['gender', 'birthdate'],
   ['gender', 'height'],
-  ['professional_title', 'highest_degree'],
   ['age', 'height_pref'],
   ['seeking', 'degree_preference'],
   ['timeline', 'fertility'],
@@ -3074,10 +3275,6 @@ function validateScreen(screenId) {
   }
   if (screenId === 2) {
     if (!valOf('professional_title')) { showError('professional_title', 'Required'); ok = false; } else hideError('professional_title');
-    if (!state.highestDegree) { showError('highest_degree', 'Please make a selection'); ok = false; } else hideError('highest_degree');
-    if (degreeAllowsInstitution(state.highestDegree)) {
-      if (!institutionEntries().length) { showError('institutions', 'Required'); ok = false; } else hideError('institutions');
-    } else hideError('institutions');
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
@@ -3220,7 +3417,8 @@ async function doSubmit() {
     height_cm: state.heightCm || null,
     landing_headline: state.landingHeadline || null,
     professional_title: professionalTitlePayload(),
-    highest_degree: state.highestDegree || null,
+    degrees: degreesPayload(),
+    highest_degree: derivedHighestDegree(),
     institutions: institutionsPayload(),
     degree_preference: state.status === 'partnered' ? null : (state.degreePreference || null),
     partial_lead_id: state.partialLeadId || null,
