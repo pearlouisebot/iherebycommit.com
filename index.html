@@ -175,6 +175,13 @@
     /* Next-blocking errors whose field is not on screen are listed right above Next (Hotfix 13) */
     .form-error-summary { display: none; font-size: 11px; color: var(--error); line-height: 1.5; padding: 2px 0 4px; }
     .form-error-summary.visible { display: block; }
+    /* Condensed "Do you have kids?" beside "How many?": the picked answer wraps instead of being cut off.
+       The native select sits invisibly on top, so tapping still opens the normal picker (no custom overlay). */
+    .sel-wrap { position: relative; }
+    .sel-face { display: flex; align-items: center; min-height: 54px; border: 1px solid var(--dim); border-radius: var(--radius); padding: 8px 12px; font-family: 'Space Mono', monospace; font-size: 14px; line-height: 1.35; color: var(--text); white-space: normal; overflow-wrap: anywhere; box-sizing: border-box; }
+    .sel-wrap > select.field-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .sel-wrap:focus-within .sel-face { border-color: var(--accent); }
+    .sel-wrap.error .sel-face { border-color: var(--error); }
     .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
@@ -259,16 +266,17 @@
       touch-action: manipulation;
     }
     .partner-location-chip-remove:hover { color: var(--text); }
-    #partner-location-add-more {
+    /* Shared by the singles Partner Location picker and the couples "Where does your partner live?" picker */
+    .city-add-more {
       background: none; border: none; padding: 0; min-height: 44px; cursor: pointer;
       color: var(--accent); font-family: 'Space Mono', monospace; font-size: 12px;
       letter-spacing: 0.04em; touch-action: manipulation;
     }
-    #partner-location-add-more[hidden] { display: none; }
-    #partner-location-add-row { display: flex; gap: 8px; align-items: stretch; }
-    #partner-location-add-row[hidden] { display: none; }
-    #partner-location-input { flex: 1; min-width: 0; min-height: 44px; }
-    #partner-location-add-btn {
+    .city-add-more[hidden] { display: none; }
+    .city-add-row { display: flex; gap: 8px; align-items: stretch; }
+    .city-add-row[hidden] { display: none; }
+    .city-add-input { flex: 1; min-width: 0; min-height: 44px; }
+    .city-add-btn {
       flex-shrink: 0; min-height: 44px; min-width: 64px; padding: 0 14px;
       border: 1px solid var(--dim); border-radius: var(--radius); background: transparent;
       color: var(--accent); font-family: 'Space Mono', monospace; font-size: 13px;
@@ -1008,7 +1016,7 @@
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
         <div class="field-error" id="err-partner_email">Valid email required</div>
       </div>
-      <p class="partner-notice">We'll notify your partner when the study goes live.</p>
+      <p class="partner-notice">We'll notify your partner when the study is live.</p>
       <div class="pt-pair" id="pt-row-lc">
         <div class="field-group who-unit" id="pt-live" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Live together" onclick="ptExpand('live')"><span class="who-cond-txt"><span class="who-cond-k">Live together</span><span class="who-cond-v" id="pt-live-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -1022,7 +1030,11 @@
         <div class="field-group who-unit" id="pt-city" style="margin-bottom:0;min-width:0;display:none;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Lives in" onclick="ptExpand('city')"><span class="who-cond-txt"><span class="who-cond-k">Lives in</span><span class="who-cond-v" id="pt-city-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="partner_city_input">Where does your partner live?</label>
-          <input class="field-input" id="partner_city_input" type="text" placeholder="City" autocomplete="off" oninput="partnerCity = this.value.trim() || null">
+          <div id="partner-city-chips" class="partner-location-chips"></div>
+          <div class="city-add-row" id="partner-city-add-row">
+            <input class="field-input city-add-input" id="partner_city_input" type="text" placeholder="Type a city and press Enter" autocomplete="off" enterkeyhint="done">
+            <button type="button" class="city-add-btn" id="partner-city-add-btn">Add</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1058,10 +1070,10 @@
         <div class="field-group" id="partner-location-field" style="margin-bottom:20px;">
           <label class="field-label" id="partner-location-label" for="partner-location-input">Partner Location (select all):</label>
           <div id="partner-location-chips" class="partner-location-chips"></div>
-          <button type="button" id="partner-location-add-more">+ Add more</button>
-          <div id="partner-location-add-row" hidden>
-            <input class="field-input" id="partner-location-input" type="text" placeholder="Type a city and press Enter" autocomplete="off" enterkeyhint="done">
-            <button type="button" id="partner-location-add-btn">Add</button>
+          <button type="button" class="city-add-more" id="partner-location-add-more">+ Add more</button>
+          <div class="city-add-row" id="partner-location-add-row" hidden>
+            <input class="field-input city-add-input" id="partner-location-input" type="text" placeholder="Type a city and press Enter" autocomplete="off" enterkeyhint="done">
+            <button type="button" class="city-add-btn" id="partner-location-add-btn">Add</button>
           </div>
         </div>
         <!-- AGE RANGE SLIDER -->
@@ -1193,12 +1205,26 @@
         <div id="haskids-condensed-col" style="flex:1;min-width:0;display:none;">
           <div class="field-group" id="has-children-group" style="margin-bottom:0;">
             <label class="field-label" id="haskids-condensed-label" style="font-size:12px;">Have kids?</label>
+            <div class="sel-wrap"><div class="sel-face" id="has_children_condensed_face" aria-hidden="true"></div>
             <select class="field-input" id="has_children_select_condensed" onchange="setHasChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
-            </select>
+            </select></div>
             <div class="field-error" id="err-has_children">Please make a selection</div>
+          </div>
+        </div>
+        <div id="numkids-condensed-col" style="flex:1;min-width:0;display:none;">
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label" style="font-size:12px;">How many?</label>
+            <select class="field-input" id="num_children_select_condensed" onchange="setNumChildren(this.value)">
+              <option value="">— Select —</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5+">5+</option>
+            </select>
           </div>
         </div>
       </div>
@@ -1213,6 +1239,21 @@
             <option value="no">No</option>
           </select>
           <div class="field-error" id="err-has_children_s">Please make a selection</div>
+        </div>
+      </div>
+
+      <!-- HOW MANY KIDS (couples, any Yes): full width until answered, then joins the "Do you have kids?" row -->
+      <div id="numkids-standalone-row" style="display:none;margin-bottom:14px;">
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label" style="font-size:12px;">How many kids do you have?</label>
+          <select class="field-input" id="num_children_select" onchange="setNumChildren(this.value)">
+            <option value="">— Select —</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5+">5+</option>
+          </select>
         </div>
       </div>
 
@@ -1450,6 +1491,7 @@ const state = {
   wantsChildren: null,
   kidsTimeline: null,
   fertilityPreservation: null,
+  numChildren: null, // couples: "How many kids do you have?" (1-4, 5+), only when they have kids
   lookingFor: [],
   race: [], // Race labels in the order picked (WHO YOU ARE)
   relationshipTimeline: null,
@@ -1942,6 +1984,7 @@ function clearErrorSummary(screenId) {
 }
 
 async function goNext(screenId) {
+  if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
   if (!validateScreen(screenId)) { surfaceErrors(screenId); return; }
   clearErrorSummary(screenId);
   await saveLead(); // await so partialLeadId is set before the next NEXT can fire
@@ -1982,7 +2025,8 @@ async function saveLead() {
     race: racePayload(),
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
-    fertility_preservation: state.fertilityPreservation || null,
+    fertility_preservation: fertilityPayload(),
+    num_children: numChildrenPayload(),
     looking_for: lookingForPayload(),
     relationship_timeline: relationshipTimelinePayload(),
     phone: get('phone'),
@@ -2073,6 +2117,18 @@ function setWantsChildren(val) {
   syncFamilyDrip();
 }
 function setFertility(val) { state.fertilityPreservation = val || null; hideError('fertility'); }
+// Couples are not asked about fertility preservation: always null (not asked). Singles unchanged.
+function fertilityPayload() { return state.status === 'partnered' ? null : (state.fertilityPreservation || null); }
+function setNumChildren(val) {
+  state.numChildren = val || null;
+  ['num_children_select', 'num_children_select_condensed'].forEach(id => { const el = document.getElementById(id); if (el) el.value = val || ''; });
+  syncFamilyDrip();
+}
+// Couples only, and only when they have kids. Singles send null. Text, no value checks.
+function numChildrenPayload() {
+  if (state.status !== 'partnered' || state.hasChildren !== true) return null;
+  return state.numChildren || null;
+}
 
 const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
@@ -2149,7 +2205,7 @@ function childrenWithPayload() {
 const HAS_KIDS_OPTS_SINGLE = [{v:'yes',t:'Yes'},{v:'no',t:'No'}];
 const HAS_KIDS_OPTS_COUPLE = [
   {v:'no',t:'No'},{v:'yes_with_partner',t:'Yes, with my partner'},
-  {v:'yes_previous_relationship',t:'Yes, from a previous relationship'},{v:'yes_both',t:'Yes, both'}
+  {v:'yes_previous_relationship',t:'Yes from past relationship'},{v:'yes_both',t:'Yes, both'}
 ];
 
 // Singles and couples get different "Do you have kids?" options. If the saved answer
@@ -2172,6 +2228,8 @@ function _syncHasChildrenOptions(partnered) {
   ['has_children_select','has_children_select_condensed'].forEach(id => { const sel = document.getElementById(id); if (sel) sel.value = v; });
   const lbl = document.getElementById('haskids-condensed-label');
   if (lbl) lbl.textContent = partnered ? 'Do you have kids?' : 'Have kids?';
+  const face = document.getElementById('has_children_condensed_face');
+  if (face) { const cs = document.getElementById('has_children_select_condensed'); face.textContent = cs && cs.selectedIndex >= 0 ? cs.options[cs.selectedIndex].textContent : '\u2014 Select \u2014'; }
 }
 
 function syncFamilyDrip() {
@@ -2207,6 +2265,19 @@ function syncFamilyDrip() {
   // haskids-condensed-col: slides into timeline row once have kids answered
   const hkCondCol = document.getElementById('haskids-condensed-col');
   if (hkCondCol) hkCondCol.style.display = (hasTL && hasKidsDone) ? '' : 'none';
+
+  // Couples: "How many kids do you have?" right after any Yes. Full width until answered,
+  // then it joins the "Do you have kids?" row. Cleared when the answer is not a Yes.
+  const needsNum = partnered && state.hasChildren === true;
+  if (!needsNum && state.numChildren) state.numChildren = null;
+  if (!needsNum) ['num_children_select', 'num_children_select_condensed'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const numDone = !needsNum || !!state.numChildren;
+  const nkStandalone = document.getElementById('numkids-standalone-row');
+  if (nkStandalone) nkStandalone.style.display = (needsNum && hasKidsDone && !state.numChildren) ? 'block' : 'none';
+  const nkCondCol = document.getElementById('numkids-condensed-col');
+  const nkPaired = needsNum && !!state.numChildren;
+  if (nkCondCol) nkCondCol.style.display = nkPaired ? '' : 'none';
+  if (hkCondCol) hkCondCol.style.flex = nkPaired ? '2' : '1';
   // condensed select value is synced in _syncHasChildrenOptions
 
   // haskids-standalone-row: full width, shows after timeline answered and before have kids answered
@@ -2258,7 +2329,7 @@ function syncFamilyDrip() {
 
   // wantkids-kidstimeline-row: flex row, shows after have kids answered
   const wkKtRow = document.getElementById('wantkids-kidstimeline-row');
-  if (wkKtRow) wkKtRow.style.display = (hasLF && hasTL && hasKidsDone) ? 'flex' : 'none';
+  if (wkKtRow) wkKtRow.style.display = (hasLF && hasTL && hasKidsDone && numDone) ? 'flex' : 'none';
   if (hasKidsDone) {
     const lbl = document.getElementById('wants-children-label');
     if (lbl) {
@@ -2288,7 +2359,13 @@ function syncFamilyDrip() {
   // fertility-row: full width, shows once kids timeline answered
   const fertRow = document.getElementById('fertility-row');
   // Couples: fertility follows want = Yes directly (no kids-timeline question).
-  if (fertRow) fertRow.style.display = (hasLF && state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
+  // Couples: not asked at all (removed from the couples flow); singles unchanged.
+  if (fertRow) fertRow.style.display = (!partnered && hasLF && state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
+  if (partnered && state.fertilityPreservation) {
+    state.fertilityPreservation = null;
+    const fsel = document.getElementById('fertility_select'); if (fsel) fsel.value = '';
+    hideError('fertility');
+  }
 
   // Clear downstream if wantsChildren is not yes
   if (state.wantsChildren !== 'yes') {
@@ -2407,7 +2484,7 @@ function validateScreen(screenId) {
       if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
       if (state.wantsChildren === 'yes') {
         if (!state.kidsTimeline) { showError('kids_timeline', 'Please make a selection'); ok = false; } else hideError('kids_timeline');
-        if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
+        if (state.status !== 'partnered' && !state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
       } else { hideError('kids_timeline'); hideError('fertility'); }
     }
   }
@@ -2512,7 +2589,8 @@ async function doSubmit() {
     race: racePayload(),
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
-    fertility_preservation: state.fertilityPreservation || null,
+    fertility_preservation: fertilityPayload(),
+    num_children: numChildrenPayload(),
     looking_for: lookingForPayload(),
     relationship_timeline: relationshipTimelinePayload(),
     phone: document.getElementById('phone').value.trim(),
@@ -3098,7 +3176,6 @@ function _pickIntlCity(city) {
 let partnerLocationSelected = [];
 let partnerLocationReady = false;
 let partnerLocationTouched = false;
-let partnerLocationAdderOpen = false;
 
 // ---- SEEKING ----
 function setGenderSeeking(val) {
@@ -3131,79 +3208,99 @@ function openToCityPayload() {
   return partnerLocationSelected.length ? JSON.stringify(partnerLocationSelected) : null;
 }
 
-function _bindPartnerLocationControls() {
-  const addMore = document.getElementById('partner-location-add-more');
-  const addBtn = document.getElementById('partner-location-add-btn');
-  const input = document.getElementById('partner-location-input');
-  const chips = document.getElementById('partner-location-chips');
-  if (addMore && !addMore.dataset.bound) {
-    addMore.dataset.bound = '1';
-    addMore.addEventListener('click', (e) => {
-      e.preventDefault();
-      _openPartnerLocationAdder();
-    });
-  }
-  if (addBtn && !addBtn.dataset.bound) {
-    addBtn.dataset.bound = '1';
-    addBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      _commitPartnerLocationInput();
-    });
-  }
-  if (input && !input.dataset.bound) {
-    input.dataset.bound = '1';
-    input.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter') return;
-      e.preventDefault();
-      e.stopPropagation();
-      _commitPartnerLocationInput();
-    });
-  }
-  if (chips && !chips.dataset.bound) {
-    chips.dataset.bound = '1';
-    chips.addEventListener('click', (e) => {
-      const btn = e.target.closest('.partner-location-chip-remove');
-      if (!btn || !chips.contains(btn)) return;
-      e.preventDefault();
-      _removePartnerLocationChip(btn.dataset.city);
-    });
-  }
+// ---- CITY CHIP PICKER (shared) ----
+// One component for the singles "Partner Location" (multi: default chip, "+ Add more",
+// typed add) and the couples "Where does your partner live?" (single pick: type a city,
+// Enter/Add turns it into a chip; x removes it and brings the text box back).
+// Free text, no fixed list, no floating overlay.
+function cityChipPicker(cfg) {
+  const el = k => (cfg[k] ? document.getElementById(cfg[k]) : null);
+  const p = { open: false, cfg };
+  p.full = () => !cfg.multi && cfg.get().length > 0;
+  p.syncAdder = () => {
+    const row = el('row'), more = el('more');
+    const showRow = cfg.multi ? p.open : !p.full();
+    if (row) row.hidden = !showRow;
+    if (more) more.hidden = cfg.multi ? !!p.open : true;
+  };
+  p.render = () => {
+    const wrap = el('chips');
+    if (wrap) {
+      wrap.replaceChildren();
+      cfg.get().forEach(city => {
+        const chip = document.createElement('span');
+        chip.className = 'partner-location-chip';
+        const label = document.createElement('span');
+        label.className = 'partner-location-chip-label';
+        label.textContent = city;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'partner-location-chip-remove';
+        btn.dataset.city = city;
+        btn.setAttribute('aria-label', 'Remove ' + city);
+        btn.textContent = '\u00d7';
+        chip.append(label, btn);
+        wrap.appendChild(chip);
+      });
+    }
+    p.syncAdder();
+  };
+  p.openAdder = () => { p.open = true; p.syncAdder(); const i = el('input'); if (i) i.focus(); };
+  p.commit = () => {
+    const input = el('input');
+    if (!input) return false;
+    const city = input.value.trim();
+    if (!city) return false;
+    const list = cfg.get();
+    if (cfg.multi) {
+      if (!list.some(c => c.toLowerCase() === city.toLowerCase())) { cfg.set(list.concat([city])); input.value = ''; }
+    } else {
+      cfg.set([city]); input.value = '';
+      if (document.activeElement === input) input.blur(); // the text box goes away once a city is picked
+    }
+    p.render();
+    if (cfg.onChange) cfg.onChange('commit');
+    return true;
+  };
+  p.remove = city => {
+    if (!city) return;
+    cfg.set(cfg.get().filter(c => c.toLowerCase() !== city.toLowerCase()));
+    p.render();
+    if (cfg.onChange) cfg.onChange('remove');
+    if (!cfg.multi) { const i = el('input'); if (i) i.focus(); }
+  };
+  p.bind = () => {
+    const more = el('more'), addBtn = el('addBtn'), input = el('input'), chips = el('chips');
+    if (more && !more.dataset.bound) { more.dataset.bound = '1'; more.addEventListener('click', e => { e.preventDefault(); p.openAdder(); }); }
+    if (addBtn && !addBtn.dataset.bound) { addBtn.dataset.bound = '1'; addBtn.addEventListener('click', e => { e.preventDefault(); p.commit(); }); }
+    if (input && !input.dataset.bound) {
+      input.dataset.bound = '1';
+      input.addEventListener('keydown', e => { if (e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); e.stopPropagation(); p.commit(); });
+    }
+    if (chips && !chips.dataset.bound) {
+      chips.dataset.bound = '1';
+      chips.addEventListener('click', e => {
+        const btn = e.target.closest('.partner-location-chip-remove');
+        if (!btn || !chips.contains(btn)) return;
+        e.preventDefault();
+        p.remove(btn.dataset.city);
+      });
+    }
+  };
+  return p;
 }
 
-function _openPartnerLocationAdder() {
-  partnerLocationAdderOpen = true;
-  _syncPartnerLocationAdder();
-  const input = document.getElementById('partner-location-input');
-  if (input) input.focus();
-}
-
-function _syncPartnerLocationAdder() {
-  const row = document.getElementById('partner-location-add-row');
-  const more = document.getElementById('partner-location-add-more');
-  if (row) row.hidden = !partnerLocationAdderOpen;
-  if (more) more.hidden = !!partnerLocationAdderOpen;
-}
-
-function _commitPartnerLocationInput() {
-  const input = document.getElementById('partner-location-input');
-  if (!input) return;
-  const city = input.value.trim();
-  if (!city) return;
-  partnerLocationTouched = true;
-  const dup = partnerLocationSelected.some(c => c.toLowerCase() === city.toLowerCase());
-  if (!dup) {
-    partnerLocationSelected.push(city);
-    input.value = '';
-  }
-  _renderPartnerLocationChips();
-}
-
-function _removePartnerLocationChip(city) {
-  if (!city) return;
-  partnerLocationTouched = true;
-  partnerLocationSelected = partnerLocationSelected.filter(c => c.toLowerCase() !== city.toLowerCase());
-  _renderPartnerLocationChips();
-}
+const singlesCityPicker = cityChipPicker({
+  chips: 'partner-location-chips', more: 'partner-location-add-more', row: 'partner-location-add-row',
+  input: 'partner-location-input', addBtn: 'partner-location-add-btn', multi: true,
+  get: () => partnerLocationSelected, set: v => { partnerLocationSelected = v; },
+  onChange: () => { partnerLocationTouched = true; },
+});
+function _bindPartnerLocationControls() { singlesCityPicker.bind(); partnerCityPicker.bind(); }
+function _openPartnerLocationAdder() { singlesCityPicker.openAdder(); }
+function _syncPartnerLocationAdder() { singlesCityPicker.syncAdder(); }
+function _commitPartnerLocationInput() { partnerLocationTouched = true; singlesCityPicker.commit(); }
+function _removePartnerLocationChip(city) { singlesCityPicker.remove(city); }
 
 function initPartnerLocationPicker() {
   _bindPartnerLocationControls();
@@ -3213,33 +3310,14 @@ function initPartnerLocationPicker() {
     partnerLocationSelected = own ? [own] : [];
   }
   // Every show of What You Want starts with the adder collapsed and empty. Chips are kept.
-  partnerLocationAdderOpen = false;
+  singlesCityPicker.open = false;
   const addInput = document.getElementById('partner-location-input');
   if (addInput) addInput.value = '';
   _syncPartnerLocationAdder();
   _renderPartnerLocationChips();
 }
 
-function _renderPartnerLocationChips() {
-  const wrap = document.getElementById('partner-location-chips');
-  if (!wrap) return;
-  wrap.replaceChildren();
-  partnerLocationSelected.forEach(city => {
-    const chip = document.createElement('span');
-    chip.className = 'partner-location-chip';
-    const label = document.createElement('span');
-    label.className = 'partner-location-chip-label';
-    label.textContent = city;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'partner-location-chip-remove';
-    btn.dataset.city = city;
-    btn.setAttribute('aria-label', 'Remove ' + city);
-    btn.textContent = '\u00d7';
-    chip.append(label, btn);
-    wrap.appendChild(chip);
-  });
-}
+function _renderPartnerLocationChips() { singlesCityPicker.render(); }
 
 // ---- AGE RANGE SLIDER ----
 function onAgeRangeInput(el, which) {
@@ -3371,14 +3449,16 @@ function setLivesWithPartner(val, fromTap) {
   document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
   document.getElementById('btn-lives-no').classList.toggle('selected', val === 'no');
   document.getElementById('btn-lives-parttime').classList.toggle('selected', val === 'part_time');
-  // "Where does your partner live?" only when they don't live together (inline text field, no dropdown).
+  // "Where does your partner live?" only when they don't live together (city chip picker, no dropdown).
   const cityUnit = document.getElementById('pt-city');
   if (cityUnit) cityUnit.style.display = val === 'no' ? '' : 'none';
   if (val !== 'no') {
     partnerCity = null;
     const inp = document.getElementById('partner_city_input'); if (inp) inp.value = '';
     if (cityUnit) cityUnit.classList.remove('collapsed');
+    clearTimeout(_ptTimers.city); _ptTimers.city = null;
   }
+  partnerCityPicker.render();
   clearTimeout(_ptTimers.live);
   if (fromTap && val) _ptTimers.live = setTimeout(() => { _ptTimers.live = null; ptCollapse('live'); }, 1000);
   _ptSyncPairs();
@@ -3391,6 +3471,16 @@ function setLivesWithPartner(val, fromTap) {
 // a line once both are collapsed. First + last name are always side by side.
 // ============================================================
 const _ptTimers = {};
+// Couples "Where does your partner live?": the singles Partner Location picker in single-pick mode.
+const partnerCityPicker = cityChipPicker({
+  chips: 'partner-city-chips', row: 'partner-city-add-row', input: 'partner_city_input', addBtn: 'partner-city-add-btn', multi: false,
+  get: () => (partnerCity ? [partnerCity] : []), set: v => { partnerCity = v[0] || null; },
+  onChange: why => {
+    clearTimeout(_ptTimers.city); _ptTimers.city = null;
+    // Same ~1s settle as the Live together buttons, then it collapses (and pairs with Live together).
+    if (why === 'commit' && partnerCity) _ptTimers.city = setTimeout(() => { _ptTimers.city = null; ptCollapse('city'); }, 1000);
+  },
+});
 const PT_UNITS = ['name', 'bday', 'height', 'email', 'live', 'city'];
 function _ptVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
 function ptValueText(k) {
@@ -3403,7 +3493,7 @@ function ptValueText(k) {
   if (k === 'height') { const sel = document.getElementById('partner_height'); return sel && sel.value ? sel.options[sel.selectedIndex].textContent : ''; }
   if (k === 'email') { const e = _ptVal('partner_email'); return e && isValidEmail(e) ? e : ''; }
   if (k === 'live') return ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '';
-  if (k === 'city') return state.livesWithPartner === 'no' ? _ptVal('partner_city_input') : '';
+  if (k === 'city') return state.livesWithPartner === 'no' ? (partnerCity || '') : '';
   return '';
 }
 function _ptUnit(k) { return document.getElementById('pt-' + k); }
@@ -3457,6 +3547,7 @@ function resetPartnerScreen() {
   state.partnerBdayTouched = false;
   const bd = document.getElementById('partner_birthday'); if (bd) bd.value = '1990-01-01';
   partnerCity = null;
+  partnerCityPicker.render();
   _ptSyncPairs();
 }
 function initPartnerCondensed() {
@@ -3465,7 +3556,18 @@ function initPartnerCondensed() {
     const touch = () => { state.partnerBdayTouched = true; };
     bd.addEventListener('focus', touch); bd.addEventListener('input', touch); bd.addEventListener('change', touch);
   }
-  ['name', 'bday', 'height', 'email', 'city'].forEach(k => {
+  // Partner city: leaving the unit with typed text picks it (nothing typed is ever dropped), then collapses.
+  const cu = _ptUnit('city');
+  if (cu) cu.addEventListener('focusout', () => {
+    clearTimeout(_ptTimers.cityBlur);
+    _ptTimers.cityBlur = setTimeout(() => {
+      if (cu.contains(document.activeElement)) return;
+      const typed = partnerCityPicker.commit();
+      // Picked with Enter/Add: the ~1s settle timer collapses it. Typed then tapped away: collapse now.
+      if (partnerCity && (typed || !_ptTimers.city)) { clearTimeout(_ptTimers.city); _ptTimers.city = null; ptCollapse('city'); }
+    }, 200);
+  });
+  ['name', 'bday', 'height', 'email'].forEach(k => {
     const u = _ptUnit(k);
     if (!u) return;
     u.addEventListener('focusout', () => {
@@ -3478,7 +3580,6 @@ function initPartnerCondensed() {
   onEnter('partner_last_name', el => { if (ptValueText('name')) el.blur(); });
   onEnter('partner_birthday', el => el.blur());
   onEnter('partner_email', el => { if (ptValueText('email')) el.blur(); });
-  onEnter('partner_city_input', el => { if (el.value.trim()) el.blur(); });
   document.querySelectorAll('#screen-2 .who-cond').forEach(c => c.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); }
   }));
@@ -3522,7 +3623,7 @@ function couplePayload() {
     married_before: c ? (state.marriedBefore || null) : null,
     // Hotfix 11. Birthday: the Jan 1, 1990 default is only sent once the user has touched it.
     partner_height: c ? (parseInt(g('partner_height'), 10) || null) : null,
-    partner_city: (c && live === 'no') ? g('partner_city_input') : null,
+    partner_city: (c && live === 'no') ? (partnerCity || null) : null,
   };
 }
 
