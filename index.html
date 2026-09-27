@@ -2457,7 +2457,7 @@ function onAddCityInput() {
   const list = _getCityList();
   const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && !additionalCities.includes(c) && c !== state.zipCity).slice(0, 8);
   if (q && !list.some(c => c.toLowerCase() === q.toLowerCase()) && !additionalCities.some(c => c.toLowerCase() === q.toLowerCase())) filtered.push(q);
-  dd.innerHTML = filtered.map(c => `<div class="multiselect-option" onmousedown="event.preventDefault();addAdditionalCity(${JSON.stringify(c)})">${c}</div>`).join('');
+  dd.innerHTML = filtered.map(c => `<div class="multiselect-option" ontouchstart="event.preventDefault();addAdditionalCity(${JSON.stringify(c)})" onmousedown="event.preventDefault()" onclick="addAdditionalCity(${JSON.stringify(c)})">${c}</div>`).join('');
   if (filtered.length) dd.classList.add('open'); else dd.classList.remove('open');
 }
 
