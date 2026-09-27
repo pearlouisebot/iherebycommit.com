@@ -132,13 +132,19 @@
     .who-cond:focus-visible { outline: none; border-color: var(--accent); }
     .who-cond-txt { display: flex; flex-direction: column; min-width: 0; }
     .who-cond-k { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
-    .who-cond-v { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Answers wrap (up to two lines) instead of being cut off, e.g. "Yes from past relationship" in a half-width row. */
+    .who-cond-v { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.4; white-space: normal; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .who-cond-edit { font-size: 10px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.1em; flex-shrink: 0; }
-    #who-name.collapsed > .who-cond { grid-column: 1 / -1; }
-    /* Paired rows (DOB + location, height + race): 50/50, collapse and expand together */
-    .who-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-bottom: 12px; align-items: start; }
-    .who-pair.pair-collapsed { align-items: stretch; }
-    .who-pair.pair-collapsed > .who-unit.collapsed > .who-cond { height: 100%; }
+    #who-name.collapsed > .who-cond, #pt-name.collapsed > .who-cond { grid-column: 1 / -1; }
+    /* Paired rows (shared by every condensed screen): side by side, collapse and expand together.
+       .cr-stack pairs stack while being answered and share a line once both are collapsed. */
+    .cr-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-bottom: 12px; align-items: start; }
+    .cr-pair.cr-stack:not(.cr-both), .cr-pair.cr-solo { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+    .cr-pair.cr-both { align-items: stretch; }
+    .cr-pair.cr-both > .who-unit.collapsed > .who-cond { height: 100%; }
+    .cr-later, .cr-empty { display: none !important; }
+    /* Form screens: the page is exactly one viewport tall, so NEXT stays on screen and only the questions scroll. */
+    body.form-active #app { height: 100vh; height: 100dvh; min-height: 0; }
     /* Race: compact multi-select picklist that expands inline (no floating overlay) */
     .race-select { display: flex; align-items: center; justify-content: space-between; gap: 4px; text-align: left; cursor: pointer; font-size: 14px; padding: 14px 8px 14px 10px; }
     .race-select-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -175,13 +181,9 @@
     /* Next-blocking errors whose field is not on screen are listed right above Next (Hotfix 13) */
     .form-error-summary { display: none; font-size: 11px; color: var(--error); line-height: 1.5; padding: 2px 0 4px; }
     .form-error-summary.visible { display: block; }
-    /* Condensed "Do you have kids?" beside "How many?": the picked answer wraps instead of being cut off.
-       The native select sits invisibly on top, so tapping still opens the normal picker (no custom overlay). */
-    .sel-wrap { position: relative; }
-    .sel-face { display: flex; align-items: center; min-height: 54px; border: 1px solid var(--dim); border-radius: var(--radius); padding: 8px 12px; font-family: 'Space Mono', monospace; font-size: 14px; line-height: 1.35; color: var(--text); white-space: normal; overflow-wrap: anywhere; box-sizing: border-box; }
-    .sel-wrap > select.field-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-    .sel-wrap:focus-within .sel-face { border-color: var(--accent); }
-    .sel-wrap.error .sel-face { border-color: var(--error); }
+    /* Intentions & Family: the question being answered gets the larger label; answered ones are smaller. */
+    #screen-5 .fam-unit .field-label { font-size: 11px; letter-spacing: 0.06em; line-height: 1.4; color: var(--muted); }
+    #screen-5 .fam-unit.cr-active .field-label { font-size: 14px; letter-spacing: 0.02em; color: var(--text); }
     .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
@@ -721,17 +723,13 @@
       font-family: 'Space Mono', monospace;
       font-size: 12px; color: var(--body); line-height: 1.6;
     }
-    /* YOUR PARTNER (couples step 2): answered inputs collapse; pairs share a line once both are collapsed */
-    #pt-name.collapsed > .who-cond { grid-column: 1 / -1; }
-    .pt-pair { margin-bottom: 12px; }
-    .pt-pair > .who-unit + .who-unit { margin-top: 12px; }
-    .pt-pair.both { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: stretch; }
-    .pt-pair.both > .who-unit + .who-unit { margin-top: 0; }
-    .pt-pair.both > .who-unit.collapsed > .who-cond { height: 100%; }
     #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: -4px 0 12px; }
-    #screen-2 .bottom-action .partner-tip-box { margin: 2px 0 0; padding: 8px 12px; }
-    #screen-2 .bottom-action .partner-tip-box .tip-label { margin-bottom: 4px; }
-    #screen-2 .bottom-action .partner-tip-box .tip-text { font-size: 11px; line-height: 1.5; }
+    #screen-2 .bottom-action .partner-tip-box { margin: 0; padding: 6px 12px; }
+    #screen-2 .screen-content { padding-bottom: 4px; }
+    #screen-2 .partner-notice { margin-bottom: 8px; }
+    #screen-2 .bottom-action .partner-tip-box .tip-label { display: inline; margin: 0 6px 0 0; }
+    #screen-2 .bottom-action .partner-tip-box .tip-text { display: inline; font-size: 11px; line-height: 1.5; }
+    #screen-2 .bottom-action .btn-ghost { padding: 8px 12px; }
     .screen-subhead { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.6; margin: -12px 0 20px; }
     #married-before-group .toggle-btn { padding-left: 2px; padding-right: 2px; }
     /* Confirmation priority text */
@@ -877,7 +875,7 @@
       <div class="screen-headline">WHO YOU <span class="accent">ARE</span></div>
       <div id="screen1-fields">
         <div class="field-group who-unit" id="who-gender" style="margin-bottom:12px;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit I am a" onclick="whoExpand('gender')"><span class="who-cond-txt"><span class="who-cond-k">I am a</span><span class="who-cond-v" id="who-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit I am a" onclick="crExpand('who-gender')"><span class="who-cond-txt"><span class="who-cond-k">I am a</span><span class="who-cond-v" id="who-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">I AM A</label>
           <div class="toggle-group" style="margin-bottom:0;">
             <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
@@ -887,7 +885,7 @@
           <div class="field-error" id="err-gender">Please select one</div>
         </div>
         <div class="who-unit" id="who-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Name" onclick="whoExpand('name')"><span class="who-cond-txt"><span class="who-cond-k">Name</span><span class="who-cond-v" id="who-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Name" onclick="crExpand('who-name')"><span class="who-cond-txt"><span class="who-cond-k">Name</span><span class="who-cond-v" id="who-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">First name</label>
             <input class="field-input" id="first_name" type="text" placeholder="First name" autocomplete="given-name">
@@ -899,15 +897,15 @@
             <div class="field-error" id="err-last_name">Required</div>
           </div>
         </div>
-        <div class="who-pair" id="who-dl-row">
+        <div class="cr-pair" id="who-dl-row">
           <div class="field-group who-unit" id="who-dob" style="margin-bottom:0;min-width:0;">
-            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Date of birth" onclick="whoExpand('dob')"><span class="who-cond-txt"><span class="who-cond-k">Date of birth</span><span class="who-cond-v" id="who-dob-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Date of birth" onclick="crExpand('who-dob')"><span class="who-cond-txt"><span class="who-cond-k">Date of birth</span><span class="who-cond-v" id="who-dob-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Date of birth</label>
             <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group who-unit" id="who-loc" style="margin-bottom:0;min-width:0;">
-            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Location" onclick="whoExpand('loc')"><span class="who-cond-txt"><span class="who-cond-k">Location</span><span class="who-cond-v" id="who-loc-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Location" onclick="crExpand('who-loc')"><span class="who-cond-txt"><span class="who-cond-k">Location</span><span class="who-cond-v" id="who-loc-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" id="location-label">US Zip Code</label>
             <div id="location-zip-wrap">
               <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
@@ -924,9 +922,9 @@
             </div>
           </div>
         </div>
-        <div class="who-pair" id="who-hr-row">
+        <div class="cr-pair" id="who-hr-row">
           <div class="field-group who-unit" id="who-height" style="margin-bottom:0;min-width:0;">
-            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Height" onclick="whoExpand('height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="who-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Height" onclick="crExpand('who-height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="who-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Height</label>
             <div id="height-us-wrap">
               <select class="field-input" id="height_ftin" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
@@ -938,7 +936,7 @@
             </div>
           </div>
           <div class="field-group who-unit" id="who-race" style="margin-bottom:0;min-width:0;">
-            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Race" onclick="whoExpand('race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="who-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Race" onclick="crExpand('who-race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="who-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="race">Race</label>
             <button type="button" class="field-input race-select" id="race" aria-haspopup="true" aria-expanded="false" aria-controls="race-panel" onclick="toggleRacePanel()"><span class="race-select-text empty" id="race-select-text">Race (select all)</span><span class="race-caret" aria-hidden="true">&#9662;</span></button>
             <div class="field-error" id="err-race">Please make a selection</div>
@@ -958,7 +956,7 @@
           </div>
         </div>
         <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="whoExpand('email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="crExpand('who-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">Email</label>
           <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
           <div class="field-error" id="err-email">Valid email required</div>
@@ -985,7 +983,7 @@
       <div class="screen-label">Step <span id="partner-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR <span class="accent">PARTNER</span></div>
       <div class="who-unit" id="pt-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner" onclick="ptExpand('name')"><span class="who-cond-txt"><span class="who-cond-k">Partner</span><span class="who-cond-v" id="pt-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner" onclick="crExpand('pt-name')"><span class="who-cond-txt"><span class="who-cond-k">Partner</span><span class="who-cond-v" id="pt-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" style="margin-bottom:0;min-width:0;">
           <label class="field-label" for="partner_first_name">Their first name</label>
           <input class="field-input" id="partner_first_name" type="text" placeholder="First name" autocomplete="off">
@@ -996,14 +994,14 @@
           <input class="field-input" id="partner_last_name" type="text" placeholder="Last name" autocomplete="off">
         </div>
       </div>
-      <div class="pt-pair" id="pt-row-bh">
+      <div class="cr-pair" id="pt-row-bh">
         <div class="field-group who-unit" id="pt-bday" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their birthday" onclick="ptExpand('bday')"><span class="who-cond-txt"><span class="who-cond-k">Their birthday</span><span class="who-cond-v" id="pt-bday-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their birthday" onclick="crExpand('pt-bday')"><span class="who-cond-txt"><span class="who-cond-k">Their birthday</span><span class="who-cond-v" id="pt-bday-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="partner_birthday">Their birthday</label>
           <input class="field-input" id="partner_birthday" type="date" value="1990-01-01" style="font-size:14px;padding:14px 10px;">
         </div>
         <div class="field-group who-unit" id="pt-height" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their height" onclick="ptExpand('height')"><span class="who-cond-txt"><span class="who-cond-k">Their height</span><span class="who-cond-v" id="pt-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their height" onclick="crExpand('pt-height')"><span class="who-cond-txt"><span class="who-cond-k">Their height</span><span class="who-cond-v" id="pt-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="partner_height">Their height</label>
           <select class="field-input" id="partner_height" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onPartnerHeightChange()">
             <option value="">—</option>
@@ -1011,15 +1009,15 @@
         </div>
       </div>
       <div class="field-group who-unit" id="pt-email" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their email" onclick="ptExpand('email')"><span class="who-cond-txt"><span class="who-cond-k">Their email</span><span class="who-cond-v" id="pt-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their email" onclick="crExpand('pt-email')"><span class="who-cond-txt"><span class="who-cond-k">Their email</span><span class="who-cond-v" id="pt-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <label class="field-label" for="partner_email">Their email</label>
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
         <div class="field-error" id="err-partner_email">Valid email required</div>
       </div>
       <p class="partner-notice">We'll notify your partner when the study is live.</p>
-      <div class="pt-pair" id="pt-row-lc">
+      <div class="cr-pair cr-stack" id="pt-row-lc">
         <div class="field-group who-unit" id="pt-live" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Live together" onclick="ptExpand('live')"><span class="who-cond-txt"><span class="who-cond-k">Live together</span><span class="who-cond-v" id="pt-live-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Live together" onclick="crExpand('pt-live')"><span class="who-cond-txt"><span class="who-cond-k">Live together</span><span class="who-cond-v" id="pt-live-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">Do you live together?</label>
           <div class="toggle-group" style="margin-bottom:0;">
             <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes', true)">YES</button>
@@ -1028,7 +1026,7 @@
           </div>
         </div>
         <div class="field-group who-unit" id="pt-city" style="margin-bottom:0;min-width:0;display:none;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Lives in" onclick="ptExpand('city')"><span class="who-cond-txt"><span class="who-cond-k">Lives in</span><span class="who-cond-v" id="pt-city-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Lives in" onclick="crExpand('pt-city')"><span class="who-cond-txt"><span class="who-cond-k">Lives in</span><span class="who-cond-v" id="pt-city-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="partner_city_input">Where does your partner live?</label>
           <div id="partner-city-chips" class="partner-location-chips"></div>
           <div class="city-add-row" id="partner-city-add-row">
@@ -1116,39 +1114,54 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="rel-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR <span class="accent">RELATIONSHIP</span></div>
-      <div class="field-group">
-        <label class="field-label" for="relationship_stage">Relationship stage</label>
-        <select class="field-input" id="relationship_stage" onchange="onRelationshipStageChange()">
-          <option value="">— Select —</option>
-          <option value="dating">Dating</option>
-          <option value="relationship">Relationship</option>
-          <option value="engaged">Engaged</option>
-          <option value="married">Married</option>
-          <option value="domestic_partnership">Domestic partnership</option>
-        </select>
-        <div class="field-error" id="err-relationship_stage">Please select a stage</div>
-      </div>
-      <div class="field-group">
-        <label class="field-label" for="first_date">First date</label>
-        <input class="field-input" id="first_date" type="date" style="font-size:14px;padding:14px 10px;">
-      </div>
-      <div id="rel-dates-row" style="display:none;gap:10px;margin-bottom:12px;">
-        <div class="field-group" id="engagement-date-field" style="flex:1;min-width:0;margin-bottom:0;display:none;">
-          <label class="field-label" for="engagement_date">Engagement date</label>
-          <input class="field-input" id="engagement_date" type="date" style="font-size:14px;padding:14px 10px;">
-        </div>
-        <div class="field-group" id="wedding-date-field" style="flex:1;min-width:0;margin-bottom:0;display:none;">
-          <label class="field-label" for="wedding_date">Wedding date</label>
-          <input class="field-input" id="wedding_date" type="date" style="font-size:14px;padding:14px 10px;">
+      <div class="who-unit" id="rel-stage" style="margin-bottom:12px;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Relationship stage" onclick="crExpand('rel-stage')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-stage-k">Relationship stage</span><span class="who-cond-v" id="rel-stage-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label" for="relationship_stage">Relationship stage</label>
+          <select class="field-input" id="relationship_stage" onchange="onRelationshipStageChange(); crTap('rel-stage')">
+            <option value="">— Select —</option>
+            <option value="dating">Dating</option>
+            <option value="relationship">Relationship</option>
+            <option value="engaged">Engaged</option>
+            <option value="married">Married</option>
+            <option value="domestic_partnership">Domestic partnership</option>
+          </select>
+          <div class="field-error" id="err-relationship_stage">Please select a stage</div>
         </div>
       </div>
-      <div class="field-group" id="married-before-group">
-        <label class="field-label">Have either of you been married before?</label>
-        <div class="toggle-group" style="margin-bottom:0;">
-          <button class="toggle-btn" id="btn-mb-neither" onclick="setMarriedBefore('neither')">NEITHER</button>
-          <button class="toggle-btn" id="btn-mb-me" onclick="setMarriedBefore('me')">ME</button>
-          <button class="toggle-btn" id="btn-mb-partner" onclick="setMarriedBefore('partner')">MY PARTNER</button>
-          <button class="toggle-btn" id="btn-mb-both" onclick="setMarriedBefore('both')">BOTH</button>
+      <div class="who-unit" id="rel-first" style="margin-bottom:12px;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit First date" onclick="crExpand('rel-first')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-first-k">First date</span><span class="who-cond-v" id="rel-first-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label" for="first_date">First date</label>
+          <input class="field-input" id="first_date" type="date" style="font-size:14px;padding:14px 10px;">
+        </div>
+      </div>
+      <div class="cr-pair" id="rel-dates-row">
+        <div class="who-unit" id="rel-eng" style="min-width:0;display:none;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Engagement date" onclick="crExpand('rel-eng')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-eng-k">Engagement date</span><span class="who-cond-v" id="rel-eng-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" id="engagement-date-field" style="min-width:0;margin-bottom:0;">
+            <label class="field-label" for="engagement_date">Engagement date</label>
+            <input class="field-input" id="engagement_date" type="date" style="font-size:14px;padding:14px 10px;">
+          </div>
+        </div>
+        <div class="who-unit" id="rel-wed" style="min-width:0;display:none;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Wedding date" onclick="crExpand('rel-wed')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-wed-k">Wedding date</span><span class="who-cond-v" id="rel-wed-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" id="wedding-date-field" style="min-width:0;margin-bottom:0;">
+            <label class="field-label" for="wedding_date">Wedding date</label>
+            <input class="field-input" id="wedding_date" type="date" style="font-size:14px;padding:14px 10px;">
+          </div>
+        </div>
+      </div>
+      <div class="who-unit" id="rel-mb" style="margin-bottom:12px;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Married before" onclick="crExpand('rel-mb')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-mb-k">Married before</span><span class="who-cond-v" id="rel-mb-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="field-group" id="married-before-group" style="margin-bottom:0;">
+          <label class="field-label">Have either of you been married before?</label>
+          <div class="toggle-group" style="margin-bottom:0;">
+            <button class="toggle-btn" id="btn-mb-neither" onclick="setMarriedBefore('neither')">NEITHER</button>
+            <button class="toggle-btn" id="btn-mb-me" onclick="setMarriedBefore('me')">ME</button>
+            <button class="toggle-btn" id="btn-mb-partner" onclick="setMarriedBefore('partner')">MY PARTNER</button>
+            <button class="toggle-btn" id="btn-mb-both" onclick="setMarriedBefore('both')">BOTH</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1167,30 +1180,27 @@
       <div class="screen-headline" id="family-headline">INTENTIONS &amp; <span class="accent">FAMILY</span></div>
       <p class="screen-subhead" id="family-subhead" style="display:none;">Answer for yourself, not your partner.</p>
 
-      <!-- LOOKING FOR: always shown for singles, multi-select -->
-      <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
-        <label class="field-label">Looking for (select all that apply):</label>
-        <div id="looking-for-collapsed" style="display:none;" onclick="expandLookingFor()" role="button" tabindex="0">
-          <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid var(--dim);border-radius:var(--radius);padding:14px 16px;cursor:pointer;">
-            <span id="looking-for-summary-text" style="font-family:'Space Mono',monospace;font-size:13px;color:var(--text);"></span>
-            <span style="font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:0.1em;flex-shrink:0;margin-left:12px;">EDIT</span>
+      <!-- One control per question, shown in order. Once answered it collapses into the shared condensed row (EDIT to change). -->
+      <div class="who-unit fam-unit" id="fam-lf" style="margin-bottom:12px;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Looking for" onclick="crExpand('fam-lf')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-lf-k">Looking for</span><span class="who-cond-v" id="fam-lf-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="field-group" id="looking-for-group" style="margin-bottom:0;">
+          <label class="field-label">Looking for (select all that apply):</label>
+          <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
+            <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
+            <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
+            <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
+            <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
+            <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
           </div>
+          <div class="field-error" id="err-looking_for">Please make a selection</div>
         </div>
-        <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
-          <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
-          <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
-          <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
-          <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
-          <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
-        </div>
-        <div class="field-error" id="err-looking_for">Please make a selection</div>
       </div>
-
-      <!-- RELATIONSHIP TIMELINE + HAVE KIDS CONDENSED: flex row -->
-      <div id="timeline-haskids-row" style="display:none;flex-direction:row;gap:10px;margin-bottom:14px;">
-        <div id="timeline-col" style="flex:1;min-width:0;">
-          <div class="field-group" id="relationship-timeline-group" style="margin-bottom:0;">
-            <label class="field-label" id="timeline-label">Ideal timeline for a relationship?</label>
+      <!-- Singles: timeline + have kids. Couples: have kids + how many. -->
+      <div class="cr-pair cr-stack" id="fam-row-kids">
+        <div class="who-unit fam-unit" id="fam-tl" style="min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner timing" onclick="crExpand('fam-tl')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-tl-k">Partner timing</span><span class="who-cond-v" id="fam-tl-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" id="relationship-timeline-group" style="margin-bottom:0;min-width:0;">
+            <label class="field-label" id="timeline-label" for="relationship_timeline">Ideal timeline for a relationship?</label>
             <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
@@ -1202,22 +1212,23 @@
             <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
           </div>
         </div>
-        <div id="haskids-condensed-col" style="flex:1;min-width:0;display:none;">
-          <div class="field-group" id="has-children-group" style="margin-bottom:0;">
-            <label class="field-label" id="haskids-condensed-label" style="font-size:12px;">Have kids?</label>
-            <div class="sel-wrap"><div class="sel-face" id="has_children_condensed_face" aria-hidden="true"></div>
-            <select class="field-input" id="has_children_select_condensed" onchange="setHasChildren(this.value)">
+        <div class="who-unit fam-unit" id="fam-hk" style="min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('fam-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-hk-k">Have kids</span><span class="who-cond-v" id="fam-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" id="has-children-group" style="margin-bottom:0;min-width:0;">
+            <label class="field-label" for="has_children_select">Do you have kids?</label>
+            <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
-            </select></div>
+            </select>
             <div class="field-error" id="err-has_children">Please make a selection</div>
           </div>
         </div>
-        <div id="numkids-condensed-col" style="flex:1;min-width:0;display:none;">
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label" style="font-size:12px;">How many?</label>
-            <select class="field-input" id="num_children_select_condensed" onchange="setNumChildren(this.value)">
+        <div class="who-unit fam-unit" id="fam-nk" style="min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit How many" onclick="crExpand('fam-nk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-nk-k">How many</span><span class="who-cond-v" id="fam-nk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" style="margin-bottom:0;min-width:0;">
+            <label class="field-label" for="num_children_select">How many kids do you have?</label>
+            <select class="field-input" id="num_children_select" onchange="setNumChildren(this.value)">
               <option value="">— Select —</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -1228,40 +1239,11 @@
           </div>
         </div>
       </div>
-
-      <!-- HAVE KIDS STANDALONE: full width, shows after timeline answered, before have kids answered -->
-      <div id="haskids-standalone-row" style="display:none;margin-bottom:14px;">
-        <div class="field-group" style="margin-bottom:0;">
-          <label class="field-label">Do you have kids?</label>
-          <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
-            <option value="">— Select —</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <div class="field-error" id="err-has_children_s">Please make a selection</div>
-        </div>
-      </div>
-
-      <!-- HOW MANY KIDS (couples, any Yes): full width until answered, then joins the "Do you have kids?" row -->
-      <div id="numkids-standalone-row" style="display:none;margin-bottom:14px;">
-        <div class="field-group" style="margin-bottom:0;">
-          <label class="field-label" style="font-size:12px;">How many kids do you have?</label>
-          <select class="field-input" id="num_children_select" onchange="setNumChildren(this.value)">
-            <option value="">— Select —</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5+">5+</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- WANT KIDS + KIDS TIMELINE (condensed): flex row, kids timeline slides in when answered -->
-      <div id="wantkids-kidstimeline-row" style="display:none;flex-direction:row;gap:10px;margin-bottom:14px;">
-        <div id="wantkids-col" style="flex:1;min-width:0;">
-          <div class="field-group" id="wants-children-group" style="margin-bottom:0;">
-            <label class="field-label" id="wants-children-label">Want kids?</label>
+      <div class="cr-pair cr-stack" id="fam-row-want">
+        <div class="who-unit fam-unit" id="fam-wk" style="min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('fam-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-wk-k">Want kids</span><span class="who-cond-v" id="fam-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" id="wants-children-group" style="margin-bottom:0;min-width:0;">
+            <label class="field-label" id="wants-children-label" for="wants_children_select">Do you want kids?</label>
             <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
@@ -1272,10 +1254,11 @@
             <div class="field-error" id="err-wants_children">Please make a selection</div>
           </div>
         </div>
-        <div id="kidstimeline-condensed-col" style="flex:1;min-width:0;display:none;">
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label" style="font-size:12px;">Kids timing</label>
-            <select class="field-input" id="kids_timeline_select_condensed" onchange="setKidsTimeline(this.value)">
+        <div class="who-unit fam-unit" id="fam-kt" style="min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Kids timing" onclick="crExpand('fam-kt')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-kt-k">Kids timing</span><span class="who-cond-v" id="fam-kt-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" style="margin-bottom:0;min-width:0;">
+            <label class="field-label" for="kids_timeline_select">Ideal timeline for kids?</label>
+            <select class="field-input" id="kids_timeline_select" onchange="setKidsTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
               <option value="1_2_years">2 years</option>
@@ -1284,40 +1267,23 @@
               <option value="10_plus_years">10+ years</option>
               <option value="no_timeline">No timeline</option>
             </select>
+            <div class="field-error" id="err-kids_timeline">Please make a selection</div>
           </div>
         </div>
       </div>
-
-      <!-- KIDS TIMELINE STANDALONE: full width, shows before answered -->
-      <div id="kidstimeline-standalone-row" style="display:none;margin-bottom:14px;">
-        <div class="field-group" style="margin-bottom:0;">
-          <label class="field-label">Ideal timeline for kids?</label>
-          <select class="field-input" id="kids_timeline_select" onchange="setKidsTimeline(this.value)">
-            <option value="">— Select —</option>
-            <option value="asap">ASAP</option>
-            <option value="1_2_years">2 years</option>
-            <option value="3_4_years">3-4 years</option>
-            <option value="5_10_years">5-10 years</option>
-            <option value="10_plus_years">10+ years</option>
-            <option value="no_timeline">No timeline</option>
-          </select>
-          <div class="field-error" id="err-kids_timeline">Please make a selection</div>
+        <div class="who-unit fam-unit" id="fam-fert" style="margin-bottom:12px;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Fertility preservation" onclick="crExpand('fam-fert')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-fert-k">Fertility preservation</span><span class="who-cond-v" id="fam-fert-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="field-group" id="fertility-group" style="margin-bottom:0;min-width:0;">
+            <label class="field-label" for="fertility_select">Did you invest in fertility preservation?</label>
+            <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
+              <option value="">— Select —</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+              <option value="considering">Considering</option>
+            </select>
+            <div class="field-error" id="err-fertility">Please make a selection</div>
+          </div>
         </div>
-      </div>
-
-      <!-- FERTILITY: full width, shows once kids timeline answered -->
-      <div id="fertility-row" style="display:none;margin-bottom:0;">
-        <div class="field-group" id="fertility-group" style="margin-bottom:0;">
-          <label class="field-label" style="font-size:12px;">Did you invest in fertility preservation?</label>
-          <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
-            <option value="">— Select —</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-            <option value="considering">Considering</option>
-          </select>
-          <div class="field-error" id="err-fertility">Please make a selection</div>
-        </div>
-      </div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(5)">NEXT</button>
@@ -1542,7 +1508,7 @@ document.addEventListener('DOMContentLoaded', () => {
   _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
   initPartnerCondensed();
-  initWhoCondensed();
+  initCondensedRows();
   _bindPartnerLocationControls();
   onPhoneInput(); // init SMS checkbox state
   // Show below-fold on initial load (page starts on screen 0)
@@ -1831,8 +1797,12 @@ function showScreen(id, direction) {
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = onLanding ? 'block' : 'none';
 
+  document.body.classList.toggle('form-active', id > 0 && id < 8);
   if (id > 0 && id < 8) { renderBadge(id); renderProgress(id); renderStepNums(id); }
   window.scrollTo(0, 0);
+  const sc = el.querySelector('.screen-content'); if (sc) sc.scrollTop = 0;
+  crSync();
+  if (id === 1 || id === 2 || id === 4) crSettleScreen(id);
 
   // Pre-warm Turnstile when user reaches the social handles step
   if (id === 7 && window.turnstile && !state.turnstileToken) {
@@ -1849,6 +1819,7 @@ function showScreen(id, direction) {
     const fs = document.getElementById('family-subhead');
     if (fs) fs.style.display = couple ? '' : 'none';
     syncFamilyDrip();
+    crSettleScreen(5);
   }
 
   // Adjust screen 3 for singles vs couples
@@ -1858,9 +1829,7 @@ function showScreen(id, direction) {
       ? 'WHERE YOU &amp; YOUR<br><span class="accent">PARTNER LIVE</span>'
       : 'WHAT YOU <span class="accent">WANT</span>';
     const s = document.getElementById('cities-single-section');
-    const c = document.getElementById('cities-couple-section');
     if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
-    if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
     if (state.status !== 'partnered') {
       // Default SEEKING to opposite gender (once only)
       if (!state.genderSeeking) {
@@ -1927,6 +1896,7 @@ function changeStatus() {
     COUPLE_INPUT_IDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     setLivesWithPartner(null); setMarriedBefore(null); onRelationshipStageChange();
     resetPartnerScreen();
+    ['rel-stage', 'rel-first', 'rel-eng', 'rel-wed', 'rel-mb'].forEach(crReset); _crFront[4] = 0; crSync();
   }
   syncFamilyDrip(); // has_children mapping for the new flow (Hotfix 5/7)
   _syncCouplesFlowClass();
@@ -1985,7 +1955,9 @@ function clearErrorSummary(screenId) {
 
 async function goNext(screenId) {
   if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
-  if (!validateScreen(screenId)) { surfaceErrors(screenId); return; }
+  if (!validateScreen(screenId)) { crRevealAll(screenId); crExpandErrors(); surfaceErrors(screenId); return; }
+  // Progressive screens: questions not shown yet are shown before moving on (nothing is skipped unseen).
+  if (crRevealAll(screenId)) { _crFirstOpen(screenId); return; }
   clearErrorSummary(screenId);
   await saveLead(); // await so partialLeadId is set before the next NEXT can fire
   showScreen(getNextScreen(screenId), 'forward');
@@ -2083,10 +2055,8 @@ function setGender(val) {
     const bd = document.getElementById('birthdate');
     if (bd && !bd.value) bd.value = '1996-01-01';
   }
-  whoRefresh();
-  // Same ~1s feel as the other single-select buttons, then collapse to a row.
-  clearTimeout(_whoTimers.gender);
-  _whoTimers.gender = setTimeout(() => { _whoTimers.gender = null; whoCollapse('gender'); }, 1000);
+  crRefresh();
+  crTap('who-gender');
 }
 
 function onBirthdateInput() {
@@ -2098,31 +2068,38 @@ function setHasChildren(val) {
   state.hasChildren = val === 'no' ? false : (typeof val === 'string' && val.startsWith('yes') ? true : null);
   state.hasChildrenDetail = state.hasChildren === null ? null : val;
   const s1 = document.getElementById('has_children_select'); if (s1) s1.value = val || '';
-  const s2 = document.getElementById('has_children_select_condensed'); if (s2) s2.value = val || '';
   hideError('has_children');
   syncFamilyDrip();
+  crTap('fam-hk');
 }
 function setKidsTimeline(val) {
   state.kidsTimeline = val || null;
-  // sync both selects
   const s1 = document.getElementById('kids_timeline_select'); if (s1) s1.value = val || '';
-  const s2 = document.getElementById('kids_timeline_select_condensed'); if (s2) s2.value = val || '';
   hideError('kids_timeline');
   syncFamilyDrip();
+  crTap('fam-kt');
 }
 
 function setWantsChildren(val) {
   state.wantsChildren = val || null;
+  const s1 = document.getElementById('wants_children_select'); if (s1) s1.value = val || '';
   hideError('wants_children');
   syncFamilyDrip();
+  crTap('fam-wk');
 }
-function setFertility(val) { state.fertilityPreservation = val || null; hideError('fertility'); }
+function setFertility(val) {
+  state.fertilityPreservation = val || null;
+  const s1 = document.getElementById('fertility_select'); if (s1) s1.value = val || '';
+  hideError('fertility');
+  crTap('fam-fert');
+}
 // Couples are not asked about fertility preservation: always null (not asked). Singles unchanged.
 function fertilityPayload() { return state.status === 'partnered' ? null : (state.fertilityPreservation || null); }
 function setNumChildren(val) {
   state.numChildren = val || null;
-  ['num_children_select', 'num_children_select_condensed'].forEach(id => { const el = document.getElementById(id); if (el) el.value = val || ''; });
+  const el = document.getElementById('num_children_select'); if (el) el.value = val || '';
   syncFamilyDrip();
+  crTap('fam-nk');
 }
 // Couples only, and only when they have kids. Singles send null. Text, no value checks.
 function numChildrenPayload() {
@@ -2134,7 +2111,7 @@ const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'li
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
 let _lfCollapseTimer = null;
-// Timeline question waits for Looking for to collapse (same 1.2s debounce).
+// Timeline question waits for Looking for to collapse (same 1.2s delay as every other tap answer).
 let _lfTimelineReady = false;
 const LF_LABELS = { casual: 'Casual', dating: 'Dating', relationship: 'Relationship', marriage: 'Marriage', life_partner: 'Life partner' };
 
@@ -2150,35 +2127,14 @@ function toggleLookingFor(val) {
   clearTimeout(_lfCollapseTimer);
   _lfCollapseTimer = null;
   _lfTimelineReady = false;
-  if (state.lookingFor.length > 0) {
-    _lfCollapseTimer = setTimeout(() => {
-      _lfCollapseTimer = null;
-      collapseLookingFor();
-      _lfTimelineReady = true;
-      syncFamilyDrip();
-    }, 1200);
-  }
+  if (state.lookingFor.length > 0) _lfCollapseTimer = setTimeout(_lfSettle, CR_DELAY);
   syncFamilyDrip();
 }
-
-function collapseLookingFor() {
-  const selected = Array.isArray(state.lookingFor) ? state.lookingFor : [];
-  if (selected.length === 0) return;
-  const summaryText = document.getElementById('looking-for-summary-text');
-  if (summaryText) summaryText.textContent = selected.map(v => LF_LABELS[v] || v).join(', ');
-  const grid = document.getElementById('looking_for');
-  const collapsed = document.getElementById('looking-for-collapsed');
-  if (grid) grid.style.display = 'none';
-  if (collapsed) collapsed.style.display = '';
-}
-
-function expandLookingFor() {
-  clearTimeout(_lfCollapseTimer);
+function _lfSettle() {
   _lfCollapseTimer = null;
-  const grid = document.getElementById('looking_for');
-  const collapsed = document.getElementById('looking-for-collapsed');
-  if (grid) grid.style.display = '';
-  if (collapsed) collapsed.style.display = 'none';
+  crCollapse('fam-lf');
+  _lfTimelineReady = true;
+  syncFamilyDrip();
 }
 
 function lookingForNeedsTimeline() {
@@ -2193,6 +2149,7 @@ function setRelationshipTimeline(val) {
   state.relationshipTimeline = val || null;
   hideError('relationship_timeline');
   syncFamilyDrip();
+  crTap('fam-tl');
 }
 
 // Couples only: who the kids are with. Singles send null.
@@ -2213,91 +2170,32 @@ const HAS_KIDS_OPTS_COUPLE = [
 function _syncHasChildrenOptions(partnered) {
   const opts = partnered ? HAS_KIDS_OPTS_COUPLE : HAS_KIDS_OPTS_SINGLE;
   const keys = opts.map(o => o.v).join(',');
-  ['has_children_select','has_children_select_condensed'].forEach(id => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
+  const sel = document.getElementById('has_children_select');
+  if (sel) {
     const cur = Array.from(sel.options).map(o => o.value).filter(v => v).join(',');
     if (cur !== keys) sel.innerHTML = '<option value="">— Select —</option>' + opts.map(({v,t}) => `<option value="${v}">${t}</option>`).join('');
-  });
+  }
   if (state.hasChildren !== null && state.hasChildren !== undefined && !opts.some(o => o.v === state.hasChildrenDetail)) {
     if (!partnered && state.hasChildren === true) state.hasChildrenDetail = 'yes';
     else if (!partnered && state.hasChildren === false) state.hasChildrenDetail = 'no';
     else { state.hasChildren = null; state.hasChildrenDetail = null; }
   }
-  const v = state.hasChildrenDetail || '';
-  ['has_children_select','has_children_select_condensed'].forEach(id => { const sel = document.getElementById(id); if (sel) sel.value = v; });
-  const lbl = document.getElementById('haskids-condensed-label');
-  if (lbl) lbl.textContent = partnered ? 'Do you have kids?' : 'Have kids?';
-  const face = document.getElementById('has_children_condensed_face');
-  if (face) { const cs = document.getElementById('has_children_select_condensed'); face.textContent = cs && cs.selectedIndex >= 0 ? cs.options[cs.selectedIndex].textContent : '\u2014 Select \u2014'; }
+  if (sel) sel.value = state.hasChildrenDetail || '';
 }
 
+// Which Intentions & Family questions are showing (also used by validation).
+let _famShow = {};
 function syncFamilyDrip() {
   const partnered = state.status === 'partnered';
   _syncHasChildrenOptions(partnered);
-  const hasLF = partnered || (Array.isArray(state.lookingFor) && state.lookingFor.length > 0);
-  const needsTL = lookingForNeedsTimeline();
-  const hasTL = !needsTL || !!state.relationshipTimeline;
-  const hasKidsDone = state.hasChildren !== null && state.hasChildren !== undefined;
-  const kidsTimelineDone = !!state.kidsTimeline; // asked in both flows (couples again since Hotfix 11)
   const _lf = Array.isArray(state.lookingFor) ? state.lookingFor : [];
+  const hasLF = partnered || _lf.length > 0;
+  const needsTL = lookingForNeedsTimeline();
   const _hasMarriage = _lf.includes('marriage');
   const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
   const _datingOnly = _lf.length === 1 && _lf[0] === 'dating';
 
-  // looking-for: hidden for couples
-  const lfGroup = document.getElementById('looking-for-group');
-  if (lfGroup) lfGroup.style.display = partnered ? 'none' : 'block';
-
-  // timeline-haskids-row: shows for singles with looking_for set, once Looking for has
-  // collapsed (1.2s after the last tap). An already-answered timeline stays visible while editing.
-  const tlHkRow = document.getElementById('timeline-haskids-row');
-  const _tlReady = _lfTimelineReady || !!state.relationshipTimeline;
-  // Couples: once "Do you have kids?" is answered it stays here (condensed), above "want more kids".
-  // Casual-only has no timeline: "Do you have kids?" appears once Looking for collapses (Hotfix 13).
-  const _lfSettled = partnered || _tlReady || hasKidsDone;
-  if (tlHkRow) tlHkRow.style.display = ((!partnered && hasLF && (_tlReady || hasKidsDone) && (needsTL || hasKidsDone)) || (partnered && hasKidsDone)) ? 'flex' : 'none';
-
-  // timeline-col: hidden for casual (no timeline needed)
-  const tlCol = document.getElementById('timeline-col');
-  if (tlCol) tlCol.style.display = (needsTL && !_casualOnly) ? '' : 'none';
-
-  // haskids-condensed-col: slides into timeline row once have kids answered
-  const hkCondCol = document.getElementById('haskids-condensed-col');
-  if (hkCondCol) hkCondCol.style.display = (hasTL && hasKidsDone) ? '' : 'none';
-
-  // Couples: "How many kids do you have?" right after any Yes. Full width until answered,
-  // then it joins the "Do you have kids?" row. Cleared when the answer is not a Yes.
-  const needsNum = partnered && state.hasChildren === true;
-  if (!needsNum && state.numChildren) state.numChildren = null;
-  if (!needsNum) ['num_children_select', 'num_children_select_condensed'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  const numDone = !needsNum || !!state.numChildren;
-  const nkStandalone = document.getElementById('numkids-standalone-row');
-  if (nkStandalone) nkStandalone.style.display = (needsNum && hasKidsDone && !state.numChildren) ? 'block' : 'none';
-  const nkCondCol = document.getElementById('numkids-condensed-col');
-  const nkPaired = needsNum && !!state.numChildren;
-  if (nkCondCol) nkCondCol.style.display = nkPaired ? '' : 'none';
-  if (hkCondCol) hkCondCol.style.flex = nkPaired ? '2' : '1';
-  // condensed select value is synced in _syncHasChildrenOptions
-
-  // haskids-standalone-row: full width, shows after timeline answered and before have kids answered
-  const hkStandaloneRow = document.getElementById('haskids-standalone-row');
-  if (hkStandaloneRow) hkStandaloneRow.style.display = (hasLF && hasTL && _lfSettled && !hasKidsDone) ? 'block' : 'none';
-  if (hasKidsDone) { const e = document.getElementById('err-has_children_s'); if (e) e.classList.remove('visible'); }
-
-  // Timeline label: full while have kids not yet answered, condensed once both share the row
-  const tlLabel = document.getElementById('timeline-label');
-  if (tlLabel) {
-    if (hasKidsDone && needsTL) {
-      tlLabel.style.fontSize = '12px';
-      tlLabel.textContent = _hasMarriage ? 'Marriage timing' : _datingOnly ? 'Dating timing' : 'Partner timing';
-    } else {
-      tlLabel.style.fontSize = '';
-      tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
-    }
-  }
-
-  // Timeline select options: fully replace based on marriage vs other
+  // Timeline options: marriage vs other (unchanged values).
   const tlSel = document.getElementById('relationship_timeline');
   if (tlSel) {
     const MARRIAGE_OPTS = [
@@ -2317,64 +2215,55 @@ function syncFamilyDrip() {
       if (targetOpts.some(o => o.v === saved)) { tlSel.value = saved; } else { state.relationshipTimeline = null; }
     }
   }
-
-  // Refresh the summary if Looking for is already collapsed. Never collapse here —
-  // that only happens 1.2s after the last tap.
-  const _lfCollapsed = document.getElementById('looking-for-collapsed');
-  if (_lfCollapsed && _lfCollapsed.style.display !== 'none') {
-    const _st = document.getElementById('looking-for-summary-text');
-    if (_st) _st.textContent = _lf.map(v => LF_LABELS[v] || v).join(', ');
-  }
   if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
 
-  // wantkids-kidstimeline-row: flex row, shows after have kids answered
-  const wkKtRow = document.getElementById('wantkids-kidstimeline-row');
-  if (wkKtRow) wkKtRow.style.display = (hasLF && hasTL && hasKidsDone && numDone) ? 'flex' : 'none';
-  if (hasKidsDone) {
-    const lbl = document.getElementById('wants-children-label');
-    if (lbl) {
-      if (kidsTimelineDone) {
-        // condensed: kids timeline is alongside, use short label
-        lbl.style.fontSize = '12px';
-        lbl.textContent = state.hasChildren === true ? 'Want more kids?' : 'Want kids?';
-      } else {
-        // full width: show full question (couples: standard 12px to match stacked labels)
-        lbl.style.fontSize = partnered ? '12px' : '';
-        lbl.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
-      }
-    }
-  }
+  // Couples: "How many kids do you have?" right after any Yes. Cleared when the answer is not a Yes.
+  const needsNum = partnered && state.hasChildren === true;
+  if (!needsNum && state.numChildren) state.numChildren = null;
+  if (!needsNum) { const el = document.getElementById('num_children_select'); if (el) el.value = ''; }
 
-  // kidstimeline-condensed-col: slides into wantkids row once kids timeline answered
-  const ktCondCol = document.getElementById('kidstimeline-condensed-col');
-  if (ktCondCol) ktCondCol.style.display = (state.wantsChildren === 'yes' && kidsTimelineDone) ? '' : 'none';
-  // sync condensed select value
-  const ktCondSel = document.getElementById('kids_timeline_select_condensed');
-  if (ktCondSel && state.kidsTimeline) ktCondSel.value = state.kidsTimeline;
-
-  // kidstimeline-standalone-row: full width, shown while not yet answered
-  const ktStandaloneRow = document.getElementById('kidstimeline-standalone-row');
-  if (ktStandaloneRow) ktStandaloneRow.style.display = (hasLF && state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
-
-  // fertility-row: full width, shows once kids timeline answered
-  const fertRow = document.getElementById('fertility-row');
-  // Couples: fertility follows want = Yes directly (no kids-timeline question).
-  // Couples: not asked at all (removed from the couples flow); singles unchanged.
-  if (fertRow) fertRow.style.display = (!partnered && hasLF && state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
+  // Couples are not asked about fertility preservation (always null); singles unchanged.
   if (partnered && state.fertilityPreservation) {
     state.fertilityPreservation = null;
     const fsel = document.getElementById('fertility_select'); if (fsel) fsel.value = '';
     hideError('fertility');
   }
-
   // Clear downstream if wantsChildren is not yes
   if (state.wantsChildren !== 'yes') {
     state.kidsTimeline = null; state.fertilityPreservation = null;
     const ktSel = document.getElementById('kids_timeline_select'); if (ktSel) ktSel.value = '';
-    const ktCSel = document.getElementById('kids_timeline_select_condensed'); if (ktCSel) ktCSel.value = '';
     const fs = document.getElementById('fertility_select'); if (fs) fs.value = '';
     hideError('kids_timeline'); hideError('fertility');
   }
+
+  const hasTL = !needsTL || !!state.relationshipTimeline;
+  const hasKidsDone = state.hasChildren !== null && state.hasChildren !== undefined;
+  const numDone = !needsNum || !!state.numChildren;
+  const kidsTimelineDone = !!state.kidsTimeline; // asked in both flows
+  // The timeline waits for Looking for to collapse (1.2s after the last tap). Casual-only has no timeline:
+  // "Do you have kids?" appears once Looking for collapses (Hotfix 13). Answered questions always stay visible.
+  const _tlReady = _lfTimelineReady || !!state.relationshipTimeline;
+  const _lfSettled = partnered || _tlReady || hasKidsDone;
+  const show = {
+    lf: !partnered,
+    tl: !partnered && needsTL && (_tlReady || hasKidsDone),
+    hk: (hasLF && hasTL && _lfSettled) || hasKidsDone,
+    nk: needsNum && hasKidsDone,
+  };
+  show.wk = (hasLF && hasTL && hasKidsDone && numDone) || !!state.wantsChildren;
+  show.kt = show.wk && state.wantsChildren === 'yes';
+  show.fert = !partnered && hasLF && state.wantsChildren === 'yes' && kidsTimelineDone;
+  _famShow = show;
+  [['lf','fam-lf'],['tl','fam-tl'],['hk','fam-hk'],['nk','fam-nk'],['wk','fam-wk'],['kt','fam-kt'],['fert','fam-fert']].forEach(([k, id]) => {
+    const u = document.getElementById(id); if (u) u.style.display = show[k] ? '' : 'none';
+  });
+  if (hasKidsDone) hideError('has_children');
+
+  const tlLabel = document.getElementById('timeline-label');
+  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
+  const wkLabel = document.getElementById('wants-children-label');
+  if (wkLabel) wkLabel.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
+  crRefresh();
 }
 
 function lookingForPayload() {
@@ -2441,7 +2330,6 @@ function validateScreen(screenId) {
       if (!cityVal) { showError('postal_code', 'Please enter your city'); ok = false; } else hideError('postal_code');
     }
     if (!Array.isArray(state.race) || state.race.length === 0) { showError('race', 'Please make a selection'); ok = false; } else hideError('race');
-    whoExpandErrors();
   }
   if (screenId === 3) {
     if (state.status !== 'partnered') {
@@ -2458,7 +2346,6 @@ function validateScreen(screenId) {
     const pe = document.getElementById('partner_email').value.trim();
     if (!pf) { showError('partner_first_name', 'Required'); ok = false; } else hideError('partner_first_name');
     if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
-    ptExpandErrors();
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
@@ -2467,7 +2354,7 @@ function validateScreen(screenId) {
   if (screenId === 5) {
     // Next tapped while Looking for is still settling (1.2s): settle it now so the follow-ups show.
     if (state.status !== 'partnered' && _lfCollapseTimer && Array.isArray(state.lookingFor) && state.lookingFor.length) {
-      clearTimeout(_lfCollapseTimer); _lfCollapseTimer = null; collapseLookingFor(); _lfTimelineReady = true; syncFamilyDrip();
+      clearTimeout(_lfCollapseTimer); _lfSettle();
     }
     if (state.status !== 'partnered') {
       if (!Array.isArray(state.lookingFor) || state.lookingFor.length === 0) { showError('looking_for', 'Please make a selection'); ok = false; } else hideError('looking_for');
@@ -2475,11 +2362,11 @@ function validateScreen(screenId) {
         if (!state.relationshipTimeline) { showError('relationship_timeline', 'Please make a selection'); ok = false; } else hideError('relationship_timeline');
       } else hideError('relationship_timeline');
     } else { hideError('looking_for'); hideError('relationship_timeline'); }
-    const hkColVisible = (document.getElementById('haskids-standalone-row')?.style.display !== 'none') || (document.getElementById('haskids-condensed-col')?.style.display !== 'none');
+    const hkColVisible = !!_famShow.hk;
     if (hkColVisible) {
-      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); document.getElementById('err-has_children_s')?.classList.add('visible'); ok = false; } else hideError('has_children');
+      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
     }
-    const wkRowVisible = document.getElementById('wantkids-kidstimeline-row')?.style.display !== 'none';
+    const wkRowVisible = !!_famShow.wk;
     if (wkRowVisible) {
       if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
       if (state.wantsChildren === 'yes') {
@@ -2531,7 +2418,7 @@ function resetUnder18() {
   document.getElementById('under18-msg').classList.remove('visible');
   document.getElementById('screen1-next-btn').style.display = '';
   document.getElementById('birthdate').value = '';
-  whoExpand('dob', false);
+  crExpand('who-dob', false);
   showScreen(0, 'back');
 }
 
@@ -2755,16 +2642,10 @@ function _parseCityEntry(entry) {
 }
 
 // ============================================================
-// WHO YOU ARE: condensed rows
-// Answered questions collapse into compact rows (tap to edit). Order never
-// changes; rows sit side by side only where the questions were already
-// adjacent (DOB + zip, height + race). Text fields collapse only once focus
-// leaves them (or on Enter), never mid-typing.
+// WHO YOU ARE: race picklist
 // ============================================================
 const RACE_OPTIONS = ['Asian', 'South Asian', 'Black', 'Hispanic / Latino', 'MENA', 'Native American', 'Pacific Islander', 'White', 'Other', 'Prefer not to say'];
 const RACE_EXCLUSIVE = 'Prefer not to say';
-const WHO_UNITS = ['gender', 'name', 'dob', 'loc', 'height', 'race', 'email'];
-const _whoTimers = {};
 const _MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function toggleRace(label) {
@@ -2794,152 +2675,299 @@ function isRacePanelOpen() { const p = document.getElementById('race-panel'); re
 function openRacePanel() {
   const p = document.getElementById('race-panel'), c = document.getElementById('race');
   if (!p) return;
-  clearTimeout(_whoTimers.pair_hr);
+  clearTimeout(_crT['who-height']); clearTimeout(_crT['who-race']);
   p.classList.add('open'); if (c) c.setAttribute('aria-expanded', 'true');
+  try { p.scrollIntoView({ block: 'nearest' }); } catch (e) {}
 }
 function closeRacePanel(noCommit) {
   const p = document.getElementById('race-panel'), c = document.getElementById('race');
   if (!p || !p.classList.contains('open')) return;
   p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
-  if (!noCommit) whoTryPair('race', 300);
+  if (!noCommit) crTap('who-race');
 }
 function toggleRacePanel() { if (isRacePanelOpen()) closeRacePanel(); else openRacePanel(); }
 function racePayload() {
   return Array.isArray(state.race) && state.race.length ? state.race.slice() : null;
 }
 
-function _whoVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-function whoValueText(k) {
-  if (k === 'gender') return ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.gender] || '';
-  if (k === 'name') { const f = _whoVal('first_name'), l = _whoVal('last_name'); return f && l ? f + ' ' + l : ''; }
-  if (k === 'dob') {
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(_whoVal('birthdate'));
-    return m ? _MONTHS[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10) + ', ' + m[1] : '';
-  }
-  if (k === 'loc') {
-    if (state.locationMode === 'zip') { const z = _whoVal('postal_code'); return z ? z + (state.zipCity ? ' \u00b7 ' + state.zipCity : '') : ''; }
-    return _whoVal('intl_city_input');
-  }
-  if (k === 'height') {
-    if (state.locationMode === 'zip') { const sel = document.getElementById('height_ftin'); return sel && sel.value ? sel.options[sel.selectedIndex].textContent : ''; }
-    const cm = _whoVal('height_cm_input'); return cm ? cm + ' cm' : '';
-  }
-  if (k === 'race') return Array.isArray(state.race) ? state.race.join(', ') : '';
-  if (k === 'email') { const e = _whoVal('email'); return e && isValidEmail(e) ? e : ''; }
-  return '';
+// ============================================================
+// CONDENSED ROWS: one component shared by Who You Are, Your Partner, Your Relationship
+// and Intentions & Family. Markup: <div class="who-unit" id="…"><div class="who-cond">key · answer · EDIT</div>
+// …the question's own control…</div>; paired units sit in one .cr-pair row.
+// Same rules on every screen:
+//  - Tap answers (buttons, lists, pickers) collapse 1.2s after the last tap.
+//  - Typed answers collapse when you leave the field or press Enter, never mid-typing.
+//  - A pair waits for both answers and collapses together; EDIT on either opens both.
+//    If the other member is optional and skipped, or doesn't apply, it collapses alone once you move on.
+//  - Defaults don't count as answers until touched (except the Who You Are date of birth).
+//  - An answered question reopened with EDIT collapses again when you tap elsewhere.
+//  - Answered questions stay visible and editable; the order never changes.
+// Progressive reveal (Who You Are, Your Relationship): the next question appears once the one before it is answered.
+// ============================================================
+const CR_DELAY = 1200;
+const CR = {};
+const _crT = {};
+const _crB = {};
+const CR_STEPS = {
+  1: [['who-gender'], ['who-name'], ['who-dob', 'who-loc'], ['who-height', 'who-race'], ['who-email']],
+  4: [['rel-stage'], ['rel-first'], ['rel-eng', 'rel-wed'], ['rel-mb']],
+};
+const _crFront = { 1: 0, 4: 0 };
+function crDef(id, cfg) { CR[id] = Object.assign({ id: id }, cfg); }
+function _crEl(id) { return document.getElementById(id); }
+function _crV(id) { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
+function _crTyping(el) { return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'); }
+function _crMdy(v) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); return m ? _MONTHS[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10) + ', ' + m[1] : ''; }
+function _crOpt(selId, val) {
+  if (!val) return '';
+  const s = document.getElementById(selId);
+  const o = s && Array.from(s.options).find(x => x.value === String(val));
+  return o ? o.textContent : String(val);
 }
-function _whoUnit(k) { return document.getElementById('who-' + k); }
-function whoIsCollapsed(k) { const u = _whoUnit(k); return !!u && u.classList.contains('collapsed'); }
-function whoCollapse(k) {
-  const u = _whoUnit(k);
-  if (!u) return false;
-  const txt = whoValueText(k);
+function crText(id) { const c = CR[id]; return c ? (c.value() || '') : ''; }
+function crApplies(id) { const c = CR[id]; return !!c && (!c.applies || !!c.applies()); }
+function crIsCollapsed(id) { const u = _crEl(id); return !!u && u.classList.contains('collapsed'); }
+function _crHidden(id) { const u = _crEl(id); return !u || u.classList.contains('cr-later') || u.style.display === 'none'; }
+function crPartner(id) {
+  const c = CR[id]; if (!c) return null;
+  const p = typeof c.partner === 'function' ? c.partner() : c.partner;
+  return p && CR[p] && crApplies(p) ? p : null;
+}
+// A paired unit's "field" is its whole row (so moving between the two members isn't leaving).
+function _crScope(id) {
+  const u = _crEl(id), p = crPartner(id), pu = p && _crEl(p);
+  return (u && pu && u.parentElement === pu.parentElement) ? u.parentElement : u;
+}
+function _crFill(id, txt) {
+  const c = CR[id];
+  const v = _crEl(id + '-v'); if (v) { v.textContent = txt; v.title = txt; }
+  if (c && c.key) { const k = _crEl(id + '-k'); if (k) k.textContent = c.key(); }
+}
+function crCollapse(id) {
+  const u = _crEl(id), c = CR[id];
+  if (!u || !c || !crApplies(id)) return false;
+  const txt = crText(id);
   if (!txt) return false;
-  if (u.contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON' && document.activeElement.tagName !== 'SELECT') return false; // still typing
-  const v = document.getElementById('who-' + k + '-v');
-  if (v) { v.textContent = txt; v.title = txt; }
-  if (k === 'loc') { const dd = document.getElementById('intl-city-dropdown'); if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; } }
-  if (u.contains(document.activeElement)) document.activeElement.blur();
-  u.classList.add('collapsed');
-  _syncWhoPairs();
-  return true;
-}
-// Paired units (DOB + location, height + race) never collapse on their own:
-// both collapse together once both are done, and both expand together.
-const WHO_PARTNER = { dob: 'loc', loc: 'dob', height: 'race', race: 'height' };
-const WHO_PAIR_ROW = { dob: 'who-dl-row', loc: 'who-dl-row', height: 'who-hr-row', race: 'who-hr-row' };
-function _whoTyping(el) { return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'); }
-function whoCollapsePair(k) {
-  const p = WHO_PARTNER[k];
-  const row = document.getElementById(WHO_PAIR_ROW[k]);
-  if (!p || !row) return false;
-  if (!whoValueText(k) || !whoValueText(p)) return false;
-  if (k === 'race' || p === 'race') {
-    if (isRacePanelOpen()) return false;
-    // A gender-based default height is not "chosen" until the user picks it or at least touches it.
-    if (!state.heightTouched && !state.heightAck) return false;
-  }
   const a = document.activeElement;
-  if (row.contains(a) && _whoTyping(a)) return false; // still editing one of the pair
-  closeRacePanel(true);
-  const ok1 = whoCollapse(k), ok2 = whoCollapse(p);
-  if (!(ok1 && ok2)) { whoExpand(k, false); return false; }
+  if (u.contains(a) && _crTyping(a)) return false; // still typing
+  _crFill(id, txt);
+  clearTimeout(_crT[id]); _crT[id] = null;
+  if (c.beforeCollapse) c.beforeCollapse();
+  if (u.contains(a)) a.blur();
+  const was = u.classList.contains('collapsed');
+  u.classList.add('collapsed');
+  c._editing = false;
+  if (!was && c.afterCollapse) c.afterCollapse();
+  crSync();
   return true;
 }
-function whoTryPair(k, delay) {
-  const key = 'pair_' + (WHO_PAIR_ROW[k] === 'who-dl-row' ? 'dl' : 'hr');
-  clearTimeout(_whoTimers[key]);
-  _whoTimers[key] = setTimeout(() => { _whoTimers[key] = null; whoCollapsePair(k); }, delay || 0);
-}
-const _WHO_FOCUS = { name: 'first_name', dob: 'birthdate', email: 'email' };
-function whoExpand(k, focus) {
-  const u = _whoUnit(k);
-  if (!u) return;
-  clearTimeout(_whoTimers[k]); _whoTimers[k] = null;
-  u.classList.remove('collapsed');
-  const pk = WHO_PARTNER[k];
-  if (pk) {
-    const pu = _whoUnit(pk);
-    clearTimeout(_whoTimers[pk]); _whoTimers[pk] = null;
-    clearTimeout(_whoTimers['pair_' + (WHO_PAIR_ROW[k] === 'who-dl-row' ? 'dl' : 'hr')]);
-    if (pu) pu.classList.remove('collapsed');
-  }
-  _syncWhoPairs();
+function crExpand(id, focus) {
+  const u = _crEl(id), c = CR[id];
+  if (!u || !c) return;
+  const p = crPartner(id);
+  [id, p].forEach(k => {
+    if (!k) return;
+    clearTimeout(_crT[k]); _crT[k] = null;
+    const e = _crEl(k); if (e) e.classList.remove('collapsed');
+    CR[k]._movedOn = false;
+  });
+  if (focus !== false) c._editing = true;
+  if (c.onExpand) c.onExpand(focus !== false);
+  crSync();
   if (focus === false) return;
-  let id = _WHO_FOCUS[k];
-  if (k === 'loc') id = state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input';
-  if (k === 'height') id = state.locationMode === 'zip' ? 'height_ftin' : 'height_cm_input';
-  if (k === 'race') { openRacePanel(); id = 'race'; }
-  const el = id && document.getElementById(id);
+  const fid = typeof c.focus === 'function' ? c.focus() : c.focus;
+  const el = fid && _crEl(fid);
   if (el) { try { el.focus({ preventScroll: false }); } catch (e) {} }
 }
-function _syncWhoPairs() {
-  const dl = document.getElementById('who-dl-row');
-  if (dl) dl.classList.toggle('pair-collapsed', whoIsCollapsed('dob') && whoIsCollapsed('loc'));
-  const hr = document.getElementById('who-hr-row');
-  if (hr) hr.classList.toggle('pair-collapsed', whoIsCollapsed('height') && whoIsCollapsed('race'));
+function crReset(id) {
+  const u = _crEl(id), c = CR[id];
+  if (u) u.classList.remove('collapsed');
+  clearTimeout(_crT[id]); _crT[id] = null;
+  if (c) { c._movedOn = false; c._passed = false; c._editing = false; c._shownAt = 0; }
 }
-// Keep condensed text current (e.g. the city arrives after the zip lookup).
-function whoRefresh() {
-  WHO_UNITS.forEach(k => {
-    if (!whoIsCollapsed(k)) return;
-    const txt = whoValueText(k);
-    if (!txt) { whoExpand(k, false); return; }
-    const v = document.getElementById('who-' + k + '-v');
-    if (v) { v.textContent = txt; v.title = txt; }
+// Collapse now if the rules allow it (pair-aware).
+function crSettle(id) {
+  const c = CR[id];
+  if (!c || !crApplies(id) || crIsCollapsed(id) || _crHidden(id)) return false;
+  if (!crText(id) || (c.busy && c.busy())) return false;
+  const p = crPartner(id);
+  if (!p) return crCollapse(id);
+  const pc = CR[p];
+  if (pc.busy && pc.busy()) return false;
+  if (crText(p) || crIsCollapsed(p)) {
+    const row = _crScope(id), a = document.activeElement;
+    if (row && row.contains(a) && _crTyping(a)) return false; // still typing in the pair
+    const ok1 = crCollapse(id), ok2 = crIsCollapsed(p) || crCollapse(p);
+    if (!(ok1 && ok2)) { crExpand(id, false); return false; }
+    return true;
+  }
+  if (pc.optional && c._movedOn) return crCollapse(id);
+  return false;
+}
+// A tap answer: settle 1.2s after the last tap.
+function crTap(id, delay) {
+  clearTimeout(_crT[id]); _crT[id] = null;
+  if (CR[id] && crText(id)) _crT[id] = setTimeout(() => { _crT[id] = null; crSettle(id); crSync(); }, delay == null ? CR_DELAY : delay);
+  crSync();
+}
+function _crStepDone(ids) {
+  return ids.filter(crApplies).every(id => crIsCollapsed(id) || CR[id]._passed);
+}
+function crReveal(screen) {
+  const steps = CR_STEPS[screen]; if (!steps) return;
+  while (_crFront[screen] < steps.length - 1 && _crStepDone(steps[_crFront[screen]])) {
+    _crFront[screen]++;
+    steps[_crFront[screen]].forEach(id => { if (CR[id]) CR[id]._shownAt = Date.now(); });
+  }
+  steps.forEach((ids, i) => ids.forEach(id => { const u = _crEl(id); if (u) u.classList.toggle('cr-later', i > _crFront[screen]); }));
+}
+// Show every remaining question. True if a newly shown one still needs an answer.
+function crRevealAll(screen) {
+  const steps = CR_STEPS[screen]; if (!steps) return false;
+  let fresh = false;
+  for (let i = _crFront[screen] + 1; i < steps.length; i++) {
+    steps[i].forEach(id => { if (crApplies(id) && !crText(id)) fresh = true; if (CR[id]) CR[id]._shownAt = Date.now(); });
+  }
+  _crFront[screen] = steps.length - 1;
+  crSync();
+  return fresh;
+}
+function _crFirstOpen(screen) {
+  const u = Array.from(document.querySelectorAll('#screen-' + screen + ' .who-unit')).find(e => !e.classList.contains('collapsed') && !_crHidden(e.id) && crApplies(e.id) && !crText(e.id));
+  if (u) { try { u.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }
+}
+function crSync() {
+  crReveal(1); crReveal(4);
+  document.querySelectorAll('.cr-pair').forEach(row => {
+    const units = Array.from(row.children).filter(e => e.classList.contains('who-unit'));
+    const shown = units.filter(u => !u.classList.contains('cr-later') && u.style.display !== 'none');
+    row.classList.toggle('cr-empty', shown.length === 0);
+    row.classList.toggle('cr-solo', shown.length === 1);
+    row.classList.toggle('cr-both', shown.length > 1 && shown.every(u => u.classList.contains('collapsed')));
   });
-  whoExpandErrors();
-}
-const _WHO_ERRORS = { gender: ['gender'], name: ['first_name', 'last_name'], dob: ['birthdate'], loc: ['postal_code'], race: ['race'], email: ['email'] };
-function whoExpandErrors() {
-  Object.keys(_WHO_ERRORS).forEach(k => {
-    if (!whoIsCollapsed(k)) return;
-    if (_WHO_ERRORS[k].some(f => document.getElementById('err-' + f)?.classList.contains('visible'))) whoExpand(k, false);
+  document.querySelectorAll('#screen-5 .fam-unit').forEach(u => {
+    const c = CR[u.id]; if (!c) return;
+    const open = !u.classList.contains('collapsed');
+    u.classList.toggle('cr-active', open && (!crText(u.id) || !!c._editing || (u.id === 'fam-lf' && !!_lfCollapseTimer)));
   });
 }
-function initWhoCondensed() {
-  // Text-type units: collapse when focus leaves the whole unit with a value.
-  // The short delay lets taps on in-unit controls (International?, city list) land first.
-  ['name', 'email'].forEach(k => {
-    const u = _whoUnit(k);
-    if (!u) return;
+// Keep condensed text current (e.g. the city arrives after the zip lookup); reopen rows that lost their answer.
+function crRefresh() {
+  Object.keys(CR).forEach(id => {
+    const u = _crEl(id); if (!u) return;
+    if (!crApplies(id)) { if (u.classList.contains('collapsed')) u.classList.remove('collapsed'); return; }
+    if (!crIsCollapsed(id)) return;
+    const txt = crText(id);
+    if (!txt) { crExpand(id, false); return; }
+    _crFill(id, txt);
+  });
+  crExpandErrors();
+  crSync();
+}
+// Arriving on a screen: answered questions show as condensed rows (same rules as leaving them).
+function crSettleScreen(screen) {
+  document.querySelectorAll('#screen-' + screen + ' .who-unit').forEach(u => { if (CR[u.id] && !u.classList.contains('collapsed')) crSettle(u.id); });
+}
+function crExpandErrors() {
+  document.querySelectorAll('.who-unit.collapsed').forEach(u => { if (u.querySelector('.field-error.visible')) crExpand(u.id, false); });
+}
+// "Moving on": a tap or focus outside an open question.
+let _crEvt = null;
+function _crOnLeave(e) {
+  const scr = document.querySelector('.screen.active');
+  if (!scr || !scr.querySelector('.who-unit')) return;
+  const t = e.target, when = Date.now();
+  setTimeout(() => {
+    if (!t || !t.isConnected) return; // the tapped control re-rendered itself (e.g. a removed chip)
+    scr.querySelectorAll('.who-unit').forEach(u => {
+      const id = u.id, c = CR[id];
+      if (!c || u.classList.contains('collapsed') || _crHidden(id) || !crApplies(id)) return;
+      const scope = _crScope(id);
+      if (scope && scope.contains(t)) return;
+      if (!crText(id)) { if (c.optional && c._shownAt && c._shownAt < when) c._passed = true; return; }
+      c._movedOn = true;
+      if (id === 'fam-lf') { clearTimeout(_lfCollapseTimer); _lfSettle(); return; }
+      if (crSettle(id)) { clearTimeout(_crT[id]); _crT[id] = null; }
+    });
+    crSync();
+  }, 0);
+}
+
+function _crDefineAll() {
+  // Who You Are
+  crDef('who-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.gender] || '' });
+  crDef('who-name', { focus: 'first_name', value: () => { const f = _crV('first_name'), l = _crV('last_name'); return f && l ? f + ' ' + l : ''; } });
+  crDef('who-dob', { focus: 'birthdate', partner: 'who-loc', value: () => _crMdy(_crV('birthdate')) }); // pre-filled default counts
+  crDef('who-loc', {
+    partner: 'who-dob', focus: () => state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input',
+    value: () => { if (state.locationMode === 'zip') { const z = _crV('postal_code'); return z ? z + (state.zipCity ? ' \u00b7 ' + state.zipCity : '') : ''; } return _crV('intl_city_input'); },
+    beforeCollapse: () => { const dd = _crEl('intl-city-dropdown'); if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; } },
+  });
+  crDef('who-height', {
+    partner: 'who-race', focus: () => state.locationMode === 'zip' ? 'height_ftin' : 'height_cm_input',
+    value: () => {
+      if (!state.heightTouched && !state.heightAck) return ''; // the gender-based default isn't an answer until touched
+      if (state.locationMode === 'zip') return _crOpt('height_ftin', _crV('height_ftin'));
+      const cm = _crV('height_cm_input'); return cm ? cm + ' cm' : '';
+    },
+  });
+  crDef('who-race', { partner: 'who-height', focus: 'race', busy: isRacePanelOpen, onExpand: f => { if (f) openRacePanel(); }, value: () => Array.isArray(state.race) ? state.race.join(', ') : '' });
+  crDef('who-email', { focus: 'email', value: () => { const e = _crV('email'); return e && isValidEmail(e) ? e : ''; } });
+  // Your Partner
+  crDef('pt-name', { focus: 'partner_first_name', value: () => { const f = _crV('partner_first_name'), l = _crV('partner_last_name'); return f && l ? f + ' ' + l : ''; } });
+  crDef('pt-bday', { focus: 'partner_birthday', partner: 'pt-height', optional: true, value: () => state.partnerBdayTouched ? _crMdy(_crV('partner_birthday')) : '' });
+  crDef('pt-height', { focus: 'partner_height', partner: 'pt-bday', optional: true, value: () => _crOpt('partner_height', _crV('partner_height')) });
+  crDef('pt-email', { focus: 'partner_email', value: () => { const e = _crV('partner_email'); return e && isValidEmail(e) ? e : ''; } });
+  crDef('pt-live', { partner: 'pt-city', value: () => ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '' });
+  crDef('pt-city', { partner: 'pt-live', focus: 'partner_city_input', applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
+  // Your Relationship
+  const stage = () => _crV('relationship_stage');
+  crDef('rel-stage', { focus: 'relationship_stage', value: () => _crOpt('relationship_stage', stage()) });
+  crDef('rel-first', { focus: 'first_date', optional: true, value: () => _crMdy(_crV('first_date')) });
+  crDef('rel-eng', { focus: 'engagement_date', optional: true, partner: 'rel-wed', applies: () => stage() === 'engaged' || stage() === 'married', value: () => _crMdy(_crV('engagement_date')) });
+  crDef('rel-wed', { focus: 'wedding_date', optional: true, partner: 'rel-eng', applies: () => stage() === 'married', value: () => _crMdy(_crV('wedding_date')) });
+  crDef('rel-mb', { optional: true, value: () => ({ neither: 'Neither', me: 'Me', partner: 'My partner', both: 'Both' })[state.marriedBefore] || '' });
+  // Intentions & Family
+  crDef('fam-lf', {
+    applies: () => !!_famShow.lf,
+    value: () => (Array.isArray(state.lookingFor) ? state.lookingFor : []).map(v => LF_LABELS[v] || v).join(', '),
+    // Reopened and left unchanged: collapses again after 1.2s idle (or a tap elsewhere).
+    onExpand: f => { clearTimeout(_lfCollapseTimer); _lfCollapseTimer = null; if (f && state.lookingFor && state.lookingFor.length) _lfCollapseTimer = setTimeout(_lfSettle, CR_DELAY); },
+  });
+  const lf = () => (Array.isArray(state.lookingFor) ? state.lookingFor : []);
+  crDef('fam-tl', {
+    focus: 'relationship_timeline', partner: 'fam-hk', applies: () => !!_famShow.tl,
+    key: () => lf().includes('marriage') ? 'Marriage timing' : (lf().length === 1 && lf()[0] === 'dating') ? 'Dating timing' : 'Partner timing',
+    value: () => _crOpt('relationship_timeline', state.relationshipTimeline),
+  });
+  crDef('fam-hk', {
+    focus: 'has_children_select', applies: () => !!_famShow.hk,
+    partner: () => lookingForNeedsTimeline() ? 'fam-tl' : (state.status === 'partnered' && state.hasChildren === true ? 'fam-nk' : null),
+    value: () => _crOpt('has_children_select', state.hasChildrenDetail),
+  });
+  crDef('fam-nk', { focus: 'num_children_select', partner: 'fam-hk', applies: () => !!_famShow.nk, value: () => _crOpt('num_children_select', state.numChildren) });
+  crDef('fam-wk', { focus: 'wants_children_select', partner: 'fam-kt', applies: () => !!_famShow.wk, key: () => state.hasChildren === true ? 'Want more kids' : 'Want kids', value: () => _crOpt('wants_children_select', state.wantsChildren) });
+  crDef('fam-kt', { focus: 'kids_timeline_select', partner: 'fam-wk', applies: () => !!_famShow.kt, value: () => _crOpt('kids_timeline_select', state.kidsTimeline) });
+  crDef('fam-fert', { focus: 'fertility_select', applies: () => !!_famShow.fert, value: () => _crOpt('fertility_select', state.fertilityPreservation) });
+}
+
+function initCondensedRows() {
+  _crDefineAll();
+  Object.keys(CR).forEach(id => {
+    const u = _crEl(id); if (!u) return;
+    // Leaving a question (focus moves out of its field / pair) settles it. A pending tap timer keeps its 1.2s.
     u.addEventListener('focusout', () => {
-      clearTimeout(_whoTimers[k + 'Blur']);
-      _whoTimers[k + 'Blur'] = setTimeout(() => {
-        if (!u.contains(document.activeElement)) whoCollapse(k);
+      clearTimeout(_crB[id]);
+      _crB[id] = setTimeout(() => {
+        if (_crT[id]) return;
+        const sc = _crScope(id);
+        if (!(sc && sc.contains(document.activeElement))) crSettle(id);
       }, 200);
     });
   });
-  // Paired rows: when focus leaves the row, collapse both if both are done.
-  // DOB + location: effectively "once the zip/city is complete" (DOB is pre-filled).
-  [['who-dl-row', 'loc'], ['who-hr-row', 'height']].forEach(([rid, k]) => {
-    const row = document.getElementById(rid);
-    if (!row) return;
-    row.addEventListener('focusout', () => {
-      setTimeout(() => { if (!row.contains(document.activeElement)) whoTryPair(k, 0); }, 200);
-    });
-  });
-  const hu0 = _whoUnit('height');
+  document.addEventListener('click', _crOnLeave, true);
+  document.addEventListener('focusin', _crOnLeave, true);
+  const hu0 = _crEl('who-height');
   if (hu0) hu0.addEventListener('focusin', () => { state.heightAck = true; });
   // Race picklist: a tap anywhere outside it (or Escape) closes and commits it.
   document.addEventListener('pointerdown', e => {
@@ -2947,7 +2975,7 @@ function initWhoCondensed() {
     const p = document.getElementById('race-panel'), c = document.getElementById('race');
     if (p.contains(e.target) || (c && c.contains(e.target))) return;
     // Tapping Height (same row) just closes the list; the pair collapses once Height is picked.
-    const hu = _whoUnit('height');
+    const hu = _crEl('who-height');
     closeRacePanel(!!hu && hu.contains(e.target));
   }, true);
   document.addEventListener('keydown', e => {
@@ -2955,15 +2983,24 @@ function initWhoCondensed() {
   });
   const onEnter = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); fn(el); } }); };
   onEnter('first_name', () => document.getElementById('last_name')?.focus());
-  onEnter('last_name', el => { if (whoValueText('name')) el.blur(); });
+  onEnter('last_name', el => { if (crText('who-name')) el.blur(); });
   onEnter('birthdate', el => el.blur());
   onEnter('postal_code', el => el.blur());
   onEnter('intl_city_input', el => { if (el.value.trim()) el.blur(); });
   onEnter('height_cm_input', el => el.blur());
-  onEnter('email', el => { if (whoValueText('email')) el.blur(); });
-  document.querySelectorAll('#screen-1 .who-cond').forEach(c => c.addEventListener('keydown', e => {
+  onEnter('email', el => { if (crText('who-email')) el.blur(); });
+  onEnter('partner_first_name', () => document.getElementById('partner_last_name')?.focus());
+  onEnter('partner_last_name', el => { if (crText('pt-name')) el.blur(); });
+  onEnter('partner_birthday', el => el.blur());
+  onEnter('partner_email', el => { if (crText('pt-email')) el.blur(); });
+  onEnter('first_date', el => el.blur());
+  onEnter('engagement_date', el => el.blur());
+  onEnter('wedding_date', el => el.blur());
+  document.querySelectorAll('.who-cond').forEach(c => c.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); }
   }));
+  syncFamilyDrip();
+  crSync();
 }
 
 // ============================================================
@@ -2986,9 +3023,8 @@ function onHeightFtInChange() {
   state.heightTouched = true;
   const val = document.getElementById('height_ftin').value;
   state.heightCm = val ? parseInt(val) : null;
-  // A pick from the list is final; collapse ~1s later (a new pick restarts the timer).
-  // Collapses together with Race only when Race is also done (~1s after the pick).
-  if (val) whoTryPair('height', 1000);
+  // Collapses 1.2s after the pick, together with Race once Race is also done.
+  crTap('who-height');
 }
 function onHeightCmChange() {
   state.heightTouched = true;
@@ -3163,7 +3199,7 @@ async function _resolveIntlCityPostal(postal) {
 function _pickIntlCity(city) {
   const inp = document.getElementById('intl_city_input');
   if (inp) inp.value = city;
-  setTimeout(whoRefresh, 0);
+  setTimeout(crRefresh, 0);
   state.zipCity = city;
   state.locationCountry = CITY_COUNTRY_MAP[city] || null;
   const dd = document.getElementById('intl-city-dropdown');
@@ -3456,99 +3492,38 @@ function setLivesWithPartner(val, fromTap) {
     partnerCity = null;
     const inp = document.getElementById('partner_city_input'); if (inp) inp.value = '';
     if (cityUnit) cityUnit.classList.remove('collapsed');
-    clearTimeout(_ptTimers.city); _ptTimers.city = null;
+    clearTimeout(_crT['pt-city']); _crT['pt-city'] = null;
   }
   partnerCityPicker.render();
-  clearTimeout(_ptTimers.live);
-  if (fromTap && val) _ptTimers.live = setTimeout(() => { _ptTimers.live = null; ptCollapse('live'); }, 1000);
-  _ptSyncPairs();
+  if (fromTap && val) crTap('pt-live');
+  else { clearTimeout(_crT['pt-live']); _crT['pt-live'] = null; crSync(); }
 }
 
 // ============================================================
-// YOUR PARTNER: condensed rows (same idea as WHO YOU ARE)
-// While a field is being filled it has its own line; once answered it collapses
-// into a tappable row. Birthday + height and live together + partner city share
-// a line once both are collapsed. First + last name are always side by side.
+// YOUR PARTNER (uses the shared condensed rows)
 // ============================================================
-const _ptTimers = {};
 // Couples "Where does your partner live?": the singles Partner Location picker in single-pick mode.
 const partnerCityPicker = cityChipPicker({
   chips: 'partner-city-chips', row: 'partner-city-add-row', input: 'partner_city_input', addBtn: 'partner-city-add-btn', multi: false,
   get: () => (partnerCity ? [partnerCity] : []), set: v => { partnerCity = v[0] || null; },
   onChange: why => {
-    clearTimeout(_ptTimers.city); _ptTimers.city = null;
-    // Same ~1s settle as the Live together buttons, then it collapses (and pairs with Live together).
-    if (why === 'commit' && partnerCity) _ptTimers.city = setTimeout(() => { _ptTimers.city = null; ptCollapse('city'); }, 1000);
+    // Same 1.2s settle as every other tap answer, then it collapses (with Live together).
+    if (why === 'commit' && partnerCity) crTap('pt-city');
+    else { clearTimeout(_crT['pt-city']); _crT['pt-city'] = null; }
   },
 });
-const PT_UNITS = ['name', 'bday', 'height', 'email', 'live', 'city'];
-function _ptVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-function ptValueText(k) {
-  if (k === 'name') { const f = _ptVal('partner_first_name'), l = _ptVal('partner_last_name'); return f && l ? f + ' ' + l : ''; }
-  if (k === 'bday') {
-    if (!state.partnerBdayTouched) return ''; // the Jan 1, 1990 default alone doesn't count
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(_ptVal('partner_birthday'));
-    return m ? _MONTHS[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10) + ', ' + m[1] : '';
-  }
-  if (k === 'height') { const sel = document.getElementById('partner_height'); return sel && sel.value ? sel.options[sel.selectedIndex].textContent : ''; }
-  if (k === 'email') { const e = _ptVal('partner_email'); return e && isValidEmail(e) ? e : ''; }
-  if (k === 'live') return ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '';
-  if (k === 'city') return state.livesWithPartner === 'no' ? (partnerCity || '') : '';
-  return '';
-}
-function _ptUnit(k) { return document.getElementById('pt-' + k); }
-function ptIsCollapsed(k) { const u = _ptUnit(k); return !!u && u.classList.contains('collapsed'); }
-function ptCollapse(k) {
-  const u = _ptUnit(k);
-  if (!u) return false;
-  const txt = ptValueText(k);
-  if (!txt) return false;
-  const a = document.activeElement;
-  if (u.contains(a) && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) return false; // still typing
-  const v = document.getElementById('pt-' + k + '-v');
-  if (v) { v.textContent = txt; v.title = txt; }
-  if (u.contains(a)) a.blur();
-  u.classList.add('collapsed');
-  _ptSyncPairs();
-  return true;
-}
-const _PT_FOCUS = { name: 'partner_first_name', bday: 'partner_birthday', height: 'partner_height', email: 'partner_email', city: 'partner_city_input' };
-function ptExpand(k, focus) {
-  const u = _ptUnit(k);
-  if (!u) return;
-  clearTimeout(_ptTimers[k]); _ptTimers[k] = null;
-  u.classList.remove('collapsed');
-  _ptSyncPairs();
-  if (focus === false) return;
-  const el = _PT_FOCUS[k] && document.getElementById(_PT_FOCUS[k]);
-  if (el) { try { el.focus({ preventScroll: false }); } catch (e) {} }
-}
-function _ptSyncPairs() {
-  const bh = document.getElementById('pt-row-bh');
-  if (bh) bh.classList.toggle('both', ptIsCollapsed('bday') && ptIsCollapsed('height'));
-  const lc = document.getElementById('pt-row-lc');
-  const cityShown = state.livesWithPartner === 'no';
-  if (lc) lc.classList.toggle('both', cityShown && ptIsCollapsed('live') && ptIsCollapsed('city'));
-}
-function ptExpandErrors() {
-  if (document.getElementById('err-partner_first_name')?.classList.contains('visible')) ptExpand('name', false);
-  if (document.getElementById('err-partner_email')?.classList.contains('visible')) ptExpand('email', false);
-}
 function onPartnerHeightChange() {
   const val = document.getElementById('partner_height').value;
-  clearTimeout(_ptTimers.height);
-  _ptTimers.height = val ? setTimeout(() => { _ptTimers.height = null; ptCollapse('height'); }, 1000) : null;
-  if (!val) ptExpand('height', false);
+  if (val) crTap('pt-height'); else crExpand('pt-height', false);
 }
 // Back to a fresh Your Partner screen (used when switching to singles).
 function resetPartnerScreen() {
-  PT_UNITS.forEach(k => { const u = _ptUnit(k); if (u) u.classList.remove('collapsed'); });
-  Object.keys(_ptTimers).forEach(k => { clearTimeout(_ptTimers[k]); _ptTimers[k] = null; });
+  ['pt-name', 'pt-bday', 'pt-height', 'pt-email', 'pt-live', 'pt-city'].forEach(crReset);
   state.partnerBdayTouched = false;
   const bd = document.getElementById('partner_birthday'); if (bd) bd.value = '1990-01-01';
   partnerCity = null;
   partnerCityPicker.render();
-  _ptSyncPairs();
+  crSync();
 }
 function initPartnerCondensed() {
   const bd = document.getElementById('partner_birthday');
@@ -3557,37 +3532,20 @@ function initPartnerCondensed() {
     bd.addEventListener('focus', touch); bd.addEventListener('input', touch); bd.addEventListener('change', touch);
   }
   // Partner city: leaving the unit with typed text picks it (nothing typed is ever dropped), then collapses.
-  const cu = _ptUnit('city');
+  const cu = document.getElementById('pt-city');
   if (cu) cu.addEventListener('focusout', () => {
-    clearTimeout(_ptTimers.cityBlur);
-    _ptTimers.cityBlur = setTimeout(() => {
+    setTimeout(() => {
       if (cu.contains(document.activeElement)) return;
       const typed = partnerCityPicker.commit();
-      // Picked with Enter/Add: the ~1s settle timer collapses it. Typed then tapped away: collapse now.
-      if (partnerCity && (typed || !_ptTimers.city)) { clearTimeout(_ptTimers.city); _ptTimers.city = null; ptCollapse('city'); }
+      if (partnerCity && (typed || !_crT['pt-city'])) { clearTimeout(_crT['pt-city']); _crT['pt-city'] = null; crSettle('pt-city'); }
     }, 200);
   });
-  ['name', 'bday', 'height', 'email'].forEach(k => {
-    const u = _ptUnit(k);
-    if (!u) return;
-    u.addEventListener('focusout', () => {
-      clearTimeout(_ptTimers[k + 'Blur']);
-      _ptTimers[k + 'Blur'] = setTimeout(() => { if (!u.contains(document.activeElement)) ptCollapse(k); }, 200);
-    });
-  });
-  const onEnter = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); fn(el); } }); };
-  onEnter('partner_first_name', () => document.getElementById('partner_last_name')?.focus());
-  onEnter('partner_last_name', el => { if (ptValueText('name')) el.blur(); });
-  onEnter('partner_birthday', el => el.blur());
-  onEnter('partner_email', el => { if (ptValueText('email')) el.blur(); });
-  document.querySelectorAll('#screen-2 .who-cond').forEach(c => c.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); }
-  }));
 }
 
 function setMarriedBefore(val) {
   state.marriedBefore = val || null;
   ['neither','me','partner','both'].forEach(v => document.getElementById('btn-mb-' + v)?.classList.toggle('selected', v === val));
+  if (val) crTap('rel-mb');
 }
 
 // Engagement date for Engaged or Married; wedding date for Married only.
@@ -3596,9 +3554,9 @@ function onRelationshipStageChange() {
   if (stage) hideError('relationship_stage');
   const showEng = stage === 'engaged' || stage === 'married';
   const showWed = stage === 'married';
-  const eng = document.getElementById('engagement-date-field'); if (eng) eng.style.display = showEng ? '' : 'none';
-  const wed = document.getElementById('wedding-date-field'); if (wed) wed.style.display = showWed ? '' : 'none';
-  const row = document.getElementById('rel-dates-row'); if (row) row.style.display = showEng ? 'flex' : 'none';
+  const eng = document.getElementById('rel-eng'); if (eng) eng.style.display = showEng ? '' : 'none';
+  const wed = document.getElementById('rel-wed'); if (wed) wed.style.display = showWed ? '' : 'none';
+  crRefresh();
 }
 
 // Couples-only answers. Singles send null so nothing from the couples flow carries over.
@@ -3687,7 +3645,7 @@ function onZipInput() {
   const display = document.getElementById('zip-city-display');
   const zip = document.getElementById('postal_code').value.trim();
   if (zip.length < 4) { if (display) { display.textContent = ''; display.style.display = 'none'; } document.getElementById('location-mode-toggle').style.display = ''; state.zipCity = null; return; }
-  _zipTimer = setTimeout(() => _doZipLookup(zip).then(whoRefresh, whoRefresh), 600);
+  _zipTimer = setTimeout(() => _doZipLookup(zip).then(crRefresh, crRefresh), 600);
 }
 
 function _detectCountryCodes(postal) {
