@@ -122,6 +122,23 @@
       gap: 8px;
     }
     #screen-5 .choice-grid .toggle-btn { white-space: nowrap; min-width: 0; }
+    /* WHO YOU ARE: answered questions collapse into compact, tappable rows */
+    #screen-1 .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    #screen-1 .choice-grid .toggle-btn { white-space: nowrap; min-width: 0; }
+    #screen-1 .choice-grid.error .toggle-btn:not(.selected) { border-color: var(--error); }
+    .who-cond { display: none; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid var(--dim); border-radius: var(--radius); padding: 7px 12px; min-height: 50px; box-sizing: border-box; cursor: pointer; min-width: 0; }
+    .who-unit.collapsed > .who-cond { display: flex; }
+    .who-unit.collapsed > :not(.who-cond) { display: none !important; }
+    .who-cond:focus-visible { outline: none; border-color: var(--accent); }
+    .who-cond-txt { display: flex; flex-direction: column; min-width: 0; }
+    .who-cond-k { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
+    .who-cond-v { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .who-cond-edit { font-size: 10px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.1em; flex-shrink: 0; }
+    #who-name.collapsed > .who-cond { grid-column: 1 / -1; }
+    #who-hr-row { display: block; margin-bottom: 12px; }
+    #who-hr-row > #who-race { margin-top: 12px; }
+    #who-hr-row.paired { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
+    #who-hr-row.paired > #who-race { margin-top: 0; }
     #screen-5 .choice-grid.error .toggle-btn:not(.selected) { border-color: var(--error); }
     #screen-5 .kids-pair {
       display: grid;
@@ -820,7 +837,8 @@
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
       <div class="screen-headline">WHO YOU <span class="accent">ARE</span></div>
       <div id="screen1-fields">
-        <div class="field-group" style="margin-bottom:12px;">
+        <div class="field-group who-unit" id="who-gender" style="margin-bottom:12px;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit I am a" onclick="whoExpand('gender')"><span class="who-cond-txt"><span class="who-cond-k">I am a</span><span class="who-cond-v" id="who-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">I AM A</label>
           <div class="toggle-group" style="margin-bottom:0;">
             <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
@@ -829,7 +847,8 @@
           </div>
           <div class="field-error" id="err-gender">Please select one</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="who-unit" id="who-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Name" onclick="whoExpand('name')"><span class="who-cond-txt"><span class="who-cond-k">Name</span><span class="who-cond-v" id="who-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">First name</label>
             <input class="field-input" id="first_name" type="text" placeholder="First name" autocomplete="given-name">
@@ -842,12 +861,14 @@
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-          <div class="field-group" style="margin-bottom:0;">
+          <div class="field-group who-unit" id="who-dob" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Date of birth" onclick="whoExpand('dob')"><span class="who-cond-txt"><span class="who-cond-k">Date of birth</span><span class="who-cond-v" id="who-dob-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Date of birth</label>
             <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
-          <div class="field-group" style="margin-bottom:0;">
+          <div class="field-group who-unit" id="who-loc" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Location" onclick="whoExpand('loc')"><span class="who-cond-txt"><span class="who-cond-k">Location</span><span class="who-cond-v" id="who-loc-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" id="location-label">US Zip Code</label>
             <div id="location-zip-wrap">
               <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
@@ -864,8 +885,9 @@
             </div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;margin-bottom:12px;align-items:start;">
-          <div class="field-group" style="margin-bottom:0;">
+        <div id="who-hr-row">
+          <div class="field-group who-unit" id="who-height" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Height" onclick="whoExpand('height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="who-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Height</label>
             <div id="height-us-wrap">
               <select class="field-input" id="height_ftin" style="font-size:14px;padding:14px 4px;min-width:80px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
@@ -876,11 +898,29 @@
               <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;width:80px;" oninput="onHeightCmChange()">
             </div>
           </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Email</label>
-            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-            <div class="field-error" id="err-email">Valid email required</div>
+          <div class="field-group who-unit" id="who-race" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Race" onclick="whoExpand('race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="who-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <label class="field-label">Race (select all that apply)</label>
+            <div class="choice-grid" id="race" role="group" aria-label="Race">
+              <button type="button" class="toggle-btn" id="btn-race-0" data-race="Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Asian</button>
+              <button type="button" class="toggle-btn" id="btn-race-1" data-race="South Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)">South Asian</button>
+              <button type="button" class="toggle-btn" id="btn-race-2" data-race="Black" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Black</button>
+              <button type="button" class="toggle-btn" id="btn-race-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Hispanic / Latino</button>
+              <button type="button" class="toggle-btn" id="btn-race-4" data-race="MENA" aria-pressed="false" onclick="toggleRace(this.dataset.race)">MENA</button>
+              <button type="button" class="toggle-btn" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Native American</button>
+              <button type="button" class="toggle-btn" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Pacific Islander</button>
+              <button type="button" class="toggle-btn" id="btn-race-7" data-race="White" aria-pressed="false" onclick="toggleRace(this.dataset.race)">White</button>
+              <button type="button" class="toggle-btn" id="btn-race-8" data-race="Other" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Other</button>
+              <button type="button" class="toggle-btn" id="btn-race-9" data-race="Prefer not to say" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Prefer not to say</button>
+            </div>
+            <div class="field-error" id="err-race">Please make a selection</div>
           </div>
+        </div>
+        <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="whoExpand('email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label">Email</label>
+          <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+          <div class="field-error" id="err-email">Valid email required</div>
         </div>
       </div>
       <div id="under18-msg">
@@ -1318,6 +1358,7 @@ const state = {
   kidsTimeline: null,
   fertilityPreservation: null,
   lookingFor: [],
+  race: [], // Race labels in the order picked (WHO YOU ARE)
   relationshipTimeline: null,
   turnstileToken: null,
   submitting: false,
@@ -1364,6 +1405,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFnModal();
   _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
+  initWhoCondensed();
   _bindPartnerLocationControls();
   onPhoneInput(); // init SMS checkbox state
   // Show below-fold on initial load (page starts on screen 0)
@@ -1795,6 +1837,7 @@ async function saveLead() {
     partner_email: get('partner_email'),
     has_children: state.hasChildren,
     children_with: childrenWithPayload(),
+    race: racePayload(),
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
@@ -1854,6 +1897,10 @@ function setGender(val) {
     const bd = document.getElementById('birthdate');
     if (bd && !bd.value) bd.value = '1996-01-01';
   }
+  whoRefresh();
+  // Same ~1s feel as the other single-select buttons, then collapse to a row.
+  clearTimeout(_whoTimers.gender);
+  _whoTimers.gender = setTimeout(() => { _whoTimers.gender = null; whoCollapse('gender'); }, 1000);
 }
 
 function onBirthdateInput() {
@@ -2168,6 +2215,8 @@ function validateScreen(screenId) {
       const cityVal = document.getElementById('intl_city_input')?.value.trim();
       if (!cityVal) { showError('postal_code', 'Please enter your city'); ok = false; } else hideError('postal_code');
     }
+    if (!Array.isArray(state.race) || state.race.length === 0) { showError('race', 'Please make a selection'); ok = false; } else hideError('race');
+    whoExpandErrors();
   }
   if (screenId === 3) {
     if (state.status !== 'partnered') {
@@ -2250,6 +2299,7 @@ function resetUnder18() {
   document.getElementById('under18-msg').classList.remove('visible');
   document.getElementById('screen1-next-btn').style.display = '';
   document.getElementById('birthdate').value = '';
+  whoExpand('dob', false);
   showScreen(0, 'back');
 }
 
@@ -2305,6 +2355,7 @@ async function doSubmit() {
     status: state.status,
     has_children: state.hasChildren,
     children_with: childrenWithPayload(),
+    race: racePayload(),
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
@@ -2477,18 +2528,153 @@ function _parseCityEntry(entry) {
 }
 
 // ============================================================
+// WHO YOU ARE: condensed rows
+// Answered questions collapse into compact rows (tap to edit). Order never
+// changes; rows sit side by side only where the questions were already
+// adjacent (DOB + zip, height + race). Text fields collapse only once focus
+// leaves them (or on Enter), never mid-typing.
+// ============================================================
+const RACE_OPTIONS = ['Asian', 'South Asian', 'Black', 'Hispanic / Latino', 'MENA', 'Native American', 'Pacific Islander', 'White', 'Other', 'Prefer not to say'];
+const RACE_EXCLUSIVE = 'Prefer not to say';
+const WHO_UNITS = ['gender', 'name', 'dob', 'loc', 'height', 'race', 'email'];
+const _whoTimers = {};
+const _MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function toggleRace(label) {
+  if (!Array.isArray(state.race)) state.race = [];
+  const i = state.race.indexOf(label);
+  if (i !== -1) state.race.splice(i, 1);
+  else if (label === RACE_EXCLUSIVE) state.race = [label];
+  else { state.race = state.race.filter(v => v !== RACE_EXCLUSIVE); state.race.push(label); }
+  _syncRaceButtons();
+  if (state.race.length) hideError('race');
+  // Collapse only 1.2s after the last tap (same as Looking for). A new tap restarts the timer.
+  clearTimeout(_whoTimers.race);
+  _whoTimers.race = state.race.length ? setTimeout(() => { _whoTimers.race = null; whoCollapse('race'); }, 1200) : null;
+}
+function _syncRaceButtons() {
+  document.querySelectorAll('#race .toggle-btn').forEach(btn => {
+    const on = state.race.includes(btn.dataset.race);
+    btn.classList.toggle('selected', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+function racePayload() {
+  return Array.isArray(state.race) && state.race.length ? state.race.slice() : null;
+}
+
+function _whoVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function whoValueText(k) {
+  if (k === 'gender') return ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.gender] || '';
+  if (k === 'name') { const f = _whoVal('first_name'), l = _whoVal('last_name'); return f && l ? f + ' ' + l : ''; }
+  if (k === 'dob') {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(_whoVal('birthdate'));
+    return m ? _MONTHS[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10) + ', ' + m[1] : '';
+  }
+  if (k === 'loc') {
+    if (state.locationMode === 'zip') { const z = _whoVal('postal_code'); return z ? z + (state.zipCity ? ' \u00b7 ' + state.zipCity : '') : ''; }
+    return _whoVal('intl_city_input');
+  }
+  if (k === 'height') {
+    if (state.locationMode === 'zip') { const sel = document.getElementById('height_ftin'); return sel && sel.value ? sel.options[sel.selectedIndex].textContent : ''; }
+    const cm = _whoVal('height_cm_input'); return cm ? cm + ' cm' : '';
+  }
+  if (k === 'race') return Array.isArray(state.race) ? state.race.join(', ') : '';
+  if (k === 'email') { const e = _whoVal('email'); return e && isValidEmail(e) ? e : ''; }
+  return '';
+}
+function _whoUnit(k) { return document.getElementById('who-' + k); }
+function whoIsCollapsed(k) { const u = _whoUnit(k); return !!u && u.classList.contains('collapsed'); }
+function whoCollapse(k) {
+  const u = _whoUnit(k);
+  if (!u) return false;
+  const txt = whoValueText(k);
+  if (!txt) return false;
+  if (u.contains(document.activeElement) && document.activeElement.tagName !== 'BUTTON' && document.activeElement.tagName !== 'SELECT') return false; // still typing
+  const v = document.getElementById('who-' + k + '-v');
+  if (v) { v.textContent = txt; v.title = txt; }
+  if (k === 'loc') { const dd = document.getElementById('intl-city-dropdown'); if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; } }
+  if (u.contains(document.activeElement)) document.activeElement.blur();
+  u.classList.add('collapsed');
+  _syncWhoPairs();
+  return true;
+}
+const _WHO_FOCUS = { name: 'first_name', dob: 'birthdate', email: 'email' };
+function whoExpand(k, focus) {
+  const u = _whoUnit(k);
+  if (!u) return;
+  clearTimeout(_whoTimers[k]); _whoTimers[k] = null;
+  u.classList.remove('collapsed');
+  _syncWhoPairs();
+  if (focus === false) return;
+  let id = _WHO_FOCUS[k];
+  if (k === 'loc') id = state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input';
+  if (k === 'height') id = state.locationMode === 'zip' ? 'height_ftin' : 'height_cm_input';
+  const el = id && document.getElementById(id);
+  if (el) { try { el.focus({ preventScroll: false }); } catch (e) {} }
+}
+// Height and Race share a row only once Race is condensed (they are adjacent).
+function _syncWhoPairs() {
+  const row = document.getElementById('who-hr-row');
+  if (row) row.classList.toggle('paired', whoIsCollapsed('race'));
+}
+// Keep condensed text current (e.g. the city arrives after the zip lookup).
+function whoRefresh() {
+  WHO_UNITS.forEach(k => {
+    if (!whoIsCollapsed(k)) return;
+    const txt = whoValueText(k);
+    if (!txt) { whoExpand(k, false); return; }
+    const v = document.getElementById('who-' + k + '-v');
+    if (v) { v.textContent = txt; v.title = txt; }
+  });
+  whoExpandErrors();
+}
+const _WHO_ERRORS = { gender: ['gender'], name: ['first_name', 'last_name'], dob: ['birthdate'], loc: ['postal_code'], race: ['race'], email: ['email'] };
+function whoExpandErrors() {
+  Object.keys(_WHO_ERRORS).forEach(k => {
+    if (!whoIsCollapsed(k)) return;
+    if (_WHO_ERRORS[k].some(f => document.getElementById('err-' + f)?.classList.contains('visible'))) whoExpand(k, false);
+  });
+}
+function initWhoCondensed() {
+  // Text-type units: collapse when focus leaves the whole unit with a value.
+  // The short delay lets taps on in-unit controls (International?, city list) land first.
+  ['name', 'dob', 'loc', 'height', 'email'].forEach(k => {
+    const u = _whoUnit(k);
+    if (!u) return;
+    u.addEventListener('focusout', () => {
+      clearTimeout(_whoTimers[k + 'Blur']);
+      _whoTimers[k + 'Blur'] = setTimeout(() => {
+        if (!u.contains(document.activeElement)) whoCollapse(k);
+      }, 200);
+    });
+  });
+  const onEnter = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); fn(el); } }); };
+  onEnter('first_name', () => document.getElementById('last_name')?.focus());
+  onEnter('last_name', el => { if (whoValueText('name')) el.blur(); });
+  onEnter('birthdate', el => el.blur());
+  onEnter('postal_code', el => el.blur());
+  onEnter('intl_city_input', el => { if (el.value.trim()) el.blur(); });
+  onEnter('height_cm_input', el => el.blur());
+  onEnter('email', el => { if (whoValueText('email')) el.blur(); });
+  document.querySelectorAll('#screen-1 .who-cond').forEach(c => c.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); }
+  }));
+}
+
+// ============================================================
 // HEIGHT
 // ============================================================
 function _buildHeightSelect() {
   const sel = document.getElementById('height_ftin');
   if (!sel || sel.options.length > 1) return;
-  // 4'0" (48 in = 122 cm) to 7'0" (84 in = 213 cm)
-  for (let totalIn = 48; totalIn <= 84; totalIn++) {
+  // 4'10" or under (58 in = 147 cm) to 7'0" (84 in = 213 cm)
+  for (let totalIn = 58; totalIn <= 84; totalIn++) {
     const ft = Math.floor(totalIn / 12);
     const ins = totalIn % 12;
     const opt = document.createElement('option');
     opt.value = Math.round(totalIn * 2.54); // cm
-    opt.textContent = ft + '\u2019' + ins + '\u201d';
+    opt.textContent = ft + '\u2019' + ins + '\u201d' + (totalIn === 58 ? ' or under' : '');
     sel.appendChild(opt);
   }
 }
@@ -2496,6 +2682,9 @@ function onHeightFtInChange() {
   state.heightTouched = true;
   const val = document.getElementById('height_ftin').value;
   state.heightCm = val ? parseInt(val) : null;
+  // A pick from the list is final; collapse ~1s later (a new pick restarts the timer).
+  clearTimeout(_whoTimers.height);
+  _whoTimers.height = val ? setTimeout(() => { _whoTimers.height = null; whoCollapse('height'); }, 1000) : null;
 }
 function onHeightCmChange() {
   state.heightTouched = true;
@@ -2670,6 +2859,7 @@ async function _resolveIntlCityPostal(postal) {
 function _pickIntlCity(city) {
   const inp = document.getElementById('intl_city_input');
   if (inp) inp.value = city;
+  setTimeout(whoRefresh, 0);
   state.zipCity = city;
   state.locationCountry = CITY_COUNTRY_MAP[city] || null;
   const dd = document.getElementById('intl-city-dropdown');
@@ -3021,7 +3211,7 @@ function onZipInput() {
   const display = document.getElementById('zip-city-display');
   const zip = document.getElementById('postal_code').value.trim();
   if (zip.length < 4) { if (display) { display.textContent = ''; display.style.display = 'none'; } document.getElementById('location-mode-toggle').style.display = ''; state.zipCity = null; return; }
-  _zipTimer = setTimeout(() => _doZipLookup(zip), 600);
+  _zipTimer = setTimeout(() => _doZipLookup(zip).then(whoRefresh, whoRefresh), 600);
 }
 
 function _detectCountryCodes(postal) {
