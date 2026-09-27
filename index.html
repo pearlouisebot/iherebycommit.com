@@ -157,6 +157,144 @@
     .toggle-btn:hover { border-color: var(--muted); }
     .toggle-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
+    .q { display: none; margin-bottom: 10px; }
+    .q.q-open, .q.q-done, .q.q-editing { display: block; }
+    .q.q-done { margin-bottom: 6px; }
+    .q.q-reveal { animation: qReveal 280ms ease; }
+    @keyframes qReveal {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .q-row {
+      width: 100%;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 10px 12px;
+      background: transparent;
+      border: 1px solid var(--dim);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      cursor: pointer;
+      text-align: left;
+    }
+    .q.q-done .q-row { display: flex; min-height: 44px; padding: 8px 10px; }
+    .q-row:hover, .q-row:focus-visible { border-color: var(--muted); }
+    .q-row-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+    #screen-5 .q-row-label { text-transform: none; letter-spacing: 0.01em; font-size: 11px; }
+    .q-row-value {
+      flex: 1 1 auto;
+      min-width: 0;
+      font-size: 13px;
+      line-height: 1.35;
+      color: var(--accent);
+      text-align: right;
+    }
+    .q-row-caret { color: var(--muted); font-size: 11px; flex-shrink: 0; }
+    .q-pair { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+    .q-pair > .q { margin-bottom: 0; }
+    .q-pair.q-pair-ready {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 6px;
+      align-items: stretch;
+    }
+    .q-pair.q-pair-ready > .q { min-width: 0; }
+    .q-pair.q-pair-ready .q-row { min-width: 0; min-height: 44px; gap: 6px; padding: 8px; }
+    .q-pair.q-pair-ready .q-row-label,
+    .q-pair.q-pair-ready .q-row-value {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .q-pair.q-pair-ready .q-row-label { flex: 0 1 auto; letter-spacing: 0.04em; font-size: 9px; }
+    .q-pair.q-pair-ready .q-row-value { flex: 1 1 0; min-width: 0; text-align: right; }
+    .q-pair.q-pair-ready.q-pair-stack .q-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "label caret" "value caret";
+      align-items: center;
+      column-gap: 4px;
+      row-gap: 1px;
+      padding: 6px 4px;
+    }
+    .q-pair.q-pair-ready.q-pair-stack .q-row-label { grid-area: label; letter-spacing: 0.04em; }
+    .q-pair.q-pair-ready.q-pair-stack .q-row-value { grid-area: value; flex: none; text-align: left; line-height: 1.2; }
+    .q-pair.q-pair-ready.q-pair-stack .q-row-caret { grid-area: caret; align-self: center; }
+    #screen-5 .q-pair.q-pair-ready .q-row-label { font-size: 10px; letter-spacing: 0; }
+    #screen-5 .q-pair.q-pair-ready .q-row-value { flex: 0 1 auto; }
+    .q-panel { display: none; }
+    .q.q-open .q-panel, .q.q-editing .q-panel { display: block; }
+    .q.q-open .q-row, .q.q-editing .q-row { display: none; }
+    .q-open .field-label { margin-bottom: 12px; }
+    .q-choices { display: flex; flex-direction: column; gap: 8px; }
+    .q-choices-row { flex-direction: row; }
+    .q-choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .q-choices .toggle-btn {
+      min-height: 56px;
+      font-size: 20px;
+      letter-spacing: 0.05em;
+      padding: 12px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: normal;
+      line-height: 1.05;
+      flex: none;
+      width: 100%;
+      transition: background-color 80ms ease, border-color 80ms ease, color 80ms ease, transform 90ms ease;
+    }
+    .q-choices-row .toggle-btn { flex: 1; width: auto; font-size: 16px; }
+    .q-choices-grid .toggle-btn { font-size: 17px; }
+    .q-choices .toggle-btn:active { transform: scale(0.97); }
+    .q-native, .q-multi-edit { display: none; }
+    .q.q-editing[data-kind="choice"] .q-choices { display: none; }
+    .q.q-editing[data-kind="choice"] .q-native { display: block; }
+    .q.q-editing[data-kind="multi"] .q-multi-open { display: none; }
+    .q.q-editing[data-kind="multi"] .q-multi-edit { display: block; }
+    .q-mini {
+      margin-top: 12px;
+      width: 100%;
+      min-height: 44px;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+    }
+    .q-checks { display: flex; flex-direction: column; gap: 8px; }
+    .q-check {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 1px solid var(--dim);
+      border-radius: var(--radius);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .q-check input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
+    .q-next-hidden { display: none !important; }
+    .q-row:focus-visible, .q-choices .toggle-btn:focus-visible, .q-mini:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
     /* Checkbox */
     .checkbox-group { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin-bottom: 12px; }
     .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
@@ -204,6 +342,32 @@
     .slider-bubble { position: absolute; top: -28px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
     /* Location city rows */
     .location-city-row { display: flex; align-items: center; background: #1a1a1a; border: 1px solid var(--dim); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
+    #city-quick-picks { margin-bottom: 12px; }
+    .city-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+    .city-chips:empty { display: none; }
+    .city-chip-remove {
+      font-size: 20px; line-height: 1; color: var(--muted);
+      background: none; border: none; cursor: pointer;
+      min-width: 44px; min-height: 44px; padding: 0; flex-shrink: 0;
+    }
+    .city-other-label { margin-top: 4px; }
+    .city-inline-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .city-inline-list:empty { display: none; }
+    .city-suggest {
+      display: flex; align-items: center; width: 100%; min-height: 44px;
+      padding: 10px 14px; box-sizing: border-box;
+      background: transparent; border: 1px solid var(--dim); border-radius: var(--radius);
+      color: var(--text); font-family: 'Space Mono', monospace; font-size: 14px;
+      line-height: 1.3; text-align: left; cursor: pointer;
+    }
+    .city-suggest-add { border-color: var(--accent); color: var(--accent); }
+    .screen-content.city-keyboard-pad { padding-bottom: 45vh; }
+    .institution-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .institution-row .field-input { flex: 1; min-width: 0; }
+    .institution-remove { font-size: 20px; line-height: 1; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0 0 0 4px; flex-shrink: 0; }
+    .add-another-btn { font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.04em; background: none; border: none; cursor: pointer; padding: 4px 0 8px; }
+    #institutions-label { text-transform: none; letter-spacing: 0.02em; font-size: 13px; line-height: 1.4; }
+    .public-fields { display: flex; flex-direction: column; gap: 18px; }
 
     /* ===================================================
        LANDING PAGE STYLES
@@ -528,6 +692,9 @@
     /* ===== REDUCED MOTION ===== */
     @media (prefers-reduced-motion: reduce) {
       .c-slide { transition: none; }
+      .q.q-reveal { animation: none; }
+      .q-choices .toggle-btn,
+      .q-choices .toggle-btn:active { transition: none; transform: none; }
     }
 
     /* ===== LEGAL LINKS ===== */
@@ -778,40 +945,82 @@
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
       <div class="screen-headline">WHO YOU <span class="accent">ARE</span></div>
       <div id="screen1-fields">
-        <div class="field-group" style="margin-bottom:12px;">
-          <label class="field-label">I AM A</label>
-          <div class="toggle-group" style="margin-bottom:0;">
-            <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
-            <button class="toggle-btn" id="btn-gender-woman" onclick="setGender('woman')">WOMAN</button>
-            <button class="toggle-btn" id="btn-gender-nonbinary" onclick="setGender('non-binary')">NON-BINARY</button>
+        <div class="q" id="q-gender" data-q="gender" data-kind="choice">
+          <button type="button" class="q-row" onclick="qEdit('gender')" aria-label="Edit I am a">
+            <span class="q-row-label">I am a</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <div class="field-label">I am a</div>
+            <div class="q-choices" id="gender" role="group" aria-label="I am a">
+              <button type="button" class="toggle-btn" id="btn-gender-man" onclick="setGender('man'); qConfirm('gender')">MAN</button>
+              <button type="button" class="toggle-btn" id="btn-gender-woman" onclick="setGender('woman'); qConfirm('gender')">WOMAN</button>
+              <button type="button" class="toggle-btn" id="btn-gender-nonbinary" onclick="setGender('non-binary'); qConfirm('gender')">NON-BINARY</button>
+            </div>
+            <div class="q-native">
+              <select class="field-input" id="gender_select" onchange="setGender(this.value); qFinishEdit('gender')" onblur="qCancelEdit('gender')">
+                <option value="">— Select —</option>
+                <option value="man">Man</option>
+                <option value="woman">Woman</option>
+                <option value="non-binary">Non-binary</option>
+              </select>
+            </div>
+            <div class="field-error" id="err-gender">Please select one</div>
           </div>
-          <div class="field-error" id="err-gender">Please select one</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">First name</label>
-            <input class="field-input" id="first_name" type="text" placeholder="First name" autocomplete="given-name">
-            <div class="field-error" id="err-first_name">Required</div>
+          <div class="q" id="q-first_name" data-q="first_name" data-kind="text">
+            <button type="button" class="q-row" onclick="qEdit('first_name')" aria-label="Edit first name">
+              <span class="q-row-label">First name</span>
+              <span class="q-row-value" data-q-value></span>
+              <span class="q-row-caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="q-panel">
+              <label class="field-label" for="first_name">First name</label>
+              <input class="field-input" id="first_name" type="text" placeholder="First name" autocomplete="given-name" onkeydown="qOnEnter(event,'first_name')" onblur="qOnBlur('first_name')">
+              <div class="field-error" id="err-first_name">Required</div>
+              <button type="button" class="q-mini" onclick="qConfirm('first_name')">NEXT</button>
+            </div>
           </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Last name</label>
-            <input class="field-input" id="last_name" type="text" placeholder="Last name" autocomplete="family-name">
-            <div class="field-error" id="err-last_name">Required</div>
+          <div class="q" id="q-last_name" data-q="last_name" data-kind="text">
+            <button type="button" class="q-row" onclick="qEdit('last_name')" aria-label="Edit last name">
+              <span class="q-row-label">Last name</span>
+              <span class="q-row-value" data-q-value></span>
+              <span class="q-row-caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="q-panel">
+              <label class="field-label" for="last_name">Last name</label>
+              <input class="field-input" id="last_name" type="text" placeholder="Last name" autocomplete="family-name" onkeydown="qOnEnter(event,'last_name')" onblur="qOnBlur('last_name')">
+              <div class="field-error" id="err-last_name">Required</div>
+              <button type="button" class="q-mini" onclick="qConfirm('last_name')">NEXT</button>
+            </div>
           </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Date of birth</label>
-            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
+        <div class="q" id="q-birthdate" data-q="birthdate" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('birthdate')" aria-label="Edit date of birth">
+            <span class="q-row-label">Birthday</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <label class="field-label" for="birthdate">Date of birth</label>
+            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:16px;padding:14px 10px;" value="1996-01-01" oninput="onBirthdateInput()" onchange="onBirthdateInput()" onkeydown="qOnEnter(event,'birthdate')" onblur="qOnBlur('birthdate')">
             <div class="field-error" id="err-birthdate">Required</div>
+            <button type="button" class="q-mini" onclick="qConfirm('birthdate')">NEXT</button>
           </div>
-          <div class="field-group" style="margin-bottom:0;">
+        </div>
+        <div class="q" id="q-location" data-q="location" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('location')" aria-label="Edit location">
+            <span class="q-row-label" id="q-location-row-label">Zip</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
             <label class="field-label" id="location-label">US Zip Code</label>
             <div id="location-zip-wrap">
-              <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()">
+              <input class="field-input" id="postal_code" type="text" placeholder="e.g. 78701" autocomplete="postal-code" oninput="onZipInput()" onkeydown="qOnEnter(event,'location')" onblur="qOnBlur('location')">
             </div>
             <div id="location-city-wrap" style="display:none; position:relative;">
-              <input class="field-input" id="intl_city_input" type="text" placeholder="e.g. London, Dubai, Toronto…" autocomplete="off" oninput="onIntlCityInput()" onfocus="onIntlCityInput()">
+              <input class="field-input" id="intl_city_input" type="text" placeholder="e.g. London, Dubai, Toronto…" autocomplete="off" oninput="onIntlCityInput()" onfocus="onIntlCityInput()" onkeydown="qOnEnter(event,'location')" onblur="qOnBlur('location')">
               <div class="multiselect-dropdown" id="intl-city-dropdown"></div>
             </div>
             <div class="field-error" id="err-postal_code">Zip code required</div>
@@ -820,24 +1029,39 @@
               <span id="location-city-confirmed" style="display:none; font-size:11px; color:var(--accent); font-family:'Space Mono',monospace; letter-spacing:0.04em;"></span>
               <button type="button" id="location-mode-toggle" onclick="toggleLocationMode()" style="font-size:11px; color:var(--accent); font-weight:400; text-decoration:none; background:none; border:none; cursor:pointer; padding:0; margin-left:auto; flex-shrink:0; font-family:'Space Mono',monospace; letter-spacing:0.04em;">International?</button>
             </div>
+            <button type="button" class="q-mini" onclick="qConfirm('location')">NEXT</button>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:auto 1fr;gap:10px;margin-bottom:12px;align-items:start;">
-          <div class="field-group" style="margin-bottom:0;">
+        <div class="q" id="q-height" data-q="height" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('height')" aria-label="Edit height">
+            <span class="q-row-label">Height</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
             <label class="field-label">Height</label>
             <div id="height-us-wrap">
-              <select class="field-input" id="height_ftin" style="font-size:14px;padding:14px 4px;min-width:80px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
+              <select class="field-input" id="height_ftin" style="font-size:16px;padding:14px 10px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange(); if (qIsActive('height')) qConfirm('height')">
                 <option value="">—</option>
               </select>
             </div>
             <div id="height-cm-wrap" style="display:none;">
-              <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;width:80px;" oninput="onHeightCmChange()">
+              <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" inputmode="numeric" oninput="onHeightCmChange()" onkeydown="qOnEnter(event,'height')" onblur="qOnBlur('height')">
             </div>
+            <button type="button" class="q-mini" onclick="qConfirm('height')">NEXT</button>
           </div>
-          <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label">Email</label>
-            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="q" id="q-email" data-q="email" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('email')" aria-label="Edit email">
+            <span class="q-row-label">Email</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <label class="field-label" for="email">Email</label>
+            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email" onkeydown="qOnEnter(event,'email')" onblur="qOnBlur('email')">
             <div class="field-error" id="err-email">Valid email required</div>
+            <button type="button" class="q-mini" onclick="qConfirm('email')">NEXT</button>
           </div>
         </div>
       </div>
@@ -848,8 +1072,71 @@
       </div>
     </div>
     <div class="bottom-action" id="screen1-next-btn">
-      <button class="btn btn-primary" onclick="goNext(1)">NEXT</button>
+      <button class="btn btn-primary q-next-hidden" id="screen-next-1" onclick="goNext(1)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(1)">← BACK</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: PROFESSION & EDUCATION -->
+  <div id="screen-2" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-2"></div></div>
+    <div id="badge-2" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step <span id="prof-step-num"></span> of <span class="step-total"></span></div>
+      <div class="screen-headline">PROFESSION &amp; <span class="accent">EDUCATION</span></div>
+      <div class="q" id="q-professional_title" data-q="professional_title" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('professional_title')" aria-label="Edit professional title">
+          <span class="q-row-label">Title</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <label class="field-label" for="professional_title">Professional title</label>
+          <input class="field-input" id="professional_title" type="text" placeholder="What do you do?" autocomplete="organization-title" onkeydown="qOnEnter(event,'professional_title')" onblur="qOnBlur('professional_title')">
+          <div class="field-error" id="err-professional_title">Required</div>
+          <button type="button" class="q-mini" onclick="qConfirm('professional_title')">NEXT</button>
+        </div>
+      </div>
+      <div class="q" id="q-highest_degree" data-q="highest_degree" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('highest_degree')" aria-label="Edit highest degree">
+          <span class="q-row-label">Degree</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label">Highest degree obtained</div>
+          <div class="q-choices" id="highest_degree_choices" role="group" aria-label="Highest degree obtained"></div>
+          <div class="q-native">
+            <!-- Button labels are this option text. Edit the words here. -->
+            <select class="field-input" id="highest_degree" onchange="setHighestDegree(this.value); qFinishEdit('highest_degree')" onblur="qCancelEdit('highest_degree')">
+              <option value="">— Select —</option>
+              <option value="ged">High school / GED</option>
+              <option value="bachelors">BA/BS</option>
+              <option value="masters">Master's</option>
+              <option value="doctorate">Doctorate</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-highest_degree">Please make a selection</div>
+        </div>
+      </div>
+      <div class="q" id="q-institutions" data-q="institutions" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('institutions')" aria-label="Edit institutions">
+          <span class="q-row-label" id="institutions-row-label">Institution</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <label class="field-label" id="institutions-label" for="institution-0">What institution did you attend?</label>
+          <div id="institutions-fields"></div>
+          <button type="button" class="add-another-btn" id="add-institution-btn" hidden>+ Add another institution</button>
+          <div class="field-error" id="err-institutions">Required</div>
+          <button type="button" class="q-mini" onclick="qConfirm('institutions')">NEXT</button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary q-next-hidden" id="screen-next-2" onclick="goNext(2)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
     </div>
   </div>
 
@@ -861,77 +1148,156 @@
       <div class="screen-label">Step <span id="live-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">WHAT YOU <span class="accent">WANT</span></div>
 
-      <div id="cities-single-section" style="">
-        <!-- SEEKING -->
-        <div class="field-group" style="margin-bottom:20px;">
-          <label class="field-label">Seeking</label>
-          <div class="toggle-group" style="margin-bottom:0;">
-            <button class="toggle-btn" id="btn-seek-men" onclick="setGenderSeeking('men')">MEN</button>
-            <button class="toggle-btn" id="btn-seek-women" onclick="setGenderSeeking('women')">WOMEN</button>
-            <button class="toggle-btn" id="btn-seek-both" onclick="setGenderSeeking('both')">BOTH</button>
+      <div id="cities-single-section">
+        <div class="q" id="q-seeking" data-q="seeking" data-kind="choice">
+          <button type="button" class="q-row" onclick="qEdit('seeking')" aria-label="Edit seeking">
+            <span class="q-row-label">Seeking</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <div class="field-label">Seeking</div>
+            <div class="q-choices q-choices-row" id="seeking" role="group" aria-label="Seeking">
+              <button type="button" class="toggle-btn" id="btn-seek-men" onclick="setGenderSeeking('men'); qConfirm('seeking')">MEN</button>
+              <button type="button" class="toggle-btn" id="btn-seek-women" onclick="setGenderSeeking('women'); qConfirm('seeking')">WOMEN</button>
+              <button type="button" class="toggle-btn" id="btn-seek-both" onclick="setGenderSeeking('both'); qConfirm('seeking')">BOTH</button>
+            </div>
+            <div class="q-native">
+              <select class="field-input" id="seeking_select" onchange="setGenderSeeking(this.value); qFinishEdit('seeking')" onblur="qCancelEdit('seeking')">
+                <option value="">— Select —</option>
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+            <div class="field-error" id="err-gender_seeking"></div>
           </div>
-          <div class="field-error" id="err-gender_seeking"></div>
         </div>
-        <!-- LOCATION -->
-        <div class="field-group" style="margin-bottom:20px;">
-          <label class="field-label">Location</label>
-          <div class="location-city-row" id="location-primary-city">
-            <span style="margin-right:10px;font-size:15px;">📍</span>
-            <span id="location-primary-city-name" style="font-family:'Space Mono',monospace;font-size:14px;flex:1;"></span>
-            <button type="button" onclick="toggleAddCitySearch()" style="font-size:11px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:0.04em;background:none;border:none;cursor:pointer;flex-shrink:0;white-space:nowrap;">+ Add another city</button>
-          </div>
-          <div id="additional-cities-list"></div>
-          <div id="add-city-search-wrap" style="display:none;position:relative;margin-bottom:8px;">
-            <input class="field-input" id="add_city_search_input" type="text" placeholder="Type to search cities…" autocomplete="off" oninput="onAddCityInput()" onfocus="onAddCityInput()">
-            <div class="multiselect-dropdown" id="add-city-dropdown"></div>
+        <div class="q" id="q-want_location" data-q="want_location" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('want_location')" aria-label="Edit location">
+            <span class="q-row-label">Location</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <div class="field-label">Location</div>
+            <div class="location-city-row" id="location-primary-city">
+              <span style="margin-right:10px;font-size:15px;">📍</span>
+              <span id="location-primary-city-name" style="font-family:'Space Mono',monospace;font-size:14px;flex:1;"></span>
+            </div>
+            <div class="q-choices" id="city-quick-picks" role="group" aria-label="Cities"></div>
+            <div id="additional-cities-list" class="city-chips"></div>
+            <label class="field-label city-other-label" for="add_city_search_input">Other city</label>
+            <input class="field-input" id="add_city_search_input" type="text" placeholder="Type a city…" autocomplete="off" enterkeyhint="done">
+            <div id="add-city-suggestions" class="city-inline-list"></div>
+            <button type="button" class="q-mini" onclick="qConfirm('want_location')">NEXT</button>
           </div>
         </div>
-        <!-- AGE RANGE SLIDER -->
-        <div class="field-group" style="margin-bottom:20px;">
-          <label class="field-label">Age Range</label>
-          <div class="range-slider-wrap" style="margin-top:32px;">
-            <div class="range-track"></div>
-            <div class="range-fill" id="range-fill"></div>
-            <span id="age_min_label" class="slider-bubble">28</span>
-            <span id="age_max_label" class="slider-bubble">38</span>
-            <input type="range" id="age_min" class="range-input" min="21" max="80" step="1" value="28" oninput="onAgeRangeInput(this,'min')">
-            <input type="range" id="age_max" class="range-input" min="21" max="80" step="1" value="38" oninput="onAgeRangeInput(this,'max')">
+        <div class="q" id="q-age" data-q="age" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('age')" aria-label="Edit age range">
+            <span class="q-row-label">Age range</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <label class="field-label">Age Range</label>
+            <div class="range-slider-wrap" style="margin-top:32px;">
+              <div class="range-track"></div>
+              <div class="range-fill" id="range-fill"></div>
+              <span id="age_min_label" class="slider-bubble">28</span>
+              <span id="age_max_label" class="slider-bubble">38</span>
+              <input type="range" id="age_min" class="range-input" min="21" max="80" step="1" value="28" oninput="onAgeRangeInput(this,'min')">
+              <input type="range" id="age_max" class="range-input" min="21" max="80" step="1" value="38" oninput="onAgeRangeInput(this,'max')">
+            </div>
+            <div class="field-error" id="err-age_range"></div>
+            <button type="button" class="q-mini" onclick="qConfirm('age')">NEXT</button>
           </div>
-          <div class="field-error" id="err-age_range"></div>
         </div>
-        <!-- HEIGHT PREFERENCE SLIDER -->
-        <div class="field-group" style="margin-bottom:20px;">
-          <label class="field-label">Partner Height <span class="optional-tag">optional</span></label>
-          <div class="range-slider-wrap" style="margin-top:32px;">
-            <div class="range-track"></div>
-            <div class="range-fill" id="height-range-fill"></div>
-            <span id="height_min_label" class="slider-bubble">5'0"</span>
-            <span id="height_max_label" class="slider-bubble">6'6"</span>
-            <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" oninput="onHeightRangeInput(this,'min')">
-            <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
+        <div class="q" id="q-height_pref" data-q="height_pref" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('height_pref')" aria-label="Edit partner height">
+            <span class="q-row-label">Partner height</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <label class="field-label">Partner Height <span class="optional-tag">optional</span></label>
+            <div class="range-slider-wrap" style="margin-top:32px;">
+              <div class="range-track"></div>
+              <div class="range-fill" id="height-range-fill"></div>
+              <span id="height_min_label" class="slider-bubble">5'0"</span>
+              <span id="height_max_label" class="slider-bubble">6'6"</span>
+              <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" oninput="onHeightRangeInput(this,'min')">
+              <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
+            </div>
+            <button type="button" class="q-mini" onclick="qConfirm('height_pref')">NEXT</button>
+          </div>
+        </div>
+        <div class="q" id="q-degree_preference" data-q="degree_preference" data-kind="choice">
+          <button type="button" class="q-row" onclick="qEdit('degree_preference')" aria-label="Edit degree preference">
+            <span class="q-row-label">Degree</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <div class="field-label">Degree</div>
+            <div class="q-choices" id="degree_preference_choices" role="group" aria-label="Degree preference"></div>
+            <div class="q-native">
+              <!-- Button labels are this option text. Edit the words here. -->
+              <select class="field-input" id="degree_preference" onchange="setDegreePreference(this.value); qFinishEdit('degree_preference')" onblur="qCancelEdit('degree_preference')">
+                <option value="">— Select —</option>
+                <option value="ged_plus">High school / GED</option>
+                <option value="bachelors_plus">BA/BS</option>
+                <option value="masters_plus">Master's or higher</option>
+                <option value="no_preference">No preference</option>
+              </select>
+            </div>
+            <div class="field-error" id="err-degree_preference">Please make a selection</div>
           </div>
         </div>
       </div>
       <div id="cities-couple-section" style="display:none;">
-        <div class="field-group">
-          <label class="field-label">Do you live with your partner?</label>
-          <div class="toggle-group" style="margin-bottom:0;">
-            <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes')">YES</button>
-            <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no')">NO</button>
-            <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time')">PART-TIME</button>
+        <div class="q" id="q-lives_with_partner" data-q="lives_with_partner" data-kind="choice">
+          <button type="button" class="q-row" onclick="qEdit('lives_with_partner')" aria-label="Edit whether you live with your partner">
+            <span class="q-row-label">Live together</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <div class="field-label">Do you live with your partner?</div>
+            <div class="q-choices" id="lives_with_partner" role="group" aria-label="Do you live with your partner?">
+              <button type="button" class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes'); qConfirm('lives_with_partner')">YES</button>
+              <button type="button" class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no'); qConfirm('lives_with_partner')">NO</button>
+              <button type="button" class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time'); qConfirm('lives_with_partner')">PART-TIME</button>
+            </div>
+            <div class="q-native">
+              <select class="field-input" id="lives_with_partner_select" onchange="setLivesWithPartner(this.value); qFinishEdit('lives_with_partner')" onblur="qCancelEdit('lives_with_partner')">
+                <option value="">— Select —</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+                <option value="part_time">Part-time</option>
+              </select>
+            </div>
           </div>
         </div>
-        <div id="partner-city-field" class="field-group" style="display:none; margin-bottom:20px;">
-          <label class="field-label">Where does your partner live?</label>
-          <div style="position:relative;" id="partner-city-wrap">
-            <input class="field-input" id="partner_city_input" type="text" placeholder="Type any city…" autocomplete="off" oninput="_renderPartnerCityDropdown(this.value)" onfocus="_renderPartnerCityDropdown(this.value)">
-            <div class="multiselect-dropdown partner-city-dropdown"></div>
+        <div class="q" id="q-partner_city" data-q="partner_city" data-kind="text">
+          <button type="button" class="q-row" onclick="qEdit('partner_city')" aria-label="Edit partner city">
+            <span class="q-row-label">Partner city</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <label class="field-label">Where does your partner live?</label>
+            <div style="position:relative;" id="partner-city-wrap">
+              <input class="field-input" id="partner_city_input" type="text" placeholder="Type any city…" autocomplete="off" oninput="_renderPartnerCityDropdown(this.value)" onfocus="_renderPartnerCityDropdown(this.value)" onkeydown="qOnEnter(event,'partner_city')" onblur="qOnBlur('partner_city')">
+              <div class="multiselect-dropdown partner-city-dropdown"></div>
+            </div>
+            <button type="button" class="q-mini" onclick="qConfirm('partner_city')">NEXT</button>
           </div>
         </div>
       </div>
     </div>
-    <div class="bottom-action">
-      <button class="btn btn-primary" onclick="goNext(3)">NEXT</button>
+        <div class="bottom-action">
+      <button class="btn btn-primary q-next-hidden" id="screen-next-3" onclick="goNext(3)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(3)">← BACK</button>
     </div>
   </div>
@@ -943,36 +1309,64 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="rel-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR <span class="accent">RELATIONSHIP</span></div>
-      <div class="field-group">
-        <label class="field-label">Relationship stage</label>
-        <select class="field-input" id="relationship_stage">
-          <option value="">— Select —</option>
-          <option value="dating">Dating</option>
-          <option value="relationship">Relationship</option>
-          <option value="engaged">Engaged</option>
-          <option value="married">Married</option>
-          <option value="domestic_partnership">Domestic Partnership</option>
-        </select>
-        <div class="field-error" id="err-relationship_stage">Please select a stage</div>
+      <div class="q" id="q-relationship_stage" data-q="relationship_stage" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('relationship_stage')" aria-label="Edit relationship stage">
+          <span class="q-row-label">Stage</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label">Relationship stage</div>
+          <div class="q-choices" id="relationship_stage_choices" role="group" aria-label="Relationship stage"></div>
+          <div class="q-native">
+            <select class="field-input" id="relationship_stage" onchange="setRelationshipStage(this.value); qFinishEdit('relationship_stage')" onblur="qCancelEdit('relationship_stage')">
+              <option value="">— Select —</option>
+              <option value="dating">Dating</option>
+              <option value="relationship">Relationship</option>
+              <option value="engaged">Engaged</option>
+              <option value="married">Married</option>
+              <option value="domestic_partnership">Domestic Partnership</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-relationship_stage">Please select a stage</div>
+        </div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Partner's name</label>
-        <input class="field-input" id="partner_name" type="text" placeholder="Their first name is fine">
-        <div class="field-error" id="err-partner_name">Partner name required</div>
+      <div class="q" id="q-partner_name" data-q="partner_name" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('partner_name')" aria-label="Edit partner name">
+          <span class="q-row-label">Partner</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <label class="field-label" for="partner_name">Partner's name</label>
+          <input class="field-input" id="partner_name" type="text" placeholder="Their first name is fine" onkeydown="qOnEnter(event,'partner_name')" onblur="qOnBlur('partner_name')">
+          <div class="field-error" id="err-partner_name">Partner name required</div>
+          <button type="button" class="q-mini" onclick="qConfirm('partner_name')">NEXT</button>
+        </div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Partner's email</label>
-        <input class="field-input" id="partner_email" type="email" placeholder="they@example.com">
-        <div class="field-error" id="err-partner_email">Valid email required</div>
+      <div class="q" id="q-partner_email" data-q="partner_email" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('partner_email')" aria-label="Edit partner email">
+          <span class="q-row-label">Partner email</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <label class="field-label" for="partner_email">Partner's email</label>
+          <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" onkeydown="qOnEnter(event,'partner_email')" onblur="qOnBlur('partner_email')">
+          <div class="field-error" id="err-partner_email">Valid email required</div>
+          <button type="button" class="q-mini" onclick="qConfirm('partner_email')">NEXT</button>
+        </div>
       </div>
-      <p class="partner-notice">We'll notify your partner when the study goes live.</p>
-      <div class="partner-tip-box">
-        <div class="tip-label">Priority tip</div>
-        <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
+      <div id="partner-aside" hidden>
+        <p class="partner-notice">We'll notify your partner when the study goes live.</p>
+        <div class="partner-tip-box">
+          <div class="tip-label">Priority tip</div>
+          <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
+        </div>
       </div>
     </div>
-    <div class="bottom-action">
-      <button class="btn btn-primary" onclick="goNext(4)">NEXT</button>
+        <div class="bottom-action">
+      <button class="btn btn-primary q-next-hidden" id="screen-next-4" onclick="goNext(4)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(4)">← BACK</button>
     </div>
   </div>
@@ -985,77 +1379,121 @@
       <div class="screen-label">Step <span id="kids-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">INTENTIONS &amp; <span class="accent">FAMILY</span></div>
 
-      <!-- LOOKING FOR: always shown for singles, multi-select -->
-      <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
-        <label class="field-label">Looking for</label>
-        <div id="looking-for-collapsed" style="display:none;" onclick="expandLookingFor()" role="button" tabindex="0">
-          <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid var(--dim);border-radius:var(--radius);padding:14px 16px;cursor:pointer;">
-            <span id="looking-for-summary-text" style="font-family:'Space Mono',monospace;font-size:13px;color:var(--text);"></span>
-            <span style="font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:0.1em;flex-shrink:0;margin-left:12px;">EDIT</span>
+      <div class="q" id="q-looking_for" data-q="looking_for" data-kind="multi">
+        <button type="button" class="q-row" onclick="qEdit('looking_for')" aria-label="Edit looking for">
+          <span class="q-row-label">Looking for</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="q-multi-open">
+            <div class="field-label">Looking for</div>
+            <div class="choice-grid q-choices q-choices-grid" id="looking_for" role="group" aria-label="Looking for">
+              <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
+              <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
+              <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
+              <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
+              <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
+            </div>
+            <div class="field-error" id="err-looking_for">Please make a selection</div>
+          </div>
+          <div class="q-multi-edit">
+            <div class="field-label">Looking for</div>
+            <div class="q-checks">
+              <label class="q-check"><input type="checkbox" id="chk-looking-casual" onchange="onLookingCheck('casual', this.checked)"> Casual</label>
+              <label class="q-check"><input type="checkbox" id="chk-looking-dating" onchange="onLookingCheck('dating', this.checked)"> Dating</label>
+              <label class="q-check"><input type="checkbox" id="chk-looking-relationship" onchange="onLookingCheck('relationship', this.checked)"> Relationship</label>
+              <label class="q-check"><input type="checkbox" id="chk-looking-marriage" onchange="onLookingCheck('marriage', this.checked)"> Marriage</label>
+              <label class="q-check"><input type="checkbox" id="chk-looking-life_partner" onchange="onLookingCheck('life_partner', this.checked)"> Life partner</label>
+            </div>
           </div>
         </div>
-        <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
-          <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
-          <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
-          <button type="button" class="toggle-btn" id="btn-looking-relationship" aria-pressed="false" onclick="toggleLookingFor('relationship')">Relationship</button>
-          <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
-          <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
+      </div>
+      <div class="q" id="q-timeline" data-q="timeline" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('timeline')" aria-label="Edit relationship timeline">
+          <span class="q-row-label">Timeline</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label" id="timeline-question-label">Ideally, when would you like to be in a relationship?</div>
+          <div class="q-choices" id="timeline_choices" role="group" aria-label="Relationship timeline"></div>
+          <div class="q-native">
+            <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value); qFinishEdit('timeline')" onblur="qCancelEdit('timeline')">
+              <option value="">— Select —</option>
+              <option value="1_2_years">1-2 years</option>
+              <option value="3_5_years">3-5 years</option>
+              <option value="5_10_years">5-10 years</option>
+              <option value="10_plus_years">10+ years</option>
+              <option value="no_timeline">No timeline</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
         </div>
-        <div class="field-error" id="err-looking_for">Please make a selection</div>
       </div>
-
-      <!-- RELATIONSHIP TIMELINE: drips in after looking_for (conditional) -->
-      <div class="field-group" id="relationship-timeline-group" style="display:none;margin-bottom:14px;">
-        <label class="field-label">Ideally, when would you like to be in a relationship?</label>
-        <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value)">
-          <option value="">— Select —</option>
-          <option value="asap">ASAP</option>
-          <option value="3_months">Next 3 months</option>
-          <option value="6_months">Next 6 months</option>
-          <option value="12_months">Next 12 months</option>
-          <option value="no_timeline">No timeline</option>
-        </select>
-        <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
+      <div class="q" id="q-has_children" data-q="has_children" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('has_children')" aria-label="Edit whether you have kids">
+          <span class="q-row-label">Have kids</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label">Do you have kids?</div>
+          <div class="q-choices q-choices-row" id="has_children_choices" role="group" aria-label="Do you have kids?"></div>
+          <div class="q-native">
+            <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value); qFinishEdit('has_children')" onblur="qCancelEdit('has_children')">
+              <option value="">— Select —</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-has_children">Please make a selection</div>
+        </div>
       </div>
-
-      <!-- HAS KIDS: drips in after looking_for (+ timeline if needed) -->
-      <div class="field-group" id="has-children-group" style="display:none;margin-bottom:14px;">
-        <label class="field-label">Do you have kids?</label>
-        <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-        <div class="field-error" id="err-has_children">Please make a selection</div>
+      <div class="q" id="q-wants_children" data-q="wants_children" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('wants_children')" aria-label="Edit whether you want kids">
+          <span class="q-row-label" id="q-wants-row-label">Do you want kids?</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label" id="wants-children-label">Do you want kids?</div>
+          <div class="q-choices q-choices-grid" id="wants_children_choices" role="group" aria-label="Do you want kids?"></div>
+          <div class="q-native">
+            <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value); qFinishEdit('wants_children')" onblur="qCancelEdit('wants_children')">
+              <option value="">— Select —</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+              <option value="open_either_way">Open to either</option>
+              <option value="not_sure">Unsure</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-wants_children">Please make a selection</div>
+        </div>
       </div>
-
-      <!-- WANTS KIDS: drips in after has_children answered -->
-      <div class="field-group" id="wants-children-group" style="display:none;margin-bottom:14px;">
-        <label class="field-label" id="wants-children-label">Do you want kids?</label>
-        <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-          <option value="open_either_way">Open to either</option>
-          <option value="not_sure">Unsure</option>
-        </select>
-        <div class="field-error" id="err-wants_children">Please make a selection</div>
-      </div>
-
-      <!-- FERTILITY: drips in after wants_children = 'yes' -->
-      <div class="field-group" id="fertility-group" style="display:none;margin-bottom:0;">
-        <label class="field-label">Have you invested in fertility preservation?</label>
-        <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-          <option value="considering">Considering</option>
-        </select>
-        <div class="field-error" id="err-fertility">Please make a selection</div>
+      <div class="q" id="q-fertility" data-q="fertility" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('fertility')" aria-label="Edit fertility plan">
+          <span class="q-row-label">Fertility plan</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label">Have you invested in fertility preservation?</div>
+          <div class="q-choices" id="fertility_choices" role="group" aria-label="Fertility preservation"></div>
+          <div class="q-native">
+            <select class="field-input" id="fertility_select" onchange="setFertility(this.value); qFinishEdit('fertility')" onblur="qCancelEdit('fertility')">
+              <option value="">— Select —</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+              <option value="considering">Considering</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-fertility">Please make a selection</div>
+        </div>
       </div>
     </div>
-    <div class="bottom-action">
-      <button class="btn btn-primary" onclick="goNext(5)">NEXT</button>
+        <div class="bottom-action">
+      <button class="btn btn-primary q-next-hidden" id="screen-next-5" onclick="goNext(5)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(5)">← BACK</button>
     </div>
   </div>
@@ -1067,17 +1505,25 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="contact-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">WE'LL TEXT YOU<br>WHEN WE'RE <span class="accent">LIVE</span></div>
-      <div class="field-group">
-        <label class="field-label">Phone number <span class="optional-tag">optional</span></label>
-        <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" oninput="onPhoneInput()">
-        <div class="field-error" id="err-phone">Valid phone number required</div>
+      <div class="q" id="q-phone" data-q="phone" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('phone')" aria-label="Edit phone number">
+          <span class="q-row-label">Phone</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <label class="field-label" for="phone">Phone number <span class="optional-tag">optional</span></label>
+          <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" oninput="onPhoneInput()" onkeydown="qOnEnter(event,'phone')" onblur="qOnBlur('phone')">
+          <div class="field-error" id="err-phone">Valid phone number required</div>
+          <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
+            <input type="checkbox" id="sms_consent" disabled>
+            <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. We will ask you for additional consents prior to enrolling you in any research study. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
+          </label>
+          <button type="button" class="q-mini" onclick="qConfirm('phone')">NEXT</button>
+        </div>
       </div>
-      <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
-        <input type="checkbox" id="sms_consent" disabled>
-        <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. We will ask you for additional consents prior to enrolling you in any research study. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
-      </label>
     </div>
-    <div class="bottom-action">
+        <div class="bottom-action">
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(6)">← BACK</button>
     </div>
@@ -1090,32 +1536,34 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="social-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR PUBLIC <span class="accent">SELF</span></div>
-      <div class="field-group">
-        <label class="field-label">LinkedIn <span style="color:var(--accent);font-size:10px;">REQUIRED</span></label>
-        <div class="linkedin-prefix-wrap" id="linkedin-wrap">
-          <span class="linkedin-prefix-text">linkedin.com/in/</span>
-          <input class="linkedin-username-input" id="linkedin_username" type="text" placeholder="yourname" autocomplete="off" oninput="validateLinkedInInline()">
+      <div class="public-fields">
+        <div class="public-field">
+          <label class="field-label" for="linkedin_username">LinkedIn <span class="optional-tag">optional</span></label>
+          <div class="linkedin-prefix-wrap" id="linkedin-wrap">
+            <span class="linkedin-prefix-text">linkedin.com/in/</span>
+            <input class="linkedin-username-input" id="linkedin_username" type="text" placeholder="yourname" autocomplete="off" oninput="validateLinkedInInline()">
+          </div>
+          <div class="field-error" id="err-linkedin_username">Use only letters, numbers, and hyphens</div>
+          <div class="field-valid" id="ok-linkedin_username">✓ Looks good</div>
         </div>
-        <div class="field-error" id="err-linkedin_username">LinkedIn username required</div>
-        <div class="field-valid" id="ok-linkedin_username">✓ Looks good</div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Instagram</label>
-        <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="instagram" type="text" placeholder="yourhandle"></div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">X / Twitter</label>
-        <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="x_handle" type="text" placeholder="yourhandle"></div>
-      </div>
-      <div class="field-group" style="margin-bottom:0;">
-        <label class="field-label">TikTok</label>
-        <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="tiktok" type="text" placeholder="yourhandle"></div>
+        <div class="public-field">
+          <label class="field-label" for="instagram">Instagram <span class="optional-tag">optional</span></label>
+          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="instagram" type="text" placeholder="yourhandle"></div>
+        </div>
+        <div class="public-field">
+          <label class="field-label" for="x_handle">X / Twitter <span class="optional-tag">optional</span></label>
+          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="x_handle" type="text" placeholder="yourhandle"></div>
+        </div>
+        <div class="public-field">
+          <label class="field-label" for="tiktok">TikTok <span class="optional-tag">optional</span></label>
+          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="tiktok" type="text" placeholder="yourhandle"></div>
+        </div>
       </div>
       <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
     </div>
-    <div class="bottom-action">
-      <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
-      <button class="btn btn-primary" onclick="goNext(7)">NEXT</button>
+        <div class="bottom-action">
+      <p class="legal-consent-text q-next-hidden" id="legal-consent">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+      <button class="btn btn-primary q-next-hidden" id="screen-next-7" onclick="goNext(7)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(7)">← BACK</button>
     </div>
   </div>
@@ -1242,13 +1690,15 @@ const state = {
   // so "user touched" is tracked separately from the current value.
   heightTouched: false,
   birthdateTouched: false,
+  degreePreference: null,
+  highestDegree: null,
 };
 let partnerCity = null;
 
 // ============================================================
 // PATHS
 // ============================================================
-function getPath() { return state.status === 'partnered' ? [1,3,4,5,7,6] : [1,5,3,7,6]; }
+function getPath() { return state.status === 'partnered' ? [1,2,3,4,5,7,6] : [1,2,5,3,7,6]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 function totalSteps() { return getPath().length; }
 
@@ -1269,6 +1719,13 @@ document.addEventListener('DOMContentLoaded', () => {
   _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
   onPhoneInput(); // init SMS checkbox state
+  document.getElementById('add-institution-btn')?.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    addInstitutionField();
+  });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { if (typeof qSyncPairs === 'function') qSyncPairs(); });
+  }
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = 'block';
@@ -1576,14 +2033,10 @@ function showScreen(id, direction) {
     if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
     if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
     if (state.status !== 'partnered') {
-      // Default SEEKING to opposite gender (once only)
-      if (!state.genderSeeking) {
-        const opp = state.gender === 'man' ? 'women' : state.gender === 'woman' ? 'men' : null;
-        if (opp) setGenderSeeking(opp);
-      }
       renderPrimaryCity(); setDefaultAges(); initHeightSlider();
     }
   }
+  if (typeof qSync === 'function' && QFLOW[id]) qSync(id);
 }
 
 function renderBadge(screenId) {
@@ -1611,7 +2064,7 @@ function renderProgress(screenId) {
 function renderStepNums(screenId) {
   const total = totalSteps();
   document.querySelectorAll('.screen.active .step-total').forEach(el => el.textContent = total);
-  ['rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
+  ['prof-step-num','rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       const parentScreen = el.closest('.screen');
@@ -1634,6 +2087,18 @@ function changeStatus() {
   renderBadge(state.currentScreen);
   renderProgress(state.currentScreen);
   if (state.currentScreen === 4 && state.status === 'single') showScreen(3, 'back');
+  else if (state.currentScreen === 3) {
+    const hl = document.querySelector('#screen-3 .screen-headline');
+    if (hl) hl.innerHTML = state.status === 'partnered'
+      ? 'WHERE YOU &amp; YOUR<br><span class="accent">PARTNER LIVE</span>'
+      : 'WHAT YOU <span class="accent">WANT</span>';
+    const s = document.getElementById('cities-single-section');
+    const c = document.getElementById('cities-couple-section');
+    if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
+    if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
+    if (typeof qSync === 'function') qSync(3);
+  } else if (state.currentScreen === 5) syncFamilyDrip();
+  else if (typeof qSync === 'function' && QFLOW[state.currentScreen]) qSync(state.currentScreen);
 }
 
 function getNextScreen(currentId) {
@@ -1702,6 +2167,10 @@ async function saveLead() {
     tiktok: get('tiktok'),
     landing_headline: state.landingHeadline || null,
     height_cm: state.heightCm || null,
+    professional_title: professionalTitlePayload(),
+    highest_degree: state.highestDegree || null,
+    institutions: institutionsPayload(),
+    degree_preference: state.status === 'partnered' ? null : (state.degreePreference || null),
   };
   if (state.partialLeadId) data.id = state.partialLeadId;
   try {
@@ -1727,6 +2196,7 @@ async function saveLead() {
 // KIDS
 // ============================================================
 function setGender(val) {
+  if (!val) return;
   state.gender = val;
   ['man','woman','nonbinary'].forEach(k => { const el = document.getElementById('btn-gender-' + k); if (el) el.classList.remove('selected'); });
   const btn = document.getElementById('btn-gender-' + val.replace('-',''));
@@ -1748,6 +2218,9 @@ function setGender(val) {
     const bd = document.getElementById('birthdate');
     if (bd && !bd.value) bd.value = '1996-01-01';
   }
+  const gsel = document.getElementById('gender_select');
+  if (gsel && val && gsel.value !== val) gsel.value = val;
+  if (typeof qRefresh === 'function') { qRefresh('height'); qRefresh('birthdate'); }
 }
 
 function onBirthdateInput() {
@@ -1769,9 +2242,6 @@ function setFertility(val) { state.fertilityPreservation = val || null; hideErro
 const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
-let _lfCollapseTimer = null;
-const LF_LABELS = { casual: 'Casual', dating: 'Dating', relationship: 'Relationship', marriage: 'Marriage', life_partner: 'Life partner' };
-
 function toggleLookingFor(val) {
   if (!Array.isArray(state.lookingFor)) state.lookingFor = [];
   const i = state.lookingFor.indexOf(val);
@@ -1781,28 +2251,7 @@ function toggleLookingFor(val) {
   if (btn) { btn.classList.toggle('selected', state.lookingFor.includes(val)); btn.setAttribute('aria-pressed', state.lookingFor.includes(val) ? 'true' : 'false'); }
   if (state.lookingFor.length) hideError('looking_for');
   syncFamilyDrip();
-  // Debounce collapse: collapse 500ms after last selection
-  clearTimeout(_lfCollapseTimer);
-  if (state.lookingFor.length > 0) _lfCollapseTimer = setTimeout(collapseLookingFor, 500);
-}
-
-function collapseLookingFor() {
-  const selected = Array.isArray(state.lookingFor) ? state.lookingFor : [];
-  if (selected.length === 0) return;
-  const summaryText = document.getElementById('looking-for-summary-text');
-  if (summaryText) summaryText.textContent = selected.map(v => LF_LABELS[v] || v).join(', ');
-  const grid = document.getElementById('looking_for');
-  const collapsed = document.getElementById('looking-for-collapsed');
-  if (grid) grid.style.display = 'none';
-  if (collapsed) collapsed.style.display = '';
-}
-
-function expandLookingFor() {
-  clearTimeout(_lfCollapseTimer);
-  const grid = document.getElementById('looking_for');
-  const collapsed = document.getElementById('looking-for-collapsed');
-  if (grid) grid.style.display = '';
-  if (collapsed) collapsed.style.display = 'none';
+  if (typeof qScheduleMulti === 'function') qScheduleMulti('looking_for');
 }
 
 function lookingForNeedsTimeline() {
@@ -1818,66 +2267,31 @@ function setRelationshipTimeline(val) {
 }
 
 function syncFamilyDrip() {
-  const partnered = state.status === 'partnered';
-  const hasLF = partnered || (Array.isArray(state.lookingFor) && state.lookingFor.length > 0);
-  const needsTL = lookingForNeedsTimeline();
-  const hasTL = !needsTL || !!state.relationshipTimeline;
-  const hasKidsDone = state.hasChildren !== null && state.hasChildren !== undefined;
-  // looking-for: hidden for couples
-  const lfGroup = document.getElementById('looking-for-group');
-  if (lfGroup) lfGroup.style.display = partnered ? 'none' : 'block';
-  // timeline: singles only, after looking_for filled, conditional
-  const tlGroup = document.getElementById('relationship-timeline-group');
-  if (tlGroup) tlGroup.style.display = (!partnered && hasLF && needsTL) ? 'block' : 'none';
-  // Update timeline label and options based on looking_for selection
   const _lf = Array.isArray(state.lookingFor) ? state.lookingFor : [];
   const _hasMarriage = _lf.includes('marriage');
-  const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
-  const tlLabel = document.querySelector('#relationship-timeline-group .field-label');
   const _datingOnly = _lf.length === 1 && _lf[0] === 'dating';
+  const tlLabel = document.getElementById('timeline-question-label');
   if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : _datingOnly ? 'Ideally, when would you like to be dating someone?' : 'Ideally, when would you like to be in a relationship?';
   const tlSel = document.getElementById('relationship_timeline');
-  if (tlSel) {
-    // "Don't Want Relationship" — casual only
-    const existingDwr = tlSel.querySelector('option[value="dont_want_relationship"]');
-    if (_casualOnly && !existingDwr) {
-      const opt = document.createElement('option'); opt.value = 'dont_want_relationship'; opt.textContent = "Don't Want Relationship"; tlSel.appendChild(opt);
-    } else if (!_casualOnly && existingDwr) {
-      existingDwr.remove();
-      if (state.relationshipTimeline === 'dont_want_relationship') { state.relationshipTimeline = null; tlSel.value = ''; }
-    }
-    // Marriage-specific longer-horizon options
-    const MARRIAGE_OPTS = [{v:'1_2_years',t:'1–2 years'},{v:'3_5_years',t:'3–5 years'},{v:'5_plus_years',t:'5-10 years'},{v:'10_plus_years',t:'10+ years'}];
-    if (_hasMarriage) {
-      const _noTlOpt = tlSel.querySelector('option[value="no_timeline"]');
-      MARRIAGE_OPTS.forEach(({v,t}) => { if (!tlSel.querySelector(`option[value="${v}"]`)) { const o=document.createElement('option'); o.value=v; o.textContent=t; if(_noTlOpt){tlSel.insertBefore(o,_noTlOpt);}else{tlSel.appendChild(o);} } });
-    } else {
-      MARRIAGE_OPTS.forEach(({v}) => { const o=tlSel.querySelector(`option[value="${v}"]`); if(o){o.remove(); if(state.relationshipTimeline===v){state.relationshipTimeline=null;tlSel.value='';}} });
-    }
+  if (!lookingForNeedsTimeline()) {
+    state.relationshipTimeline = null;
+    if (tlSel) tlSel.value = '';
+    hideError('relationship_timeline');
+    if (typeof qPassed !== 'undefined') qPassed.delete('timeline');
   }
-  // Update collapsed summary if already collapsed
-  const _lfCollapsed = document.getElementById('looking-for-collapsed');
-  if (_lfCollapsed && _lfCollapsed.style.display !== 'none') {
-    const _st = document.getElementById('looking-for-summary-text');
-    if (_st) _st.textContent = _lf.map(v => LF_LABELS[v] || v).join(', ');
+  const kidText = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
+  const lbl = document.getElementById('wants-children-label');
+  const row = document.getElementById('q-wants-row-label');
+  if (lbl) lbl.textContent = kidText;
+  if (row) row.textContent = kidText;
+  if (state.wantsChildren !== 'yes') {
+    state.fertilityPreservation = null;
+    const fs = document.getElementById('fertility_select');
+    if (fs) fs.value = '';
+    hideError('fertility');
+    if (typeof qPassed !== 'undefined') qPassed.delete('fertility');
   }
-  // Auto-collapse when returning to screen with prior selections
-  if (hasLF && !partnered) {
-    const _grid = document.getElementById('looking_for'), _col = document.getElementById('looking-for-collapsed');
-    if (_grid && _col && _grid.style.display !== 'none' && _col.style.display === 'none' && !_lfCollapseTimer) { collapseLookingFor(); }
-  }
-  if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
-  // has kids: unlocks after LF + TL prereqs met
-  const hcGroup = document.getElementById('has-children-group');
-  if (hcGroup) hcGroup.style.display = (hasLF && hasTL) ? 'block' : 'none';
-  // wants kids: unlocks after has_children answered
-  const wcGroup = document.getElementById('wants-children-group');
-  if (wcGroup) wcGroup.style.display = (hasLF && hasTL && hasKidsDone) ? 'block' : 'none';
-  if (hasKidsDone) { const lbl = document.getElementById('wants-children-label'); if (lbl) lbl.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?'; }
-  // fertility: unlocks after wants_children = 'yes'
-  const fertGroup = document.getElementById('fertility-group');
-  if (fertGroup) fertGroup.style.display = (state.wantsChildren === 'yes') ? 'block' : 'none';
-  if (state.wantsChildren !== 'yes') { state.fertilityPreservation = null; const fs = document.getElementById('fertility_select'); if (fs) fs.value = ''; hideError('fertility'); }
+  if (typeof qSync === 'function') qSync(5);
 }
 
 function lookingForPayload() {
@@ -1891,9 +2305,707 @@ function relationshipTimelinePayload() {
   return state.relationshipTimeline || null;
 }
 
+function professionalTitlePayload() {
+  return valOf('professional_title') || null;
+}
+
+function degreeAllowsInstitution(deg) {
+  return deg === 'bachelors' || deg === 'masters' || deg === 'doctorate';
+}
+function degreeAllowsManyInstitutions(deg) {
+  return deg === 'masters' || deg === 'doctorate';
+}
+
+let institutions = [''];
+
+function institutionEntries() {
+  const many = degreeAllowsManyInstitutions(state.highestDegree);
+  const list = many ? institutions : institutions.slice(0, 1);
+  return list.map(s => (s || '').trim()).filter(Boolean);
+}
+
+function institutionsPayload() {
+  if (!degreeAllowsInstitution(state.highestDegree)) return null;
+  const joined = institutionEntries().join('; ');
+  return joined || null;
+}
+
+function syncInstitutionPrompt() {
+  const many = degreeAllowsManyInstitutions(state.highestDegree);
+  const question = many ? 'What institutions did you attend?' : 'What institution did you attend?';
+  const label = document.getElementById('institutions-label');
+  const rowLabel = document.getElementById('institutions-row-label');
+  if (label) label.textContent = question;
+  if (rowLabel) rowLabel.textContent = many ? 'Institutions' : 'Institution';
+  const addBtn = document.getElementById('add-institution-btn');
+  if (addBtn) addBtn.hidden = !many;
+  renderInstitutionFields();
+}
+
+function renderInstitutionFields() {
+  const list = document.getElementById('institutions-fields');
+  if (!list) return;
+  if (!institutions.length) institutions = [''];
+  const many = degreeAllowsManyInstitutions(state.highestDegree);
+  const count = many ? institutions.length : 1;
+  list.replaceChildren();
+  for (let i = 0; i < count; i++) {
+    const row = document.createElement('div');
+    row.className = 'institution-row';
+    const input = document.createElement('input');
+    input.className = 'field-input';
+    input.type = 'text';
+    input.id = i === 0 ? 'institution-0' : '';
+    input.placeholder = 'Institution';
+    input.value = institutions[i] || '';
+    input.addEventListener('input', () => { institutions[i] = input.value; });
+    input.addEventListener('keydown', (e) => qOnEnter(e, 'institutions'));
+    input.addEventListener('blur', () => qOnBlur('institutions'));
+    row.appendChild(input);
+    if (many && count > 1) {
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'institution-remove';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', 'Remove institution');
+      remove.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        institutions.splice(i, 1);
+        if (!institutions.length) institutions = [''];
+        renderInstitutionFields();
+        document.querySelector('#q-institutions input')?.focus();
+      });
+      row.appendChild(remove);
+    }
+    list.appendChild(row);
+  }
+}
+
+function addInstitutionField() {
+  institutions.push('');
+  renderInstitutionFields();
+  const inputs = document.querySelectorAll('#institutions-fields input');
+  const last = inputs[inputs.length - 1];
+  if (last) last.focus();
+}
+
+function setDegreePreference(val) {
+  state.degreePreference = val || null;
+  const sel = document.getElementById('degree_preference');
+  if (sel && val && sel.value !== val) sel.value = val;
+  hideError('degree_preference');
+}
+
+function setHighestDegree(val) {
+  state.highestDegree = val || null;
+  const sel = document.getElementById('highest_degree');
+  if (sel && val && sel.value !== val) sel.value = val;
+  if (!degreeAllowsInstitution(val) && typeof qPassed !== 'undefined') qPassed.delete('institutions');
+  syncInstitutionPrompt();
+  hideError('highest_degree');
+}
+
 // ============================================================
 // LINKEDIN
 // ============================================================
+
+// ============================================================
+// ONE QUESTION AT A TIME
+// Content, options, and payloads stay on the controls above.
+// This layer only shows one question, then collapses it.
+// ============================================================
+const qPassed = new Set();
+let qEditing = null;
+const qLastOpen = {};
+const Q_CHOICE_DELAY = 800;
+const Q_MULTI_DELAY = 1200;
+const qChoiceTimers = {};
+const qMultiTimers = {};
+
+function valOf(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+function optText(selectId, value) {
+  if (!value) return '';
+  const sel = document.getElementById(selectId);
+  if (!sel) return value;
+  const opt = [...sel.options].find(o => o.value === value);
+  return opt ? opt.textContent : value;
+}
+function formatBirthdate(iso) {
+  if (!iso) return '';
+  const parts = iso.split('-');
+  if (parts.length !== 3) return iso;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const m = parseInt(parts[1], 10);
+  const d = parseInt(parts[2], 10);
+  if (!m || !d) return iso;
+  return months[m - 1] + ' ' + d + ', ' + parts[0];
+}
+function formatHeight(cm) {
+  if (!cm) return '—';
+  if (state.locationMode === 'zip') return optText('height_ftin', String(cm)) || (cm + ' cm');
+  return cm + ' cm';
+}
+function formatLocation() {
+  if (state.locationMode === 'zip') {
+    const zip = valOf('postal_code');
+    return state.zipCity ? (zip + ' · ' + state.zipCity) : zip;
+  }
+  return valOf('intl_city_input');
+}
+function formatWantCities() {
+  const all = [];
+  if (state.zipCity) all.push(state.zipCity);
+  additionalCities.forEach(c => { if (!all.includes(c)) all.push(c); });
+  return all.length ? all.join(', ') : '—';
+}
+function formatAgeRange() {
+  if (state.ageMin == null || state.ageMax == null) return '';
+  return state.ageMin + '–' + (state.ageMax >= 80 ? '80+' : state.ageMax);
+}
+function formatHeightPref() {
+  const a = document.getElementById('height_min_label');
+  const b = document.getElementById('height_max_label');
+  if (!a || !b || !a.textContent) return '';
+  return a.textContent + '–' + b.textContent;
+}
+function formatHandle(id) {
+  const v = valOf(id).replace(/^@/, '');
+  return v ? '@' + v : '—';
+}
+
+const QFLOW = {
+  2: [
+    { id: 'professional_title', required: true, applicable: () => true, answered: () => !!valOf('professional_title'), display: () => valOf('professional_title'), content: () => !!valOf('professional_title') },
+    { id: 'highest_degree', required: true, applicable: () => true, answered: () => !!state.highestDegree, display: () => optText('highest_degree', state.highestDegree), content: () => !!state.highestDegree,
+      syncEdit: () => { const s = document.getElementById('highest_degree'); if (s) s.value = state.highestDegree || ''; } },
+    { id: 'institutions', required: true, applicable: () => degreeAllowsInstitution(state.highestDegree), answered: () => institutionEntries().length > 0, display: () => institutionEntries().join('; '), content: () => institutionEntries().length > 0 },
+  ],
+  1: [
+    { id: 'gender', required: true, applicable: () => true, answered: () => !!state.gender, display: () => optText('gender_select', state.gender), content: () => !!state.gender,
+      syncEdit: () => { const s = document.getElementById('gender_select'); if (s) s.value = state.gender || ''; } },
+    { id: 'first_name', required: true, applicable: () => true, answered: () => !!valOf('first_name'), display: () => valOf('first_name'), content: () => !!valOf('first_name') },
+    { id: 'last_name', required: true, applicable: () => true, answered: () => !!valOf('last_name'), display: () => valOf('last_name'), content: () => !!valOf('last_name') },
+    { id: 'birthdate', required: true, applicable: () => true, answered: () => { const bd = valOf('birthdate'); return !!bd && getAge(bd) >= 18; }, display: () => formatBirthdate(valOf('birthdate')), content: () => !!valOf('birthdate') },
+    { id: 'location', required: true, applicable: () => true, answered: () => state.locationMode === 'zip' ? !!valOf('postal_code') : !!valOf('intl_city_input'), display: () => formatLocation(), content: () => state.locationMode === 'zip' ? !!valOf('postal_code') : !!valOf('intl_city_input') },
+    { id: 'height', required: false, applicable: () => true, answered: () => true, display: () => formatHeight(state.heightCm), content: () => !!state.heightCm },
+    { id: 'email', required: true, applicable: () => true, answered: () => isValidEmail(valOf('email')), display: () => valOf('email'), content: () => !!valOf('email') },
+  ],
+  3: [
+    { id: 'seeking', required: true, applicable: () => state.status !== 'partnered', answered: () => !!state.genderSeeking, display: () => optText('seeking_select', state.genderSeeking), content: () => !!state.genderSeeking,
+      syncEdit: () => { const s = document.getElementById('seeking_select'); if (s) s.value = state.genderSeeking || ''; } },
+    { id: 'want_location', required: false, applicable: () => state.status !== 'partnered', answered: () => true, display: () => formatWantCities(), content: () => !!(state.zipCity || additionalCities.length) },
+    { id: 'age', required: true, applicable: () => state.status !== 'partnered', answered: () => {
+      const minVal = parseInt(document.getElementById('age_min')?.value || '', 10);
+      const maxVal = parseInt(document.getElementById('age_max')?.value || '', 10);
+      return !isNaN(minVal) && !isNaN(maxVal) && minVal >= 18 && maxVal >= 18 && minVal <= maxVal;
+    }, display: () => formatAgeRange(), content: () => state.ageMin != null && state.ageMax != null },
+    { id: 'height_pref', required: false, applicable: () => state.status !== 'partnered', answered: () => true, display: () => formatHeightPref(), content: () => state.heightPrefMinCm != null },
+    { id: 'degree_preference', required: true, applicable: () => state.status !== 'partnered', answered: () => !!state.degreePreference, display: () => optText('degree_preference', state.degreePreference), content: () => !!state.degreePreference,
+      syncEdit: () => { const s = document.getElementById('degree_preference'); if (s) s.value = state.degreePreference || ''; } },
+    { id: 'lives_with_partner', required: false, applicable: () => state.status === 'partnered', answered: () => !!state.livesWithPartner, display: () => optText('lives_with_partner_select', state.livesWithPartner), content: () => !!state.livesWithPartner,
+      syncEdit: () => { const s = document.getElementById('lives_with_partner_select'); if (s) s.value = state.livesWithPartner || ''; } },
+    { id: 'partner_city', required: false, applicable: () => state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time'), answered: () => true, display: () => partnerCity || valOf('partner_city_input') || '—', content: () => !!(partnerCity || valOf('partner_city_input')) },
+  ],
+  4: [
+    { id: 'relationship_stage', required: true, applicable: () => true, answered: () => !!valOf('relationship_stage'), display: () => optText('relationship_stage', valOf('relationship_stage')), content: () => !!valOf('relationship_stage'),
+      syncEdit: () => { const s = document.getElementById('relationship_stage'); if (s && state) s.value = s.value; } },
+    { id: 'partner_name', required: true, applicable: () => true, answered: () => !!valOf('partner_name'), display: () => valOf('partner_name'), content: () => !!valOf('partner_name') },
+    { id: 'partner_email', required: true, applicable: () => true, answered: () => isValidEmail(valOf('partner_email')), display: () => valOf('partner_email'), content: () => !!valOf('partner_email') },
+  ],
+  5: [
+    { id: 'looking_for', required: true, applicable: () => state.status !== 'partnered', answered: () => Array.isArray(state.lookingFor) && state.lookingFor.length > 0,
+      display: () => LOOKING_FOR_OPTIONS.filter(v => state.lookingFor.includes(v)).map(v => { const b = document.getElementById('btn-looking-' + v); return b ? b.textContent.trim() : v; }).join(', '),
+      content: () => Array.isArray(state.lookingFor) && state.lookingFor.length > 0, syncEdit: () => qSyncLookingChecks() },
+    { id: 'timeline', required: true, applicable: () => lookingForNeedsTimeline(), answered: () => !!state.relationshipTimeline, display: () => optText('relationship_timeline', state.relationshipTimeline), content: () => !!state.relationshipTimeline,
+      syncEdit: () => { const s = document.getElementById('relationship_timeline'); if (s) s.value = state.relationshipTimeline || ''; } },
+    { id: 'has_children', required: true, applicable: () => true, answered: () => state.hasChildren === true || state.hasChildren === false,
+      display: () => optText('has_children_select', state.hasChildren === true ? 'yes' : state.hasChildren === false ? 'no' : ''), content: () => state.hasChildren === true || state.hasChildren === false,
+      syncEdit: () => { const s = document.getElementById('has_children_select'); if (s) s.value = state.hasChildren === true ? 'yes' : state.hasChildren === false ? 'no' : ''; } },
+    { id: 'wants_children', required: true, applicable: () => true, answered: () => !!state.wantsChildren, display: () => optText('wants_children_select', state.wantsChildren), content: () => !!state.wantsChildren,
+      syncEdit: () => { const s = document.getElementById('wants_children_select'); if (s) s.value = state.wantsChildren || ''; } },
+    { id: 'fertility', required: true, applicable: () => state.wantsChildren === 'yes', answered: () => !!state.fertilityPreservation, display: () => optText('fertility_select', state.fertilityPreservation), content: () => !!state.fertilityPreservation,
+      syncEdit: () => { const s = document.getElementById('fertility_select'); if (s) s.value = state.fertilityPreservation || ''; } },
+  ],
+  6: [
+    { id: 'phone', required: false, applicable: () => true, answered: () => !valOf('phone') || !!normalizePhone(valOf('phone')), display: () => valOf('phone') || '—', content: () => !!valOf('phone') },
+  ],
+  7: [],
+};
+
+function qDef(id) {
+  for (const screen of Object.keys(QFLOW)) {
+    const def = QFLOW[screen].find(d => d.id === id);
+    if (def) return Object.assign({ screen: parseInt(screen, 10) }, def);
+  }
+  return null;
+}
+function qScreenOf(id) { const d = qDef(id); return d ? d.screen : state.currentScreen; }
+function qIsActive(id) {
+  const el = document.getElementById('q-' + id);
+  return !!(el && (el.classList.contains('q-open') || el.classList.contains('q-editing')));
+}
+function setRelationshipStage(val) {
+  const sel = document.getElementById('relationship_stage');
+  if (sel) sel.value = val || '';
+  hideError('relationship_stage');
+}
+function qRenderChoices(qId, selectId, current) {
+  const sel = document.getElementById(selectId);
+  const box = document.querySelector('#q-' + qId + ' .q-choices');
+  if (!sel || !box) return;
+  const opts = [...sel.options].filter(o => o.value);
+  const sig = opts.map(o => o.value + '\n' + o.textContent).join('\n');
+  if (box.dataset.sig !== sig) {
+    box.dataset.sig = sig;
+    box.replaceChildren();
+    opts.forEach(o => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'toggle-btn';
+      b.dataset.value = o.value;
+      b.textContent = o.textContent;
+      b.addEventListener('click', () => qPickChoice(qId, o.value));
+      box.appendChild(b);
+    });
+  }
+  box.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('selected', b.dataset.value === (current || '')));
+}
+function qPickChoice(id, value) {
+  if (id === 'relationship_stage') setRelationshipStage(value);
+  else if (id === 'timeline') setRelationshipTimeline(value);
+  else if (id === 'has_children') setHasChildren(value);
+  else if (id === 'wants_children') setWantsChildren(value);
+  else if (id === 'fertility') setFertility(value);
+  else if (id === 'highest_degree') setHighestDegree(value);
+  else if (id === 'degree_preference') setDegreePreference(value);
+  qConfirm(id);
+}
+function qSyncDynamic() {
+  qRenderChoices('relationship_stage', 'relationship_stage', valOf('relationship_stage'));
+  qRenderChoices('timeline', 'relationship_timeline', state.relationshipTimeline || '');
+  qRenderChoices('has_children', 'has_children_select', state.hasChildren === true ? 'yes' : state.hasChildren === false ? 'no' : '');
+  qRenderChoices('wants_children', 'wants_children_select', state.wantsChildren || '');
+  qRenderChoices('fertility', 'fertility_select', state.fertilityPreservation || '');
+  qRenderChoices('highest_degree', 'highest_degree', state.highestDegree || '');
+  qRenderChoices('degree_preference', 'degree_preference', state.degreePreference || '');
+}
+function qValidate(id) {
+  const def = qDef(id);
+  if (!def) return false;
+  switch (id) {
+    case 'gender':
+      if (!state.gender) { showError('gender', 'Please select one'); return false; }
+      hideError('gender'); return true;
+    case 'first_name':
+      if (!valOf('first_name')) { showError('first_name', 'Required'); return false; }
+      hideError('first_name'); return true;
+    case 'last_name':
+      if (!valOf('last_name')) { showError('last_name', 'Required'); return false; }
+      hideError('last_name'); return true;
+    case 'birthdate': {
+      const bd = valOf('birthdate');
+      if (!bd) { showError('birthdate', 'Please enter your date of birth'); return false; }
+      hideError('birthdate');
+      if (getAge(bd) < 18) { showUnder18(); return false; }
+      return true;
+    }
+    case 'location':
+      if (state.locationMode === 'zip') {
+        if (!valOf('postal_code')) { showError('postal_code', 'Zip code required'); return false; }
+        hideError('postal_code'); return true;
+      }
+      if (!valOf('intl_city_input')) { showError('postal_code', 'Please enter your city'); return false; }
+      hideError('postal_code'); return true;
+    case 'seeking':
+      if (!state.genderSeeking) { showError('gender_seeking', 'Please select one'); return false; }
+      hideError('gender_seeking'); return true;
+    case 'age':
+      if (!def.answered()) { showError('age_range', 'Enter a valid age range (min 18)'); return false; }
+      hideError('age_range'); return true;
+    case 'email':
+      if (!isValidEmail(valOf('email'))) { showError('email', 'Valid email required'); return false; }
+      hideError('email'); return true;
+    case 'looking_for':
+      if (!Array.isArray(state.lookingFor) || !state.lookingFor.length) { showError('looking_for', 'Please make a selection'); return false; }
+      hideError('looking_for'); return true;
+    case 'timeline':
+      if (!state.relationshipTimeline) { showError('relationship_timeline', 'Please make a selection'); return false; }
+      hideError('relationship_timeline'); return true;
+    case 'has_children':
+      if (state.hasChildren !== true && state.hasChildren !== false) { showError('has_children', 'Please make a selection'); return false; }
+      hideError('has_children'); return true;
+    case 'wants_children':
+      if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); return false; }
+      hideError('wants_children'); return true;
+    case 'fertility':
+      if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); return false; }
+      hideError('fertility'); return true;
+    case 'relationship_stage':
+      if (!valOf('relationship_stage')) { showError('relationship_stage', 'Please select a stage'); return false; }
+      hideError('relationship_stage'); return true;
+    case 'partner_name':
+      if (!valOf('partner_name')) { showError('partner_name', 'Partner name required'); return false; }
+      hideError('partner_name'); return true;
+    case 'partner_email':
+      if (!isValidEmail(valOf('partner_email'))) { showError('partner_email', 'Valid email required'); return false; }
+      hideError('partner_email'); return true;
+    case 'professional_title':
+      if (!valOf('professional_title')) { showError('professional_title', 'Required'); return false; }
+      hideError('professional_title'); return true;
+    case 'highest_degree':
+      if (!state.highestDegree) { showError('highest_degree', 'Please make a selection'); return false; }
+      hideError('highest_degree'); return true;
+    case 'institutions':
+      if (!institutionEntries().length) { showError('institutions', 'Required'); return false; }
+      hideError('institutions'); return true;
+    case 'degree_preference':
+      if (!state.degreePreference) { showError('degree_preference', 'Please make a selection'); return false; }
+      hideError('degree_preference'); return true;
+    case 'linkedin': {
+      const username = valOf('linkedin_username');
+      const wrap = document.getElementById('linkedin-wrap');
+      if (username && !/^[a-zA-Z0-9\-]+$/.test(username)) { showError('linkedin_username', 'Use only letters, numbers, and hyphens'); if (wrap) wrap.classList.add('error'); return false; }
+      hideError('linkedin_username'); if (wrap) wrap.classList.remove('error'); return true;
+    }
+    case 'phone':
+      if (valOf('phone') && !normalizePhone(valOf('phone'))) { showError('phone', 'Enter a valid phone number or leave blank'); return false; }
+      hideError('phone'); return true;
+    default:
+      return !def.required || def.answered();
+  }
+}
+function qMarkChoicePressed(id) {
+  const el = document.getElementById('q-' + id);
+  const active = document.activeElement;
+  if (!el || !active || !el.contains(active) || !active.classList.contains('toggle-btn')) return;
+  const group = active.closest('.q-choices');
+  if (!group) return;
+  group.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('selected', b === active));
+}
+document.addEventListener('pointerdown', (e) => {
+  const btn = e.target.closest('.q.q-open[data-kind="choice"] .q-choices .toggle-btn');
+  if (!btn) return;
+  const group = btn.closest('.q-choices');
+  if (!group) return;
+  group.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('selected', b === btn));
+}, true);
+function qConfirm(id, immediate) {
+  const el = document.getElementById('q-' + id);
+  if (!immediate && el && el.getAttribute('data-kind') === 'choice' && el.classList.contains('q-open')) {
+    const def = qDef(id);
+    if (def && def.answered()) {
+      qMarkChoicePressed(id);
+      if (qChoiceTimers[id]) clearTimeout(qChoiceTimers[id]);
+      qChoiceTimers[id] = setTimeout(() => {
+        qChoiceTimers[id] = null;
+        const node = document.getElementById('q-' + id);
+        if (!node || !node.classList.contains('q-open')) return;
+        if (state.currentScreen !== qScreenOf(id)) return;
+        qConfirm(id, true);
+      }, Q_CHOICE_DELAY);
+      return true;
+    }
+  }
+  if (!qValidate(id)) return false;
+  qPassed.add(id);
+  if (qEditing === id) qEditing = null;
+  if (id === 'want_location') document.querySelector('#screen-3 .screen-content')?.classList.remove('city-keyboard-pad');
+  qSync(qScreenOf(id), { focus: true });
+  return true;
+}
+function qFinishEdit(id) {
+  if (!qValidate(id)) return;
+  qEditing = null;
+  qPassed.add(id);
+  qSync(qScreenOf(id), { focus: true });
+}
+function qEdit(id) {
+  const def = qDef(id);
+  if (!def) return;
+  if (qMultiTimers[id]) { clearTimeout(qMultiTimers[id]); qMultiTimers[id] = null; }
+  if (qChoiceTimers[id]) { clearTimeout(qChoiceTimers[id]); qChoiceTimers[id] = null; }
+  qEditing = id;
+  if (def.syncEdit) def.syncEdit();
+  qSync(def.screen);
+}
+function qCancelEdit(id) {
+  setTimeout(() => {
+    if (qEditing !== id) return;
+    const el = document.getElementById('q-' + id);
+    if (el && el.contains(document.activeElement)) return;
+    const def = qDef(id);
+    qEditing = null;
+    if (def && def.required && !def.answered()) qPassed.delete(id);
+    if (def) qSync(def.screen);
+  }, 180);
+}
+function qOnEnter(e, id) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  qConfirm(id);
+}
+function qOnBlur(id) {
+  setTimeout(() => {
+    const el = document.getElementById('q-' + id);
+    if (!el) return;
+    if (el.contains(document.activeElement)) return;
+    if (!el.classList.contains('q-open') && !el.classList.contains('q-editing')) return;
+    const def = qDef(id);
+    if (!def || !def.content()) return;
+    qConfirm(id);
+  }, 160);
+}
+function qRefresh(id) {
+  const el = document.getElementById('q-' + id);
+  const def = qDef(id);
+  if (!el || !def || !el.classList.contains('q-done')) return;
+  const v = el.querySelector('[data-q-value]');
+  if (v) v.textContent = def.display();
+}
+function qSyncLookingChecks() {
+  LOOKING_FOR_OPTIONS.forEach(v => {
+    const cb = document.getElementById('chk-looking-' + v);
+    const on = Array.isArray(state.lookingFor) && state.lookingFor.includes(v);
+    if (cb) cb.checked = on;
+  });
+}
+function qScheduleMulti(id) {
+  if (qMultiTimers[id]) { clearTimeout(qMultiTimers[id]); qMultiTimers[id] = null; }
+  const def = qDef(id);
+  if (!def) return;
+  const el = document.getElementById('q-' + id);
+  const active = el && (el.classList.contains('q-open') || el.classList.contains('q-editing'));
+  if (!def.answered()) {
+    if (qPassed.has(id)) qPassed.delete(id);
+    if (active) qSync(qScreenOf(id));
+    else qUpdateNext(qScreenOf(id));
+    return;
+  }
+  if (!active) return;
+  qMultiTimers[id] = setTimeout(() => {
+    qMultiTimers[id] = null;
+    const node = document.getElementById('q-' + id);
+    if (!node || (!node.classList.contains('q-open') && !node.classList.contains('q-editing'))) return;
+    if (state.currentScreen !== qScreenOf(id)) return;
+    qConfirm(id);
+  }, Q_MULTI_DELAY);
+}
+document.addEventListener('click', (e) => {
+  if (!qEditing) return;
+  const id = qEditing;
+  const el = document.getElementById('q-' + id);
+  if (!el || el.getAttribute('data-kind') !== 'multi') return;
+  if (el.contains(e.target)) return;
+  if (qMultiTimers[id]) return;
+  const def = qDef(id);
+  if (!def || !def.answered()) return;
+  qConfirm(id);
+});
+function onLookingCheck(val, checked) {
+  if (!Array.isArray(state.lookingFor)) state.lookingFor = [];
+  const has = state.lookingFor.includes(val);
+  if (checked !== has) toggleLookingFor(val);
+  else qSyncLookingChecks();
+}
+function qSync(screenId, opts) {
+  const list = QFLOW[screenId];
+  if (!list) return;
+  qSyncDynamic();
+  let opened = false;
+  let openId = null;
+  let holdForEdit = false;
+  list.forEach(def => {
+    const el = document.getElementById('q-' + def.id);
+    if (!el) return;
+    el.classList.remove('q-open', 'q-done', 'q-editing', 'q-reveal');
+    if (!def.applicable()) return;
+    if (qEditing === def.id) {
+      el.classList.add('q-editing');
+      if (def.required && !def.answered()) holdForEdit = true;
+    } else if (qPassed.has(def.id)) {
+      el.classList.add('q-done');
+      const v = el.querySelector('[data-q-value]');
+      if (v) v.textContent = def.display();
+    } else if (!opened && !holdForEdit) {
+      opened = true;
+      openId = def.id;
+      el.classList.add('q-open');
+      if (qLastOpen[screenId] !== def.id) el.classList.add('q-reveal');
+    }
+  });
+  qLastOpen[screenId] = openId;
+  if (screenId === 4) {
+    const aside = document.getElementById('partner-aside');
+    const nameEl = document.getElementById('q-partner_name');
+    if (aside) aside.hidden = !(nameEl && (nameEl.classList.contains('q-open') || nameEl.classList.contains('q-editing') || nameEl.classList.contains('q-done')));
+  }
+  if (screenId === 1) {
+    const lab = document.getElementById('q-location-row-label');
+    if (lab) lab.textContent = state.locationMode === 'zip' ? 'Zip' : 'City';
+  }
+  if (screenId === 3) {
+    requestAnimationFrame(() => {
+      if (typeof _updateAgeLabels === 'function') _updateAgeLabels();
+      if (typeof _updateHeightLabels === 'function') _updateHeightLabels();
+    });
+  }
+  if (screenId === 2 && typeof syncInstitutionPrompt === 'function') syncInstitutionPrompt();
+  qUpdateNext(screenId);
+  qSyncPairs();
+  if (opts && opts.focus && openId) {
+    const el = document.getElementById('q-' + openId);
+    const input = el && el.querySelector('input:not([type="checkbox"]):not([type="range"])');
+    if (input && el.classList.contains('q-open') && el.getAttribute('data-kind') === 'text') {
+      setTimeout(() => { try { input.focus({ preventScroll: true }); } catch (err) { input.focus(); } }, 40);
+    }
+  }
+}
+// Related collapsed answers that can share one row. The helper pairs a candidate
+// only when both summaries fit in a half without clipping: one line when they
+// can, label over value when that stays readable, otherwise each stays full
+// width. A question is used by the first candidate that fits, so list the
+// preferred partner first (gender + birthday before gender + height). While
+// that partner is still open, the other half is not given away. Future
+// questions can set data-q-pair-with="other_id" on the .q and are picked up.
+const Q_PAIRS = [
+  ['first_name', 'last_name'],
+  ['gender', 'birthdate'],
+  ['gender', 'height'],
+  ['professional_title', 'highest_degree'],
+  ['age', 'height_pref'],
+  ['seeking', 'degree_preference'],
+  ['timeline', 'fertility'],
+  ['has_children', 'wants_children'],
+  ['relationship_stage', 'partner_name'],
+  ['lives_with_partner', 'partner_city'],
+];
+function qListedPairs() {
+  const seen = new Set();
+  const list = [];
+  const add = (a, b) => {
+    if (!a || !b || a === b) return;
+    const key = a < b ? a + '|' + b : b + '|' + a;
+    if (seen.has(key)) return;
+    seen.add(key);
+    list.push([a, b]);
+  };
+  Q_PAIRS.forEach(pair => add(pair[0], pair[1]));
+  document.querySelectorAll('.q[data-q-pair-with]').forEach(el => {
+    add(el.getAttribute('data-q'), el.getAttribute('data-q-pair-with'));
+  });
+  return list;
+}
+function qPairSlot(el) {
+  if (el._qSlot && el._qSlot.isConnected) return el._qSlot;
+  const slot = document.createComment('q');
+  el.parentNode.insertBefore(slot, el);
+  el._qSlot = slot;
+  return slot;
+}
+function qRestorePaired(el) {
+  const slot = el._qSlot;
+  if (slot && slot.parentNode) {
+    slot.parentNode.insertBefore(el, slot.nextSibling);
+    return;
+  }
+  const pair = el.parentElement;
+  if (pair && pair.classList.contains('q-pair') && pair.parentNode) pair.parentNode.insertBefore(el, pair);
+}
+function qClearAutoPairs() {
+  document.querySelectorAll('.q-pair[data-q-auto]').forEach(pair => {
+    [...pair.children].forEach(el => {
+      if (el.classList && el.classList.contains('q')) qRestorePaired(el);
+    });
+    pair.remove();
+  });
+}
+function qPairReadable(el) {
+  const row = el.querySelector(':scope > .q-row');
+  if (!row || row.clientWidth === 0) return false;
+  const parts = row.querySelectorAll('.q-row-label, .q-row-value');
+  for (let i = 0; i < parts.length; i++) {
+    if (parts[i].scrollWidth > parts[i].clientWidth + 1) return false;
+  }
+  return true;
+}
+function qOnActiveScreen(id) {
+  const el = document.getElementById('q-' + id);
+  if (!el) return false;
+  const def = qDef(id);
+  if (def && !def.applicable()) return false;
+  const screen = el.closest('.screen');
+  return !!(screen && screen.classList.contains('active'));
+}
+function qCanPair(id) {
+  const el = document.getElementById('q-' + id);
+  if (!el || !el.classList.contains('q-done') || qEditing === id) return false;
+  return qOnActiveScreen(id);
+}
+function qSyncPairs() {
+  document.querySelectorAll('.q[data-q]').forEach(el => {
+    if (el._qSlot && el._qSlot.isConnected) return;
+    if (el.parentElement && el.parentElement.classList.contains('q-pair')) return;
+    if (!el.parentNode) return;
+    qPairSlot(el);
+  });
+  qClearAutoPairs();
+  const used = new Set();
+  qListedPairs().forEach(pairIds => {
+    const a = pairIds[0];
+    const b = pairIds[1];
+    if (used.has(a) || used.has(b)) return;
+    const aDone = qCanPair(a);
+    const bDone = qCanPair(b);
+    if (!(aDone && bDone)) {
+      if (aDone && qOnActiveScreen(b)) used.add(a);
+      else if (bDone && qOnActiveScreen(a)) used.add(b);
+      return;
+    }
+    const elA = document.getElementById('q-' + a);
+    const elB = document.getElementById('q-' + b);
+    const slotA = elA._qSlot;
+    const slotB = elB._qSlot;
+    if (!slotA || !slotB || !slotA.parentNode) return;
+    const aFirst = (slotA.compareDocumentPosition(slotB) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+    const anchor = aFirst ? slotA : slotB;
+    const left = aFirst ? elA : elB;
+    const right = aFirst ? elB : elA;
+    const pair = document.createElement('div');
+    pair.className = 'q-pair q-pair-ready';
+    pair.setAttribute('data-q-auto', a + ',' + b);
+    anchor.parentNode.insertBefore(pair, anchor.nextSibling);
+    pair.appendChild(left);
+    pair.appendChild(right);
+    if (!qPairReadable(left) || !qPairReadable(right)) pair.classList.add('q-pair-stack');
+    if (!qPairReadable(left) || !qPairReadable(right)) {
+      qRestorePaired(left);
+      qRestorePaired(right);
+      pair.remove();
+      return;
+    }
+    used.add(a);
+    used.add(b);
+  });
+}
+function qUpdateNext(screenId) {
+  const list = QFLOW[screenId] || [];
+  let ready;
+  if (screenId === 6 || (screenId === 3 && state.status === 'partnered')) ready = true;
+  else ready = list.filter(d => d.applicable() && d.required).every(d => qPassed.has(d.id) && d.answered());
+  if (screenId === 7) {
+    const btn = document.getElementById('screen-next-7');
+    const legal = document.getElementById('legal-consent');
+    if (btn) btn.classList.toggle('q-next-hidden', !ready);
+    if (legal) legal.classList.toggle('q-next-hidden', !ready);
+    return;
+  }
+  const btn = document.getElementById('screen-next-' + screenId);
+  if (btn) btn.classList.toggle('q-next-hidden', !ready);
+}
+
 function validateLinkedInInline() {
   const val = document.getElementById('linkedin_username').value.trim();
   const errEl = document.getElementById('err-linkedin_username');
@@ -1952,7 +3064,15 @@ function validateScreen(screenId) {
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
         showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
       } else { hideError('age_range'); }
+      if (!state.degreePreference) { showError('degree_preference', 'Please make a selection'); ok = false; } else hideError('degree_preference');
     }
+  }
+  if (screenId === 2) {
+    if (!valOf('professional_title')) { showError('professional_title', 'Required'); ok = false; } else hideError('professional_title');
+    if (!state.highestDegree) { showError('highest_degree', 'Please make a selection'); ok = false; } else hideError('highest_degree');
+    if (degreeAllowsInstitution(state.highestDegree)) {
+      if (!institutionEntries().length) { showError('institutions', 'Required'); ok = false; } else hideError('institutions');
+    } else hideError('institutions');
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
@@ -1969,12 +3089,15 @@ function validateScreen(screenId) {
         if (!state.relationshipTimeline) { showError('relationship_timeline', 'Please make a selection'); ok = false; } else hideError('relationship_timeline');
       } else hideError('relationship_timeline');
     } else { hideError('looking_for'); hideError('relationship_timeline'); }
-    const hcVisible = document.getElementById('has-children-group')?.style.display !== 'none';
-    if (hcVisible) {
+    const partnered5 = state.status === 'partnered';
+    const hasLF = partnered5 || (Array.isArray(state.lookingFor) && state.lookingFor.length > 0);
+    const needsTL = lookingForNeedsTimeline();
+    const hasTL = !needsTL || !!state.relationshipTimeline;
+    const kidsUnlocked = hasLF && hasTL;
+    if (kidsUnlocked) {
       if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
     }
-    const wcVisible = document.getElementById('wants-children-group')?.style.display !== 'none';
-    if (wcVisible) {
+    if (kidsUnlocked && state.hasChildren !== null && state.hasChildren !== undefined) {
       if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
       if (state.wantsChildren === 'yes') {
         if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
@@ -1988,10 +3111,9 @@ function validateScreen(screenId) {
   }
   if (screenId === 7) {
     const username = document.getElementById('linkedin_username').value.trim();
-    const valid = username && /^[a-zA-Z0-9\-]+$/.test(username);
     const wrap = document.getElementById('linkedin-wrap');
-    if (!valid) { showError('linkedin_username', 'LinkedIn username required'); wrap.classList.add('error'); ok = false; }
-    else { hideError('linkedin_username'); wrap.classList.remove('error'); }
+    if (username && !/^[a-zA-Z0-9\-]+$/.test(username)) { showError('linkedin_username', 'Use only letters, numbers, and hyphens'); if (wrap) wrap.classList.add('error'); ok = false; }
+    else { hideError('linkedin_username'); if (wrap) wrap.classList.remove('error'); }
   }
   return ok;
 }
@@ -2059,6 +3181,7 @@ async function doSubmit() {
   const btn = document.getElementById('submit-btn');
   btn.textContent = 'SUBMITTING';
   const username = document.getElementById('linkedin_username').value.trim().replace(/^@/, '');
+  const linkedinUrl = username ? ('https://www.linkedin.com/in/' + username) : null;
   const body = {
     first_name: document.getElementById('first_name').value.trim(),
     last_name: document.getElementById('last_name').value.trim(),
@@ -2084,13 +3207,17 @@ async function doSubmit() {
     relationship_timeline: relationshipTimelinePayload(),
     phone: document.getElementById('phone').value.trim(),
     sms_consent: document.getElementById('sms_consent').checked,
-    linkedin_url: 'https://www.linkedin.com/in/' + username,
+    linkedin_url: linkedinUrl,
     instagram: document.getElementById('instagram').value.trim() || null,
     x_handle: document.getElementById('x_handle').value.trim() || null,
     tiktok: document.getElementById('tiktok').value.trim() || null,
     gender: state.gender || null,
     height_cm: state.heightCm || null,
     landing_headline: state.landingHeadline || null,
+    professional_title: professionalTitlePayload(),
+    highest_degree: state.highestDegree || null,
+    institutions: institutionsPayload(),
+    degree_preference: state.status === 'partnered' ? null : (state.degreePreference || null),
     partial_lead_id: state.partialLeadId || null,
     turnstileToken: state.turnstileToken || '',
     terms_version: '2026-10-01',
@@ -2434,76 +3561,154 @@ function setGenderSeeking(val) {
     const btn = document.getElementById('btn-seek-' + v);
     if (btn) btn.classList.toggle('selected', v === val);
   });
+  const sel = document.getElementById('seeking_select');
+  if (sel && val && sel.value !== val) sel.value = val;
   hideError('gender_seeking');
 }
 
 // ---- LOCATION (city rows) ----
+const LAUNCH_CITIES = [
+  { label: 'San Francisco', value: 'San Francisco, CA' },
+  { label: 'New York', value: 'New York City, NY' },
+  { label: 'Austin', value: 'Austin, TX' },
+  { label: 'Los Angeles', value: 'Los Angeles, CA' },
+];
+
 function renderPrimaryCity() {
   const el = document.getElementById('location-primary-city-name');
   if (el) el.textContent = state.zipCity || '';
+  initWantCityPicker();
 }
 
-function toggleAddCitySearch() {
-  const wrap = document.getElementById('add-city-search-wrap');
-  if (!wrap) return;
-  const isHidden = wrap.style.display === 'none';
-  wrap.style.display = isHidden ? '' : 'none';
-  if (isHidden) setTimeout(() => document.getElementById('add_city_search_input')?.focus(), 50);
-}
-
-function _removeAddCityOverlay() {
-  const ov = document.getElementById('add-city-overlay');
-  if (ov) ov.remove();
-}
-
-function _ensureAddCityOverlay() {
-  if (document.getElementById('add-city-overlay')) return;
-  const ov = document.createElement('div');
-  ov.id = 'add-city-overlay';
-  ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:199;background:transparent;-webkit-tap-highlight-color:transparent;';
-  const close = () => {
-    const d = document.getElementById('add-city-dropdown');
-    if (d) { d.innerHTML = ''; d.classList.remove('open'); }
-    ov.remove();
-  };
-  ov.addEventListener('touchstart', close, {passive: true});
-  ov.addEventListener('click', close);
-  document.body.appendChild(ov);
-}
-
-function onAddCityInput() {
+function initWantCityPicker() {
+  renderLaunchCityPicks();
   const inp = document.getElementById('add_city_search_input');
+  if (!inp || inp.dataset.bound) return;
+  inp.dataset.bound = '1';
+  inp.addEventListener('input', () => renderCitySuggestions());
+  inp.addEventListener('focus', () => {
+    const sc = document.querySelector('#screen-3 .screen-content');
+    if (sc) sc.classList.add('city-keyboard-pad');
+    inp.scrollIntoView({ block: 'center', inline: 'nearest' });
+  });
+  inp.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const q = inp.value.trim();
+    if (!q) return;
+    const exact = _getCityList().find(c => c.toLowerCase() === q.toLowerCase());
+    addAdditionalCity(exact || q, { fromInput: true });
+  });
+}
+
+function renderLaunchCityPicks() {
+  const box = document.getElementById('city-quick-picks');
+  if (!box) return;
+  if (!box.childElementCount) {
+    LAUNCH_CITIES.forEach(({ label, value }) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'toggle-btn';
+      btn.textContent = label;
+      btn.dataset.city = value;
+      btn.addEventListener('click', () => toggleLaunchCity(value));
+      box.appendChild(btn);
+    });
+  }
+  box.querySelectorAll('.toggle-btn').forEach(btn => {
+    const on = launchCityOn(btn.dataset.city);
+    btn.classList.toggle('selected', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+
+function launchCityOn(value) {
+  const key = String(value || '').toLowerCase();
+  if ((state.zipCity || '').toLowerCase() === key) return true;
+  return additionalCities.some(c => c.toLowerCase() === key);
+}
+
+function toggleLaunchCity(value) {
+  if ((state.zipCity || '').toLowerCase() === String(value).toLowerCase()) return;
+  if (additionalCities.some(c => c.toLowerCase() === String(value).toLowerCase())) removeAdditionalCity(value);
+  else addAdditionalCity(value);
+}
+
+function renderCitySuggestions() {
+  const inp = document.getElementById('add_city_search_input');
+  const box = document.getElementById('add-city-suggestions');
+  if (!box) return;
   const q = inp?.value.trim() || '';
-  const dd = document.getElementById('add-city-dropdown');
-  if (!dd) return;
-  if (!q) { dd.innerHTML = ''; dd.classList.remove('open'); _removeAddCityOverlay(); return; }
+  box.replaceChildren();
+  if (!q) return;
   const list = _getCityList();
-  const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && !additionalCities.includes(c) && c !== state.zipCity).slice(0, 8);
-  if (q && !list.some(c => c.toLowerCase() === q.toLowerCase()) && !additionalCities.some(c => c.toLowerCase() === q.toLowerCase())) filtered.push(q);
-  dd.innerHTML = filtered.map(c => `<div class="multiselect-option" ontouchstart="event.preventDefault();addAdditionalCity(${JSON.stringify(c)})" onmousedown="event.preventDefault()" onclick="addAdditionalCity(${JSON.stringify(c)})">${c}</div>`).join('');
-  if (filtered.length) { dd.classList.add('open'); _ensureAddCityOverlay(); } else { dd.classList.remove('open'); _removeAddCityOverlay(); }
+  const home = (state.zipCity || '').toLowerCase();
+  const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && c.toLowerCase() !== home && !additionalCities.some(s => s.toLowerCase() === c.toLowerCase())).slice(0, 8);
+  filtered.forEach(city => box.appendChild(citySuggestButton(city, () => addAdditionalCity(city, { fromInput: true }))));
+  const exact = list.some(c => c.toLowerCase() === q.toLowerCase());
+  const already = additionalCities.some(c => c.toLowerCase() === q.toLowerCase());
+  if (!exact && !already) {
+    const add = citySuggestButton('Add "' + q + '"', () => addAdditionalCity(q, { fromInput: true }));
+    add.classList.add('city-suggest-add');
+    box.appendChild(add);
+  }
+  const sc = document.querySelector('#screen-3 .screen-content');
+  if (sc) sc.classList.add('city-keyboard-pad');
+  const last = box.lastElementChild;
+  if (last) last.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 
-function addAdditionalCity(city) {
-  _removeAddCityOverlay();
-  if (!additionalCities.includes(city)) { additionalCities.push(city); renderAdditionalCities(); }
-  const wrap = document.getElementById('add-city-search-wrap');
-  if (wrap) wrap.style.display = 'none';
-  const inp = document.getElementById('add_city_search_input');
-  if (inp) inp.value = '';
-  const dd = document.getElementById('add-city-dropdown');
-  if (dd) { dd.innerHTML = ''; dd.classList.remove('open'); }
+function citySuggestButton(label, onClick) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'city-suggest';
+  btn.textContent = label;
+  btn.addEventListener('click', onClick);
+  return btn;
+}
+
+function addAdditionalCity(city, opts) {
+  const name = String(city || '').trim();
+  if (!name) return;
+  const dupHome = (state.zipCity || '').toLowerCase() === name.toLowerCase();
+  const dupExtra = additionalCities.some(c => c.toLowerCase() === name.toLowerCase());
+  if (!dupHome && !dupExtra) additionalCities.push(name);
+  renderAdditionalCities();
+  renderLaunchCityPicks();
+  if (typeof qRefresh === 'function') qRefresh('want_location');
+  if (opts && opts.fromInput) {
+    const inp = document.getElementById('add_city_search_input');
+    if (inp) inp.value = '';
+    renderCitySuggestions();
+  }
 }
 
 function removeAdditionalCity(city) {
   additionalCities = additionalCities.filter(c => c !== city);
   renderAdditionalCities();
+  renderLaunchCityPicks();
+  renderCitySuggestions();
+  if (typeof qRefresh === 'function') qRefresh('want_location');
 }
 
 function renderAdditionalCities() {
   const list = document.getElementById('additional-cities-list');
   if (!list) return;
-  list.innerHTML = additionalCities.map(c => `<div class="location-city-row"><span style="margin-right:10px;font-size:15px;">📍</span><span style="font-family:'Space Mono',monospace;font-size:14px;flex:1;">${c}</span><button type="button" onmousedown="event.preventDefault();removeAdditionalCity(${JSON.stringify(c)})" style="font-size:20px;line-height:1;color:var(--muted,#888);background:none;border:none;cursor:pointer;padding:0 0 0 8px;flex-shrink:0;">×</button></div>`).join('');
+  list.replaceChildren();
+  additionalCities.forEach(city => {
+    const chip = document.createElement('span');
+    chip.className = 'multiselect-chip';
+    const name = document.createElement('span');
+    name.textContent = city;
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'city-chip-remove';
+    remove.textContent = '×';
+    remove.setAttribute('aria-label', 'Remove ' + city);
+    remove.addEventListener('click', () => removeAdditionalCity(city));
+    chip.append(name, remove);
+    list.appendChild(chip);
+  });
 }
 
 // ---- AGE RANGE SLIDER ----
@@ -2574,32 +3779,7 @@ function _updateHeightFill() {
 }
 
 function initHeightSlider() {
-  if (!state.heightPrefMinCm) {
-    // Read height from DOM as primary (most reliable); fall back to state then gender default
-    const _hEl = document.getElementById('height_ftin');
-    const domHeightCm = (_hEl && _hEl.value) ? parseInt(_hEl.value) : null;
-    const userHeightCm = domHeightCm || state.heightCm || (state.gender === 'man' ? 175 : 160);
-    const userHeightIn = Math.round(userHeightCm / 2.54);
-    const seeking = state.genderSeeking;
-    let minIn, maxIn;
-    if (seeking === 'men') {
-      // Seeking men: her height - 3" to max
-      minIn = Math.max(58, userHeightIn - 3); maxIn = 84;
-    } else if (seeking === 'women') {
-      // Seeking women: min to his height + 3"
-      minIn = 58; maxIn = Math.min(84, userHeightIn + 3);
-    } else {
-      minIn = 60; maxIn = 78; // fallback
-    }
-    state.heightPrefMinCm = Math.round(minIn * 2.54);
-    state.heightPrefMaxCm = Math.round(maxIn * 2.54);
-    const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in');
-    if (minEl) minEl.value = minIn;
-    if (maxEl) maxEl.value = maxIn;
-    const minL = document.getElementById('height_min_label'), maxL = document.getElementById('height_max_label');
-    if (minL) minL.textContent = _fmtHeight(minIn);
-    if (maxL) maxL.textContent = _fmtHeight(maxIn);
-  }
+  // What you want starts blank. Do not guess a partner-height range from gender.
   _updateHeightFill();
   requestAnimationFrame(_updateHeightLabels);
 }
@@ -2717,13 +3897,21 @@ let _zipTimer = null;
 
 function setLivesWithPartner(val) {
   state.livesWithPartner = val;
-  document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
-  document.getElementById('btn-lives-no').classList.toggle('selected', val === 'no');
-  document.getElementById('btn-lives-parttime').classList.toggle('selected', val === 'part_time');
+  const yes = document.getElementById('btn-lives-yes');
+  const no = document.getElementById('btn-lives-no');
+  const pt = document.getElementById('btn-lives-parttime');
+  if (yes) yes.classList.toggle('selected', val === 'yes');
+  if (no) no.classList.toggle('selected', val === 'no');
+  if (pt) pt.classList.toggle('selected', val === 'part_time');
+  const sel = document.getElementById('lives_with_partner_select');
+  if (sel && val && sel.value !== val) sel.value = val;
   const showCity = val === 'no' || val === 'part_time';
-  const pcf = document.getElementById('partner-city-field');
-  if (pcf) pcf.style.display = showCity ? '' : 'none';
-  if (!showCity) { partnerCity = null; const inp = document.getElementById('partner_city_input'); if (inp) inp.value = ''; }
+  if (!showCity) {
+    partnerCity = null;
+    const inp = document.getElementById('partner_city_input');
+    if (inp) inp.value = '';
+    if (typeof qPassed !== 'undefined') qPassed.delete('partner_city');
+  }
 }
 
 function initPartnerCityPicker() {
