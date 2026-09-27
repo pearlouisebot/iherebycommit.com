@@ -1097,7 +1097,7 @@
             <select class="field-input" id="kids_timeline_select_condensed" onchange="setKidsTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
-              <option value="1_2_years">1-2 years</option>
+              <option value="1_2_years">2 years</option>
               <option value="3_4_years">3-4 years</option>
               <option value="5_10_years">5-10 years</option>
               <option value="10_plus_years">10+ years</option>
@@ -1114,7 +1114,7 @@
           <select class="field-input" id="kids_timeline_select" onchange="setKidsTimeline(this.value)">
             <option value="">— Select —</option>
             <option value="asap">ASAP</option>
-            <option value="1_2_years">1-2 years</option>
+            <option value="1_2_years">2 years</option>
             <option value="3_4_years">3-4 years</option>
             <option value="5_10_years">5-10 years</option>
             <option value="10_plus_years">10+ years</option>
@@ -1954,14 +1954,14 @@ function syncFamilyDrip() {
 
   // haskids-standalone-row: full width, shows after timeline answered and before have kids answered
   const hkStandaloneRow = document.getElementById('haskids-standalone-row');
-  if (hkStandaloneRow) hkStandaloneRow.style.display = (hasTL && !hasKidsDone) ? 'block' : 'none';
+  if (hkStandaloneRow) hkStandaloneRow.style.display = (hasLF && hasTL && !hasKidsDone) ? 'block' : 'none';
 
   // Timeline label: full while have kids not yet answered, condensed once both share the row
   const tlLabel = document.getElementById('timeline-label');
   if (tlLabel) {
     if (hasKidsDone && needsTL) {
       tlLabel.style.fontSize = '12px';
-      tlLabel.textContent = _hasMarriage ? 'Marriage timing' : _datingOnly ? 'Dating timeline' : 'Partner timeline';
+      tlLabel.textContent = _hasMarriage ? 'Marriage timing' : _datingOnly ? 'Dating timing' : 'Partner timing';
     } else {
       tlLabel.style.fontSize = '';
       tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
@@ -2025,11 +2025,11 @@ function syncFamilyDrip() {
 
   // kidstimeline-standalone-row: full width, shown while not yet answered
   const ktStandaloneRow = document.getElementById('kidstimeline-standalone-row');
-  if (ktStandaloneRow) ktStandaloneRow.style.display = (state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
+  if (ktStandaloneRow) ktStandaloneRow.style.display = (hasLF && state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
 
   // fertility-row: full width, shows once kids timeline answered
   const fertRow = document.getElementById('fertility-row');
-  if (fertRow) fertRow.style.display = (state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
+  if (fertRow) fertRow.style.display = (hasLF && state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
 
   // Clear downstream if wantsChildren is not yes
   if (state.wantsChildren !== 'yes') {
