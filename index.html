@@ -1855,7 +1855,7 @@ function toggleLookingFor(val) {
   syncFamilyDrip();
   // Debounce collapse: collapse 500ms after last selection
   clearTimeout(_lfCollapseTimer);
-  if (state.lookingFor.length > 0) _lfCollapseTimer = setTimeout(collapseLookingFor, 500);
+  if (state.lookingFor.length > 0) _lfCollapseTimer = setTimeout(collapseLookingFor, 3000);
 }
 
 function collapseLookingFor() {
