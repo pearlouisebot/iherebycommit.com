@@ -255,13 +255,13 @@
     }
     .q-choices-row .toggle-btn { flex: 1; width: auto; font-size: 16px; }
     .q-choices-grid .toggle-btn { font-size: 17px; }
-    .name-fields {
+    .name-fields, .split-fields {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 8px;
     }
-    .name-fields .field-group { min-width: 0; margin-bottom: 0; }
-    .name-fields .field-input { width: 100%; }
+    .name-fields .field-group, .split-fields .field-group { min-width: 0; margin-bottom: 0; }
+    .name-fields .field-input, .split-fields .field-input { width: 100%; }
     #name-step.name-open #q-last_name { display: none; }
     .q-choices .toggle-btn:active { transform: scale(0.97); }
     .q-native, .q-multi-edit { display: none; }
@@ -1114,16 +1114,23 @@
       <div class="screen-label">Step <span id="prof-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">PROFESSION &amp; <span class="accent">EDUCATION</span></div>
       <div class="q" id="q-professional_title" data-q="professional_title" data-kind="text">
-        <button type="button" class="q-row" onclick="qEdit('professional_title')" aria-label="Edit professional title">
+        <button type="button" class="q-row" onclick="qEdit('professional_title')" aria-label="Edit title and company">
           <span class="q-row-label">Title</span>
           <span class="q-row-value" data-q-value></span>
           <span class="q-row-caret" aria-hidden="true">▾</span>
         </button>
         <div class="q-panel">
-          <label class="field-label" for="professional_title">Professional title</label>
-          <input class="field-input" id="professional_title" type="text" placeholder="What do you do?" autocomplete="organization-title" onkeydown="qOnEnter(event,'professional_title')" onblur="qOnBlur('professional_title')">
-          <div class="field-error" id="err-professional_title">Required</div>
-          <button type="button" class="q-mini" onclick="qConfirm('professional_title')">NEXT</button>
+          <div class="split-fields">
+            <div class="field-group">
+              <label class="field-label" for="professional_title">Title</label>
+              <input class="field-input" id="professional_title" type="text" placeholder="e.g. VP Analytics" autocomplete="organization-title" onkeydown="qOnTitleKey(event)" onblur="qOnWorkBlur()" onfocus="qWorkFocus('title')">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="company">Company</label>
+              <input class="field-input" id="company" type="text" placeholder="e.g. Google" autocomplete="organization" onkeydown="qOnCompanyKey(event)" onblur="qOnWorkBlur()" onfocus="qWorkFocus('company')">
+            </div>
+          </div>
+          <button type="button" class="q-mini" id="work-step-next" onclick="qWorkNext()">NEXT</button>
         </div>
       </div>
       <div class="q" id="q-degrees" data-q="degrees" data-kind="text">
@@ -2197,6 +2204,7 @@ async function saveLead() {
     landing_headline: state.landingHeadline || null,
     height_cm: state.heightCm || null,
     professional_title: professionalTitlePayload(),
+    company: companyPayload(),
     degrees: degreesPayload(),
     highest_degree: derivedHighestDegree(),
     institutions: institutionsPayload(),
@@ -2337,6 +2345,19 @@ function relationshipTimelinePayload() {
 
 function professionalTitlePayload() {
   return valOf('professional_title') || null;
+}
+
+function companyPayload() {
+  return valOf('company') || null;
+}
+
+function formatWork() {
+  const title = valOf('professional_title');
+  const company = valOf('company');
+  if (title && company) return title + ' @ ' + company;
+  if (title) return title;
+  if (company) return '@ ' + company;
+  return '—';
 }
 
 function setDegreePreference(val) {
@@ -2703,7 +2724,7 @@ function formatHandle(id) {
 
 const QFLOW = {
   2: [
-    { id: 'professional_title', required: true, applicable: () => true, answered: () => !!valOf('professional_title'), display: () => valOf('professional_title'), content: () => !!valOf('professional_title') },
+    { id: 'professional_title', required: true, applicable: () => true, answered: () => true, display: () => formatWork(), content: () => !!(valOf('professional_title') && valOf('company')) },
     { id: 'degrees', required: false, applicable: () => true, answered: () => true, display: () => formatDegreesRow(), content: () => obtainedDegrees.length > 0 },
   ],
   1: [
@@ -2873,9 +2894,6 @@ function qValidate(id) {
     case 'partner_email':
       if (!isValidEmail(valOf('partner_email'))) { showError('partner_email', 'Valid email required'); return false; }
       hideError('partner_email'); return true;
-    case 'professional_title':
-      if (!valOf('professional_title')) { showError('professional_title', 'Required'); return false; }
-      hideError('professional_title'); return true;
     case 'degree_preference':
       if (!state.degreePreference) { showError('degree_preference', 'Please make a selection'); return false; }
       hideError('degree_preference'); return true;
@@ -2941,6 +2959,38 @@ function qOnNameBlur() {
     qConfirmNames();
   }, 160);
 }
+let workStepField = 'title';
+let workStepOpen = false;
+function qWorkFocus(which) { workStepField = which; }
+function qOnTitleKey(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  workStepField = 'company';
+  document.getElementById('company')?.focus();
+}
+function qOnCompanyKey(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  qConfirm('professional_title');
+}
+function qWorkNext() {
+  if (workStepField !== 'company') {
+    workStepField = 'company';
+    document.getElementById('company')?.focus();
+    return;
+  }
+  qConfirm('professional_title');
+}
+function qOnWorkBlur() {
+  setTimeout(() => {
+    const el = document.getElementById('q-professional_title');
+    if (!el || (!el.classList.contains('q-open') && !el.classList.contains('q-editing'))) return;
+    const panel = el.querySelector('.q-panel');
+    if (!panel || panel.contains(document.activeElement)) return;
+    if (!valOf('professional_title') || !valOf('company')) return;
+    qConfirm('professional_title');
+  }, 160);
+}
 function qConfirmNames() {
   const okFirst = qValidate('first_name');
   const okLast = qValidate('last_name');
@@ -2992,6 +3042,7 @@ function qEdit(id) {
   if (qMultiTimers[id]) { clearTimeout(qMultiTimers[id]); qMultiTimers[id] = null; }
   if (qChoiceTimers[id]) { clearTimeout(qChoiceTimers[id]); qChoiceTimers[id] = null; }
   if (id === 'first_name' || id === 'last_name') nameStepField = id === 'last_name' ? 'last' : 'first';
+  if (id === 'professional_title') workStepField = 'title';
   qEditing = id;
   if (def.syncEdit) def.syncEdit();
   qSync(def.screen);
@@ -3000,6 +3051,13 @@ function qEdit(id) {
       const active = document.activeElement;
       if (active && (active.id === 'first_name' || active.id === 'last_name') && active.id !== id) return;
       try { document.getElementById(id)?.focus({ preventScroll: true }); } catch (err) { document.getElementById(id)?.focus(); }
+    }, 40);
+  }
+  if (id === 'professional_title') {
+    setTimeout(() => {
+      const active = document.activeElement;
+      if (active && (active.id === 'professional_title' || active.id === 'company')) return;
+      try { document.getElementById('professional_title')?.focus({ preventScroll: true }); } catch (err) { document.getElementById('professional_title')?.focus(); }
     }, 40);
   }
 }
@@ -3126,6 +3184,23 @@ function qSync(screenId, opts) {
       step.classList.add('name-open');
       openId = 'first_name';
     } else if (step) step.classList.remove('name-open');
+  }
+  if (screenId === 2) {
+    const work = document.getElementById('q-professional_title');
+    const open = !!(work && (work.classList.contains('q-open') || work.classList.contains('q-editing')));
+    if (open && !workStepOpen && qEditing !== 'professional_title') {
+      workStepField = 'title';
+      setTimeout(() => {
+        const active = document.activeElement;
+        if (active && (active.id === 'professional_title' || active.id === 'company')) return;
+        const input = document.getElementById('professional_title');
+        if (!input) return;
+        const node = document.getElementById('q-professional_title');
+        if (!node || (!node.classList.contains('q-open') && !node.classList.contains('q-editing'))) return;
+        try { input.focus({ preventScroll: true }); } catch (err) { input.focus(); }
+      }, 40);
+    }
+    workStepOpen = open;
   }
   qLastOpen[screenId] = openId;
   if (screenId === 4) {
@@ -3362,9 +3437,6 @@ function validateScreen(screenId) {
       if (!state.degreePreference) { showError('degree_preference', 'Please make a selection'); ok = false; } else hideError('degree_preference');
     }
   }
-  if (screenId === 2) {
-    if (!valOf('professional_title')) { showError('professional_title', 'Required'); ok = false; } else hideError('professional_title');
-  }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
     const pn = document.getElementById('partner_name').value.trim();
@@ -3506,6 +3578,7 @@ async function doSubmit() {
     height_cm: state.heightCm || null,
     landing_headline: state.landingHeadline || null,
     professional_title: professionalTitlePayload(),
+    company: companyPayload(),
     degrees: degreesPayload(),
     highest_degree: derivedHighestDegree(),
     institutions: institutionsPayload(),
