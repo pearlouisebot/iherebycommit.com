@@ -2863,13 +2863,11 @@ function qSync(screenId, opts) {
     }
   }
 }
-// Related collapsed answers that can share one row. The helper pairs a candidate
-// only when both summaries fit in a half without clipping: one line when they
-// can, label over value when that stays readable, otherwise each stays full
-// width. A question is used by the first candidate that fits, so list the
-// preferred partner first (gender + birthday before gender + height). While
-// that partner is still open, the other half is not given away. Future
-// questions can set data-q-pair-with="other_id" on the .q and are picked up.
+// Collapsed rows stay in question order. Two answers share a row only when
+// they are already next to each other and both summaries fit: one line when
+// they can, label over value when that stays readable, otherwise each stays
+// full width in place. A later question is never pulled up to fill a gap.
+// data-q-pair-with is honored only when that id is the immediate neighbor.
 const Q_PAIRS = [
   ['first_name', 'last_name'],
   ['gender', 'birthdate'],
@@ -2944,6 +2942,18 @@ function qCanPair(id) {
   if (!el || !el.classList.contains('q-done') || qEditing === id) return false;
   return qOnActiveScreen(id);
 }
+function qQuestionOrder(screenId) {
+  return (QFLOW[screenId] || []).filter(d => d.applicable()).map(d => d.id);
+}
+function qAreConsecutive(a, b) {
+  const da = qDef(a);
+  const db = qDef(b);
+  if (!da || !db || da.screen !== db.screen) return false;
+  const order = qQuestionOrder(da.screen);
+  const ia = order.indexOf(a);
+  const ib = order.indexOf(b);
+  return ia >= 0 && ib >= 0 && Math.abs(ia - ib) === 1;
+}
 function qSyncPairs() {
   document.querySelectorAll('.q[data-q]').forEach(el => {
     if (el._qSlot && el._qSlot.isConnected) return;
@@ -2957,13 +2967,8 @@ function qSyncPairs() {
     const a = pairIds[0];
     const b = pairIds[1];
     if (used.has(a) || used.has(b)) return;
-    const aDone = qCanPair(a);
-    const bDone = qCanPair(b);
-    if (!(aDone && bDone)) {
-      if (aDone && qOnActiveScreen(b)) used.add(a);
-      else if (bDone && qOnActiveScreen(a)) used.add(b);
-      return;
-    }
+    if (!qAreConsecutive(a, b)) return;
+    if (!qCanPair(a) || !qCanPair(b)) return;
     const elA = document.getElementById('q-' + a);
     const elB = document.getElementById('q-' + b);
     const slotA = elA._qSlot;
