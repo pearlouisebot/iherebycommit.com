@@ -3231,11 +3231,22 @@ function onAddCityInput() {
   const q = inp?.value.trim() || '';
   const dd = document.getElementById('add-city-dropdown');
   if (!dd) return;
-  if (!q) { dd.innerHTML = ''; dd.classList.remove('open'); return; }
+  if (!q) { dd.replaceChildren(); dd.classList.remove('open'); return; }
   const list = _getCityList();
   const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && !additionalCities.includes(c) && c !== state.zipCity).slice(0, 8);
   if (q && !list.some(c => c.toLowerCase() === q.toLowerCase()) && !additionalCities.some(c => c.toLowerCase() === q.toLowerCase())) filtered.push(q);
-  dd.innerHTML = filtered.map(c => `<div class="multiselect-option" onmousedown="event.preventDefault();addAdditionalCity(${JSON.stringify(c)})">${c}</div>`).join('');
+  dd.replaceChildren();
+  filtered.forEach(city => {
+    const opt = document.createElement('div');
+    opt.className = 'multiselect-option';
+    opt.textContent = city;
+    // pointerdown + preventDefault selects before the search field blurs and drops the list.
+    opt.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      addAdditionalCity(city);
+    });
+    dd.appendChild(opt);
+  });
   if (filtered.length) dd.classList.add('open'); else dd.classList.remove('open');
 }
 
@@ -3259,7 +3270,29 @@ function removeAdditionalCity(city) {
 function renderAdditionalCities() {
   const list = document.getElementById('additional-cities-list');
   if (!list) return;
-  list.innerHTML = additionalCities.map(c => `<div class="location-city-row"><span style="margin-right:10px;font-size:15px;">📍</span><span style="font-family:'Space Mono',monospace;font-size:14px;flex:1;">${c}</span><button type="button" onmousedown="event.preventDefault();removeAdditionalCity(${JSON.stringify(c)})" style="font-size:20px;line-height:1;color:var(--muted,#888);background:none;border:none;cursor:pointer;padding:0 0 0 8px;flex-shrink:0;">×</button></div>`).join('');
+  list.replaceChildren();
+  additionalCities.forEach(city => {
+    const row = document.createElement('div');
+    row.className = 'location-city-row';
+    const pin = document.createElement('span');
+    pin.style.marginRight = '10px';
+    pin.style.fontSize = '15px';
+    pin.textContent = '📍';
+    const name = document.createElement('span');
+    name.style.cssText = "font-family:'Space Mono',monospace;font-size:14px;flex:1;";
+    name.textContent = city;
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = '×';
+    remove.setAttribute('aria-label', 'Remove ' + city);
+    remove.style.cssText = 'font-size:20px;line-height:1;color:var(--muted,#888);background:none;border:none;cursor:pointer;padding:0 0 0 8px;flex-shrink:0;';
+    remove.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      removeAdditionalCity(city);
+    });
+    row.append(pin, name, remove);
+    list.appendChild(row);
+  });
 }
 
 // ---- AGE RANGE SLIDER ----
