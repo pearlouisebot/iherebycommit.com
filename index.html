@@ -1360,7 +1360,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27c';
+var PAGE_VERSION = '2026-09-27d';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2147,7 +2147,7 @@ const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'li
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
 let _lfCollapseTimer = null;
-// Timeline question waits for Looking for to collapse (same 1.2s delay as every other tap answer).
+// Timeline question waits for Looking for (multi-select) to collapse, 1.2s after the last tap.
 let _lfTimelineReady = false;
 const LF_LABELS = { casual: 'Casual', dating: 'Dating', relationship: 'Relationship', marriage: 'Marriage', life_partner: 'Life partner' };
 
@@ -2660,7 +2660,7 @@ function closeRacePanel(noCommit) {
   const p = document.getElementById('race-panel'), c = document.getElementById('race');
   if (!p || !p.classList.contains('open')) return;
   p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
-  if (!noCommit) crTap('who-race');
+  if (!noCommit) crTap('who-race', CR_DELAY); // multi-select
 }
 function toggleRacePanel() { if (isRacePanelOpen()) closeRacePanel(); else openRacePanel(); }
 function racePayload() {
@@ -2672,7 +2672,8 @@ function racePayload() {
 // and Intentions & Family. Markup: <div class="who-unit" id="…"><div class="who-cond">key · answer · EDIT</div>
 // …the question's own control…</div>; paired units sit in one .cr-pair row.
 // Same rules on every screen:
-//  - Tap answers (buttons, lists, pickers) collapse 1.2s after the last tap.
+//  - Multi-select picklists (Looking for, Race) collapse 1.2s after the last tap (time to pick several).
+//  - Single-choice taps (button groups, dropdowns, one-pick pickers) collapse ~300ms after the tap.
 //  - Typed answers collapse when you leave the field or press Enter, never mid-typing.
 //  - A pair waits for both answers and collapses together; EDIT on either opens both.
 //    If the other member is optional and skipped, or doesn't apply, it collapses alone once you move on.
@@ -2681,12 +2682,14 @@ function racePayload() {
 //  - Answered questions stay visible and editable; the order never changes.
 // Progressive reveal (Who You Are, Your Relationship): the next question appears once the one before it is answered.
 // ============================================================
-const CR_DELAY = 1200;
+const CR_DELAY = 1200;      // multi-select picklists
+const CR_TAP_DELAY = 300;   // single-choice answers: just long enough to see the selection
 const CR = {};
 const _crT = {};
 const _crB = {};
 const CR_STEPS = {
-  1: [['who-gender'], ['who-name'], ['who-dob', 'who-loc'], ['who-height', 'who-race'], ['who-email']],
+  // Date of birth is revealed alone; the zip follows once the birthday is touched (the Jan 1, 1996 default isn't an answer).
+  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height', 'who-race'], ['who-email']],
   4: [['rel-stage'], ['rel-first'], ['rel-eng', 'rel-wed'], ['rel-mb']],
 };
 const _crFront = { 1: 0, 4: 0 };
@@ -2781,14 +2784,15 @@ function crSettle(id) {
   if (pc.optional && c._movedOn) return crCollapse(id);
   return false;
 }
-// A tap answer: settle 1.2s after the last tap.
+// A tap answer: settle after CR_TAP_DELAY (single choice) or the given delay (multi-select passes CR_DELAY).
 function crTap(id, delay) {
   clearTimeout(_crT[id]); _crT[id] = null;
-  if (CR[id] && crText(id)) _crT[id] = setTimeout(() => { _crT[id] = null; crSettle(id); crSync(); }, delay == null ? CR_DELAY : delay);
+  if (CR[id] && crText(id)) _crT[id] = setTimeout(() => { _crT[id] = null; crSettle(id); crSync(); }, delay == null ? CR_TAP_DELAY : delay);
   crSync();
 }
 function _crStepDone(ids) {
-  return ids.filter(crApplies).every(id => crIsCollapsed(id) || CR[id]._passed);
+  // stepDone: a question can let the next step appear before it collapses (e.g. date of birth waits to collapse with its zip).
+  return ids.filter(crApplies).every(id => crIsCollapsed(id) || CR[id]._passed || (CR[id].stepDone && CR[id].stepDone()));
 }
 function crReveal(screen) {
   const steps = CR_STEPS[screen]; if (!steps) return;
@@ -2884,7 +2888,7 @@ function _crDefineAll() {
   // Who You Are
   crDef('who-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.gender] || '' });
   crDef('who-name', { focus: 'first_name', value: () => { const f = _crV('first_name'), l = _crV('last_name'); return f && l ? f + ' ' + l : ''; } });
-  crDef('who-dob', { focus: 'birthdate', partner: 'who-loc', value: () => state.birthdateTouched ? _crMdy(_crV('birthdate')) : '' }); // the Jan 1, 1996 default isn't an answer until touched
+  crDef('who-dob', { focus: 'birthdate', partner: 'who-loc', stepDone: () => !!state.birthdateTouched, value: () => state.birthdateTouched ? _crMdy(_crV('birthdate')) : '' }); // the Jan 1, 1996 default isn't an answer until touched
   crDef('who-loc', {
     partner: 'who-dob', focus: () => state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input',
     value: () => { if (state.locationMode === 'zip') { const z = _crV('postal_code'); return z ? z + (state.zipCity ? ' \u00b7 ' + state.zipCity : '') : ''; } return _crV('intl_city_input'); },
@@ -3011,7 +3015,7 @@ function onHeightFtInChange() {
   _clearHeightError();
   const val = document.getElementById('height_ftin').value;
   state.heightCm = val ? parseInt(val) : null;
-  // Collapses 1.2s after the pick, together with Race once Race is also done.
+  // Single choice: collapses ~300ms after the pick, together with Race once Race is also done.
   crTap('who-height');
 }
 // The cm box starts with the gender default. While it is untouched, focusing it empties the box (default shown
@@ -3416,7 +3420,7 @@ const partnerCityPicker = cityChipPicker({
   chips: 'partner-city-chips', row: 'partner-city-add-row', input: 'partner_city_input', addBtn: 'partner-city-add-btn', multi: false,
   get: () => (partnerCity ? [partnerCity] : []), set: v => { partnerCity = v[0] || null; },
   onChange: why => {
-    // Same 1.2s settle as every other tap answer, then it collapses (with Live together).
+    // Single pick: short settle like other single-choice answers, then it collapses (with Live together).
     if (why === 'commit' && partnerCity) crTap('pt-city');
     else { clearTimeout(_crT['pt-city']); _crT['pt-city'] = null; }
   },
