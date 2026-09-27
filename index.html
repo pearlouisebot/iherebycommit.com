@@ -1844,9 +1844,10 @@ function syncFamilyDrip() {
       if (state.relationshipTimeline === 'dont_want_relationship') { state.relationshipTimeline = null; tlSel.value = ''; }
     }
     // Marriage-specific longer-horizon options
-    const MARRIAGE_OPTS = [{v:'1_2_years',t:'1–2 years'},{v:'3_5_years',t:'3–5 years'},{v:'5_plus_years',t:'5+ years'},{v:'10_plus_years',t:'10+ years'}];
+    const MARRIAGE_OPTS = [{v:'1_2_years',t:'1–2 years'},{v:'3_5_years',t:'3–5 years'},{v:'5_plus_years',t:'5-10 years'},{v:'10_plus_years',t:'10+ years'}];
     if (_hasMarriage) {
-      MARRIAGE_OPTS.forEach(({v,t}) => { if (!tlSel.querySelector(`option[value="${v}"]`)) { const o=document.createElement('option'); o.value=v; o.textContent=t; tlSel.appendChild(o); } });
+      const _noTlOpt = tlSel.querySelector('option[value="no_timeline"]');
+      MARRIAGE_OPTS.forEach(({v,t}) => { if (!tlSel.querySelector(`option[value="${v}"]`)) { const o=document.createElement('option'); o.value=v; o.textContent=t; if(_noTlOpt){tlSel.insertBefore(o,_noTlOpt);}else{tlSel.appendChild(o);} } });
     } else {
       MARRIAGE_OPTS.forEach(({v}) => { const o=tlSel.querySelector(`option[value="${v}"]`); if(o){o.remove(); if(state.relationshipTimeline===v){state.relationshipTimeline=null;tlSel.value='';}} });
     }
