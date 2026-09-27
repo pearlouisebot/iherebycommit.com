@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>I Hereby Commit</title>
 
@@ -3554,6 +3557,7 @@ function toggleAddCitySearch() {
   if (!wrap) return;
   const isHidden = wrap.style.display === 'none';
   wrap.style.display = isHidden ? '' : 'none';
+  if (!isHidden) _removeAddCityOverlay();
   if (isHidden) setTimeout(() => document.getElementById('add_city_search_input')?.focus(), 50);
 }
 
@@ -3569,12 +3573,32 @@ function swallowFollowingClick() {
   setTimeout(() => document.removeEventListener('click', stop, true), 700);
 }
 
+function _removeAddCityOverlay() {
+  const ov = document.getElementById('add-city-overlay');
+  if (ov) ov.remove();
+}
+
+function _ensureAddCityOverlay() {
+  if (document.getElementById('add-city-overlay')) return;
+  const ov = document.createElement('div');
+  ov.id = 'add-city-overlay';
+  ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:199;background:transparent;-webkit-tap-highlight-color:transparent;';
+  const close = () => {
+    const d = document.getElementById('add-city-dropdown');
+    if (d) { d.innerHTML = ''; d.classList.remove('open'); }
+    ov.remove();
+  };
+  ov.addEventListener('touchstart', () => { close(); swallowFollowingClick(); }, {passive: true});
+  ov.addEventListener('click', close);
+  document.body.appendChild(ov);
+}
+
 function onAddCityInput() {
   const inp = document.getElementById('add_city_search_input');
   const q = inp?.value.trim() || '';
   const dd = document.getElementById('add-city-dropdown');
   if (!dd) return;
-  if (!q) { dd.replaceChildren(); dd.classList.remove('open'); return; }
+  if (!q) { dd.replaceChildren(); dd.classList.remove('open'); _removeAddCityOverlay(); return; }
   const list = _getCityList();
   const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && !additionalCities.includes(c) && c !== state.zipCity).slice(0, 8);
   if (q && !list.some(c => c.toLowerCase() === q.toLowerCase()) && !additionalCities.some(c => c.toLowerCase() === q.toLowerCase())) filtered.push(q);
@@ -3591,10 +3615,12 @@ function onAddCityInput() {
     });
     dd.appendChild(opt);
   });
-  if (filtered.length) dd.classList.add('open'); else dd.classList.remove('open');
+  if (filtered.length) { dd.classList.add('open'); _ensureAddCityOverlay(); }
+  else { dd.classList.remove('open'); _removeAddCityOverlay(); }
 }
 
 function addAdditionalCity(city) {
+  _removeAddCityOverlay();
   if (!additionalCities.includes(city)) { additionalCities.push(city); renderAdditionalCities(); }
   if (typeof qRefresh === 'function') qRefresh('want_location');
   const wrap = document.getElementById('add-city-search-wrap');
