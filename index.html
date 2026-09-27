@@ -2430,8 +2430,11 @@ function onTurnstileSuccess(token) {
   if (state.submitting) doSubmit();
 }
 
+// Submit is on the phone screen (6): check the phone format here, inline, before anything is sent.
 async function submitForm() {
-  if (!validateScreen(7)) return;
+  if (state.submitting) return;
+  if (!validateScreen(6)) { surfaceErrors(6); return; }
+  clearErrorSummary(6);
   state.submitting = true;
   const btn = document.getElementById('submit-btn');
   btn.classList.add('btn-loading');
@@ -2448,8 +2451,12 @@ async function submitForm() {
   }
 }
 
+// Single flight: the Turnstile callback and the 3s fallback can both call this; only the first one submits.
+let _submitInFlight = false;
 async function doSubmit() {
-  // Save final screen data (LinkedIn + socials) to partial_leads before submitting
+  if (_submitInFlight) return;
+  _submitInFlight = true;
+  // Save the last answers (socials, phone) to partial_leads before submitting
   await saveLead();
   const btn = document.getElementById('submit-btn');
   btn.textContent = 'SUBMITTING';
@@ -2505,11 +2512,11 @@ async function doSubmit() {
       showConfirmation(data.subject_number);
     } else {
       showToast(data.error || 'Something went wrong. Please try again.');
-      btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false;
+      btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false;
     }
   } catch(e) {
     showToast('Network error. Please check your connection and try again.');
-    btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false;
+    btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false;
   }
 }
 
@@ -3638,6 +3645,8 @@ function onPhoneInput() {
   checkbox.disabled = !hasPhone;
   if (label) label.style.opacity = hasPhone ? '1' : '0.5';
   if (!hasPhone) checkbox.checked = false;
+  // An earlier "valid phone" error clears as soon as the number is valid (or removed).
+  if (!hasPhone || normalizePhone(phone.value.trim())) hideError('phone');
 }
 
 function onZipInput() {
