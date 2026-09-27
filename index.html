@@ -1295,10 +1295,10 @@
           <div class="q-native">
             <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value); qFinishEdit('timeline')" onblur="qCancelEdit('timeline')">
               <option value="">— Select —</option>
-              <option value="asap">ASAP</option>
-              <option value="3_months">Next 3 months</option>
-              <option value="6_months">Next 6 months</option>
-              <option value="12_months">Next 12 months</option>
+              <option value="1_2_years">1-2 years</option>
+              <option value="3_5_years">3-5 years</option>
+              <option value="5_10_years">5-10 years</option>
+              <option value="10_plus_years">10+ years</option>
               <option value="no_timeline">No timeline</option>
             </select>
           </div>
@@ -2165,44 +2165,10 @@ function setRelationshipTimeline(val) {
 function syncFamilyDrip() {
   const _lf = Array.isArray(state.lookingFor) ? state.lookingFor : [];
   const _hasMarriage = _lf.includes('marriage');
-  const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
   const _datingOnly = _lf.length === 1 && _lf[0] === 'dating';
   const tlLabel = document.getElementById('timeline-question-label');
   if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : _datingOnly ? 'Ideally, when would you like to be dating someone?' : 'Ideally, when would you like to be in a relationship?';
   const tlSel = document.getElementById('relationship_timeline');
-  if (tlSel) {
-    // "Don't Want Relationship" — casual only
-    const existingDwr = tlSel.querySelector('option[value="dont_want_relationship"]');
-    if (_casualOnly && !existingDwr) {
-      const opt = document.createElement('option');
-      opt.value = 'dont_want_relationship';
-      opt.textContent = "Don't Want Relationship";
-      tlSel.appendChild(opt);
-    } else if (!_casualOnly && existingDwr) {
-      existingDwr.remove();
-      if (state.relationshipTimeline === 'dont_want_relationship') {
-        state.relationshipTimeline = null;
-        tlSel.value = '';
-        if (typeof qPassed !== 'undefined') qPassed.delete('timeline');
-      }
-    }
-    // Marriage-specific longer-horizon options
-    const MARRIAGE_OPTS = [{v:'1_2_years',t:'1–2 years'},{v:'3_5_years',t:'3–5 years'},{v:'5_plus_years',t:'5+ years'},{v:'10_plus_years',t:'10+ years'}];
-    if (_hasMarriage) {
-      MARRIAGE_OPTS.forEach(({v,t}) => { if (!tlSel.querySelector(`option[value="${v}"]`)) { const o=document.createElement('option'); o.value=v; o.textContent=t; tlSel.appendChild(o); } });
-    } else {
-      MARRIAGE_OPTS.forEach(({v}) => {
-        const o = tlSel.querySelector(`option[value="${v}"]`);
-        if (!o) return;
-        o.remove();
-        if (state.relationshipTimeline === v) {
-          state.relationshipTimeline = null;
-          tlSel.value = '';
-          if (typeof qPassed !== 'undefined') qPassed.delete('timeline');
-        }
-      });
-    }
-  }
   if (!lookingForNeedsTimeline()) {
     state.relationshipTimeline = null;
     if (tlSel) tlSel.value = '';
