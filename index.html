@@ -114,9 +114,7 @@
     /* Inputs */
     .field-group { margin-bottom: 12px; }
     /* Keep Amanda's exact casing for this label; size/colour/spacing match the other labels. */
-    #partner-location-label { text-transform: none; }
     .field-label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-    #screen-5 .field-label { text-transform: none; }
     #screen-5 .choice-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -164,12 +162,14 @@
     .race-box { flex-shrink: 0; width: 16px; height: 16px; border: 1px solid var(--muted); border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; line-height: 1; color: var(--bg); }
     .race-opt.selected .race-box { background: var(--accent); border-color: var(--accent); }
     .race-opt.selected .race-box::after { content: '\2713'; }
-    .race-done { grid-column: 1 / -1; margin-top: 4px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 10px; cursor: pointer; }
+    .race-done { grid-column: 1 / -1; margin-top: 4px; background: transparent; border: 1px solid var(--accent); border-radius: var(--radius); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 10px; cursor: pointer; }
     #screen-5 .choice-grid.error .toggle-btn:not(.selected) { border-color: var(--error); }
     .field-input { width: 100%; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px; min-height: 54px; box-sizing: border-box; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
     .field-input:focus { border-color: var(--accent); }
     .field-input.error { border-color: var(--error); }
     .field-input::placeholder { color: var(--dim); }
+    /* Defaulted pickers (birthday, height) show the default in grey until the user touches them (unanswered until then). */
+    .field-input.is-default, .field-input.is-default::-webkit-datetime-edit, .field-input.is-default::-webkit-datetime-edit-fields-wrapper { color: var(--muted); }
     .field-input option { background: #1a1a1a; color: var(--text); }
     .field-error { font-size: 11px; color: var(--error); margin-top: 6px; display: none; }
     .field-error.visible { display: block; }
@@ -654,10 +654,9 @@
       font-family: 'Space Mono', monospace;
       font-size: 12px; color: var(--body); line-height: 1.6;
     }
-    #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: -4px 0 12px; }
+    #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 6px 0 0; }
     #screen-2 .bottom-action .partner-tip-box { margin: 0; padding: 6px 12px; }
     #screen-2 .screen-content { padding-bottom: 4px; }
-    #screen-2 .partner-notice { margin-bottom: 8px; }
     #screen-2 .bottom-action .partner-tip-box .tip-label { display: inline; margin: 0 6px 0 0; }
     #screen-2 .bottom-action .partner-tip-box .tip-text { display: inline; font-size: 11px; line-height: 1.5; }
     #screen-2 .bottom-action .btn-ghost { padding: 8px 12px; }
@@ -834,7 +833,7 @@
           <div class="field-group who-unit" id="who-dob" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Date of birth" onclick="crExpand('who-dob')"><span class="who-cond-txt"><span class="who-cond-k">Date of birth</span><span class="who-cond-v" id="who-dob-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Date of birth</label>
-            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" onfocus="onBirthdateInput()" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
+            <input class="field-input is-default" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group who-unit" id="who-loc" style="margin-bottom:0;min-width:0;">
@@ -859,30 +858,30 @@
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Height" onclick="crExpand('who-height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="who-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Height</label>
             <div id="height-us-wrap">
-              <select class="field-input" id="height_ftin" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
-                <option value="">—</option>
+              <select class="field-input is-default" id="height_ftin" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
+                <option value="">— Select —</option>
               </select>
             </div>
             <div id="height-cm-wrap" style="display:none;">
-              <input class="field-input" id="height_cm_input" type="number" inputmode="numeric" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;" onfocus="_cmFocus(this)" onblur="_cmBlur(this)" oninput="onHeightCmChange()">
+              <input class="field-input is-default" id="height_cm_input" type="number" inputmode="numeric" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;" onfocus="_cmFocus(this)" onblur="_cmBlur(this)" oninput="onHeightCmChange()">
             </div>
             <div class="field-error" id="err-height">Please confirm your height</div>
           </div>
           <div class="field-group who-unit" id="who-race" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Race" onclick="crExpand('who-race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="who-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="race">Race</label>
-            <button type="button" class="field-input race-select" id="race" aria-haspopup="true" aria-expanded="false" aria-controls="race-panel" onclick="toggleRacePanel()"><span class="race-select-text empty" id="race-select-text">Select all</span><span class="race-caret" aria-hidden="true">&#9662;</span></button>
+            <button type="button" class="field-input race-select" id="race" aria-haspopup="true" aria-expanded="false" aria-controls="race-panel" onclick="toggleRacePanel()"><span class="race-select-text empty" id="race-select-text">— Select all —</span><span class="race-caret" aria-hidden="true">&#9662;</span></button>
             <div class="field-error" id="err-race">Please make a selection</div>
           </div>
           <div class="race-panel" id="race-panel" role="group" aria-label="Race (select all that apply)">
-            <button type="button" class="race-opt" id="btn-race-0" data-race="Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
-            <button type="button" class="race-opt" id="btn-race-1" data-race="South Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
-            <button type="button" class="race-opt" id="btn-race-2" data-race="Black" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
-            <button type="button" class="race-opt" id="btn-race-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
-            <button type="button" class="race-opt" id="btn-race-4" data-race="MENA" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
-            <button type="button" class="race-opt" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
-            <button type="button" class="race-opt" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
             <button type="button" class="race-opt" id="btn-race-7" data-race="White" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">White</span></button>
+            <button type="button" class="race-opt" id="btn-race-2" data-race="Black" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
+            <button type="button" class="race-opt" id="btn-race-0" data-race="Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
+            <button type="button" class="race-opt" id="btn-race-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
+            <button type="button" class="race-opt" id="btn-race-1" data-race="South Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
+            <button type="button" class="race-opt" id="btn-race-4" data-race="MENA" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
+            <button type="button" class="race-opt" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
+            <button type="button" class="race-opt" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
             <button type="button" class="race-opt" id="btn-race-8" data-race="Other" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
             <button type="button" class="race-opt" id="btn-race-9" data-race="Prefer not to say" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Prefer not to say</span></button>
             <button type="button" class="race-done" id="race-done" onclick="closeRacePanel()">DONE</button>
@@ -914,6 +913,16 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="partner-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR <span class="accent">PARTNER</span></div>
+      <div class="field-group who-unit" id="pt-gender" style="margin-bottom:12px;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner is a" onclick="crExpand('pt-gender')"><span class="who-cond-txt"><span class="who-cond-k">Partner is a</span><span class="who-cond-v" id="pt-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <label class="field-label">My partner is a</label>
+        <div class="toggle-group" style="margin-bottom:0;">
+          <button class="toggle-btn" id="btn-pgender-man" onclick="setPartnerGender('man')">MAN</button>
+          <button class="toggle-btn" id="btn-pgender-woman" onclick="setPartnerGender('woman')">WOMAN</button>
+          <button class="toggle-btn" id="btn-pgender-nonbinary" onclick="setPartnerGender('non-binary')">NON-BINARY</button>
+        </div>
+        <div class="field-error" id="err-partner_gender">Please select one</div>
+      </div>
       <div class="who-unit" id="pt-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
         <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner" onclick="crExpand('pt-name')"><span class="who-cond-txt"><span class="who-cond-k">Partner</span><span class="who-cond-v" id="pt-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" style="margin-bottom:0;min-width:0;">
@@ -930,14 +939,16 @@
         <div class="field-group who-unit" id="pt-bday" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their birthday" onclick="crExpand('pt-bday')"><span class="who-cond-txt"><span class="who-cond-k">Their birthday</span><span class="who-cond-v" id="pt-bday-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="partner_birthday">Their birthday</label>
-          <input class="field-input" id="partner_birthday" type="date" value="1990-01-01" style="font-size:14px;padding:14px 10px;">
+          <input class="field-input is-default" id="partner_birthday" type="date" value="1990-01-01" style="font-size:14px;padding:14px 10px;">
+          <div class="field-error" id="err-partner_birthday">Please confirm their birthday</div>
         </div>
         <div class="field-group who-unit" id="pt-height" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their height" onclick="crExpand('pt-height')"><span class="who-cond-txt"><span class="who-cond-k">Their height</span><span class="who-cond-v" id="pt-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="partner_height">Their height</label>
-          <select class="field-input" id="partner_height" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onPartnerHeightChange()">
-            <option value="">—</option>
+          <select class="field-input is-default" id="partner_height" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onPartnerHeightChange()">
+            <option value="">— Select —</option>
           </select>
+          <div class="field-error" id="err-partner_height">Please confirm their height</div>
         </div>
       </div>
       <div class="field-group who-unit" id="pt-email" style="margin-bottom:12px;">
@@ -945,8 +956,8 @@
         <label class="field-label" for="partner_email">Their email</label>
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
         <div class="field-error" id="err-partner_email">Valid email required</div>
+        <p class="partner-notice">We'll notify them when we go live</p>
       </div>
-      <p class="partner-notice">We'll notify your partner when the study is live.</p>
       <div class="cr-pair cr-stack" id="pt-row-lc">
         <div class="field-group who-unit" id="pt-live" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Live together" onclick="crExpand('pt-live')"><span class="who-cond-txt"><span class="who-cond-k">Live together</span><span class="who-cond-v" id="pt-live-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -956,6 +967,11 @@
             <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no', true)">NO</button>
             <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time', true)">PART-TIME</button>
           </div>
+        </div>
+        <div class="field-group who-unit" id="pt-moved" style="margin-bottom:0;min-width:0;display:none;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Moved in date" onclick="crExpand('pt-moved')"><span class="who-cond-txt"><span class="who-cond-k">Moved in date</span><span class="who-cond-v" id="pt-moved-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="moved_in_date">When did you move in together?</label>
+          <input class="field-input" id="moved_in_date" type="date" style="font-size:14px;padding:14px 10px;">
         </div>
         <div class="field-group who-unit" id="pt-city" style="margin-bottom:0;min-width:0;display:none;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Lives in" onclick="crExpand('pt-city')"><span class="who-cond-txt"><span class="who-cond-k">Lives in</span><span class="who-cond-v" id="pt-city-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -1246,6 +1262,7 @@
       </label>
     </div>
     <div class="bottom-action">
+      <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(6)">← BACK</button>
     </div>
@@ -1282,7 +1299,6 @@
       <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
     </div>
     <div class="bottom-action">
-      <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
       <button class="btn btn-primary" onclick="goNext(7)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(7)">← BACK</button>
     </div>
@@ -1496,6 +1512,10 @@ const state = {
   // The singles age range and partner height range save their defaults when untouched (never block).
   heightTouched: false,
   birthdateTouched: false,
+  // Your Partner: gender (no default), birthday (Jan 1, 1990 default) and height (5'9" default) must be answered/touched.
+  partnerGender: null,
+  partnerBdayTouched: false,
+  partnerHeightTouched: false,
   ageRangeTouched: false,
   heightPrefTouched: false,
 };
@@ -1509,7 +1529,8 @@ function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 // Consent records note where each consent was given: current step number + screen name (e.g. apply_step_4_public_self).
 function consentSurfaces() {
   const at = (id, name) => { const n = getStepNum(id); return n > 0 ? 'apply_step_' + n + '_' + name : null; };
-  return { terms: at(7, 'public_self'), privacy: at(7, 'public_self'), sms_optin: at(6, 'text_me'), partner_notice: at(2, 'your_partner') };
+  // Terms/privacy are shown on the last screen (text_me), right above SUBMIT APPLICATION.
+  return { terms: at(6, 'text_me'), privacy: at(6, 'text_me'), sms_optin: at(6, 'text_me'), partner_notice: at(2, 'your_partner') };
 }
 function totalSteps() { return getPath().length; }
 
@@ -1813,6 +1834,8 @@ function showScreen(id, direction) {
   if (id > 0 && id < 8) { renderBadge(id); renderProgress(id); renderStepNums(id); }
   window.scrollTo(0, 0);
   const sc = el.querySelector('.screen-content'); if (sc) sc.scrollTop = 0;
+  // Arriving on (or coming back to) a progressive screen: show the answered questions plus the next open one only.
+  if (CR_STEPS[id]) _crFront[id] = 0;
   crSync();
   if (id === 1 || id === 2 || id === 4) crSettleScreen(id);
 
@@ -1822,7 +1845,7 @@ function showScreen(id, direction) {
   }
 
   if (id === 1) { _buildHeightSelect(); }
-  if (id === 2) { _buildHeightSelect('partner_height'); }
+  if (id === 2) { _buildHeightSelect('partner_height'); _partnerHeightDefault(); }
   if (id === 5) {
     // Couples: "Family & Intentions", answered for yourself. Singles unchanged.
     const couple = state.status === 'partnered';
@@ -1893,7 +1916,7 @@ function startAs(status) {
   showScreen(1, 'forward');
 }
 
-const COUPLE_INPUT_IDS = ['partner_first_name','partner_last_name','partner_birthday','partner_email','partner_height','partner_city_input','relationship_stage','first_date','engagement_date','wedding_date'];
+const COUPLE_INPUT_IDS = ['partner_first_name','partner_last_name','partner_birthday','partner_email','partner_height','partner_city_input','moved_in_date','relationship_stage','first_date','engagement_date','wedding_date'];
 // "change" link: on screen 1 (identical for both flows) switch in place. From screen 2
 // onward, switch and go back to slide 1 of the other flow; slide-1 answers are kept.
 function changeStatus() {
@@ -1983,14 +2006,14 @@ async function goNext(screenId) {
     if (document.getElementById('under18-msg')?.classList.contains('visible')) return; // under-18 message replaces the form
     hideUnrevealedErrors(screenId);
     if (!hasRevealedErrors(screenId)) {
-      // Everything on screen is fine: show the remaining questions (no errors in this tap).
-      if (crRevealAll(screenId)) { hideUnrevealedErrors(screenId); _crClearErrors(screenId); _crFirstOpen(screenId); return; }
+      // Everything on screen is fine: show the next question (one at a time, no errors in this tap).
+      if (crRevealNext(screenId)) { hideUnrevealedErrors(screenId); _crClearErrors(screenId); _crFirstOpen(screenId); return; }
       validateScreen(screenId); // nothing left to reveal: fall back to the full error list
-    }
+    } else crNextReveals(screenId); // e.g. Height left at its default: its error shows and Race appears (no error on it)
     crExpandErrors(); surfaceErrors(screenId); logValidationFailed(screenId); return;
   }
-  // Progressive screens: questions not shown yet are shown before moving on (nothing is skipped unseen).
-  if (crRevealAll(screenId)) { _crClearErrors(screenId); _crFirstOpen(screenId); return; }
+  // Progressive screens: questions not shown yet are shown (one at a time) before moving on (nothing is skipped unseen).
+  if (crRevealNext(screenId)) { _crClearErrors(screenId); _crFirstOpen(screenId); return; }
   clearErrorSummary(screenId);
   logEvent('screen_completed', keyOf(document.getElementById('screen-' + screenId)));
   await saveLead(); // await so partialLeadId is set before the next NEXT can fire
@@ -2121,11 +2144,73 @@ function setGender(val) {
 function onBirthdateInput() {
   state.birthdateTouched = true;
   hideError('birthdate');
+  _syncDefaultStyles();
   crRefresh();
+  crTap('who-dob'); // collapses once the picker closes (never while typing in it)
 }
-// Defaulted pickers (date of birth, height) only count once touched. Untouched = not answered (saved as null).
+// Defaulted pickers (date of birth, height, partner birthday/height) show the default in grey and only count once
+// touched. Untouched = not answered (saved as null, Next blocked with "Please confirm ...").
 function birthdatePayload() { return state.birthdateTouched ? (document.getElementById('birthdate')?.value || null) : null; }
-function heightPayload() { return (state.heightTouched || state.heightAck) ? (state.heightCm || null) : null; }
+function heightPayload() { return state.heightTouched ? (state.heightCm || null) : null; }
+// Touched = a change, or an explicit tap/keypress on the control followed by closing it. So someone whose true answer
+// equals the default confirms it by opening the picker and choosing it (a native picker fires no change for the same value).
+// Just tabbing through does not count.
+function _bindDefaultPicker(id, touch) {
+  const el = document.getElementById(id);
+  if (!el || el.dataset.defBound) return;
+  el.dataset.defBound = '1';
+  let armed = false;
+  el.addEventListener('pointerdown', () => { armed = true; });
+  el.addEventListener('keydown', e => { if (e.key !== 'Tab' && e.key !== 'Shift') armed = true; });
+  el.addEventListener('input', () => touch());
+  el.addEventListener('change', () => touch());
+  el.addEventListener('blur', () => { if (armed) { armed = false; touch(); } });
+}
+function _syncDefaultStyles() {
+  const set = (id, def) => { const el = document.getElementById(id); if (el) el.classList.toggle('is-default', !!def); };
+  set('birthdate', !state.birthdateTouched);
+  set('height_ftin', !state.heightTouched);
+  set('height_cm_input', !state.heightTouched);
+  set('partner_birthday', !state.partnerBdayTouched);
+  set('partner_height', !state.partnerHeightTouched);
+}
+function _touchHeight() {
+  const inUs = state.locationMode === 'zip';
+  const v = document.getElementById(inUs ? 'height_ftin' : 'height_cm_input')?.value;
+  state.heightTouched = true;
+  state.heightCm = v ? parseInt(v, 10) : null;
+  _clearHeightError();
+  _syncDefaultStyles();
+  crRefresh();
+  if (inUs) crTap('who-height');
+}
+function _touchPartnerBday() {
+  state.partnerBdayTouched = true;
+  hideError('partner_birthday');
+  _syncDefaultStyles();
+  crRefresh();
+  crTap('pt-bday');
+}
+function _touchPartnerHeight() {
+  state.partnerHeightTouched = true;
+  hideError('partner_height');
+  _syncDefaultStyles();
+  crRefresh();
+  if (_crV('partner_height')) crTap('pt-height');
+}
+// Partner height starts at 5'9" (grey, unanswered until touched).
+function _partnerHeightDefault() {
+  const sel = document.getElementById('partner_height');
+  if (sel && !state.partnerHeightTouched && !sel.value) sel.value = String(Math.round(69 * 2.54));
+  _syncDefaultStyles();
+}
+function setPartnerGender(val) {
+  state.partnerGender = val || null;
+  ['man', 'woman', 'nonbinary'].forEach(k => document.getElementById('btn-pgender-' + k)?.classList.toggle('selected', !!val && k === val.replace('-', '')));
+  if (val) hideError('partner_gender');
+  crRefresh();
+  if (val) crTap('pt-gender');
+}
 
 function setHasChildren(val) {
   // Every yes option (singles "yes", couples "yes_*") counts as has kids.
@@ -2409,7 +2494,11 @@ function validateScreen(screenId) {
   if (screenId === 2) {
     const pf = document.getElementById('partner_first_name').value.trim();
     const pe = document.getElementById('partner_email').value.trim();
+    if (!state.partnerGender) { showError('partner_gender', 'Please select one'); ok = false; } else hideError('partner_gender');
     if (!pf) { showError('partner_first_name', 'Required'); ok = false; } else hideError('partner_first_name');
+    // Defaults (Jan 1, 1990 / 5'9") must be checked: untouched blocks Next.
+    if (!state.partnerBdayTouched) { showError('partner_birthday', 'Please confirm their birthday'); ok = false; } else hideError('partner_birthday');
+    if (!state.partnerHeightTouched || !_crV('partner_height')) { showError('partner_height', 'Please confirm their height'); ok = false; } else hideError('partner_height');
     if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
   }
   if (screenId === 4) {
@@ -2673,7 +2762,7 @@ function _syncRaceButtons() {
   });
   const t = document.getElementById('race-select-text');
   if (t) {
-    const txt = state.race.length ? state.race.join(', ') : 'Select all';
+    const txt = state.race.length ? state.race.join(', ') : '\u2014 Select all \u2014';
     t.textContent = txt; t.title = state.race.length ? txt : '';
     t.classList.toggle('empty', !state.race.length);
   }
@@ -2705,12 +2794,13 @@ function racePayload() {
 //  - Multi-select picklists (Looking for, Race) collapse 1.2s after the last tap (time to pick several).
 //  - Single-choice taps (button groups, dropdowns, one-pick pickers) collapse ~300ms after the tap.
 //  - Typed answers collapse when you leave the field or press Enter, never mid-typing.
-//  - A pair waits for both answers and collapses together; EDIT on either opens both.
-//    If the other member is optional and skipped, or doesn't apply, it collapses alone once you move on.
+//  - An answered question collapses right away onto its own compact line; once its pair partner is also done the
+//    two share one row. A collapsed question never sits side by side with an open one. EDIT on either opens both.
 //  - Defaults don't count as answers until touched.
 //  - An answered question reopened with EDIT collapses again when you tap elsewhere.
 //  - Answered questions stay visible and editable; the order never changes.
-// Progressive reveal (Who You Are, Your Relationship): the next question appears once the one before it is answered.
+// Progressive reveal (Who You Are, Your Partner, Your Relationship): one question at a time; the next appears once the
+// one before it is answered. Coming back to a screen shows the answered questions plus the next open one.
 // ============================================================
 const CR_DELAY = 1200;      // multi-select picklists
 const CR_TAP_DELAY = 300;   // single-choice answers: just long enough to see the selection
@@ -2718,11 +2808,13 @@ const CR = {};
 const _crT = {};
 const _crB = {};
 const CR_STEPS = {
-  // Date of birth is revealed alone; the zip follows once the birthday is touched (the Jan 1, 1996 default isn't an answer).
-  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height', 'who-race'], ['who-email']],
-  4: [['rel-stage'], ['rel-first'], ['rel-eng', 'rel-wed'], ['rel-mb']],
+  // Date of birth alone; the zip once the birthday is touched (the Jan 1, 1996 default isn't an answer). Height alone;
+  // Race once Height is touched (or Next is pressed); Email once Race is done.
+  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-email']],
+  2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
+  4: [['rel-stage'], ['rel-first'], ['rel-eng'], ['rel-wed'], ['rel-mb']],
 };
-const _crFront = { 1: 0, 4: 0 };
+const _crFront = { 1: 0, 2: 0, 4: 0 };
 function crDef(id, cfg) { CR[id] = Object.assign({ id: id }, cfg); }
 function _crEl(id) { return document.getElementById(id); }
 function _crV(id) { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
@@ -2780,6 +2872,7 @@ function crExpand(id, focus) {
     clearTimeout(_crT[k]); _crT[k] = null;
     const e = _crEl(k); if (e) e.classList.remove('collapsed');
     CR[k]._movedOn = false;
+    CR[k]._expandedAt = Date.now();
   });
   if (focus !== false) c._editing = true;
   if (c.onExpand) c.onExpand(focus !== false);
@@ -2795,24 +2888,16 @@ function crReset(id) {
   clearTimeout(_crT[id]); _crT[id] = null;
   if (c) { c._movedOn = false; c._passed = false; c._editing = false; c._shownAt = 0; }
 }
-// Collapse now if the rules allow it (pair-aware).
+// Collapse now if the rules allow it. An answered question collapses on its own compact line right away; an answered
+// pair partner that is still open (reopened with EDIT) collapses with it so the two share the row again.
 function crSettle(id) {
   const c = CR[id];
   if (!c || !crApplies(id) || crIsCollapsed(id) || _crHidden(id)) return false;
   if (!crText(id) || (c.busy && c.busy())) return false;
-  const p = crPartner(id);
-  if (!p) return crCollapse(id);
-  const pc = CR[p];
-  if (pc.busy && pc.busy()) return false;
-  if (crText(p) || crIsCollapsed(p)) {
-    const row = _crScope(id), a = document.activeElement;
-    if (row && row.contains(a) && _crTyping(a)) return false; // still typing in the pair
-    const ok1 = crCollapse(id), ok2 = crIsCollapsed(p) || crCollapse(p);
-    if (!(ok1 && ok2)) { crExpand(id, false); return false; }
-    return true;
-  }
-  if (pc.optional && c._movedOn) return crCollapse(id);
-  return false;
+  if (!crCollapse(id)) return false;
+  const p = crPartner(id), pu = p && _crEl(p), pc = p && CR[p];
+  if (pu && !crIsCollapsed(p) && !_crHidden(p) && crText(p) && !(pc.busy && pc.busy()) && !pu.contains(document.activeElement)) crCollapse(p);
+  return true;
 }
 // A tap answer: settle after CR_TAP_DELAY (single choice) or the given delay (multi-select passes CR_DELAY).
 function crTap(id, delay) {
@@ -2821,7 +2906,7 @@ function crTap(id, delay) {
   crSync();
 }
 function _crStepDone(ids) {
-  // stepDone: a question can let the next step appear before it collapses (e.g. date of birth waits to collapse with its zip).
+  // stepDone: a question can let the next step appear before it collapses (e.g. a touched date of birth / height).
   return ids.filter(crApplies).every(id => crIsCollapsed(id) || CR[id]._passed || (CR[id].stepDone && CR[id].stepDone()));
 }
 function crReveal(screen) {
@@ -2832,16 +2917,32 @@ function crReveal(screen) {
   }
   steps.forEach((ids, i) => ids.forEach(id => { const u = _crEl(id); if (u) u.classList.toggle('cr-later', i > _crFront[screen]); }));
 }
-// Show every remaining question. True if a newly shown one still needs an answer.
-function crRevealAll(screen) {
+// Next with nothing wrong on screen: optional questions left blank count as skipped and the next unanswered question
+// is revealed (one step at a time). True if a question that still needs an answer was revealed.
+function crRevealNext(screen) {
   const steps = CR_STEPS[screen]; if (!steps) return false;
-  let fresh = false;
-  for (let i = _crFront[screen] + 1; i < steps.length; i++) {
-    steps[i].forEach(id => { if (crApplies(id) && !crText(id)) fresh = true; if (CR[id]) CR[id]._shownAt = Date.now(); });
-  }
-  _crFront[screen] = steps.length - 1;
+  const before = _crFront[screen];
+  for (let i = 0; i <= before; i++) steps[i].forEach(id => { const c = CR[id]; if (c && c.optional && crApplies(id) && !crText(id)) c._passed = true; });
   crSync();
-  return fresh;
+  if (_crFront[screen] > before && !_crStepDone(steps[_crFront[screen]])) return true;
+  while (_crFront[screen] < steps.length - 1) {
+    _crFront[screen]++;
+    const ids = steps[_crFront[screen]];
+    ids.forEach(id => { if (CR[id]) CR[id]._shownAt = Date.now(); });
+    if (!_crStepDone(ids)) { crSync(); return true; }
+  }
+  crSync();
+  return false;
+}
+// Next pressed while the current question has "nextReveals" (Height): also show the question after it.
+function crNextReveals(screen) {
+  const steps = CR_STEPS[screen]; if (!steps) return;
+  const f = _crFront[screen];
+  if (f < steps.length - 1 && steps[f].some(id => CR[id] && CR[id].nextReveals && crApplies(id))) {
+    _crFront[screen] = f + 1;
+    steps[f + 1].forEach(id => { if (CR[id]) CR[id]._shownAt = Date.now(); });
+    crSync();
+  }
 }
 // Newly revealed questions start clean (no error text or red border in the tap that reveals them).
 function _crClearErrors(screen) {
@@ -2858,7 +2959,7 @@ function _crFirstOpen(screen) {
   if (u) { try { u.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }
 }
 function crSync() {
-  crReveal(1); crReveal(4);
+  crReveal(1); crReveal(2); crReveal(4);
   document.querySelectorAll('.cr-pair').forEach(row => {
     const units = Array.from(row.children).filter(e => e.classList.contains('who-unit'));
     const shown = units.filter(u => !u.classList.contains('cr-later') && u.style.display !== 'none');
@@ -2882,6 +2983,7 @@ function crRefresh() {
     if (!txt) { crExpand(id, false); return; }
     _crFill(id, txt);
   });
+  _syncDefaultStyles();
   crExpandErrors();
   crSync();
 }
@@ -2905,6 +3007,8 @@ function _crOnLeave(e) {
       if (!c || u.classList.contains('collapsed') || _crHidden(id) || !crApplies(id)) return;
       const scope = _crScope(id);
       if (scope && scope.contains(t)) return;
+      const pp = crPartner(id), ppu = pp && _crEl(pp);
+      if (ppu && ppu.contains(t)) return; // the tap was on its pair partner (e.g. EDIT reopened both): not moving on
       if (!crText(id)) { if (c.optional && c._shownAt && c._shownAt < when) c._passed = true; return; }
       c._movedOn = true;
       if (id === 'fam-lf') { clearTimeout(_lfCollapseTimer); _lfSettle(); return; }
@@ -2925,8 +3029,9 @@ function _crDefineAll() {
   });
   crDef('who-height', {
     partner: 'who-race', focus: () => state.locationMode === 'zip' ? 'height_ftin' : 'height_cm_input',
+    stepDone: () => !!state.heightTouched, nextReveals: true,
     value: () => {
-      if (!state.heightTouched && !state.heightAck) return ''; // the gender-based default isn't an answer until touched
+      if (!state.heightTouched) return ''; // the gender-based default isn't an answer until touched
       if (state.locationMode === 'zip') return _crOpt('height_ftin', _crV('height_ftin'));
       const cm = _crV('height_cm_input'); return cm ? cm + ' cm' : '';
     },
@@ -2934,12 +3039,15 @@ function _crDefineAll() {
   crDef('who-race', { partner: 'who-height', focus: 'race', busy: isRacePanelOpen, onExpand: f => { if (f) openRacePanel(); }, value: () => Array.isArray(state.race) ? state.race.join(', ') : '' });
   crDef('who-email', { focus: 'email', value: () => { const e = _crV('email'); return e && isValidEmail(e) ? e : ''; } });
   // Your Partner
+  crDef('pt-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.partnerGender] || '' });
   crDef('pt-name', { focus: 'partner_first_name', value: () => { const f = _crV('partner_first_name'), l = _crV('partner_last_name'); return f && l ? f + ' ' + l : ''; } });
-  crDef('pt-bday', { focus: 'partner_birthday', partner: 'pt-height', optional: true, value: () => state.partnerBdayTouched ? _crMdy(_crV('partner_birthday')) : '' });
-  crDef('pt-height', { focus: 'partner_height', partner: 'pt-bday', optional: true, value: () => _crOpt('partner_height', _crV('partner_height')) });
+  // Partner birthday / height: defaults (grey) must be touched ("so they have to check it").
+  crDef('pt-bday', { focus: 'partner_birthday', partner: 'pt-height', stepDone: () => !!state.partnerBdayTouched, value: () => state.partnerBdayTouched ? _crMdy(_crV('partner_birthday')) : '' });
+  crDef('pt-height', { focus: 'partner_height', partner: 'pt-bday', stepDone: () => !!state.partnerHeightTouched, value: () => state.partnerHeightTouched ? _crOpt('partner_height', _crV('partner_height')) : '' });
   crDef('pt-email', { focus: 'partner_email', value: () => { const e = _crV('partner_email'); return e && isValidEmail(e) ? e : ''; } });
-  crDef('pt-live', { partner: 'pt-city', value: () => ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '' });
-  crDef('pt-city', { partner: 'pt-live', focus: 'partner_city_input', applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
+  crDef('pt-live', { optional: true, partner: () => state.livesWithPartner === 'no' ? 'pt-city' : (state.livesWithPartner === 'yes' ? 'pt-moved' : null), value: () => ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '' });
+  crDef('pt-city', { optional: true, partner: 'pt-live', focus: 'partner_city_input', applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
+  crDef('pt-moved', { optional: true, partner: 'pt-live', focus: 'moved_in_date', applies: () => state.livesWithPartner === 'yes', value: () => state.livesWithPartner === 'yes' ? _crMdy(_crV('moved_in_date')) : '' });
   // Your Relationship
   const stage = () => _crV('relationship_stage');
   crDef('rel-stage', { focus: 'relationship_stage', value: () => _crOpt('relationship_stage', stage()) });
@@ -2980,6 +3088,8 @@ function initCondensedRows() {
       clearTimeout(_crB[id]);
       _crB[id] = setTimeout(() => {
         if (_crT[id]) return;
+        // EDIT hides the focused compact row, which blurs it: that is not leaving the question.
+        if (CR[id]._expandedAt && Date.now() - CR[id]._expandedAt < 700 && document.activeElement === document.body) return;
         const sc = _crScope(id);
         if (!(sc && sc.contains(document.activeElement))) crSettle(id);
       }, 200);
@@ -2987,8 +3097,12 @@ function initCondensedRows() {
   });
   document.addEventListener('click', _crOnLeave, true);
   document.addEventListener('focusin', _crOnLeave, true);
-  const hu0 = _crEl('who-height');
-  if (hu0) hu0.addEventListener('focusin', e => { if (e.target && e.target.matches('select, input')) { state.heightAck = true; _clearHeightError(); } });
+  _bindDefaultPicker('birthdate', onBirthdateInput);
+  _bindDefaultPicker('height_ftin', _touchHeight);
+  _bindDefaultPicker('height_cm_input', _touchHeight);
+  _bindDefaultPicker('partner_birthday', _touchPartnerBday);
+  _bindDefaultPicker('partner_height', _touchPartnerHeight);
+  _syncDefaultStyles();
   // Race picklist: a tap anywhere outside it (or Escape) closes and commits it.
   document.addEventListener('pointerdown', e => {
     if (!isRacePanelOpen()) return;
@@ -3013,6 +3127,7 @@ function initCondensedRows() {
   onEnter('partner_last_name', el => { if (crText('pt-name')) el.blur(); });
   onEnter('partner_birthday', el => el.blur());
   onEnter('partner_email', el => { if (crText('pt-email')) el.blur(); });
+  onEnter('moved_in_date', el => el.blur());
   onEnter('first_date', el => el.blur());
   onEnter('engagement_date', el => el.blur());
   onEnter('wedding_date', el => el.blur());
@@ -3041,12 +3156,8 @@ function _buildHeightSelect(id) {
 }
 function _clearHeightError() { hideError('height'); ['height_ftin', 'height_cm_input'].forEach(id => document.getElementById(id)?.classList.remove('error')); }
 function onHeightFtInChange() {
-  state.heightTouched = true;
-  _clearHeightError();
-  const val = document.getElementById('height_ftin').value;
-  state.heightCm = val ? parseInt(val) : null;
-  // Single choice: collapses ~300ms after the pick, together with Race once Race is also done.
-  crTap('who-height');
+  // Single choice: collapses ~300ms after the pick (Race appears once Height is touched).
+  _touchHeight();
 }
 // The cm box starts with the gender default. While it is untouched, focusing it empties the box (default shown
 // as the placeholder) so typing replaces it instead of appending (160 -> 160170); leaving it empty restores the default.
@@ -3059,10 +3170,7 @@ function _cmBlur(el) {
   el.placeholder = 'cm'; delete el.dataset.def;
 }
 function onHeightCmChange() {
-  state.heightTouched = true;
-  _clearHeightError();
-  const val = document.getElementById('height_cm_input').value;
-  state.heightCm = val ? parseInt(val) : null;
+  _touchHeight();
 }
 function _syncHeightMode(mode) {
   const isUs = mode === 'zip';
@@ -3681,6 +3789,14 @@ function setLivesWithPartner(val, fromTap) {
   // "Where does your partner live?" only when they don't live together (city chip picker, no dropdown).
   const cityUnit = document.getElementById('pt-city');
   if (cityUnit) cityUnit.style.display = val === 'no' ? '' : 'none';
+  // "When did you move in together?" only when they live together (Yes).
+  const movedUnit = document.getElementById('pt-moved');
+  if (movedUnit) movedUnit.style.display = val === 'yes' ? '' : 'none';
+  if (val !== 'yes') {
+    const m = document.getElementById('moved_in_date'); if (m) m.value = '';
+    if (movedUnit) movedUnit.classList.remove('collapsed');
+    clearTimeout(_crT['pt-moved']); _crT['pt-moved'] = null;
+  }
   if (val !== 'no') {
     partnerCity = null;
     const inp = document.getElementById('partner_city_input'); if (inp) inp.value = '';
@@ -3707,23 +3823,24 @@ const partnerCityPicker = cityChipPicker({
 });
 function onPartnerHeightChange() {
   const val = document.getElementById('partner_height').value;
-  if (val) crTap('pt-height'); else crExpand('pt-height', false);
+  if (val) _touchPartnerHeight(); else crExpand('pt-height', false);
 }
 // Back to a fresh Your Partner screen (used when switching to singles).
 function resetPartnerScreen() {
-  ['pt-name', 'pt-bday', 'pt-height', 'pt-email', 'pt-live', 'pt-city'].forEach(crReset);
+  ['pt-gender', 'pt-name', 'pt-bday', 'pt-height', 'pt-email', 'pt-live', 'pt-city', 'pt-moved'].forEach(crReset);
+  _crFront[2] = 0;
+  setPartnerGender(null);
   state.partnerBdayTouched = false;
+  state.partnerHeightTouched = false;
   const bd = document.getElementById('partner_birthday'); if (bd) bd.value = '1990-01-01';
+  const ph = document.getElementById('partner_height'); if (ph) ph.value = '';
+  _partnerHeightDefault();
   partnerCity = null;
   partnerCityPicker.render();
   crSync();
 }
 function initPartnerCondensed() {
-  const bd = document.getElementById('partner_birthday');
-  if (bd) {
-    const touch = () => { state.partnerBdayTouched = true; };
-    bd.addEventListener('focus', touch); bd.addEventListener('input', touch); bd.addEventListener('change', touch);
-  }
+  // Partner birthday/height "touched" tracking: see _bindDefaultPicker (initCondensedRows).
   // Partner city: leaving the unit with typed text picks it (nothing typed is ever dropped), then collapses.
   const cu = document.getElementById('pt-city');
   if (cu) cu.addEventListener('focusout', () => {
@@ -3765,6 +3882,8 @@ function couplePayload() {
     partner_name: c ? ([first, last].filter(Boolean).join(' ') || null) : null, // backward compat: "first last"
     partner_email: c && g('partner_email') ? g('partner_email').toLowerCase() : null,
     partner_birthday: state.partnerBdayTouched ? g('partner_birthday') : null,
+    partner_gender: c ? (state.partnerGender || null) : null,
+    moved_in_date: (c && live === 'yes') ? g('moved_in_date') : null,
     live_together: live,
     lives_with_partner: live, // backward compat: same answer, older column
     relationship_stage: stage,
@@ -3773,7 +3892,7 @@ function couplePayload() {
     wedding_date: stage === 'married' ? g('wedding_date') : null,
     married_before: c ? (state.marriedBefore || null) : null,
     // Hotfix 11. Birthday: the Jan 1, 1990 default is only sent once the user has touched it.
-    partner_height: c ? (parseInt(g('partner_height'), 10) || null) : null,
+    partner_height: (c && state.partnerHeightTouched) ? (parseInt(g('partner_height'), 10) || null) : null, // 5'9" default only once touched
     partner_city: (c && live === 'no') ? (partnerCity || null) : null,
   };
 }
