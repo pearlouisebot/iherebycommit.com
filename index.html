@@ -137,10 +137,11 @@
     .who-cond-v { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.4; white-space: normal; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .who-cond-edit { font-size: 10px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.1em; flex-shrink: 0; }
     #who-name.collapsed > .who-cond, #pt-name.collapsed > .who-cond { grid-column: 1 / -1; }
-    /* Paired rows (shared by every condensed screen): side by side, collapse and expand together.
-       .cr-stack pairs stack while being answered and share a line once both are collapsed. */
+    /* Paired rows (shared by every condensed screen): while either member is unanswered/open, each member
+       gets its own full-width line; once both are collapsed they share one line (equal heights).
+       A member that collapses alone (partner skipped / doesn't apply) stays on its own line. */
     .cr-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-bottom: 12px; align-items: start; }
-    .cr-pair.cr-stack:not(.cr-both), .cr-pair.cr-solo { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+    .cr-pair:not(.cr-both), .cr-pair.cr-solo { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
     .cr-pair.cr-both { align-items: stretch; }
     .cr-pair.cr-both > .who-unit.collapsed > .who-cond { height: 100%; }
     /* 320px phones: couples' "Have kids" answer ("Yes from past relationship") needs the full width, so that pair stacks. */
@@ -1359,7 +1360,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27b';
+var PAGE_VERSION = '2026-09-27c';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -1934,11 +1935,36 @@ function clearErrorSummary(screenId) {
   if (box) { box.classList.remove('visible'); box.textContent = ''; }
 }
 
+// Validation errors show only for questions already on screen. Errors (and red borders) on questions the
+// progressive reveal hasn't shown yet, or that don't apply, are cleared so they never appear later.
+function _errUnrevealed(e) {
+  if (e.closest('.cr-later, .cr-empty')) return true;
+  const u = e.closest('.who-unit');
+  return !!u && u.style.display === 'none';
+}
+function hideUnrevealedErrors(screenId) {
+  const scr = document.getElementById('screen-' + screenId); if (!scr) return;
+  scr.querySelectorAll('.field-error.visible').forEach(e => { if (_errUnrevealed(e)) e.classList.remove('visible'); });
+  scr.querySelectorAll('.cr-later .error, .cr-empty .error').forEach(e => e.classList.remove('error'));
+}
+function hasRevealedErrors(screenId) {
+  const scr = document.getElementById('screen-' + screenId); if (!scr) return false;
+  return Array.from(scr.querySelectorAll('.field-error.visible')).some(e => !_errUnrevealed(e));
+}
 async function goNext(screenId) {
   if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
-  if (!validateScreen(screenId)) { crRevealAll(screenId); crExpandErrors(); surfaceErrors(screenId); logValidationFailed(screenId); return; }
+  if (!validateScreen(screenId)) {
+    if (document.getElementById('under18-msg')?.classList.contains('visible')) return; // under-18 message replaces the form
+    hideUnrevealedErrors(screenId);
+    if (!hasRevealedErrors(screenId)) {
+      // Everything on screen is fine: show the remaining questions (no errors in this tap).
+      if (crRevealAll(screenId)) { hideUnrevealedErrors(screenId); _crClearErrors(screenId); _crFirstOpen(screenId); return; }
+      validateScreen(screenId); // nothing left to reveal: fall back to the full error list
+    }
+    crExpandErrors(); surfaceErrors(screenId); logValidationFailed(screenId); return;
+  }
   // Progressive screens: questions not shown yet are shown before moving on (nothing is skipped unseen).
-  if (crRevealAll(screenId)) { _crFirstOpen(screenId); return; }
+  if (crRevealAll(screenId)) { _crClearErrors(screenId); _crFirstOpen(screenId); return; }
   clearErrorSummary(screenId);
   logEvent('screen_completed', keyOf(document.getElementById('screen-' + screenId)));
   await saveLead(); // await so partialLeadId is set before the next NEXT can fire
@@ -2782,6 +2808,16 @@ function crRevealAll(screen) {
   _crFront[screen] = steps.length - 1;
   crSync();
   return fresh;
+}
+// Newly revealed questions start clean (no error text or red border in the tap that reveals them).
+function _crClearErrors(screen) {
+  const scr = document.getElementById('screen-' + screen); if (!scr) return;
+  scr.querySelectorAll('.who-unit').forEach(u => {
+    if (u.classList.contains('collapsed')) return;
+    u.querySelectorAll('.field-error.visible').forEach(e => e.classList.remove('visible'));
+    u.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+  });
+  clearErrorSummary(screen);
 }
 function _crFirstOpen(screen) {
   const u = Array.from(document.querySelectorAll('#screen-' + screen + ' .who-unit')).find(e => !e.classList.contains('collapsed') && !_crHidden(e.id) && crApplies(e.id) && !crText(e.id));
