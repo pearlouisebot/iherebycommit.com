@@ -1139,7 +1139,7 @@
       <!-- FERTILITY: full width, shows once kids timeline answered -->
       <div id="fertility-row" style="display:none;margin-bottom:0;">
         <div class="field-group" id="fertility-group" style="margin-bottom:0;">
-          <label class="field-label">Have you invested in fertility preservation?</label>
+          <label class="field-label" style="font-size:12px;">Did you invest in fertility preservation?</label>
           <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
             <option value="">— Select —</option>
             <option value="yes">Yes</option>
@@ -1881,6 +1881,8 @@ const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'li
 const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
 let _lfCollapseTimer = null;
+// Timeline question waits for Looking for to collapse (same 1.2s debounce).
+let _lfTimelineReady = false;
 const LF_LABELS = { casual: 'Casual', dating: 'Dating', relationship: 'Relationship', marriage: 'Marriage', life_partner: 'Life partner' };
 
 function toggleLookingFor(val) {
@@ -1894,10 +1896,13 @@ function toggleLookingFor(val) {
   // Collapse only 1.2s after the last tap. A new tap restarts the timer.
   clearTimeout(_lfCollapseTimer);
   _lfCollapseTimer = null;
+  _lfTimelineReady = false;
   if (state.lookingFor.length > 0) {
     _lfCollapseTimer = setTimeout(() => {
       _lfCollapseTimer = null;
       collapseLookingFor();
+      _lfTimelineReady = true;
+      syncFamilyDrip();
     }, 1200);
   }
   syncFamilyDrip();
@@ -1951,9 +1956,11 @@ function syncFamilyDrip() {
   const lfGroup = document.getElementById('looking-for-group');
   if (lfGroup) lfGroup.style.display = partnered ? 'none' : 'block';
 
-  // timeline-haskids-row: shows for singles with looking_for set
+  // timeline-haskids-row: shows for singles with looking_for set, once Looking for has
+  // collapsed (1.2s after the last tap). An already-answered timeline stays visible while editing.
   const tlHkRow = document.getElementById('timeline-haskids-row');
-  if (tlHkRow) tlHkRow.style.display = (!partnered && hasLF) ? 'flex' : 'none';
+  const _tlReady = _lfTimelineReady || !!state.relationshipTimeline;
+  if (tlHkRow) tlHkRow.style.display = (!partnered && hasLF && _tlReady) ? 'flex' : 'none';
 
   // timeline-col: hidden for casual (no timeline needed)
   const tlCol = document.getElementById('timeline-col');
