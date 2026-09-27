@@ -1006,7 +1006,7 @@
 
       <!-- RELATIONSHIP TIMELINE: drips in after looking_for (conditional) -->
       <div class="field-group" id="relationship-timeline-group" style="display:none;margin-bottom:14px;">
-        <label class="field-label">Ideally, when would you like to be in a relationship?</label>
+        <label class="field-label">Ideal timeline for a relationship?</label>
         <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value)">
           <option value="">— Select —</option>
           <option value="asap">ASAP</option>
@@ -1018,28 +1018,32 @@
         <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
       </div>
 
-      <!-- HAS KIDS: drips in after looking_for (+ timeline if needed) -->
-      <div class="field-group" id="has-children-group" style="display:none;margin-bottom:14px;">
-        <label class="field-label">Do you have kids?</label>
-        <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-        <div class="field-error" id="err-has_children">Please make a selection</div>
-      </div>
-
-      <!-- WANTS KIDS: drips in after has_children answered -->
-      <div class="field-group" id="wants-children-group" style="display:none;margin-bottom:14px;">
-        <label class="field-label" id="wants-children-label">Do you want kids?</label>
-        <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
-          <option value="">— Select —</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-          <option value="open_either_way">Open to either</option>
-          <option value="not_sure">Unsure</option>
-        </select>
-        <div class="field-error" id="err-wants_children">Please make a selection</div>
+      <!-- HAS KIDS + WANTS KIDS: side-by-side once both are visible -->
+      <div id="kids-pair-row" style="display:none;flex-direction:row;gap:10px;margin-bottom:14px;">
+        <div id="has-children-col" style="flex:1;min-width:0;">
+          <div class="field-group" id="has-children-group" style="margin-bottom:0;">
+            <label class="field-label" style="font-size:12px;">Have kids?</label>
+            <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
+              <option value="">— Select —</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <div class="field-error" id="err-has_children">Please make a selection</div>
+          </div>
+        </div>
+        <div id="wants-children-col" style="flex:1;min-width:0;display:none;">
+          <div class="field-group" id="wants-children-group" style="margin-bottom:0;">
+            <label class="field-label" id="wants-children-label" style="font-size:12px;">Want kids?</label>
+            <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
+              <option value="">— Select —</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+              <option value="open_either_way">Open to either</option>
+              <option value="not_sure">Unsure</option>
+            </select>
+            <div class="field-error" id="err-wants_children">Please make a selection</div>
+          </div>
+        </div>
       </div>
 
       <!-- FERTILITY: drips in after wants_children = 'yes' -->
@@ -1835,7 +1839,7 @@ function syncFamilyDrip() {
   const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
   const tlLabel = document.querySelector('#relationship-timeline-group .field-label');
   const _datingOnly = _lf.length === 1 && _lf[0] === 'dating';
-  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideally, when would you like to be married?' : _datingOnly ? 'Ideally, when would you like to be dating someone?' : 'Ideally, when would you like to be in a relationship?';
+  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
   const tlSel = document.getElementById('relationship_timeline');
   if (tlSel) {
     // "Don't Want Relationship" — casual only
@@ -1868,12 +1872,12 @@ function syncFamilyDrip() {
   }
   if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
   // has kids: unlocks after LF + TL prereqs met
-  const hcGroup = document.getElementById('has-children-group');
-  if (hcGroup) hcGroup.style.display = (hasLF && hasTL) ? 'block' : 'none';
-  // wants kids: unlocks after has_children answered
-  const wcGroup = document.getElementById('wants-children-group');
-  if (wcGroup) wcGroup.style.display = (hasLF && hasTL && hasKidsDone) ? 'block' : 'none';
-  if (hasKidsDone) { const lbl = document.getElementById('wants-children-label'); if (lbl) lbl.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?'; }
+  const kidsPairRow = document.getElementById('kids-pair-row');
+  if (kidsPairRow) kidsPairRow.style.display = (hasLF && hasTL) ? 'flex' : 'none';
+  // wants kids: unlocks after has_children answered — slide in second column
+  const wcCol = document.getElementById('wants-children-col');
+  if (wcCol) wcCol.style.display = (hasLF && hasTL && hasKidsDone) ? '' : 'none';
+  if (hasKidsDone) { const lbl = document.getElementById('wants-children-label'); if (lbl) lbl.textContent = state.hasChildren === true ? 'Want more?' : 'Want kids?'; }
   // fertility: unlocks after wants_children = 'yes'
   const fertGroup = document.getElementById('fertility-group');
   if (fertGroup) fertGroup.style.display = (state.wantsChildren === 'yes') ? 'block' : 'none';
