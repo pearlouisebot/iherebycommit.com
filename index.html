@@ -742,7 +742,7 @@
 <div id="app">
 
   <!-- SCREEN 0: LANDING (phone layout) -->
-  <div id="screen-0" class="screen active">
+  <div id="screen-0" class="screen active" data-screen-key="landing">
     <div class="lp-phone">
       <!-- Top row -->
       <div class="lp-top-row">
@@ -778,7 +778,7 @@
   </div>
 
   <!-- SCREEN 1: ABOUT YOU -->
-  <div id="screen-1" class="screen">
+  <div id="screen-1" class="screen" data-screen-key="who_you_are">
     <div class="progress-container"><div class="progress-steps" id="progress-1"></div></div>
     <div id="badge-1" class="applying-badge"></div>
     <div class="screen-content">
@@ -886,7 +886,7 @@
   </div>
 
   <!-- SCREEN 2: YOUR PARTNER (Couples only) -->
-  <div id="screen-2" class="screen">
+  <div id="screen-2" class="screen" data-screen-key="your_partner">
     <div class="progress-container"><div class="progress-steps" id="progress-2"></div></div>
     <div id="badge-2" class="applying-badge"></div>
     <div class="screen-content">
@@ -956,7 +956,7 @@
     </div>
   </div>
 
-  <div id="screen-3" class="screen">
+  <div id="screen-3" class="screen" data-screen-key="what_you_want">
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
     <div id="badge-3" class="applying-badge"></div>
     <div class="screen-content">
@@ -1018,7 +1018,7 @@
   </div>
 
   <!-- SCREEN 4: YOUR RELATIONSHIP (Couples only) -->
-  <div id="screen-4" class="screen">
+  <div id="screen-4" class="screen" data-screen-key="your_relationship">
     <div class="progress-container"><div class="progress-steps" id="progress-4"></div></div>
     <div id="badge-4" class="applying-badge"></div>
     <div class="screen-content">
@@ -1082,7 +1082,7 @@
   </div>
 
   <!-- SCREEN 5: INTENTIONS & FAMILY -->
-  <div id="screen-5" class="screen">
+  <div id="screen-5" class="screen" data-screen-key="family_and_intentions">
     <div class="progress-container"><div class="progress-steps" id="progress-5"></div></div>
     <div id="badge-5" class="applying-badge"></div>
     <div class="screen-content">
@@ -1202,7 +1202,7 @@
   </div>
 
   <!-- SCREEN 6: WE'LL TEXT YOU WHEN WE'RE LIVE -->
-  <div id="screen-6" class="screen">
+  <div id="screen-6" class="screen" data-screen-key="text_me">
     <div class="progress-container"><div class="progress-steps" id="progress-6"></div></div>
     <div id="badge-6" class="applying-badge"></div>
     <div class="screen-content">
@@ -1225,7 +1225,7 @@
   </div>
 
   <!-- SCREEN 7: YOUR PUBLIC SELF -->
-  <div id="screen-7" class="screen">
+  <div id="screen-7" class="screen" data-screen-key="public_self">
     <div class="progress-container"><div class="progress-steps" id="progress-7"></div></div>
     <div id="badge-7" class="applying-badge"></div>
     <div class="screen-content">
@@ -1262,7 +1262,7 @@
   </div>
 
   <!-- SCREEN 8: CONFIRMATION -->
-  <div id="screen-8" class="screen">
+  <div id="screen-8" class="screen" data-screen-key="confirmation">
     <div class="screen-content" style="padding-top:48px;">
       <div class="screen-label">APPLICATION RECEIVED</div>
       <div class="subject-number" id="confirm-subject-num">#00001</div>
@@ -1356,6 +1356,82 @@ const SUPABASE_ANON_KEY = 'sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
 const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 
 // ============================================================
+// ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
+// No answer values are ever logged, only screen keys and (for validation_failed) field names.
+// ============================================================
+var PAGE_VERSION = '2026-09-27a';
+var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
+
+function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
+function activeScreenEl() { return document.querySelector('.screen.active'); }
+function positionOf(key) { var i = timing.flow.indexOf(key); return i === -1 ? null : i + 1; }
+function logEvent(type, key, extra) {
+  extra = extra || {};
+  var ev = { seq: ++timing.seq, event: type, screen_key: key || null, client_at: new Date().toISOString(), page_version: PAGE_VERSION };
+  if (key) ev.position = positionOf(key);
+  if (extra.dwell_ms != null) ev.dwell_ms = extra.dwell_ms;
+  if (extra.field) ev.field = extra.field;
+  timing.events.push(ev);
+  return ev;
+}
+function markScreenShown(el) {
+  var key = keyOf(el);
+  if (!key || key === timing.currentKey) return;
+  var now = Date.now();
+  if (timing.currentKey && timing.shownAt) logEvent('screen_left', timing.currentKey, { dwell_ms: now - timing.shownAt });
+  timing.currentKey = key;
+  timing.shownAt = now;
+  if (!timing.startedAt) timing.startedAt = new Date(now).toISOString();
+  logEvent('screen_shown', key);
+}
+// Order of screens for the chosen flow. The page orders screens with getPath() (numeric ids),
+// so map each id to its screen's data-screen-key.
+function captureFlow() {
+  var path = getPath();
+  timing.flow = path.map(function (id) { return keyOf(document.getElementById('screen-' + id)); });
+  logEvent('flow_start', null);
+}
+function startScreenWatch() {
+  if (!window.MutationObserver) return;
+  var obs = new MutationObserver(function (muts) {
+    muts.forEach(function (m) { if (m.target.classList.contains('active')) markScreenShown(m.target); });
+  });
+  document.querySelectorAll('.screen').forEach(function (el) { obs.observe(el, { attributes: true, attributeFilter: ['class'] }); });
+  var cur = activeScreenEl();
+  if (cur) markScreenShown(cur);
+}
+// Field names (never values) behind the visible errors on a screen: err-<name> ids.
+function failedFields(screenId) {
+  var scr = document.getElementById('screen-' + screenId);
+  if (!scr) return [];
+  var out = [];
+  scr.querySelectorAll('.field-error.visible').forEach(function (e) {
+    var f = (e.id || '').replace(/^err-/, '');
+    if (f && out.indexOf(f) === -1) out.push(f);
+  });
+  return out;
+}
+function logValidationFailed(screenId) {
+  var key = keyOf(document.getElementById('screen-' + screenId));
+  var fields = failedFields(screenId);
+  if (!fields.length) { logEvent('validation_failed', key); return; }
+  fields.forEach(function (f) { logEvent('validation_failed', key, { field: f }); });
+}
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState !== 'hidden') return;
+  if (timing.currentKey && timing.shownAt) logEvent('hidden', timing.currentKey, { dwell_ms: Date.now() - timing.shownAt });
+  // Only flush once a lead can be saved: a row already exists, or a valid email is there to create one.
+  // Skip while a submit (or a first insert) is in flight; queued events go out with the next save.
+  if (!state.status || _submitInFlight) return;
+  if (!state.partialLeadId) {
+    if (_saveInFlight) return;
+    var em = (document.getElementById('email') || {}).value || '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.trim())) return;
+  }
+  saveLead();
+});
+
+// ============================================================
 // STATE
 // ============================================================
 const state = {
@@ -1427,6 +1503,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCondensedRows();
   _bindPartnerLocationControls();
   onPhoneInput(); // init SMS checkbox state
+  startScreenWatch(); // onboarding timing
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = 'block';
@@ -1784,6 +1861,7 @@ function renderStepNums(screenId) {
 function startAs(status) {
   state.status = status;
   state.partialLeadId = null; // each APPLY click starts a fresh partial_leads row
+  captureFlow(); // path is known once status is set
   showScreen(1, 'forward');
 }
 
@@ -1801,6 +1879,7 @@ function changeStatus() {
   }
   syncFamilyDrip(); // has_children mapping for the new flow (Hotfix 5/7)
   _syncCouplesFlowClass();
+  captureFlow(); // the other flow's path
   if (from > 1 && from < 8) { showScreen(1, 'back'); return; }
   renderBadge(from);
   renderProgress(from);
@@ -1856,23 +1935,31 @@ function clearErrorSummary(screenId) {
 
 async function goNext(screenId) {
   if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
-  if (!validateScreen(screenId)) { crRevealAll(screenId); crExpandErrors(); surfaceErrors(screenId); return; }
+  if (!validateScreen(screenId)) { crRevealAll(screenId); crExpandErrors(); surfaceErrors(screenId); logValidationFailed(screenId); return; }
   // Progressive screens: questions not shown yet are shown before moving on (nothing is skipped unseen).
   if (crRevealAll(screenId)) { _crFirstOpen(screenId); return; }
   clearErrorSummary(screenId);
+  logEvent('screen_completed', keyOf(document.getElementById('screen-' + screenId)));
   await saveLead(); // await so partialLeadId is set before the next NEXT can fire
   showScreen(getNextScreen(screenId), 'forward');
 }
 
 function goBack(screenId) {
+  logEvent('back', keyOf(document.getElementById('screen-' + screenId)));
   showScreen(getPrevScreen(screenId), 'back');
 }
 
 // ============================================================
 // PARTIAL SAVE
 // ============================================================
+let _saveInFlight = 0;
 async function saveLead() {
   if (!state.status) return; // haven't clicked APPLY yet
+  if (state.clientTz === undefined) {
+    try { state.clientTz = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch (e) { state.clientTz = null; }
+  }
+  // Minutes east of UTC (PDT = -420).
+  if (state.clientTzOffsetMin === undefined) state.clientTzOffsetMin = -new Date().getTimezoneOffset();
   const email = document.getElementById('email')?.value?.trim().toLowerCase() || null;
   const get = (id) => { const el = document.getElementById(id); return el?.value?.trim() || null; };
   const data = {
@@ -1910,15 +1997,29 @@ async function saveLead() {
     tiktok: get('tiktok'),
     landing_headline: state.landingHeadline || null,
     height_cm: heightPayload(),
+    started_at: timing.startedAt,
+    page_version: PAGE_VERSION,
+    flow_sequence: timing.flow.join(','),
+    client_tz: state.clientTz || null,
+    client_tz_offset_min: (state.clientTzOffsetMin === undefined ? null : state.clientTzOffsetMin),
+    last_screen_key: timing.currentKey,
+    events: timing.events.slice(),
   };
+  // Queued events stay queued until save-lead answers ok. Cleared by seq (not index) so an
+  // overlapping save can't drop events logged after this request was built.
+  const sentCount = data.events.length;
+  const sentMaxSeq = sentCount ? data.events[sentCount - 1].seq : 0;
   if (state.partialLeadId) data.id = state.partialLeadId;
+  _saveInFlight++;
   try {
     const res = await fetch(FUNCTIONS_URL + '/save-lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify(data),
+      keepalive: true,
     });
     if (res.ok) {
+      if (sentCount) timing.events = timing.events.filter(function (ev) { return ev.seq > sentMaxSeq; });
       const json = await res.json();
       if (json.id) state.partialLeadId = json.id;
     } else {
@@ -1928,6 +2029,8 @@ async function saveLead() {
     }
   } catch (e) {
     console.error('save-lead network error', e);
+  } finally {
+    _saveInFlight--;
   }
 }
 
@@ -2342,7 +2445,7 @@ function onTurnstileSuccess(token) {
 // Submit is on the phone screen (6): check the phone format here, inline, before anything is sent.
 async function submitForm() {
   if (state.submitting) return;
-  if (!validateScreen(6)) { surfaceErrors(6); return; }
+  if (!validateScreen(6)) { surfaceErrors(6); logValidationFailed(6); return; }
   clearErrorSummary(6);
   state.submitting = true;
   const btn = document.getElementById('submit-btn');
@@ -2365,6 +2468,11 @@ let _submitInFlight = false;
 async function doSubmit() {
   if (_submitInFlight) return;
   _submitInFlight = true;
+  if (!timing.submittedLogged) {
+    timing.submittedLogged = true;
+    logEvent('screen_completed', keyOf(document.getElementById('screen-6')));
+    logEvent('submitted', keyOf(document.getElementById('screen-6')));
+  }
   // Save the last answers (socials, phone) to partial_leads before submitting
   await saveLead();
   const btn = document.getElementById('submit-btn');
@@ -2420,6 +2528,7 @@ async function doSubmit() {
     const data = await resp.json();
     if (resp.status === 200) {
       showConfirmation(data.subject_number);
+      setTimeout(saveLead, 0); // flush confirmation screen_shown (save-lead stores events only for converted rows)
     } else {
       showToast(data.error || 'Something went wrong. Please try again.');
       btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false;
