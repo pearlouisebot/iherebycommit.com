@@ -2286,7 +2286,6 @@ function numChildrenPayload() {
 }
 
 const LOOKING_FOR_OPTIONS = ['casual', 'dating', 'relationship', 'marriage', 'life_partner'];
-const TIMELINE_TRIGGERS = ['relationship', 'marriage', 'life_partner'];
 
 let _lfCollapseTimer = null;
 // Timeline question waits for Looking for (multi-select) to collapse, 1.2s after the last tap.
@@ -2774,7 +2773,6 @@ function showToast(msg) {
 // ============================================================
 // WHO YOU ARE: race picklist
 // ============================================================
-const RACE_OPTIONS = ['Asian', 'South Asian', 'Black', 'Hispanic / Latino', 'MENA', 'Native American', 'Pacific Islander', 'White', 'Other', 'Prefer not to say'];
 const RACE_EXCLUSIVE = 'Prefer not to say';
 const _MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -3085,7 +3083,6 @@ function crExpandErrors() {
   document.querySelectorAll('.who-unit.collapsed').forEach(u => { if (u.querySelector('.field-error.visible')) crExpand(u.id, false); });
 }
 // "Moving on": a tap or focus outside an open question.
-let _crEvt = null;
 function _crOnLeave(e) {
   const scr = document.querySelector('.screen.active');
   if (!scr || !scr.querySelector('.who-unit')) return;
@@ -3885,15 +3882,6 @@ function setDefaultAges() {
 // ============================================================
 // ZIP → CITY LOOKUP
 // ============================================================
-const _ZIP_CC = {
-  'United States':'us','Canada':'ca','Australia':'au','United Kingdom':'gb',
-  'Germany':'de','France':'fr','Italy':'it','Spain':'es','Netherlands':'nl',
-  'Belgium':'be','Austria':'at','Switzerland':'ch','Poland':'pl',
-  'Czech Republic':'cz','Denmark':'dk','Norway':'no','Sweden':'se',
-  'Finland':'fi','Portugal':'pt','Brazil':'br','Mexico':'mx',
-  'India':'in','South Korea':'kr','Japan':'jp','Singapore':'sg',
-  'New Zealand':'nz','South Africa':'za','Philippines':'ph'
-};
 let _zipTimer = null;
 
 function setLivesWithPartner(val, fromTap) {
