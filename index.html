@@ -205,7 +205,7 @@
     /* Location city rows */
     .location-city-row { display: flex; align-items: center; background: #1a1a1a; border: 1px solid var(--dim); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
 
-    /* Ideal Partner Location — inline multi-select (no floating popup) */
+    /* Partner Location — condensed chips, typed add (no list, no popup) */
     #partner-location-label { text-transform: none; letter-spacing: 0.04em; line-height: 1.4; }
     .partner-location-chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .partner-location-chips:empty { display: none; }
@@ -224,32 +224,20 @@
       touch-action: manipulation;
     }
     .partner-location-chip-remove:hover { color: var(--text); }
-    #partner-location-filter { margin-bottom: 8px; min-height: 44px; }
-    .partner-location-list {
-      max-height: 260px; overflow-y: auto; -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-      border: 1px solid var(--dim); border-radius: var(--radius); background: #141414;
+    #partner-location-add-more {
+      background: none; border: none; padding: 0; min-height: 44px; cursor: pointer;
+      color: var(--accent); font-family: 'Space Mono', monospace; font-size: 12px;
+      letter-spacing: 0.04em; touch-action: manipulation;
     }
-    .partner-location-row {
-      display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px;
-      margin: 0; padding: 8px 14px; background: transparent; border: 0; border-bottom: 1px solid #2a2a2a;
-      border-radius: 0; appearance: none; -webkit-appearance: none;
-      color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.3;
-      text-align: left; cursor: pointer; box-sizing: border-box; touch-action: manipulation;
-    }
-    .partner-location-row:last-child { border-bottom: 0; }
-    .partner-location-check {
-      width: 20px; height: 20px; flex-shrink: 0; border: 1px solid var(--dim); border-radius: 3px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .partner-location-row.selected .partner-location-check {
-      background: var(--accent); border-color: var(--accent);
-    }
-    .partner-location-row.selected .partner-location-check::after {
-      content: '✓'; color: var(--bg); font-size: 14px; line-height: 1;
-    }
-    .partner-location-empty {
-      padding: 14px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted);
+    #partner-location-add-more[hidden] { display: none; }
+    #partner-location-add-row { display: flex; gap: 8px; align-items: stretch; }
+    #partner-location-add-row[hidden] { display: none; }
+    #partner-location-input { flex: 1; min-width: 0; min-height: 44px; }
+    #partner-location-add-btn {
+      flex-shrink: 0; min-height: 44px; min-width: 64px; padding: 0 14px;
+      border: 1px solid var(--dim); border-radius: var(--radius); background: transparent;
+      color: var(--accent); font-family: 'Space Mono', monospace; font-size: 13px;
+      cursor: pointer; touch-action: manipulation;
     }
 
     /* ===================================================
@@ -919,12 +907,15 @@
           </div>
           <div class="field-error" id="err-gender_seeking"></div>
         </div>
-        <!-- IDEAL PARTNER LOCATION: inline multi-select -->
+        <!-- PARTNER LOCATION: default chip, type to add more -->
         <div class="field-group" id="partner-location-field" style="margin-bottom:20px;">
-          <label class="field-label" id="partner-location-label" for="partner-location-filter">Partner Location (select all):</label>
+          <label class="field-label" id="partner-location-label" for="partner-location-input">Partner Location (select all):</label>
           <div id="partner-location-chips" class="partner-location-chips"></div>
-          <input class="field-input" id="partner-location-filter" type="text" placeholder="Filter cities…" autocomplete="off" enterkeyhint="search">
-          <div id="partner-location-list" class="partner-location-list" role="listbox" aria-multiselectable="true" aria-label="Partner Location (select all):"></div>
+          <button type="button" id="partner-location-add-more">+ Add more</button>
+          <div id="partner-location-add-row" hidden>
+            <input class="field-input" id="partner-location-input" type="text" placeholder="Type a city and press Enter" autocomplete="off" enterkeyhint="done">
+            <button type="button" id="partner-location-add-btn">Add</button>
+          </div>
         </div>
         <!-- AGE RANGE SLIDER -->
         <div class="field-group" style="margin-bottom:20px;">
@@ -1102,7 +1093,7 @@
         </div>
         <div id="kidstimeline-condensed-col" style="flex:1;min-width:0;display:none;">
           <div class="field-group" style="margin-bottom:0;">
-            <label class="field-label" style="font-size:12px;">Kids timeline</label>
+            <label class="field-label" style="font-size:12px;">Kids timing</label>
             <select class="field-input" id="kids_timeline_select_condensed" onchange="setKidsTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
@@ -1886,10 +1877,16 @@ function toggleLookingFor(val) {
   const btn = document.getElementById('btn-looking-' + val);
   if (btn) { btn.classList.toggle('selected', state.lookingFor.includes(val)); btn.setAttribute('aria-pressed', state.lookingFor.includes(val) ? 'true' : 'false'); }
   if (state.lookingFor.length) hideError('looking_for');
-  syncFamilyDrip();
-  // Debounce collapse: collapse 500ms after last selection
+  // Collapse only 1.2s after the last tap. A new tap restarts the timer.
   clearTimeout(_lfCollapseTimer);
-  if (state.lookingFor.length > 0) _lfCollapseTimer = setTimeout(collapseLookingFor, 3000);
+  _lfCollapseTimer = null;
+  if (state.lookingFor.length > 0) {
+    _lfCollapseTimer = setTimeout(() => {
+      _lfCollapseTimer = null;
+      collapseLookingFor();
+    }, 1200);
+  }
+  syncFamilyDrip();
 }
 
 function collapseLookingFor() {
@@ -1905,6 +1902,7 @@ function collapseLookingFor() {
 
 function expandLookingFor() {
   clearTimeout(_lfCollapseTimer);
+  _lfCollapseTimer = null;
   const grid = document.getElementById('looking_for');
   const collapsed = document.getElementById('looking-for-collapsed');
   if (grid) grid.style.display = '';
@@ -1963,7 +1961,7 @@ function syncFamilyDrip() {
   if (tlLabel) {
     if (hasKidsDone && needsTL) {
       tlLabel.style.fontSize = '12px';
-      tlLabel.textContent = _hasMarriage ? 'Marriage timeline' : _datingOnly ? 'Dating timeline' : 'Partner timeline';
+      tlLabel.textContent = _hasMarriage ? 'Marriage timing' : _datingOnly ? 'Dating timeline' : 'Partner timeline';
     } else {
       tlLabel.style.fontSize = '';
       tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
@@ -1991,15 +1989,12 @@ function syncFamilyDrip() {
     }
   }
 
-  // Auto-collapse looking-for summary
+  // Refresh the summary if Looking for is already collapsed. Never collapse here —
+  // that only happens 1.2s after the last tap.
   const _lfCollapsed = document.getElementById('looking-for-collapsed');
   if (_lfCollapsed && _lfCollapsed.style.display !== 'none') {
     const _st = document.getElementById('looking-for-summary-text');
     if (_st) _st.textContent = _lf.map(v => LF_LABELS[v] || v).join(', ');
-  }
-  if (hasLF && !partnered) {
-    const _grid = document.getElementById('looking_for'), _col = document.getElementById('looking-for-collapsed');
-    if (_grid && _col && _grid.style.display !== 'none' && _col.style.display === 'none' && !_lfCollapseTimer) { collapseLookingFor(); }
   }
   if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
 
@@ -2597,6 +2592,7 @@ function _pickIntlCity(city) {
 let partnerLocationSelected = [];
 let partnerLocationReady = false;
 let partnerLocationTouched = false;
+let partnerLocationAdderOpen = false;
 
 // ---- SEEKING ----
 function setGenderSeeking(val) {
@@ -2621,13 +2617,6 @@ function _canonicalOwnCity() {
   return match || raw;
 }
 
-function _partnerLocationOptions() {
-  const list = _getCityList().slice();
-  const own = _canonicalOwnCity();
-  if (own && !list.some(c => c.toLowerCase() === own.toLowerCase())) list.unshift(own);
-  return list;
-}
-
 function openToCityPayload() {
   if (state.status === 'partnered' || !partnerLocationReady) {
     const all = state.zipCity ? [state.zipCity] : [];
@@ -2637,20 +2626,31 @@ function openToCityPayload() {
 }
 
 function _bindPartnerLocationControls() {
-  const filter = document.getElementById('partner-location-filter');
-  const list = document.getElementById('partner-location-list');
+  const addMore = document.getElementById('partner-location-add-more');
+  const addBtn = document.getElementById('partner-location-add-btn');
+  const input = document.getElementById('partner-location-input');
   const chips = document.getElementById('partner-location-chips');
-  if (filter && !filter.dataset.bound) {
-    filter.dataset.bound = '1';
-    filter.addEventListener('input', () => _renderPartnerLocationRows());
-  }
-  if (list && !list.dataset.bound) {
-    list.dataset.bound = '1';
-    list.addEventListener('click', (e) => {
-      const row = e.target.closest('.partner-location-row');
-      if (!row || !list.contains(row)) return;
+  if (addMore && !addMore.dataset.bound) {
+    addMore.dataset.bound = '1';
+    addMore.addEventListener('click', (e) => {
       e.preventDefault();
-      _togglePartnerLocation(row.dataset.city);
+      _openPartnerLocationAdder();
+    });
+  }
+  if (addBtn && !addBtn.dataset.bound) {
+    addBtn.dataset.bound = '1';
+    addBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      _commitPartnerLocationInput();
+    });
+  }
+  if (input && !input.dataset.bound) {
+    input.dataset.bound = '1';
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      e.stopPropagation();
+      _commitPartnerLocationInput();
     });
   }
   if (chips && !chips.dataset.bound) {
@@ -2659,9 +2659,44 @@ function _bindPartnerLocationControls() {
       const btn = e.target.closest('.partner-location-chip-remove');
       if (!btn || !chips.contains(btn)) return;
       e.preventDefault();
-      _togglePartnerLocation(btn.dataset.city);
+      _removePartnerLocationChip(btn.dataset.city);
     });
   }
+}
+
+function _openPartnerLocationAdder() {
+  partnerLocationAdderOpen = true;
+  _syncPartnerLocationAdder();
+  const input = document.getElementById('partner-location-input');
+  if (input) input.focus();
+}
+
+function _syncPartnerLocationAdder() {
+  const row = document.getElementById('partner-location-add-row');
+  const more = document.getElementById('partner-location-add-more');
+  if (row) row.hidden = !partnerLocationAdderOpen;
+  if (more) more.hidden = !!partnerLocationAdderOpen;
+}
+
+function _commitPartnerLocationInput() {
+  const input = document.getElementById('partner-location-input');
+  if (!input) return;
+  const city = input.value.trim();
+  if (!city) return;
+  partnerLocationTouched = true;
+  const dup = partnerLocationSelected.some(c => c.toLowerCase() === city.toLowerCase());
+  if (!dup) {
+    partnerLocationSelected.push(city);
+    input.value = '';
+  }
+  _renderPartnerLocationChips();
+}
+
+function _removePartnerLocationChip(city) {
+  if (!city) return;
+  partnerLocationTouched = true;
+  partnerLocationSelected = partnerLocationSelected.filter(c => c.toLowerCase() !== city.toLowerCase());
+  _renderPartnerLocationChips();
 }
 
 function initPartnerLocationPicker() {
@@ -2671,21 +2706,8 @@ function initPartnerLocationPicker() {
     const own = _canonicalOwnCity();
     partnerLocationSelected = own ? [own] : [];
   }
-  _renderPartnerLocation();
-}
-
-function _togglePartnerLocation(city) {
-  if (!city) return;
-  partnerLocationTouched = true;
-  const idx = partnerLocationSelected.findIndex(c => c.toLowerCase() === city.toLowerCase());
-  if (idx >= 0) partnerLocationSelected.splice(idx, 1);
-  else partnerLocationSelected.push(city);
-  _renderPartnerLocation();
-}
-
-function _renderPartnerLocation() {
+  _syncPartnerLocationAdder();
   _renderPartnerLocationChips();
-  _renderPartnerLocationRows();
 }
 
 function _renderPartnerLocationChips() {
@@ -2707,39 +2729,6 @@ function _renderPartnerLocationChips() {
     chip.append(label, btn);
     wrap.appendChild(chip);
   });
-}
-
-function _renderPartnerLocationRows() {
-  const list = document.getElementById('partner-location-list');
-  if (!list) return;
-  const q = (document.getElementById('partner-location-filter')?.value || '').trim().toLowerCase();
-  const scroll = list.scrollTop;
-  list.replaceChildren();
-  const options = _partnerLocationOptions().filter(c => !q || c.toLowerCase().includes(q));
-  if (!options.length) {
-    const empty = document.createElement('div');
-    empty.className = 'partner-location-empty';
-    empty.textContent = 'No cities match';
-    list.appendChild(empty);
-    return;
-  }
-  options.forEach(city => {
-    const selected = partnerLocationSelected.some(c => c.toLowerCase() === city.toLowerCase());
-    const row = document.createElement('button');
-    row.type = 'button';
-    row.className = 'partner-location-row' + (selected ? ' selected' : '');
-    row.setAttribute('role', 'option');
-    row.setAttribute('aria-selected', selected ? 'true' : 'false');
-    row.dataset.city = city;
-    const mark = document.createElement('span');
-    mark.className = 'partner-location-check';
-    mark.setAttribute('aria-hidden', 'true');
-    const name = document.createElement('span');
-    name.textContent = city;
-    row.append(mark, name);
-    list.appendChild(row);
-  });
-  list.scrollTop = scroll;
 }
 
 // ---- AGE RANGE SLIDER ----
