@@ -484,6 +484,9 @@
       transition: opacity 0.15s; margin-bottom: 12px;
     }
     .dlo-apply-couple:hover { opacity: 0.88; }
+    /* Couple | Single side by side (Single always on the right, same as the mobile bar). */
+    .dlo-apply-btns { display: flex; gap: 8px; margin-bottom: 12px; }
+    .dlo-apply-btns > button { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
     .dlo-priority { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; }
 
     .dlo-bottombar {
@@ -707,8 +710,10 @@
         </p>
         <div class="dlo-cta-col">
           <p class="dlo-cta-label">Apply to be part of our first-of-its-kind study on what makes a match last.</p>
-          <button class="dlo-apply-single" onclick="startAs('single')">APPLY AS A SINGLE</button>
-          <button class="dlo-apply-couple" onclick="startAs('partnered')">APPLY AS A COUPLE</button>
+          <div class="dlo-apply-btns">
+            <button class="dlo-apply-couple" onclick="startAs('partnered')">APPLY AS A COUPLE</button>
+            <button class="dlo-apply-single" onclick="startAs('single')">APPLY AS A SINGLE</button>
+          </div>
           <p class="dlo-priority">To do this we need to study both singles and couples, of all ages, so please implore your single and partnered friends to donate their data to this important cause! It will be fun, we promise (have you met our founder?). Applications are reviewed &amp; prioritized in order.</p>
         </div>
       </div>
@@ -807,7 +812,7 @@
           <div class="field-group who-unit" id="who-dob" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Date of birth" onclick="crExpand('who-dob')"><span class="who-cond-txt"><span class="who-cond-k">Date of birth</span><span class="who-cond-v" id="who-dob-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Date of birth</label>
-            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
+            <input class="field-input" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01" onfocus="onBirthdateInput()" oninput="onBirthdateInput()" onchange="onBirthdateInput()">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group who-unit" id="who-loc" style="margin-bottom:0;min-width:0;">
@@ -839,6 +844,7 @@
             <div id="height-cm-wrap" style="display:none;">
               <input class="field-input" id="height_cm_input" type="number" inputmode="numeric" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;" onfocus="_cmFocus(this)" onblur="_cmBlur(this)" oninput="onHeightCmChange()">
             </div>
+            <div class="field-error" id="err-height">Please confirm your height</div>
           </div>
           <div class="field-group who-unit" id="who-race" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Race" onclick="crExpand('who-race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="who-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -986,8 +992,8 @@
             <div class="range-fill" id="range-fill"></div>
             <span id="age_min_label" class="slider-bubble">28</span>
             <span id="age_max_label" class="slider-bubble">38</span>
-            <input type="range" id="age_min" class="range-input" min="21" max="80" step="1" value="28" oninput="onAgeRangeInput(this,'min')">
-            <input type="range" id="age_max" class="range-input" min="21" max="80" step="1" value="38" oninput="onAgeRangeInput(this,'max')">
+            <input type="range" id="age_min" class="range-input" min="21" max="80" step="1" value="28" onpointerdown="touchAgeRange()" onkeydown="touchAgeRange()" oninput="onAgeRangeInput(this,'min')">
+            <input type="range" id="age_max" class="range-input" min="21" max="80" step="1" value="38" onpointerdown="touchAgeRange()" onkeydown="touchAgeRange()" oninput="onAgeRangeInput(this,'max')">
           </div>
           <div class="field-error" id="err-age_range"></div>
         </div>
@@ -999,8 +1005,8 @@
             <div class="range-fill" id="height-range-fill"></div>
             <span id="height_min_label" class="slider-bubble">5'0"</span>
             <span id="height_max_label" class="slider-bubble">6'6"</span>
-            <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" oninput="onHeightRangeInput(this,'min')">
-            <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
+            <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" onpointerdown="touchHeightPref()" onkeydown="touchHeightPref()" oninput="onHeightRangeInput(this,'min')">
+            <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" onpointerdown="touchHeightPref()" onkeydown="touchHeightPref()" oninput="onHeightRangeInput(this,'max')">
           </div>
         </div>
       </div>
@@ -1322,8 +1328,8 @@
     <div class="bfold-desktop-cta">
       <p class="bfold-cta-label">Apply to be part of our first-of-its-kind study on what makes a match last.</p>
       <div class="bfold-apply-btns">
-        <button class="bfold-apply-single" onclick="startAs('single')">APPLY AS A SINGLE</button>
         <button class="bfold-apply-couple" onclick="startAs('partnered')">APPLY AS A COUPLE</button>
+        <button class="bfold-apply-single" onclick="startAs('single')">APPLY AS A SINGLE</button>
       </div>
     </div>
 
@@ -1382,10 +1388,12 @@ const state = {
   genderSeeking: null,
   heightPrefMinCm: null,
   heightPrefMaxCm: null,
-  // Gender defaults (5'9"/5'3", 1996-01-01) look identical to a real choice,
-  // so "user touched" is tracked separately from the current value.
+  // Defaults (5'9"/5'3", 1996-01-01, the slider ranges) look identical to a real choice,
+  // so "user touched" is tracked separately from the current value. Untouched defaults save as null.
   heightTouched: false,
   birthdateTouched: false,
+  ageRangeTouched: false,
+  heightPrefTouched: false,
 };
 let partnerCity = null;
 
@@ -1394,6 +1402,11 @@ let partnerCity = null;
 // ============================================================
 function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,5,3,7,6]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
+// Consent records note where each consent was given: current step number + screen name (e.g. apply_step_4_public_self).
+function consentSurfaces() {
+  const at = (id, name) => { const n = getStepNum(id); return n > 0 ? 'apply_step_' + n + '_' + name : null; };
+  return { terms: at(7, 'public_self'), privacy: at(7, 'public_self'), sms_optin: at(6, 'text_me'), partner_notice: at(2, 'your_partner') };
+}
 function totalSteps() { return getPath().length; }
 
 // ============================================================
@@ -1866,7 +1879,7 @@ async function saveLead() {
     email,
     first_name: get('first_name'),
     last_name: get('last_name'),
-    birthdate: document.getElementById('birthdate')?.value || null,
+    birthdate: birthdatePayload(),
     gender: state.gender || null,
     status: state.status || null,
     country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : (state.locationCountry || null),
@@ -1874,11 +1887,11 @@ async function saveLead() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.zipLatLong || null,
     open_to_city: openToCityPayload(),
-    age_min: state.status === 'partnered' ? null : (state.ageMin || null),
-    age_max: state.status === 'partnered' ? null : (state.ageMax || null),
+    age_min: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMin || null),
+    age_max: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
-    height_min_cm: state.status === 'partnered' ? null : (state.heightPrefMinCm || null),
-    height_max_cm: state.status === 'partnered' ? null : (state.heightPrefMaxCm || null),
+    height_min_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMinCm || null),
+    height_max_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMaxCm || null),
     ...couplePayload(),
     has_children: state.hasChildren,
     children_with: childrenWithPayload(),
@@ -1896,7 +1909,7 @@ async function saveLead() {
     x_handle: get('x_handle'),
     tiktok: get('tiktok'),
     landing_headline: state.landingHeadline || null,
-    height_cm: state.heightCm || null,
+    height_cm: heightPayload(),
   };
   if (state.partialLeadId) data.id = state.partialLeadId;
   try {
@@ -1949,7 +1962,12 @@ function setGender(val) {
 
 function onBirthdateInput() {
   state.birthdateTouched = true;
+  hideError('birthdate');
+  crRefresh();
 }
+// Defaulted pickers (date of birth, height, slider ranges) only count once touched. Untouched = not answered (saved as null).
+function birthdatePayload() { return state.birthdateTouched ? (document.getElementById('birthdate')?.value || null) : null; }
+function heightPayload() { return (state.heightTouched || state.heightAck) ? (state.heightCm || null) : null; }
 
 function setHasChildren(val) {
   // Every yes option (singles "yes", couples "yes_*") counts as has kids.
@@ -2204,7 +2222,11 @@ function validateScreen(screenId) {
     if (!fn) { showError('first_name', 'Required'); ok = false; } else hideError('first_name');
     if (!ln) { showError('last_name', 'Required'); ok = false; } else hideError('last_name');
     if (!bd) { showError('birthdate', 'Please enter your date of birth'); ok = false; }
+    else if (!state.birthdateTouched) { showError('birthdate', 'Please confirm your date of birth'); ok = false; }
     else { hideError('birthdate'); if (getAge(bd) < 18) { showUnder18(); return false; } }
+    const _hOk = !!heightPayload();
+    if (!_hOk) { showError('height', 'Please confirm your height'); ok = false; } else hideError('height');
+    ['height_ftin', 'height_cm_input'].forEach(id => document.getElementById(id)?.classList.toggle('error', !_hOk));
     if (!em || !isValidEmail(em)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
     if (!state.gender) { showError('gender', 'Please select one'); ok = false; } else hideError('gender');
     if (state.locationMode === 'zip') {
@@ -2223,6 +2245,8 @@ function validateScreen(screenId) {
       const maxVal = parseInt(document.getElementById('age_max')?.value || '');
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
         showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
+      } else if (!state.ageRangeTouched) {
+        showError('age_range', 'Please set an age range'); ok = false;
       } else { hideError('age_range'); }
     }
   }
@@ -2349,18 +2373,18 @@ async function doSubmit() {
   const body = {
     first_name: document.getElementById('first_name').value.trim(),
     last_name: document.getElementById('last_name').value.trim(),
-    birthdate: document.getElementById('birthdate').value,
+    birthdate: birthdatePayload(),
     email: document.getElementById('email').value.trim().toLowerCase(),
     country: state.locationMode === 'zip' ? (state.locationCountry || 'United States') : (state.locationCountry || null),
     postal_code: state.locationMode === 'zip' ? document.getElementById('postal_code').value.trim() : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
     open_to_city: openToCityPayload(),
-    age_min: state.status === 'partnered' ? null : (state.ageMin || null),
-    age_max: state.status === 'partnered' ? null : (state.ageMax || null),
+    age_min: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMin || null),
+    age_max: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
-    height_min_cm: state.status === 'partnered' ? null : (state.heightPrefMinCm || null),
-    height_max_cm: state.status === 'partnered' ? null : (state.heightPrefMaxCm || null),
+    height_min_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMinCm || null),
+    height_max_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMaxCm || null),
     ...couplePayload(),
     status: state.status,
     has_children: state.hasChildren,
@@ -2379,10 +2403,11 @@ async function doSubmit() {
     x_handle: document.getElementById('x_handle').value.trim() || null,
     tiktok: document.getElementById('tiktok').value.trim() || null,
     gender: state.gender || null,
-    height_cm: state.heightCm || null,
+    height_cm: heightPayload(),
     landing_headline: state.landingHeadline || null,
     partial_lead_id: state.partialLeadId || null,
     turnstileToken: state.turnstileToken || '',
+    consent_surfaces: consentSurfaces(),
     terms_version: '2026-10-01',
     terms_accepted_at: new Date().toISOString(),
   };
@@ -2517,7 +2542,7 @@ function racePayload() {
 //  - Typed answers collapse when you leave the field or press Enter, never mid-typing.
 //  - A pair waits for both answers and collapses together; EDIT on either opens both.
 //    If the other member is optional and skipped, or doesn't apply, it collapses alone once you move on.
-//  - Defaults don't count as answers until touched (except the Who You Are date of birth).
+//  - Defaults don't count as answers until touched.
 //  - An answered question reopened with EDIT collapses again when you tap elsewhere.
 //  - Answered questions stay visible and editable; the order never changes.
 // Progressive reveal (Who You Are, Your Relationship): the next question appears once the one before it is answered.
@@ -2715,7 +2740,7 @@ function _crDefineAll() {
   // Who You Are
   crDef('who-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.gender] || '' });
   crDef('who-name', { focus: 'first_name', value: () => { const f = _crV('first_name'), l = _crV('last_name'); return f && l ? f + ' ' + l : ''; } });
-  crDef('who-dob', { focus: 'birthdate', partner: 'who-loc', value: () => _crMdy(_crV('birthdate')) }); // pre-filled default counts
+  crDef('who-dob', { focus: 'birthdate', partner: 'who-loc', value: () => state.birthdateTouched ? _crMdy(_crV('birthdate')) : '' }); // the Jan 1, 1996 default isn't an answer until touched
   crDef('who-loc', {
     partner: 'who-dob', focus: () => state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input',
     value: () => { if (state.locationMode === 'zip') { const z = _crV('postal_code'); return z ? z + (state.zipCity ? ' \u00b7 ' + state.zipCity : '') : ''; } return _crV('intl_city_input'); },
@@ -2785,7 +2810,7 @@ function initCondensedRows() {
   document.addEventListener('click', _crOnLeave, true);
   document.addEventListener('focusin', _crOnLeave, true);
   const hu0 = _crEl('who-height');
-  if (hu0) hu0.addEventListener('focusin', () => { state.heightAck = true; });
+  if (hu0) hu0.addEventListener('focusin', e => { if (e.target && e.target.matches('select, input')) { state.heightAck = true; _clearHeightError(); } });
   // Race picklist: a tap anywhere outside it (or Escape) closes and commits it.
   document.addEventListener('pointerdown', e => {
     if (!isRacePanelOpen()) return;
@@ -2836,8 +2861,10 @@ function _buildHeightSelect(id) {
     sel.appendChild(opt);
   }
 }
+function _clearHeightError() { hideError('height'); ['height_ftin', 'height_cm_input'].forEach(id => document.getElementById(id)?.classList.remove('error')); }
 function onHeightFtInChange() {
   state.heightTouched = true;
+  _clearHeightError();
   const val = document.getElementById('height_ftin').value;
   state.heightCm = val ? parseInt(val) : null;
   // Collapses 1.2s after the pick, together with Race once Race is also done.
@@ -2855,6 +2882,7 @@ function _cmBlur(el) {
 }
 function onHeightCmChange() {
   state.heightTouched = true;
+  _clearHeightError();
   const val = document.getElementById('height_cm_input').value;
   state.heightCm = val ? parseInt(val) : null;
 }
@@ -3089,7 +3117,10 @@ function initPartnerLocationPicker() {
 function _renderPartnerLocationChips() { singlesCityPicker.render(); }
 
 // ---- AGE RANGE SLIDER ----
+function touchAgeRange() { state.ageRangeTouched = true; hideError('age_range'); }
+function touchHeightPref() { state.heightPrefTouched = true; }
 function onAgeRangeInput(el, which) {
+  touchAgeRange();
   const minEl = document.getElementById('age_min');
   const maxEl = document.getElementById('age_max');
   let minVal = parseInt(minEl.value), maxVal = parseInt(maxEl.value);
@@ -3131,6 +3162,7 @@ function _updateRangeFill() {
 function _fmtHeight(inches) { return Math.floor(inches / 12) + "'" + (inches % 12) + '"'; }
 
 function onHeightRangeInput(el, which) {
+  touchHeightPref();
   const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in');
   let minVal = parseInt(minEl.value), maxVal = parseInt(maxEl.value);
   if (which === 'min' && minVal > maxVal - 1) { minVal = maxVal - 1; minEl.value = minVal; }
