@@ -1359,7 +1359,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27a';
+var PAGE_VERSION = '2026-09-27b';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -1464,8 +1464,9 @@ const state = {
   genderSeeking: null,
   heightPrefMinCm: null,
   heightPrefMaxCm: null,
-  // Defaults (5'9"/5'3", 1996-01-01, the slider ranges) look identical to a real choice,
-  // so "user touched" is tracked separately from the current value. Untouched defaults save as null.
+  // Defaults (5'9"/5'3", 1996-01-01) look identical to a real choice, so "user touched" is tracked
+  // separately from the current value. Untouched date of birth / height save as null and block Next.
+  // The singles age range and partner height range save their defaults when untouched (never block).
   heightTouched: false,
   birthdateTouched: false,
   ageRangeTouched: false,
@@ -1974,11 +1975,11 @@ async function saveLead() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.zipLatLong || null,
     open_to_city: openToCityPayload(),
-    age_min: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMin || null),
-    age_max: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMax || null),
+    age_min: state.status === 'partnered' ? null : (state.ageMin || null),
+    age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
-    height_min_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMinCm || null),
-    height_max_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMaxCm || null),
+    height_min_cm: state.status === 'partnered' ? null : (state.heightPrefMinCm || null),
+    height_max_cm: state.status === 'partnered' ? null : (state.heightPrefMaxCm || null),
     ...couplePayload(),
     has_children: state.hasChildren,
     children_with: childrenWithPayload(),
@@ -2068,7 +2069,7 @@ function onBirthdateInput() {
   hideError('birthdate');
   crRefresh();
 }
-// Defaulted pickers (date of birth, height, slider ranges) only count once touched. Untouched = not answered (saved as null).
+// Defaulted pickers (date of birth, height) only count once touched. Untouched = not answered (saved as null).
 function birthdatePayload() { return state.birthdateTouched ? (document.getElementById('birthdate')?.value || null) : null; }
 function heightPayload() { return (state.heightTouched || state.heightAck) ? (state.heightCm || null) : null; }
 
@@ -2348,9 +2349,7 @@ function validateScreen(screenId) {
       const maxVal = parseInt(document.getElementById('age_max')?.value || '');
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
         showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
-      } else if (!state.ageRangeTouched) {
-        showError('age_range', 'Please set an age range'); ok = false;
-      } else { hideError('age_range'); }
+      } else { hideError('age_range'); } // an untouched (default) age range is accepted and saved
     }
   }
   if (screenId === 2) {
@@ -2488,11 +2487,11 @@ async function doSubmit() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
     open_to_city: openToCityPayload(),
-    age_min: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMin || null),
-    age_max: (state.status === 'partnered' || !state.ageRangeTouched) ? null : (state.ageMax || null),
+    age_min: state.status === 'partnered' ? null : (state.ageMin || null),
+    age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
-    height_min_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMinCm || null),
-    height_max_cm: (state.status === 'partnered' || !state.heightPrefTouched) ? null : (state.heightPrefMaxCm || null),
+    height_min_cm: state.status === 'partnered' ? null : (state.heightPrefMinCm || null),
+    height_max_cm: state.status === 'partnered' ? null : (state.heightPrefMaxCm || null),
     ...couplePayload(),
     status: state.status,
     has_children: state.hasChildren,
