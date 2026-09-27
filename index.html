@@ -1972,7 +1972,20 @@ function syncFamilyDrip() {
   // wantkids-kidstimeline-row: flex row, shows after have kids answered
   const wkKtRow = document.getElementById('wantkids-kidstimeline-row');
   if (wkKtRow) wkKtRow.style.display = (hasLF && hasTL && hasKidsDone) ? 'flex' : 'none';
-  if (hasKidsDone) { const lbl = document.getElementById('wants-children-label'); if (lbl) lbl.textContent = state.hasChildren === true ? 'Want more kids?' : 'Want kids?'; }
+  if (hasKidsDone) {
+    const lbl = document.getElementById('wants-children-label');
+    if (lbl) {
+      if (kidsTimelineDone) {
+        // condensed: kids timeline is alongside, use short label
+        lbl.style.fontSize = '12px';
+        lbl.textContent = state.hasChildren === true ? 'Want more kids?' : 'Want kids?';
+      } else {
+        // full width: show full question
+        lbl.style.fontSize = '';
+        lbl.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
+      }
+    }
+  }
 
   // kidstimeline-condensed-col: slides into wantkids row once kids timeline answered
   const ktCondCol = document.getElementById('kidstimeline-condensed-col');
