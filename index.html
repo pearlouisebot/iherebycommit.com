@@ -872,18 +872,23 @@
           </div>
           <div class="field-error" id="err-gender_seeking"></div>
         </div>
-        <!-- LOCATION -->
+        <!-- LOCATION: split row -->
         <div class="field-group" style="margin-bottom:20px;">
-          <label class="field-label">Location</label>
-          <div class="location-city-row" id="location-primary-city">
-            <span style="margin-right:10px;font-size:15px;">📍</span>
-            <span id="location-primary-city-name" style="font-family:'Space Mono',monospace;font-size:14px;flex:1;"></span>
-            <button type="button" onclick="toggleAddCitySearch()" style="font-size:11px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:0.04em;background:none;border:none;cursor:pointer;flex-shrink:0;white-space:nowrap;">+ Add another city</button>
-          </div>
-          <div id="additional-cities-list"></div>
-          <div id="add-city-search-wrap" style="display:none;position:relative;margin-bottom:8px;">
-            <input class="field-input" id="add_city_search_input" type="text" placeholder="Type to search cities…" autocomplete="off" oninput="onAddCityInput()" onfocus="onAddCityInput()">
-            <div class="multiselect-dropdown" id="add-city-dropdown"></div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="flex:1;min-width:0;">
+              <label class="field-label">Location</label>
+              <div id="location-primary-city" style="display:flex;align-items:center;min-height:40px;">
+                <span style="margin-right:6px;font-size:14px;">📍</span>
+                <span id="location-primary-city-name" style="font-family:'Space Mono',monospace;font-size:13px;"></span>
+              </div>
+              <div id="additional-cities-list"></div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <label class="field-label">Other cities</label>
+              <select class="field-input" id="add_city_native_select" onchange="onNativeCitySelect(this)" style="font-size:13px;">
+                <option value="">+ Add city…</option>
+              </select>
+            </div>
           </div>
         </div>
         <!-- AGE RANGE SLIDER -->
@@ -901,7 +906,7 @@
         </div>
         <!-- HEIGHT PREFERENCE SLIDER -->
         <div class="field-group" style="margin-bottom:20px;">
-          <label class="field-label">Partner Height <span class="optional-tag">optional</span></label>
+          <label class="field-label">Partner Height</label>
           <div class="range-slider-wrap" style="margin-top:32px;">
             <div class="range-track"></div>
             <div class="range-fill" id="height-range-fill"></div>
@@ -1272,6 +1277,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCityPicker();
   _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
+  initNativeCitySelect();
   onPhoneInput(); // init SMS checkbox state
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
@@ -2447,56 +2453,24 @@ function renderPrimaryCity() {
   if (el) el.textContent = state.zipCity || '';
 }
 
-function toggleAddCitySearch() {
-  const wrap = document.getElementById('add-city-search-wrap');
-  if (!wrap) return;
-  const isHidden = wrap.style.display === 'none';
-  wrap.style.display = isHidden ? '' : 'none';
-  if (isHidden) setTimeout(() => document.getElementById('add_city_search_input')?.focus(), 50);
-}
 
-function _removeAddCityOverlay() {
-  const ov = document.getElementById('add-city-overlay');
-  if (ov) ov.remove();
-}
-
-function _ensureAddCityOverlay() {
-  if (document.getElementById('add-city-overlay')) return;
-  const ov = document.createElement('div');
-  ov.id = 'add-city-overlay';
-  ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:199;background:transparent;-webkit-tap-highlight-color:transparent;';
-  const close = () => {
-    const d = document.getElementById('add-city-dropdown');
-    if (d) { d.innerHTML = ''; d.classList.remove('open'); }
-    ov.remove();
-  };
-  ov.addEventListener('touchstart', close, {passive: true});
-  ov.addEventListener('click', close);
-  document.body.appendChild(ov);
-}
-
-function onAddCityInput() {
-  const inp = document.getElementById('add_city_search_input');
-  const q = inp?.value.trim() || '';
-  const dd = document.getElementById('add-city-dropdown');
-  if (!dd) return;
-  if (!q) { dd.innerHTML = ''; dd.classList.remove('open'); _removeAddCityOverlay(); return; }
+function initNativeCitySelect() {
+  const sel = document.getElementById('add_city_native_select');
+  if (!sel) return;
   const list = _getCityList();
-  const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && !additionalCities.includes(c) && c !== state.zipCity).slice(0, 8);
-  if (q && !list.some(c => c.toLowerCase() === q.toLowerCase()) && !additionalCities.some(c => c.toLowerCase() === q.toLowerCase())) filtered.push(q);
-  dd.innerHTML = filtered.map(c => `<div class="multiselect-option" ontouchstart="event.preventDefault();addAdditionalCity(${JSON.stringify(c)})" onmousedown="event.preventDefault()" onclick="addAdditionalCity(${JSON.stringify(c)})">${c}</div>`).join('');
-  if (filtered.length) { dd.classList.add('open'); _ensureAddCityOverlay(); } else { dd.classList.remove('open'); _removeAddCityOverlay(); }
+  sel.innerHTML = '<option value="">+ Add city…</option>' +
+    list.map(c => `<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
+}
+
+function onNativeCitySelect(sel) {
+  const city = sel.value;
+  if (!city) return;
+  addAdditionalCity(city);
+  sel.value = '';
 }
 
 function addAdditionalCity(city) {
-  _removeAddCityOverlay();
-  if (!additionalCities.includes(city)) { additionalCities.push(city); renderAdditionalCities(); }
-  const wrap = document.getElementById('add-city-search-wrap');
-  if (wrap) wrap.style.display = 'none';
-  const inp = document.getElementById('add_city_search_input');
-  if (inp) inp.value = '';
-  const dd = document.getElementById('add-city-dropdown');
-  if (dd) { dd.innerHTML = ''; dd.classList.remove('open'); }
+  if (!additionalCities.includes(city) && city !== state.zipCity) { additionalCities.push(city); renderAdditionalCities(); }
 }
 
 function removeAdditionalCity(city) {
