@@ -694,10 +694,10 @@
     /* ===== COUPLES FLOW: every onboarding accent uses the couples orange ===== */
     body.couples-flow { --accent: var(--orange); }
     body.couples-flow .btn-primary:hover { background: #ff9152; }
-    /* Couples confirmation: yellow "Invite a Friend" button */
-    .btn-yellow { background: #FFC83D; color: #0e0e0e; }
-    .btn-yellow:hover { background: #ffd466; }
-    .btn-yellow:active { transform: scale(0.98); }
+    /* Couples confirmation: "Invite a Friend" button uses the standard singles green (not the couples orange) */
+    .btn-friend-green { background: #c8f135; color: #0e0e0e; }
+    .btn-friend-green:hover { background: #d8ff40; }
+    .btn-friend-green:active { transform: scale(0.98); }
   </style>
 </head>
 <body class="landing-active">
@@ -1225,7 +1225,7 @@
       </div>
       <div class="recruit-section" id="recruit-couple" style="display:none;">
         <button class="btn btn-primary" id="share-partner-btn" onclick="sharePartnerLink()">Send your partner The Link</button>
-        <button class="btn btn-yellow" id="invite-friend-btn" style="margin-top:10px;" onclick="shareFriendLink()">Invite a Friend to Participate</button>
+        <button class="btn btn-friend-green" id="invite-friend-btn" style="margin-top:10px;" onclick="shareFriendLink()">Invite a Friend to Participate</button>
       </div>
     </div>
   </div>
@@ -1794,7 +1794,7 @@ async function saveLead() {
     partner_name: get('partner_name'),
     partner_email: get('partner_email'),
     has_children: state.hasChildren,
-    has_children_detail: state.hasChildrenDetail || null,
+    children_with: childrenWithPayload(),
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
@@ -1946,6 +1946,13 @@ function setRelationshipTimeline(val) {
   state.relationshipTimeline = val || null;
   hideError('relationship_timeline');
   syncFamilyDrip();
+}
+
+// Couples only: who the kids are with. Singles send null.
+const CHILDREN_WITH_BY_OPTION = { no: 'none', yes_with_partner: 'current_partner', yes_previous_relationship: 'previous', yes_both: 'both' };
+function childrenWithPayload() {
+  if (state.status !== 'partnered') return null;
+  return CHILDREN_WITH_BY_OPTION[state.hasChildrenDetail] || null;
 }
 
 const HAS_KIDS_OPTS_SINGLE = [{v:'yes',t:'Yes'},{v:'no',t:'No'}];
@@ -2297,7 +2304,7 @@ async function doSubmit() {
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
     has_children: state.hasChildren,
-    has_children_detail: state.hasChildrenDetail || null,
+    children_with: childrenWithPayload(),
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
