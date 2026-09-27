@@ -215,6 +215,18 @@
     }
     .q-pair.q-pair-ready .q-row-label { flex: 0 1 auto; letter-spacing: 0.04em; font-size: 9px; }
     .q-pair.q-pair-ready .q-row-value { flex: 1 1 0; min-width: 0; text-align: right; }
+    .q-pair.q-pair-ready.q-pair-stack .q-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "label caret" "value caret";
+      align-items: center;
+      column-gap: 4px;
+      row-gap: 1px;
+      padding: 6px 4px;
+    }
+    .q-pair.q-pair-ready.q-pair-stack .q-row-label { grid-area: label; letter-spacing: 0.04em; }
+    .q-pair.q-pair-ready.q-pair-stack .q-row-value { grid-area: value; flex: none; text-align: left; line-height: 1.2; }
+    .q-pair.q-pair-ready.q-pair-stack .q-row-caret { grid-area: caret; align-self: center; }
     #screen-5 .q-pair.q-pair-ready .q-row-label { font-size: 10px; letter-spacing: 0; }
     #screen-5 .q-pair.q-pair-ready .q-row-value { flex: 0 1 auto; }
     .q-panel { display: none; }
@@ -2829,10 +2841,12 @@ function qSync(screenId, opts) {
   }
 }
 // Related collapsed answers that can share one row. The helper pairs a candidate
-// only when both summaries fit in a half row without clipping. A question is
-// used by the first candidate that fits, so list the preferred partner first
-// (gender + birthday before gender + height). Future questions can also set
-// data-q-pair-with="other_id" on the .q element and are picked up here.
+// only when both summaries fit in a half without clipping: one line when they
+// can, label over value when that stays readable, otherwise each stays full
+// width. A question is used by the first candidate that fits, so list the
+// preferred partner first (gender + birthday before gender + height). While
+// that partner is still open, the other half is not given away. Future
+// questions can set data-q-pair-with="other_id" on the .q and are picked up.
 const Q_PAIRS = [
   ['first_name', 'last_name'],
   ['gender', 'birthdate'],
@@ -2894,13 +2908,18 @@ function qPairReadable(el) {
   }
   return true;
 }
-function qCanPair(id) {
+function qOnActiveScreen(id) {
   const el = document.getElementById('q-' + id);
-  if (!el || !el.classList.contains('q-done') || qEditing === id) return false;
+  if (!el) return false;
   const def = qDef(id);
   if (def && !def.applicable()) return false;
   const screen = el.closest('.screen');
   return !!(screen && screen.classList.contains('active'));
+}
+function qCanPair(id) {
+  const el = document.getElementById('q-' + id);
+  if (!el || !el.classList.contains('q-done') || qEditing === id) return false;
+  return qOnActiveScreen(id);
 }
 function qSyncPairs() {
   document.querySelectorAll('.q[data-q]').forEach(el => {
@@ -2915,7 +2934,13 @@ function qSyncPairs() {
     const a = pairIds[0];
     const b = pairIds[1];
     if (used.has(a) || used.has(b)) return;
-    if (!qCanPair(a) || !qCanPair(b)) return;
+    const aDone = qCanPair(a);
+    const bDone = qCanPair(b);
+    if (!(aDone && bDone)) {
+      if (aDone && qOnActiveScreen(b)) used.add(a);
+      else if (bDone && qOnActiveScreen(a)) used.add(b);
+      return;
+    }
     const elA = document.getElementById('q-' + a);
     const elB = document.getElementById('q-' + b);
     const slotA = elA._qSlot;
@@ -2931,6 +2956,7 @@ function qSyncPairs() {
     anchor.parentNode.insertBefore(pair, anchor.nextSibling);
     pair.appendChild(left);
     pair.appendChild(right);
+    if (!qPairReadable(left) || !qPairReadable(right)) pair.classList.add('q-pair-stack');
     if (!qPairReadable(left) || !qPairReadable(right)) {
       qRestorePaired(left);
       qRestorePaired(right);
