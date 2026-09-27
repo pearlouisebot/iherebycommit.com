@@ -3226,6 +3226,18 @@ function toggleAddCitySearch() {
   if (isHidden) setTimeout(() => document.getElementById('add_city_search_input')?.focus(), 50);
 }
 
+// A suggestion is removed on pointerdown, before click. Swallow that click so it
+// cannot land on whatever control slides up underneath (the location Next button).
+function swallowFollowingClick() {
+  const stop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    document.removeEventListener('click', stop, true);
+  };
+  document.addEventListener('click', stop, true);
+  setTimeout(() => document.removeEventListener('click', stop, true), 700);
+}
+
 function onAddCityInput() {
   const inp = document.getElementById('add_city_search_input');
   const q = inp?.value.trim() || '';
@@ -3243,6 +3255,7 @@ function onAddCityInput() {
     // pointerdown + preventDefault selects before the search field blurs and drops the list.
     opt.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      swallowFollowingClick();
       addAdditionalCity(city);
     });
     dd.appendChild(opt);
@@ -3288,6 +3301,7 @@ function renderAdditionalCities() {
     remove.style.cssText = 'font-size:20px;line-height:1;color:var(--muted,#888);background:none;border:none;cursor:pointer;padding:0 0 0 8px;flex-shrink:0;';
     remove.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      swallowFollowingClick();
       removeAdditionalCity(city);
     });
     row.append(pin, name, remove);
