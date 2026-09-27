@@ -172,6 +172,16 @@
     .field-input option { background: #1a1a1a; color: var(--text); }
     .field-error { font-size: 11px; color: var(--error); margin-top: 6px; display: none; }
     .field-error.visible { display: block; }
+    /* Next-blocking errors whose field is not on screen are listed right above Next (Hotfix 13) */
+    .form-error-summary { display: none; font-size: 11px; color: var(--error); line-height: 1.5; padding: 2px 0 4px; }
+    .form-error-summary.visible { display: block; }
+    /* Condensed "Do you have kids?" beside "How many?": the picked answer wraps instead of being cut off.
+       The native select sits invisibly on top, so tapping still opens the normal picker (no custom overlay). */
+    .sel-wrap { position: relative; }
+    .sel-face { display: flex; align-items: center; min-height: 54px; border: 1px solid var(--dim); border-radius: var(--radius); padding: 8px 12px; font-family: 'Space Mono', monospace; font-size: 14px; line-height: 1.35; color: var(--text); white-space: normal; overflow-wrap: anywhere; box-sizing: border-box; }
+    .sel-wrap > select.field-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .sel-wrap:focus-within .sel-face { border-color: var(--accent); }
+    .sel-wrap.error .sel-face { border-color: var(--error); }
     .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
@@ -1195,11 +1205,12 @@
         <div id="haskids-condensed-col" style="flex:1;min-width:0;display:none;">
           <div class="field-group" id="has-children-group" style="margin-bottom:0;">
             <label class="field-label" id="haskids-condensed-label" style="font-size:12px;">Have kids?</label>
+            <div class="sel-wrap"><div class="sel-face" id="has_children_condensed_face" aria-hidden="true"></div>
             <select class="field-input" id="has_children_select_condensed" onchange="setHasChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
-            </select>
+            </select></div>
             <div class="field-error" id="err-has_children">Please make a selection</div>
           </div>
         </div>
@@ -1227,6 +1238,7 @@
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
+          <div class="field-error" id="err-has_children_s">Please make a selection</div>
         </div>
       </div>
 
@@ -1938,9 +1950,43 @@ function getPrevScreen(currentId) {
   return path[idx - 1];
 }
 
+// Hotfix 13: a Next-blocking error must be visible. Scroll the first visible error into view; any
+// error whose field is currently hidden is listed right above Next instead of failing silently.
+function surfaceErrors(screenId) {
+  const scr = document.getElementById('screen-' + screenId);
+  if (!scr) return;
+  let box = scr.querySelector('.form-error-summary');
+  if (!box) {
+    const ba = scr.querySelector('.bottom-action');
+    if (!ba) return;
+    box = document.createElement('div'); box.className = 'form-error-summary'; box.setAttribute('role', 'alert');
+    ba.insertBefore(box, ba.firstChild);
+  }
+  const errs = Array.from(scr.querySelectorAll('.screen-content .field-error.visible'));
+  const shown = errs.filter(e => e.offsetParent !== null && e.getClientRects().length);
+  // A field with a visible copy of its error (e.g. err-has_children_s for err-has_children) is already on screen.
+  const hidden = errs.filter(e => !shown.includes(e) && !shown.some(v => v.id && e.id && v.id.startsWith(e.id)));
+  const msgs = [];
+  hidden.forEach(e => {
+    const g = e.closest('.field-group');
+    const lbl = g && g.querySelector('.field-label');
+    const t = (lbl && lbl.offsetParent !== null ? lbl.textContent : '') || (lbl ? lbl.textContent : '') || '';
+    const m = (t ? t.trim().replace(/[:\s]+$/, '') + ': ' : '') + e.textContent.trim();
+    if (m && !msgs.includes(m)) msgs.push(m);
+  });
+  box.textContent = msgs.join(' \u00b7 ');
+  box.classList.toggle('visible', msgs.length > 0);
+  if (shown.length) { try { shown[0].scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }
+}
+function clearErrorSummary(screenId) {
+  const box = document.querySelector('#screen-' + screenId + ' .form-error-summary');
+  if (box) { box.classList.remove('visible'); box.textContent = ''; }
+}
+
 async function goNext(screenId) {
   if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
-  if (!validateScreen(screenId)) return;
+  if (!validateScreen(screenId)) { surfaceErrors(screenId); return; }
+  clearErrorSummary(screenId);
   await saveLead(); // await so partialLeadId is set before the next NEXT can fire
   showScreen(getNextScreen(screenId), 'forward');
 }
@@ -2138,7 +2184,9 @@ function expandLookingFor() {
 function lookingForNeedsTimeline() {
   if (state.status === 'partnered') return false;
   const selected = Array.isArray(state.lookingFor) ? state.lookingFor : [];
-  return selected.length > 0; // timeline for every intent
+  // Timeline for every intent except casual-only (Hotfix 13: casual-only skips it and sends null).
+  if (selected.length === 1 && selected[0] === 'casual') return false;
+  return selected.length > 0;
 }
 
 function setRelationshipTimeline(val) {
@@ -2157,7 +2205,7 @@ function childrenWithPayload() {
 const HAS_KIDS_OPTS_SINGLE = [{v:'yes',t:'Yes'},{v:'no',t:'No'}];
 const HAS_KIDS_OPTS_COUPLE = [
   {v:'no',t:'No'},{v:'yes_with_partner',t:'Yes, with my partner'},
-  {v:'yes_previous_relationship',t:'Yes, from a previous relationship'},{v:'yes_both',t:'Yes, both'}
+  {v:'yes_previous_relationship',t:'Yes from past relationship'},{v:'yes_both',t:'Yes, both'}
 ];
 
 // Singles and couples get different "Do you have kids?" options. If the saved answer
@@ -2180,6 +2228,8 @@ function _syncHasChildrenOptions(partnered) {
   ['has_children_select','has_children_select_condensed'].forEach(id => { const sel = document.getElementById(id); if (sel) sel.value = v; });
   const lbl = document.getElementById('haskids-condensed-label');
   if (lbl) lbl.textContent = partnered ? 'Do you have kids?' : 'Have kids?';
+  const face = document.getElementById('has_children_condensed_face');
+  if (face) { const cs = document.getElementById('has_children_select_condensed'); face.textContent = cs && cs.selectedIndex >= 0 ? cs.options[cs.selectedIndex].textContent : '\u2014 Select \u2014'; }
 }
 
 function syncFamilyDrip() {
@@ -2204,7 +2254,9 @@ function syncFamilyDrip() {
   const tlHkRow = document.getElementById('timeline-haskids-row');
   const _tlReady = _lfTimelineReady || !!state.relationshipTimeline;
   // Couples: once "Do you have kids?" is answered it stays here (condensed), above "want more kids".
-  if (tlHkRow) tlHkRow.style.display = ((!partnered && hasLF && _tlReady) || (partnered && hasKidsDone)) ? 'flex' : 'none';
+  // Casual-only has no timeline: "Do you have kids?" appears once Looking for collapses (Hotfix 13).
+  const _lfSettled = partnered || _tlReady || hasKidsDone;
+  if (tlHkRow) tlHkRow.style.display = ((!partnered && hasLF && (_tlReady || hasKidsDone) && (needsTL || hasKidsDone)) || (partnered && hasKidsDone)) ? 'flex' : 'none';
 
   // timeline-col: hidden for casual (no timeline needed)
   const tlCol = document.getElementById('timeline-col');
@@ -2230,7 +2282,8 @@ function syncFamilyDrip() {
 
   // haskids-standalone-row: full width, shows after timeline answered and before have kids answered
   const hkStandaloneRow = document.getElementById('haskids-standalone-row');
-  if (hkStandaloneRow) hkStandaloneRow.style.display = (hasLF && hasTL && !hasKidsDone) ? 'block' : 'none';
+  if (hkStandaloneRow) hkStandaloneRow.style.display = (hasLF && hasTL && _lfSettled && !hasKidsDone) ? 'block' : 'none';
+  if (hasKidsDone) { const e = document.getElementById('err-has_children_s'); if (e) e.classList.remove('visible'); }
 
   // Timeline label: full while have kids not yet answered, condensed once both share the row
   const tlLabel = document.getElementById('timeline-label');
@@ -2412,6 +2465,10 @@ function validateScreen(screenId) {
     if (!rs) { showError('relationship_stage', 'Please select a stage'); ok = false; } else hideError('relationship_stage');
   }
   if (screenId === 5) {
+    // Next tapped while Looking for is still settling (1.2s): settle it now so the follow-ups show.
+    if (state.status !== 'partnered' && _lfCollapseTimer && Array.isArray(state.lookingFor) && state.lookingFor.length) {
+      clearTimeout(_lfCollapseTimer); _lfCollapseTimer = null; collapseLookingFor(); _lfTimelineReady = true; syncFamilyDrip();
+    }
     if (state.status !== 'partnered') {
       if (!Array.isArray(state.lookingFor) || state.lookingFor.length === 0) { showError('looking_for', 'Please make a selection'); ok = false; } else hideError('looking_for');
       if (lookingForNeedsTimeline() && Array.isArray(state.lookingFor) && state.lookingFor.length > 0) {
@@ -2420,7 +2477,7 @@ function validateScreen(screenId) {
     } else { hideError('looking_for'); hideError('relationship_timeline'); }
     const hkColVisible = (document.getElementById('haskids-standalone-row')?.style.display !== 'none') || (document.getElementById('haskids-condensed-col')?.style.display !== 'none');
     if (hkColVisible) {
-      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
+      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); document.getElementById('err-has_children_s')?.classList.add('visible'); ok = false; } else hideError('has_children');
     }
     const wkRowVisible = document.getElementById('wantkids-kidstimeline-row')?.style.display !== 'none';
     if (wkRowVisible) {
