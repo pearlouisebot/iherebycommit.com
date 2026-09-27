@@ -389,6 +389,24 @@
       background: none; border: none; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer;
     }
     .degree-step[hidden] { display: none !important; }
+    .degree-draft {
+      display: block; width: 100%; margin-bottom: 12px; padding: 10px 12px;
+      border: 1px solid var(--accent); border-radius: var(--radius);
+      cursor: default;
+    }
+    .degree-draft[hidden] { display: none !important; }
+    .degree-draft-line {
+      font-family: 'Space Mono', monospace; font-size: 14px; line-height: 1.4;
+      color: var(--accent); margin-bottom: 8px;
+    }
+    .degree-draft-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .degree-draft-chips:empty { display: none; }
+    .degree-chip {
+      min-height: 44px; padding: 8px 12px; box-sizing: border-box;
+      background: transparent; border: 1px solid var(--accent); border-radius: var(--radius);
+      color: var(--accent); font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.2;
+      cursor: pointer;
+    }
     #degree-type-choices { margin-bottom: 8px; }
     #institutions-label { text-transform: none; letter-spacing: 0.02em; font-size: 13px; line-height: 1.4; }
     .public-fields { display: flex; flex-direction: column; gap: 18px; }
@@ -1141,6 +1159,10 @@
         </button>
         <div class="q-panel">
           <div class="field-label">Degrees Obtained</div>
+          <div id="degree-draft" class="degree-draft" hidden>
+            <div id="degree-draft-line" class="degree-draft-line"></div>
+            <div id="degree-draft-chips" class="degree-draft-chips"></div>
+          </div>
           <div id="degree-cards" class="degree-cards"></div>
           <div id="degree-step-type" class="degree-step">
             <div class="field-label">Degree</div>
@@ -1148,31 +1170,27 @@
           </div>
           <div id="degree-step-other" class="degree-step" hidden>
             <label class="field-label" for="degree-other-input">Degree <span class="optional-tag">optional</span></label>
-            <input class="field-input" id="degree-other-input" type="text" placeholder="Type your degree" autocomplete="off">
-            <button type="button" class="q-mini" id="degree-other-next">NEXT</button>
+            <input class="field-input" id="degree-other-input" type="text" placeholder="Type your degree" autocomplete="off" enterkeyhint="next">
           </div>
           <div id="degree-step-field" class="degree-step" hidden>
             <label class="field-label" for="degree-field-input">Field of study <span class="optional-tag">optional</span></label>
-            <input class="field-input" id="degree-field-input" type="text" placeholder="e.g. Mathematics" autocomplete="off">
-            <button type="button" class="q-mini" id="degree-field-next">NEXT</button>
+            <input class="field-input" id="degree-field-input" type="text" placeholder="e.g. Mathematics" autocomplete="off" enterkeyhint="next">
           </div>
           <div id="degree-step-specialty" class="degree-step" hidden>
             <label class="field-label" for="degree-specialty-input">Specialty <span class="optional-tag">optional</span></label>
-            <input class="field-input" id="degree-specialty-input" type="text" placeholder="e.g. Pediatrics" autocomplete="off">
-            <button type="button" class="q-mini" id="degree-specialty-next">NEXT</button>
+            <input class="field-input" id="degree-specialty-input" type="text" placeholder="e.g. Pediatrics" autocomplete="off" enterkeyhint="next">
           </div>
           <div id="degree-step-institution" class="degree-step" hidden>
             <label class="field-label" for="degree-institution-input">Institution <span class="optional-tag">optional</span></label>
-            <input class="field-input" id="degree-institution-input" type="text" placeholder="e.g. Harvard" autocomplete="off">
+            <input class="field-input" id="degree-institution-input" type="text" placeholder="e.g. Harvard" autocomplete="off" enterkeyhint="done">
             <button type="button" class="q-mini" id="degree-institution-add">ADD</button>
           </div>
           <button type="button" class="add-another-btn" id="degree-add-another" hidden>+ Add another degree</button>
-          <button type="button" class="q-mini" id="degree-question-next" onclick="qConfirm('degrees')">NEXT</button>
         </div>
       </div>
     </div>
     <div class="bottom-action">
-      <button class="btn btn-primary q-next-hidden" id="screen-next-2" onclick="goNext(2)">NEXT</button>
+      <button class="btn btn-primary q-next-hidden" id="screen-next-2" onclick="finishScreen2()">NEXT</button>
       <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
     </div>
   </div>
@@ -2157,6 +2175,14 @@ async function goNext(screenId) {
   showScreen(getNextScreen(screenId), 'forward');
 }
 
+async function finishScreen2() {
+  if (typeof qIsActive === 'function' && qIsActive('degrees')) {
+    abandonDegreeDraft();
+    qConfirm('degrees');
+  }
+  await goNext(2);
+}
+
 function goBack(screenId) {
   showScreen(getPrevScreen(screenId), 'back');
 }
@@ -2459,21 +2485,6 @@ function initDegreeButtons() {
     const el = document.getElementById(id);
     if (el) el.addEventListener('click', fn);
   };
-  bind('degree-other-next', () => {
-    degreeDraft.degree = document.getElementById('degree-other-input').value.trim();
-    degreeStep = 'field';
-    renderDegreeWizard();
-  });
-  bind('degree-field-next', () => {
-    degreeDraft.field = document.getElementById('degree-field-input').value.trim();
-    degreeStep = 'institution';
-    renderDegreeWizard();
-  });
-  bind('degree-specialty-next', () => {
-    degreeDraft.specialty = document.getElementById('degree-specialty-input').value.trim();
-    degreeStep = 'institution';
-    renderDegreeWizard();
-  });
   bind('degree-institution-add', commitDegreeDraft);
   bind('degree-add-another', () => {
     degreeEditIndex = -1;
@@ -2483,39 +2494,94 @@ function initDegreeButtons() {
   });
   const onEnter = (inputId, fn) => {
     const input = document.getElementById(inputId);
-    if (!input) return;
+    if (!input || input.dataset.degreeEnter) return;
+    input.dataset.degreeEnter = '1';
     input.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') return;
       e.preventDefault();
       fn();
     });
   };
-  onEnter('degree-other-input', () => document.getElementById('degree-other-next').click());
-  onEnter('degree-field-input', () => document.getElementById('degree-field-next').click());
-  onEnter('degree-specialty-input', () => document.getElementById('degree-specialty-next').click());
-  onEnter('degree-institution-input', () => document.getElementById('degree-institution-add').click());
+  const watch = (inputId, key) => {
+    const input = document.getElementById(inputId);
+    if (!input || input.dataset.degreeWatch) return;
+    input.dataset.degreeWatch = '1';
+    input.addEventListener('input', () => {
+      if (!degreeDraft) return;
+      degreeDraft[key] = input.value;
+      paintDegreeDraft();
+    });
+  };
+  watch('degree-other-input', 'degree');
+  watch('degree-field-input', 'field');
+  watch('degree-specialty-input', 'specialty');
+  watch('degree-institution-input', 'institution');
+  onEnter('degree-other-input', advanceDegreeOther);
+  onEnter('degree-field-input', advanceDegreeField);
+  onEnter('degree-specialty-input', advanceDegreeSpecialty);
+  onEnter('degree-institution-input', commitDegreeDraft);
+  const screen = document.getElementById('screen-2');
+  if (screen && !screen.dataset.degreePad) {
+    screen.dataset.degreePad = '1';
+    screen.addEventListener('focusin', (e) => {
+      if (!e.target.matches('input, textarea')) return;
+      document.querySelector('#screen-2 .screen-content')?.classList.add('city-keyboard-pad');
+      setTimeout(() => {
+        const draft = document.getElementById('degree-draft');
+        if (draft && !draft.hidden) draft.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        e.target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }, 50);
+    });
+    screen.addEventListener('focusout', () => {
+      setTimeout(() => {
+        const sc = document.querySelector('#screen-2 .screen-content');
+        const active = document.activeElement;
+        if (sc && (!active || !sc.contains(active) || !active.matches('input, textarea'))) sc.classList.remove('city-keyboard-pad');
+      }, 200);
+    });
+  }
+}
+function advanceDegreeOther() {
+  const input = document.getElementById('degree-other-input');
+  degreeDraft.degree = input ? input.value.trim() : '';
+  degreeStep = 'field';
+  renderDegreeWizard();
+}
+function advanceDegreeField() {
+  const input = document.getElementById('degree-field-input');
+  degreeDraft.field = input ? input.value.trim() : '';
+  degreeStep = 'institution';
+  renderDegreeWizard();
+}
+function advanceDegreeSpecialty() {
+  const input = document.getElementById('degree-specialty-input');
+  degreeDraft.specialty = input ? input.value.trim() : '';
+  degreeStep = 'institution';
+  renderDegreeWizard();
 }
 function pickDegreeType(def, btn) {
   const box = document.getElementById('degree-type-choices');
   if (box) box.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('selected', b === btn));
+  if (!degreeDraft) degreeDraft = emptyDegreeDraft();
+  const previous = degreeDraft.degree;
+  degreeDraft.other = !!def.other;
+  degreeDraft.middle = def.middle;
+  if (def.other) {
+    if (previous && degreeDefForLabel(previous)) degreeDraft.degree = '';
+  } else {
+    degreeDraft.degree = def.label;
+    if (previous !== def.label) {
+      degreeDraft.field = '';
+      degreeDraft.specialty = '';
+    }
+  }
+  paintDegreeDraft();
   if (degreePickTimer) clearTimeout(degreePickTimer);
   const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : Q_CHOICE_DELAY;
   degreePickTimer = setTimeout(() => {
     degreePickTimer = null;
-    const previous = degreeDraft.degree;
-    degreeDraft.other = !!def.other;
-    degreeDraft.middle = def.middle;
-    if (def.other) {
-      if (previous && degreeDefForLabel(previous)) degreeDraft.degree = '';
-      degreeStep = 'other';
-    } else {
-      degreeDraft.degree = def.label;
-      if (previous !== def.label) {
-        degreeDraft.field = '';
-        degreeDraft.specialty = '';
-      }
-      degreeStep = def.middle === 'field' ? 'field' : def.middle === 'specialty' ? 'specialty' : 'institution';
-    }
+    if (def.other) degreeStep = 'other';
+    else degreeStep = def.middle === 'field' ? 'field' : def.middle === 'specialty' ? 'specialty' : 'institution';
     renderDegreeWizard();
   }, delay);
 }
@@ -2530,6 +2596,7 @@ function readDegreeInputs() {
   if (degreeStep === 'institution' && institution) degreeDraft.institution = institution.value.trim();
 }
 function commitDegreeDraft() {
+  if (degreePickTimer) { clearTimeout(degreePickTimer); degreePickTimer = null; }
   readDegreeInputs();
   const entry = {
     degree: (degreeDraft.degree || '').trim() || null,
@@ -2544,6 +2611,12 @@ function commitDegreeDraft() {
   degreeStep = 'idle';
   renderDegreeWizard();
   if (typeof qRefresh === 'function') qRefresh('degrees');
+}
+function abandonDegreeDraft() {
+  if (degreePickTimer) { clearTimeout(degreePickTimer); degreePickTimer = null; }
+  degreeEditIndex = -1;
+  degreeDraft = emptyDegreeDraft();
+  degreeStep = obtainedDegrees.length ? 'idle' : 'type';
 }
 function editDegree(index) {
   const entry = obtainedDegrees[index];
@@ -2576,6 +2649,7 @@ function renderDegreeCards() {
   if (!list) return;
   list.replaceChildren();
   obtainedDegrees.forEach((entry, index) => {
+    if (index === degreeEditIndex) return;
     const card = document.createElement('div');
     card.className = 'degree-card';
     card.setAttribute('role', 'button');
@@ -2597,6 +2671,58 @@ function renderDegreeCards() {
     list.appendChild(card);
   });
 }
+function degreeBlank(value) {
+  const text = (value || '').trim();
+  return text || '___';
+}
+function degreeDraftPieces() {
+  const d = degreeDraft || emptyDegreeDraft();
+  if (degreeStep === 'idle') return [];
+  if (degreeStep === 'type' && !d.degree && !d.other && degreeEditIndex < 0) return [];
+  const pieces = [];
+  const add = (key, value, reopen) => pieces.push({
+    key,
+    value: value || '',
+    reopen,
+    current: (key === 'degree' && (degreeStep === 'type' || degreeStep === 'other')) || degreeStep === reopen,
+  });
+  if (d.other) add('degree', d.degree, 'other');
+  else add('degree', d.degree, 'type');
+  const showMiddle = (key) => degreeStep === key || degreeStep === 'institution' || degreeEditIndex >= 0 || !!(key === 'field' ? d.field : d.specialty);
+  if (d.middle === 'field' && degreeStep !== 'other' && showMiddle('field')) add('field', d.field, 'field');
+  if (d.middle === 'specialty' && degreeStep !== 'other' && showMiddle('specialty')) add('specialty', d.specialty, 'specialty');
+  if (degreeStep === 'institution') add('institution', d.institution, 'institution');
+  return pieces;
+}
+function reopenDegreePart(step) {
+  readDegreeInputs();
+  if (degreePickTimer) { clearTimeout(degreePickTimer); degreePickTimer = null; }
+  degreeStep = step;
+  renderDegreeWizard();
+}
+function paintDegreeDraft() {
+  const host = document.getElementById('degree-draft');
+  const line = document.getElementById('degree-draft-line');
+  const chips = document.getElementById('degree-draft-chips');
+  if (!host || !line || !chips) return;
+  const pieces = degreeDraftPieces();
+  host.hidden = pieces.length === 0;
+  line.textContent = pieces.map(p => degreeBlank(p.value)).join(' · ');
+  chips.replaceChildren();
+  pieces.forEach(p => {
+    if (p.current) return;
+    if (p.key === 'institution') return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'degree-chip';
+    const label = p.key === 'degree' ? 'Degree' : p.key === 'field' ? 'Field of study' : 'Specialty';
+    btn.textContent = (p.value || '').trim() || label;
+    btn.setAttribute('aria-label', 'Edit ' + label);
+    btn.addEventListener('click', () => reopenDegreePart(p.reopen));
+    chips.appendChild(btn);
+  });
+}
+let degreeFocusedStep = '';
 function renderDegreeWizard() {
   initDegreeButtons();
   if (!degreeDraft) degreeDraft = emptyDegreeDraft();
@@ -2610,6 +2736,8 @@ function renderDegreeWizard() {
   Object.entries(steps).forEach(([name, el]) => { if (el) el.hidden = name !== degreeStep; });
   const addAnother = document.getElementById('degree-add-another');
   if (addAnother) addAnother.hidden = degreeStep !== 'idle' || !obtainedDegrees.length;
+  const addBtn = document.getElementById('degree-institution-add');
+  if (addBtn) addBtn.textContent = degreeEditIndex >= 0 ? 'Save degree' : 'Add';
   const box = document.getElementById('degree-type-choices');
   if (box) {
     const selected = degreeDraft.other ? 'Other' : (degreeDraft.degree || '');
@@ -2619,23 +2747,35 @@ function renderDegreeWizard() {
   const field = document.getElementById('degree-field-input');
   const specialty = document.getElementById('degree-specialty-input');
   const institution = document.getElementById('degree-institution-input');
-  if (other) { other.disabled = degreeStep !== 'other'; if (degreeStep === 'other') other.value = degreeDraft.degree || ''; }
-  if (field) { field.disabled = degreeStep !== 'field'; if (degreeStep === 'field') field.value = degreeDraft.field || ''; }
-  if (specialty) { specialty.disabled = degreeStep !== 'specialty'; if (degreeStep === 'specialty') specialty.value = degreeDraft.specialty || ''; }
+  const setInput = (input, active, value) => {
+    if (!input) return;
+    input.disabled = !active;
+    if (active && document.activeElement !== input) input.value = value || '';
+  };
+  setInput(other, degreeStep === 'other', degreeDraft.degree);
+  setInput(field, degreeStep === 'field', degreeDraft.field);
+  setInput(specialty, degreeStep === 'specialty', degreeDraft.specialty);
   if (institution) {
     institution.disabled = degreeStep !== 'institution';
     if (degreeStep === 'institution') {
-      institution.value = degreeDraft.institution || '';
+      if (document.activeElement !== institution) institution.value = degreeDraft.institution || '';
       const known = degreeDefForLabel(degreeDraft.degree);
       institution.placeholder = known && known.school ? 'e.g. Phillips Exeter' : 'e.g. Harvard';
     }
   }
+  paintDegreeDraft();
   renderDegreeCards();
   const focusId = degreeStep === 'other' ? 'degree-other-input' : degreeStep === 'field' ? 'degree-field-input' : degreeStep === 'specialty' ? 'degree-specialty-input' : degreeStep === 'institution' ? 'degree-institution-input' : '';
-  if (focusId) {
+  if (focusId && degreeFocusedStep !== degreeStep) {
+    degreeFocusedStep = degreeStep;
     const input = document.getElementById(focusId);
-    if (input) setTimeout(() => { try { input.focus({ preventScroll: true }); } catch (err) { input.focus(); } }, 30);
-  }
+    if (input) setTimeout(() => {
+      try { input.focus({ preventScroll: true }); } catch (err) { input.focus(); }
+      const draft = document.getElementById('degree-draft');
+      if (draft && !draft.hidden) draft.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      input.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }, 30);
+  } else if (!focusId) degreeFocusedStep = degreeStep;
 }
 function syncDegreesPanel() {
   const el = document.getElementById('q-degrees');
