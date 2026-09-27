@@ -691,6 +691,9 @@
       min-height: 0;
       letter-spacing: 0.04em;
     }
+    /* ===== COUPLES FLOW: every onboarding accent uses the couples orange ===== */
+    body.couples-flow { --accent: var(--orange); }
+    body.couples-flow .btn-primary:hover { background: #ff9152; }
   </style>
 </head>
 <body class="landing-active">
@@ -1053,7 +1056,7 @@
         </div>
         <div id="haskids-condensed-col" style="flex:1;min-width:0;display:none;">
           <div class="field-group" id="has-children-group" style="margin-bottom:0;">
-            <label class="field-label" style="font-size:12px;">Have kids?</label>
+            <label class="field-label" id="haskids-condensed-label" style="font-size:12px;">Have kids?</label>
             <select class="field-input" id="has_children_select_condensed" onchange="setHasChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
@@ -1302,6 +1305,7 @@ const state = {
   currentScreen: 0,
   gender: null,
   hasChildren: null,
+  hasChildrenDetail: null, // the exact option picked (couples: no / yes_with_partner / yes_previous_relationship / yes_both)
   wantsChildren: null,
   kidsTimeline: null,
   fertilityPreservation: null,
@@ -1633,6 +1637,7 @@ function showScreen(id, direction) {
   // Landing vs form
   const onLanding = id === 0;
   document.body.classList.toggle('landing-active', onLanding);
+  _syncCouplesFlowClass();
   document.getElementById('sticky-bar').style.display = onLanding ? '' : 'none';
   const dlo = document.getElementById('desktop-overlay');
   if (dlo) dlo.style.display = onLanding ? '' : 'none';
@@ -1669,6 +1674,11 @@ function showScreen(id, direction) {
       initPartnerLocationPicker(); setDefaultAges(); initHeightSlider();
     }
   }
+}
+
+// Couples onboarding uses the orange accent; singles and the landing page keep the green.
+function _syncCouplesFlowClass() {
+  document.body.classList.toggle('couples-flow', state.currentScreen !== 0 && state.status === 'partnered');
 }
 
 function renderBadge(screenId) {
@@ -1716,6 +1726,7 @@ function changeStatus() {
   if (state.status === 'single') {
     ['relationship_stage','partner_name','partner_email'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   }
+  _syncCouplesFlowClass();
   renderBadge(state.currentScreen);
   renderProgress(state.currentScreen);
   if (state.currentScreen === 4 && state.status === 'single') showScreen(3, 'back');
@@ -1775,6 +1786,7 @@ async function saveLead() {
     partner_name: get('partner_name'),
     partner_email: get('partner_email'),
     has_children: state.hasChildren,
+    has_children_detail: state.hasChildrenDetail || null,
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
@@ -1841,7 +1853,9 @@ function onBirthdateInput() {
 }
 
 function setHasChildren(val) {
-  state.hasChildren = val === 'yes' ? true : (val === 'no' ? false : null);
+  // Every yes option (singles "yes", couples "yes_*") counts as has kids.
+  state.hasChildren = val === 'no' ? false : (typeof val === 'string' && val.startsWith('yes') ? true : null);
+  state.hasChildrenDetail = state.hasChildren === null ? null : val;
   const s1 = document.getElementById('has_children_select'); if (s1) s1.value = val || '';
   const s2 = document.getElementById('has_children_select_condensed'); if (s2) s2.value = val || '';
   hideError('has_children');
@@ -1926,8 +1940,37 @@ function setRelationshipTimeline(val) {
   syncFamilyDrip();
 }
 
+const HAS_KIDS_OPTS_SINGLE = [{v:'yes',t:'Yes'},{v:'no',t:'No'}];
+const HAS_KIDS_OPTS_COUPLE = [
+  {v:'no',t:'No'},{v:'yes_with_partner',t:'Yes, with my partner'},
+  {v:'yes_previous_relationship',t:'Yes, from a previous relationship'},{v:'yes_both',t:'Yes, both'}
+];
+
+// Singles and couples get different "Do you have kids?" options. If the saved answer
+// isn't one of the current options (status changed), map yes->yes for singles or re-ask.
+function _syncHasChildrenOptions(partnered) {
+  const opts = partnered ? HAS_KIDS_OPTS_COUPLE : HAS_KIDS_OPTS_SINGLE;
+  const keys = opts.map(o => o.v).join(',');
+  ['has_children_select','has_children_select_condensed'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = Array.from(sel.options).map(o => o.value).filter(v => v).join(',');
+    if (cur !== keys) sel.innerHTML = '<option value="">— Select —</option>' + opts.map(({v,t}) => `<option value="${v}">${t}</option>`).join('');
+  });
+  if (state.hasChildren !== null && state.hasChildren !== undefined && !opts.some(o => o.v === state.hasChildrenDetail)) {
+    if (!partnered && state.hasChildren === true) state.hasChildrenDetail = 'yes';
+    else if (!partnered && state.hasChildren === false) state.hasChildrenDetail = 'no';
+    else { state.hasChildren = null; state.hasChildrenDetail = null; }
+  }
+  const v = state.hasChildrenDetail || '';
+  ['has_children_select','has_children_select_condensed'].forEach(id => { const sel = document.getElementById(id); if (sel) sel.value = v; });
+  const lbl = document.getElementById('haskids-condensed-label');
+  if (lbl) lbl.textContent = partnered ? 'Do you have kids?' : 'Have kids?';
+}
+
 function syncFamilyDrip() {
   const partnered = state.status === 'partnered';
+  _syncHasChildrenOptions(partnered);
   const hasLF = partnered || (Array.isArray(state.lookingFor) && state.lookingFor.length > 0);
   const needsTL = lookingForNeedsTimeline();
   const hasTL = !needsTL || !!state.relationshipTimeline;
@@ -1946,7 +1989,8 @@ function syncFamilyDrip() {
   // collapsed (1.2s after the last tap). An already-answered timeline stays visible while editing.
   const tlHkRow = document.getElementById('timeline-haskids-row');
   const _tlReady = _lfTimelineReady || !!state.relationshipTimeline;
-  if (tlHkRow) tlHkRow.style.display = (!partnered && hasLF && _tlReady) ? 'flex' : 'none';
+  // Couples: once "Do you have kids?" is answered it stays here (condensed), above "want more kids".
+  if (tlHkRow) tlHkRow.style.display = ((!partnered && hasLF && _tlReady) || (partnered && hasKidsDone)) ? 'flex' : 'none';
 
   // timeline-col: hidden for casual (no timeline needed)
   const tlCol = document.getElementById('timeline-col');
@@ -1955,9 +1999,7 @@ function syncFamilyDrip() {
   // haskids-condensed-col: slides into timeline row once have kids answered
   const hkCondCol = document.getElementById('haskids-condensed-col');
   if (hkCondCol) hkCondCol.style.display = (hasTL && hasKidsDone) ? '' : 'none';
-  // sync condensed select
-  const hkCondSel = document.getElementById('has_children_select_condensed');
-  if (hkCondSel && state.hasChildren !== null) hkCondSel.value = state.hasChildren ? 'yes' : 'no';
+  // condensed select value is synced in _syncHasChildrenOptions
 
   // haskids-standalone-row: full width, shows after timeline answered and before have kids answered
   const hkStandaloneRow = document.getElementById('haskids-standalone-row');
@@ -2247,6 +2289,7 @@ async function doSubmit() {
     partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
     status: state.status,
     has_children: state.hasChildren,
+    has_children_detail: state.hasChildrenDetail || null,
     wants_children: state.wantsChildren || null,
     kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
@@ -2713,6 +2756,10 @@ function initPartnerLocationPicker() {
     const own = _canonicalOwnCity();
     partnerLocationSelected = own ? [own] : [];
   }
+  // Every show of What You Want starts with the adder collapsed and empty. Chips are kept.
+  partnerLocationAdderOpen = false;
+  const addInput = document.getElementById('partner-location-input');
+  if (addInput) addInput.value = '';
   _syncPartnerLocationAdder();
   _renderPartnerLocationChips();
 }
