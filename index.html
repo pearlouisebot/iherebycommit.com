@@ -695,6 +695,8 @@
       font-family: 'Space Mono', monospace;
       font-size: 12px; color: var(--body); line-height: 1.6;
     }
+    .screen-subhead { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.6; margin: -12px 0 20px; }
+    #married-before-group .toggle-btn { padding-left: 2px; padding-right: 2px; }
     /* Confirmation priority text */
     .confirm-priority {
       font-family: 'Space Mono', monospace;
@@ -936,6 +938,53 @@
   </div>
 
   <!-- SCREEN 3: WHERE YOU LIVE & DATE -->
+  <!-- SCREEN 2: YOUR PARTNER (Couples only) -->
+  <div id="screen-2" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-2"></div></div>
+    <div id="badge-2" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step <span id="partner-step-num"></span> of <span class="step-total"></span></div>
+      <div class="screen-headline">YOUR <span class="accent">PARTNER</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="field-group" style="margin-bottom:0;min-width:0;">
+          <label class="field-label" for="partner_first_name">Their first name</label>
+          <input class="field-input" id="partner_first_name" type="text" placeholder="First name" autocomplete="off">
+          <div class="field-error" id="err-partner_first_name">Required</div>
+        </div>
+        <div class="field-group" style="margin-bottom:0;min-width:0;">
+          <label class="field-label" for="partner_last_name">Their last name</label>
+          <input class="field-input" id="partner_last_name" type="text" placeholder="Last name" autocomplete="off">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="partner_birthday">Their birthday</label>
+        <input class="field-input" id="partner_birthday" type="date" style="font-size:14px;padding:14px 10px;">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="partner_email">Their email</label>
+        <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
+        <div class="field-error" id="err-partner_email">Valid email required</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Do you live together?</label>
+        <div class="toggle-group" style="margin-bottom:0;">
+          <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes')">YES</button>
+          <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no')">NO</button>
+          <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time')">PART-TIME</button>
+        </div>
+      </div>
+      <p class="partner-notice">We'll notify your partner when the study goes live.</p>
+      <div class="partner-tip-box">
+        <div class="tip-label">Priority tip</div>
+        <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" onclick="goNext(2)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
+    </div>
+  </div>
+
   <div id="screen-3" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
     <div id="badge-3" class="applying-badge"></div>
@@ -990,23 +1039,6 @@
           </div>
         </div>
       </div>
-      <div id="cities-couple-section" style="display:none;">
-        <div class="field-group">
-          <label class="field-label">Do you live with your partner?</label>
-          <div class="toggle-group" style="margin-bottom:0;">
-            <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes')">YES</button>
-            <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no')">NO</button>
-            <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time')">PART-TIME</button>
-          </div>
-        </div>
-        <div id="partner-city-field" class="field-group" style="display:none; margin-bottom:20px;">
-          <label class="field-label">Where does your partner live?</label>
-          <div style="position:relative;" id="partner-city-wrap">
-            <input class="field-input" id="partner_city_input" type="text" placeholder="Type any city…" autocomplete="off" oninput="_renderPartnerCityDropdown(this.value)" onfocus="_renderPartnerCityDropdown(this.value)">
-            <div class="multiselect-dropdown partner-city-dropdown"></div>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(3)">NEXT</button>
@@ -1014,7 +1046,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 4: RELATIONSHIP (Couples only) -->
+  <!-- SCREEN 4: YOUR RELATIONSHIP (Couples only) -->
   <div id="screen-4" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-4"></div></div>
     <div id="badge-4" class="applying-badge"></div>
@@ -1022,31 +1054,39 @@
       <div class="screen-label">Step <span id="rel-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR <span class="accent">RELATIONSHIP</span></div>
       <div class="field-group">
-        <label class="field-label">Relationship stage</label>
-        <select class="field-input" id="relationship_stage">
+        <label class="field-label" for="relationship_stage">Relationship stage</label>
+        <select class="field-input" id="relationship_stage" onchange="onRelationshipStageChange()">
           <option value="">— Select —</option>
           <option value="dating">Dating</option>
           <option value="relationship">Relationship</option>
           <option value="engaged">Engaged</option>
           <option value="married">Married</option>
-          <option value="domestic_partnership">Domestic Partnership</option>
+          <option value="domestic_partnership">Domestic partnership</option>
         </select>
         <div class="field-error" id="err-relationship_stage">Please select a stage</div>
       </div>
       <div class="field-group">
-        <label class="field-label">Partner's name</label>
-        <input class="field-input" id="partner_name" type="text" placeholder="Their first name is fine">
-        <div class="field-error" id="err-partner_name">Partner name required</div>
+        <label class="field-label" for="first_date">First date</label>
+        <input class="field-input" id="first_date" type="date" style="font-size:14px;padding:14px 10px;">
       </div>
-      <div class="field-group">
-        <label class="field-label">Partner's email</label>
-        <input class="field-input" id="partner_email" type="email" placeholder="they@example.com">
-        <div class="field-error" id="err-partner_email">Valid email required</div>
+      <div id="rel-dates-row" style="display:none;gap:10px;margin-bottom:12px;">
+        <div class="field-group" id="engagement-date-field" style="flex:1;min-width:0;margin-bottom:0;display:none;">
+          <label class="field-label" for="engagement_date">Engagement date</label>
+          <input class="field-input" id="engagement_date" type="date" style="font-size:14px;padding:14px 10px;">
+        </div>
+        <div class="field-group" id="wedding-date-field" style="flex:1;min-width:0;margin-bottom:0;display:none;">
+          <label class="field-label" for="wedding_date">Wedding date</label>
+          <input class="field-input" id="wedding_date" type="date" style="font-size:14px;padding:14px 10px;">
+        </div>
       </div>
-      <p class="partner-notice">We'll notify your partner when the study goes live.</p>
-      <div class="partner-tip-box">
-        <div class="tip-label">Priority tip</div>
-        <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
+      <div class="field-group" id="married-before-group">
+        <label class="field-label">Have either of you been married before?</label>
+        <div class="toggle-group" style="margin-bottom:0;">
+          <button class="toggle-btn" id="btn-mb-neither" onclick="setMarriedBefore('neither')">NEITHER</button>
+          <button class="toggle-btn" id="btn-mb-me" onclick="setMarriedBefore('me')">ME</button>
+          <button class="toggle-btn" id="btn-mb-partner" onclick="setMarriedBefore('partner')">MY PARTNER</button>
+          <button class="toggle-btn" id="btn-mb-both" onclick="setMarriedBefore('both')">BOTH</button>
+        </div>
       </div>
     </div>
     <div class="bottom-action">
@@ -1061,7 +1101,8 @@
     <div id="badge-5" class="applying-badge"></div>
     <div class="screen-content">
       <div class="screen-label">Step <span id="kids-step-num"></span> of <span class="step-total"></span></div>
-      <div class="screen-headline">INTENTIONS &amp; <span class="accent">FAMILY</span></div>
+      <div class="screen-headline" id="family-headline">INTENTIONS &amp; <span class="accent">FAMILY</span></div>
+      <p class="screen-subhead" id="family-subhead" style="display:none;">Answer for yourself, not your partner.</p>
 
       <!-- LOOKING FOR: always shown for singles, multi-select -->
       <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
@@ -1364,7 +1405,8 @@ const state = {
   submitting: false,
   zipCity: null,
   zipLatLong: null,
-  livesWithPartner: null,
+  livesWithPartner: null, // couples: "Do you live together?" (yes / no / part_time)
+  marriedBefore: null, // couples: neither / me / partner / both
   locationMode: 'zip', // 'zip' | 'postal'
   intlPostal: null,
   locationCountry: null,
@@ -1386,7 +1428,7 @@ let partnerCity = null;
 // ============================================================
 // PATHS
 // ============================================================
-function getPath() { return state.status === 'partnered' ? [1,3,4,5,7,6] : [1,5,3,7,6]; }
+function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,5,3,7,6]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 function totalSteps() { return getPath().length; }
 
@@ -1703,7 +1745,15 @@ function showScreen(id, direction) {
   }
 
   if (id === 1) { _buildHeightSelect(); }
-  if (id === 5) { syncFamilyDrip(); }
+  if (id === 5) {
+    // Couples: "Family & Intentions", answered for yourself. Singles unchanged.
+    const couple = state.status === 'partnered';
+    const fh = document.getElementById('family-headline');
+    if (fh) fh.innerHTML = couple ? 'FAMILY &amp; <span class="accent">INTENTIONS</span>' : 'INTENTIONS &amp; <span class="accent">FAMILY</span>';
+    const fs = document.getElementById('family-subhead');
+    if (fs) fs.style.display = couple ? '' : 'none';
+    syncFamilyDrip();
+  }
 
   // Adjust screen 3 for singles vs couples
   if (id === 3) {
@@ -1756,7 +1806,7 @@ function renderProgress(screenId) {
 function renderStepNums(screenId) {
   const total = totalSteps();
   document.querySelectorAll('.screen.active .step-total').forEach(el => el.textContent = total);
-  ['rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
+  ['partner-step-num','rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       const parentScreen = el.closest('.screen');
@@ -1771,15 +1821,22 @@ function startAs(status) {
   showScreen(1, 'forward');
 }
 
+const COUPLE_INPUT_IDS = ['partner_first_name','partner_last_name','partner_birthday','partner_email','relationship_stage','first_date','engagement_date','wedding_date'];
+// "change" link: on screen 1 (identical for both flows) switch in place. From screen 2
+// onward, switch and go back to slide 1 of the other flow; slide-1 answers are kept.
 function changeStatus() {
+  const from = state.currentScreen;
   state.status = state.status === 'partnered' ? 'single' : 'partnered';
   if (state.status === 'single') {
-    ['relationship_stage','partner_name','partner_email'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    COUPLE_INPUT_IDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    setLivesWithPartner(null); setMarriedBefore(null); onRelationshipStageChange();
   }
+  syncFamilyDrip(); // has_children mapping for the new flow (Hotfix 5/7)
   _syncCouplesFlowClass();
-  renderBadge(state.currentScreen);
-  renderProgress(state.currentScreen);
-  if (state.currentScreen === 4 && state.status === 'single') showScreen(3, 'back');
+  if (from > 1 && from < 8) { showScreen(1, 'back'); return; }
+  renderBadge(from);
+  renderProgress(from);
+  renderStepNums(from);
 }
 
 function getNextScreen(currentId) {
@@ -1825,21 +1882,17 @@ async function saveLead() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.zipLatLong || null,
     open_to_city: openToCityPayload(),
-    age_min: state.ageMin || null,
-    age_max: state.ageMax || null,
-    gender_seeking: state.genderSeeking || null,
-    height_min_cm: state.heightPrefMinCm || null,
-    height_max_cm: state.heightPrefMaxCm || null,
-    lives_with_partner: state.livesWithPartner || null,
-    partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
-    relationship_stage: get('relationship_stage'),
-    partner_name: get('partner_name'),
-    partner_email: get('partner_email'),
+    age_min: state.status === 'partnered' ? null : (state.ageMin || null),
+    age_max: state.status === 'partnered' ? null : (state.ageMax || null),
+    gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
+    height_min_cm: state.status === 'partnered' ? null : (state.heightPrefMinCm || null),
+    height_max_cm: state.status === 'partnered' ? null : (state.heightPrefMaxCm || null),
+    ...couplePayload(),
     has_children: state.hasChildren,
     children_with: childrenWithPayload(),
     race: racePayload(),
     wants_children: state.wantsChildren || null,
-    kids_timeline: state.kidsTimeline || null,
+    kids_timeline: state.status === 'partnered' ? null : (state.kidsTimeline || null),
     fertility_preservation: state.fertilityPreservation || null,
     looking_for: lookingForPayload(),
     relationship_timeline: relationshipTimelinePayload(),
@@ -2037,7 +2090,7 @@ function syncFamilyDrip() {
   const needsTL = lookingForNeedsTimeline();
   const hasTL = !needsTL || !!state.relationshipTimeline;
   const hasKidsDone = state.hasChildren !== null && state.hasChildren !== undefined;
-  const kidsTimelineDone = !!state.kidsTimeline;
+  const kidsTimelineDone = !partnered && !!state.kidsTimeline; // couples: no kids-timeline question
   const _lf = Array.isArray(state.lookingFor) ? state.lookingFor : [];
   const _hasMarriage = _lf.includes('marriage');
   const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
@@ -2120,8 +2173,8 @@ function syncFamilyDrip() {
         lbl.style.fontSize = '12px';
         lbl.textContent = state.hasChildren === true ? 'Want more kids?' : 'Want kids?';
       } else {
-        // full width: show full question
-        lbl.style.fontSize = '';
+        // full width: show full question (couples: standard 12px to match stacked labels)
+        lbl.style.fontSize = partnered ? '12px' : '';
         lbl.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
       }
     }
@@ -2136,11 +2189,12 @@ function syncFamilyDrip() {
 
   // kidstimeline-standalone-row: full width, shown while not yet answered
   const ktStandaloneRow = document.getElementById('kidstimeline-standalone-row');
-  if (ktStandaloneRow) ktStandaloneRow.style.display = (hasLF && state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
+  if (ktStandaloneRow) ktStandaloneRow.style.display = (hasLF && !partnered && state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
 
   // fertility-row: full width, shows once kids timeline answered
   const fertRow = document.getElementById('fertility-row');
-  if (fertRow) fertRow.style.display = (hasLF && state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
+  // Couples: fertility follows want = Yes directly (no kids-timeline question).
+  if (fertRow) fertRow.style.display = (hasLF && state.wantsChildren === 'yes' && (partnered || kidsTimelineDone)) ? 'block' : 'none';
 
   // Clear downstream if wantsChildren is not yes
   if (state.wantsChildren !== 'yes') {
@@ -2228,13 +2282,15 @@ function validateScreen(screenId) {
       } else { hideError('age_range'); }
     }
   }
+  if (screenId === 2) {
+    const pf = document.getElementById('partner_first_name').value.trim();
+    const pe = document.getElementById('partner_email').value.trim();
+    if (!pf) { showError('partner_first_name', 'Required'); ok = false; } else hideError('partner_first_name');
+    if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
+  }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
-    const pn = document.getElementById('partner_name').value.trim();
-    const pe = document.getElementById('partner_email').value.trim();
     if (!rs) { showError('relationship_stage', 'Please select a stage'); ok = false; } else hideError('relationship_stage');
-    if (!pn) { showError('partner_name', 'Partner name required'); ok = false; } else hideError('partner_name');
-    if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
   }
   if (screenId === 5) {
     if (state.status !== 'partnered') {
@@ -2251,7 +2307,7 @@ function validateScreen(screenId) {
     if (wkRowVisible) {
       if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
       if (state.wantsChildren === 'yes') {
-        if (!state.kidsTimeline) { showError('kids_timeline', 'Please make a selection'); ok = false; } else hideError('kids_timeline');
+        if (state.status !== 'partnered' && !state.kidsTimeline) { showError('kids_timeline', 'Please make a selection'); ok = false; } else hideError('kids_timeline');
         if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
       } else { hideError('kids_timeline'); hideError('fertility'); }
     }
@@ -2345,19 +2401,18 @@ async function doSubmit() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
     open_to_city: openToCityPayload(),
-    age_min: state.ageMin || null,
-    age_max: state.ageMax || null,
-    gender_seeking: state.genderSeeking || null,
-    height_min_cm: state.heightPrefMinCm || null,
-    height_max_cm: state.heightPrefMaxCm || null,
-    lives_with_partner: state.status === 'partnered' ? state.livesWithPartner : null,
-    partner_city: (state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time')) ? (partnerCity || null) : null,
+    age_min: state.status === 'partnered' ? null : (state.ageMin || null),
+    age_max: state.status === 'partnered' ? null : (state.ageMax || null),
+    gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
+    height_min_cm: state.status === 'partnered' ? null : (state.heightPrefMinCm || null),
+    height_max_cm: state.status === 'partnered' ? null : (state.heightPrefMaxCm || null),
+    ...couplePayload(),
     status: state.status,
     has_children: state.hasChildren,
     children_with: childrenWithPayload(),
     race: racePayload(),
     wants_children: state.wantsChildren || null,
-    kids_timeline: state.kidsTimeline || null,
+    kids_timeline: state.status === 'partnered' ? null : (state.kidsTimeline || null),
     fertility_preservation: state.fertilityPreservation || null,
     looking_for: lookingForPayload(),
     relationship_timeline: relationshipTimelinePayload(),
@@ -2375,11 +2430,6 @@ async function doSubmit() {
     terms_version: '2026-10-01',
     terms_accepted_at: new Date().toISOString(),
   };
-  if (state.status === 'partnered') {
-    body.relationship_stage = document.getElementById('relationship_stage').value;
-    body.partner_name = document.getElementById('partner_name').value.trim();
-    body.partner_email = document.getElementById('partner_email').value.trim().toLowerCase();
-  }
   try {
     const resp = await fetch(FUNCTIONS_URL + '/submit-application', {
       method: 'POST',
@@ -2420,7 +2470,7 @@ function showConfirmation(subjectNumber) {
 }
 
 function partnerFirstName() {
-  const raw = (document.getElementById('partner_name')?.value || '').trim();
+  const raw = (document.getElementById('partner_first_name')?.value || '').trim();
   return raw ? raw.split(/\s+/)[0] : '';
 }
 
@@ -3141,14 +3191,49 @@ const _ZIP_CC = {
 let _zipTimer = null;
 
 function setLivesWithPartner(val) {
-  state.livesWithPartner = val;
+  state.livesWithPartner = val || null;
   document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
   document.getElementById('btn-lives-no').classList.toggle('selected', val === 'no');
   document.getElementById('btn-lives-parttime').classList.toggle('selected', val === 'part_time');
-  const showCity = val === 'no' || val === 'part_time';
-  const pcf = document.getElementById('partner-city-field');
-  if (pcf) pcf.style.display = showCity ? '' : 'none';
-  if (!showCity) { partnerCity = null; const inp = document.getElementById('partner_city_input'); if (inp) inp.value = ''; }
+}
+
+function setMarriedBefore(val) {
+  state.marriedBefore = val || null;
+  ['neither','me','partner','both'].forEach(v => document.getElementById('btn-mb-' + v)?.classList.toggle('selected', v === val));
+}
+
+// Engagement date for Engaged or Married; wedding date for Married only.
+function onRelationshipStageChange() {
+  const stage = document.getElementById('relationship_stage')?.value || '';
+  if (stage) hideError('relationship_stage');
+  const showEng = stage === 'engaged' || stage === 'married';
+  const showWed = stage === 'married';
+  const eng = document.getElementById('engagement-date-field'); if (eng) eng.style.display = showEng ? '' : 'none';
+  const wed = document.getElementById('wedding-date-field'); if (wed) wed.style.display = showWed ? '' : 'none';
+  const row = document.getElementById('rel-dates-row'); if (row) row.style.display = showEng ? 'flex' : 'none';
+}
+
+// Couples-only answers. Singles send null so nothing from the couples flow carries over.
+function couplePayload() {
+  const c = state.status === 'partnered';
+  const g = id => { if (!c) return null; const el = document.getElementById(id); return (el && el.value.trim()) || null; };
+  const first = g('partner_first_name'), last = g('partner_last_name');
+  const stage = g('relationship_stage');
+  const live = c ? (state.livesWithPartner || null) : null;
+  return {
+    partner_first_name: first,
+    partner_last_name: last,
+    partner_name: c ? ([first, last].filter(Boolean).join(' ') || null) : null, // backward compat: "first last"
+    partner_email: c && g('partner_email') ? g('partner_email').toLowerCase() : null,
+    partner_birthday: g('partner_birthday'),
+    live_together: live,
+    lives_with_partner: live, // backward compat: same answer, older column
+    relationship_stage: stage,
+    first_date: g('first_date'),
+    engagement_date: (stage === 'engaged' || stage === 'married') ? g('engagement_date') : null,
+    wedding_date: stage === 'married' ? g('wedding_date') : null,
+    married_before: c ? (state.marriedBefore || null) : null,
+  };
 }
 
 function initPartnerCityPicker() {
