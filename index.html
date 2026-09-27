@@ -272,6 +272,27 @@
       color: var(--accent); font-family: 'Space Mono', monospace; font-size: 13px;
       cursor: pointer; touch-action: manipulation;
     }
+    /* Singles Partner Location: chips, "+ Add more" and the city autocomplete share one flex-wrap row
+       (one line until more cities are added). Suggestions render inline in normal page flow (never an overlay). */
+    .partner-location-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    #partner-location-chips { display: contents; }
+    #partner-location-input { flex: 1 1 140px; min-width: 140px; width: auto; max-width: 100%; min-height: 44px; padding: 10px 12px; font-size: 16px; }
+    #partner-location-input[hidden] { display: none; }
+    .partner-location-suggestions { position: static; display: flex; flex-direction: column; margin-top: 6px; border: 1px solid var(--dim); border-radius: var(--radius); overflow: hidden; }
+    .partner-location-suggestions[hidden] { display: none; }
+    .partner-location-suggestion {
+      position: static; display: block; width: 100%; box-sizing: border-box; text-align: left;
+      min-height: 52px; padding: 14px 16px; margin: 0;
+      background: #1a1a1a; color: var(--text); border: none; border-top: 1px solid var(--dim);
+      font-family: 'Space Mono', monospace; font-size: 15px; line-height: 1.35;
+      cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; word-break: break-word;
+    }
+    .partner-location-suggestion:first-child { border-top: none; }
+    .partner-location-suggestion.active, .partner-location-suggestion:hover, .partner-location-suggestion:active { background: #2a2a28; }
+    .partner-location-suggestion.typed { color: var(--accent); }
+    .partner-location-anywhere { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 10px; font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); cursor: pointer; touch-action: manipulation; }
+    .partner-location-anywhere input { width: 20px; height: 20px; margin: 0; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
+    #partner-location-field.anywhere .partner-location-chip { opacity: 0.6; }
 
     /* ===================================================
        LANDING PAGE STYLES
@@ -975,15 +996,20 @@
           </div>
           <div class="field-error" id="err-gender_seeking"></div>
         </div>
-        <!-- PARTNER LOCATION: default chip, type to add more -->
+        <!-- PARTNER LOCATION: registered-city chip and "+ Add more" on one row; "+ Add more" opens a city autocomplete.
+             Suggestions are inline tap rows in normal flow. City data: GeoNames (https://www.geonames.org), CC BY 4.0, trimmed in cities_grokbot.json. -->
         <div class="field-group" id="partner-location-field" style="margin-bottom:20px;">
           <label class="field-label" id="partner-location-label" for="partner-location-input">Partner Location (select all):</label>
-          <div id="partner-location-chips" class="partner-location-chips"></div>
-          <button type="button" class="city-add-more" id="partner-location-add-more">+ Add more</button>
-          <div class="city-add-row" id="partner-location-add-row" hidden>
-            <input class="field-input city-add-input" id="partner-location-input" type="text" placeholder="Type a city and press Enter" autocomplete="off" enterkeyhint="done">
-            <button type="button" class="city-add-btn" id="partner-location-add-btn">Add</button>
+          <div id="partner-location-row" class="partner-location-row">
+            <div id="partner-location-chips" class="partner-location-chips"></div>
+            <button type="button" class="city-add-more" id="partner-location-add-more">+ Add more</button>
+            <input class="field-input" id="partner-location-input" type="text" placeholder="Type a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="partner-location-suggestions" aria-expanded="false" hidden>
           </div>
+          <div id="partner-location-suggestions" class="partner-location-suggestions" role="listbox" aria-label="City suggestions" hidden></div>
+          <label class="partner-location-anywhere" for="partner-location-anywhere">
+            <input type="checkbox" id="partner-location-anywhere">
+            <span>Any city - I would relocate for love</span>
+          </label>
         </div>
         <!-- AGE RANGE SLIDER -->
         <div class="field-group" style="margin-bottom:20px;">
@@ -1360,7 +1386,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27d';
+var PAGE_VERSION = '2026-09-27e';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2001,6 +2027,8 @@ async function saveLead() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.zipLatLong || null,
     open_to_city: openToCityPayload(),
+    partner_locations: partnerLocationsPayload(),
+    open_to_anywhere: openToAnywherePayload(),
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -2513,6 +2541,8 @@ async function doSubmit() {
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
     open_to_city: openToCityPayload(),
+    partner_locations: partnerLocationsPayload(),
+    open_to_anywhere: openToAnywherePayload(),
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -3122,9 +3152,10 @@ async function _resolveIntlCityPostal(postal) {
   // Nothing found — keep raw text as-is (no error)
 }
 
-// Selected ideal-partner cities. Until the singles picker is shown, partial
-// saves keep the previous shape: the applicant's own city only.
+// Selected ideal-partner cities: [{label, city, region, country, lat, lng, geonames_id, typed, own?}].
+// Until the singles picker is shown, partial saves keep the previous shape: the applicant's own city only.
 let partnerLocationSelected = [];
+let partnerLocationAnywhere = false;
 let partnerLocationReady = false;
 let partnerLocationTouched = false;
 
@@ -3153,7 +3184,112 @@ function openToCityPayload() {
     const all = state.zipCity ? [state.zipCity] : [];
     return all.length ? JSON.stringify(all) : null;
   }
-  return partnerLocationSelected.length ? JSON.stringify(partnerLocationSelected) : null;
+  // Back-compat: open_to_city stays a JSON string array of chip labels.
+  return partnerLocationSelected.length ? JSON.stringify(partnerLocationSelected.map(p => p.label)) : null;
+}
+
+function partnerLocationsPayload() {
+  if (state.status === 'partnered' || !partnerLocationReady) return null;
+  if (!partnerLocationSelected.length) return null;
+  return partnerLocationSelected.map(p => ({
+    label: p.label, city: p.city ?? null, region: p.region ?? null, country: p.country ?? null,
+    lat: p.lat ?? null, lng: p.lng ?? null, geonames_id: p.geonames_id ?? null, typed: !!p.typed,
+  }));
+}
+function openToAnywherePayload() {
+  if (state.status === 'partnered' || !partnerLocationReady) return null;
+  return !!partnerLocationAnywhere;
+}
+
+// ---- City list for the autocomplete ----
+// City data from GeoNames (https://www.geonames.org), licensed CC BY 4.0: cities15000 + admin1CodesASCII,
+// trimmed to ~450 large cities in cities_grokbot.json. Loaded locally from this site; no external API at runtime.
+let PARTNER_CITIES = [];
+let _partnerCitiesPromise = null;
+function _foldCity(s) {
+  return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    .replace(/[.'\u2019]/g, '').replace(/[^a-z0-9\u00c0-\uffff]+/g, ' ').trim();
+}
+function loadPartnerCities() {
+  if (_partnerCitiesPromise) return _partnerCitiesPromise;
+  _partnerCitiesPromise = fetch(new URL('cities_grokbot.json', document.baseURI).href)
+    .then(r => (r.ok ? r.json() : []))
+    .then(list => {
+      PARTNER_CITIES = (Array.isArray(list) ? list : []).map(c => Object.assign({}, c, {
+        _names: [c.city, ...(Array.isArray(c.aliases) ? c.aliases : [])].map(_foldCity).filter(Boolean),
+        _label: _foldCity(c.label),
+      }));
+      _attachOwnCityCoords();
+      _renderPartnerLocationSuggestions();
+      return PARTNER_CITIES;
+    })
+    .catch(() => { _partnerCitiesPromise = null; return []; });
+  return _partnerCitiesPromise;
+}
+// Word-prefix match, case/accent-insensitive. Tiers: exact name/alias, prefix of first word, prefix of a later word.
+// Within a tier: major hubs (boost) first, then population.
+function _searchPartnerCities(q, limit) {
+  const fq = _foldCity(q);
+  if (!fq) return [];
+  const hits = [];
+  for (const c of PARTNER_CITIES) {
+    let tier = 9;
+    for (const n of c._names) {
+      if (n === fq) { tier = 0; break; }
+      if (n.startsWith(fq)) tier = Math.min(tier, 1);
+      else if ((' ' + n).includes(' ' + fq)) tier = Math.min(tier, 2);
+    }
+    if (tier > 1 && c._label.startsWith(fq)) tier = 1; // e.g. "portland or", "london uk"
+    if (tier <= 2) hits.push({ c, tier });
+  }
+  hits.sort((a, b) => a.tier - b.tier || (b.c.boost ? 1 : 0) - (a.c.boost ? 1 : 0) || b.c.population - a.c.population);
+  return hits.slice(0, limit || 6).map(h => h.c);
+}
+function _plEntryFromCity(c, label) {
+  return { label: label || c.label, city: c.city, region: c.region || null, country: c.country || null,
+    lat: c.lat, lng: c.lng, geonames_id: c.geonames_id, typed: false };
+}
+function _isPartnerLocationSelected(label, geonamesId) {
+  const f = _foldCity(label);
+  return partnerLocationSelected.some(p => (geonamesId && p.geonames_id === geonamesId) || _foldCity(p.label) === f);
+}
+// Match the registered city (e.g. "Brooklyn, NY", "London, ON") against the list.
+function _matchOwnCity(raw) {
+  if (!raw || !PARTNER_CITIES.length) return null;
+  const f = _foldCity(raw);
+  const byLabel = PARTNER_CITIES.find(c => c._label === f);
+  if (byLabel) return byLabel;
+  const parts = String(raw).split(',').map(_foldCity).filter(Boolean);
+  if (!parts.length) return null;
+  const cands = PARTNER_CITIES.filter(c => _foldCity(c.city) === parts[0] || c._names.includes(parts[0]));
+  if (!cands.length) return null;
+  const rest = parts.slice(1);
+  const keysOf = c => [_foldCity(c.region), String(c.country || '').toLowerCase(), _foldCity(c.label.split(',').slice(1).join(' '))].filter(Boolean);
+  const restOk = c => !rest.length || rest.some(r => keysOf(c).some(k => k === r || k.startsWith(r)));
+  const lc = _foldCity(state.locationCountry || '');
+  const countryOk = c => !!lc && (keysOf(c).includes(lc) || (lc === 'united states' && c.country === 'US'));
+  const ok = cands.filter(restOk);
+  if (!ok.length) return null;
+  ok.sort((a, b) => (countryOk(b) ? 1 : 0) - (countryOk(a) ? 1 : 0) || b.population - a.population);
+  return ok[0];
+}
+function _attachOwnCityCoords() {
+  const own = partnerLocationSelected.find(p => p.own);
+  if (!own || own.geonames_id) return;
+  const m = _matchOwnCity(own.label);
+  if (m) Object.assign(own, _plEntryFromCity(m, own.label), { own: true });
+}
+function _ownCityEntry() {
+  const label = _canonicalOwnCity();
+  if (!label) return null;
+  const m = _matchOwnCity(label);
+  if (m) return Object.assign(_plEntryFromCity(m, label), { own: true });
+  const entry = { label, city: label.split(',')[0].trim(), region: null, country: null, lat: null, lng: null, geonames_id: null, typed: false, own: true };
+  if (state.locationMode === 'zip' && state.zipLatLong) {
+    const [la, ln] = String(state.zipLatLong).split(',').map(Number);
+    if (isFinite(la) && isFinite(ln)) { entry.lat = la; entry.lng = ln; }
+  }
+  return entry;
 }
 
 // ---- CITY CHIP PICKER (shared) ----
@@ -3238,31 +3374,175 @@ function cityChipPicker(cfg) {
   return p;
 }
 
-const singlesCityPicker = cityChipPicker({
-  chips: 'partner-location-chips', more: 'partner-location-add-more', row: 'partner-location-add-row',
-  input: 'partner-location-input', addBtn: 'partner-location-add-btn', multi: true,
-  get: () => partnerLocationSelected, set: v => { partnerLocationSelected = v; },
-  onChange: () => { partnerLocationTouched = true; },
-});
-function _bindPartnerLocationControls() { singlesCityPicker.bind(); partnerCityPicker.bind(); }
-function _syncPartnerLocationAdder() { singlesCityPicker.syncAdder(); }
+// ---- Singles Partner Location: chips + "+ Add more" (same row) + city autocomplete ----
+let _plOpen = false;
+let _plRows = [];
+let _plActive = 0;
+function _bindPartnerLocationControls() { _bindSinglesPartnerLocation(); partnerCityPicker.bind(); }
+function _bindSinglesPartnerLocation() {
+  const more = document.getElementById('partner-location-add-more');
+  const input = document.getElementById('partner-location-input');
+  const chips = document.getElementById('partner-location-chips');
+  const box = document.getElementById('partner-location-suggestions');
+  const any = document.getElementById('partner-location-anywhere');
+  if (more && !more.dataset.bound) { more.dataset.bound = '1'; more.addEventListener('click', e => { e.preventDefault(); _openPartnerLocationAdder(); }); }
+  if (input && !input.dataset.bound) {
+    input.dataset.bound = '1';
+    input.addEventListener('input', () => { _plActive = 0; loadPartnerCities(); _renderPartnerLocationSuggestions(); });
+    input.addEventListener('focus', () => { loadPartnerCities(); });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        // Enter never submits: pick the highlighted (default: top) suggestion.
+        e.preventDefault(); e.stopPropagation();
+        if (e.isComposing) return;
+        _pickPartnerLocationRow(_plActive);
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (!_plRows.length) return;
+        e.preventDefault();
+        _plActive = (_plActive + (e.key === 'ArrowDown' ? 1 : -1) + _plRows.length) % _plRows.length;
+        _renderPartnerLocationSuggestions();
+      } else if (e.key === 'Escape') {
+        input.value = ''; _renderPartnerLocationSuggestions(); input.blur();
+      }
+    });
+    // Leaving an empty box folds it back into "+ Add more" (typed text is kept with its suggestions).
+    input.addEventListener('blur', () => { setTimeout(() => {
+      if (document.activeElement === input) return;
+      if (!input.value.trim()) { _plOpen = false; _syncPartnerLocationAdder(); _renderPartnerLocationSuggestions(); }
+    }, 150); });
+  }
+  if (box && !box.dataset.bound) {
+    box.dataset.bound = '1';
+    // Keep focus (and the phone keyboard) on the input while tapping a row.
+    box.addEventListener('mousedown', e => { if (e.target.closest('.partner-location-suggestion')) e.preventDefault(); });
+    box.addEventListener('click', e => {
+      const row = e.target.closest('.partner-location-suggestion');
+      if (!row || !box.contains(row)) return;
+      e.preventDefault();
+      _pickPartnerLocationRow(Number(row.dataset.idx));
+    });
+  }
+  if (chips && !chips.dataset.bound) {
+    chips.dataset.bound = '1';
+    chips.addEventListener('click', e => {
+      const btn = e.target.closest('.partner-location-chip-remove');
+      if (!btn || !chips.contains(btn)) return;
+      e.preventDefault();
+      _removePartnerLocationChip(Number(btn.dataset.idx));
+    });
+  }
+  if (any && !any.dataset.bound) {
+    any.dataset.bound = '1';
+    any.addEventListener('change', () => { partnerLocationAnywhere = !!any.checked; partnerLocationTouched = true; _renderPartnerLocationChips(); });
+  }
+}
+function _syncPartnerLocationAdder() {
+  const more = document.getElementById('partner-location-add-more');
+  const input = document.getElementById('partner-location-input');
+  if (more) more.hidden = _plOpen;
+  if (input) input.hidden = !_plOpen;
+}
+function _openPartnerLocationAdder() {
+  _plOpen = true; _syncPartnerLocationAdder(); loadPartnerCities();
+  const input = document.getElementById('partner-location-input'); if (input) input.focus();
+}
+function _renderPartnerLocationSuggestions() {
+  const input = document.getElementById('partner-location-input');
+  const box = document.getElementById('partner-location-suggestions');
+  if (!input || !box) return;
+  const typed = _plOpen ? input.value.trim() : '';
+  box.replaceChildren();
+  _plRows = [];
+  if (!typed) { box.hidden = true; input.setAttribute('aria-expanded', 'false'); return; }
+  const matches = _searchPartnerCities(typed, 12).filter(c => !_isPartnerLocationSelected(c.label, c.geonames_id)).slice(0, 6);
+  _plRows = matches.map(c => ({ kind: 'city', c }));
+  _plRows.push({ kind: 'typed', text: typed }); // always last: add exactly as typed
+  if (_plActive >= _plRows.length) _plActive = 0;
+  _plRows.forEach((r, idx) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'partner-location-suggestion' + (r.kind === 'typed' ? ' typed' : '') + (idx === _plActive ? ' active' : '');
+    b.setAttribute('role', 'option');
+    b.setAttribute('aria-selected', idx === _plActive ? 'true' : 'false');
+    b.dataset.idx = String(idx);
+    b.textContent = r.kind === 'typed' ? 'Add "' + r.text + '"' : r.c.label;
+    box.appendChild(b);
+  });
+  box.hidden = false;
+  input.setAttribute('aria-expanded', 'true');
+}
+function _pickPartnerLocationRow(idx) {
+  const r = _plRows[idx] || _plRows[0];
+  if (!r) return;
+  if (r.kind === 'city') _addPartnerLocation(_plEntryFromCity(r.c));
+  else if (_typedIsDuplicate(r.text)) _addPartnerLocation(null);
+  else _addPartnerLocation({ label: r.text, city: r.text, region: null, country: null, lat: null, lng: null, geonames_id: null, typed: true });
+}
+// Typed text that names a city already chosen (e.g. "brooklyn" when "Brooklyn, NY" is a chip) is a duplicate.
+function _typedIsDuplicate(text) {
+  const f = _foldCity(text);
+  if (!f) return true;
+  if (partnerLocationSelected.some(p => _foldCity(p.label) === f || _foldCity(p.city) === f)) return true;
+  return PARTNER_CITIES.some(c => (c._label === f || c._names.includes(f)) && _isPartnerLocationSelected(c.label, c.geonames_id));
+}
+function _addPartnerLocation(entry) {
+  partnerLocationTouched = true;
+  if (entry && entry.label && !_isPartnerLocationSelected(entry.label, entry.geonames_id)) partnerLocationSelected.push(entry);
+  const input = document.getElementById('partner-location-input');
+  if (input) input.value = '';
+  _plActive = 0;
+  _renderPartnerLocationChips();
+  _renderPartnerLocationSuggestions();
+}
+function _removePartnerLocationChip(idx) {
+  if (!(idx >= 0 && idx < partnerLocationSelected.length)) return;
+  partnerLocationTouched = true;
+  partnerLocationSelected.splice(idx, 1);
+  _renderPartnerLocationChips();
+  _renderPartnerLocationSuggestions();
+}
 
 function initPartnerLocationPicker() {
   _bindPartnerLocationControls();
   partnerLocationReady = true;
   if (!partnerLocationTouched) {
-    const own = _canonicalOwnCity();
+    const own = _ownCityEntry();
     partnerLocationSelected = own ? [own] : [];
   }
-  // Every show of What You Want starts with the adder collapsed and empty. Chips are kept.
-  singlesCityPicker.open = false;
+  loadPartnerCities();
+  const any = document.getElementById('partner-location-anywhere');
+  if (any) any.checked = !!partnerLocationAnywhere;
+  // Every show of What You Want starts with the adder folded into "+ Add more" and empty. Chips are kept.
+  _plOpen = false;
   const addInput = document.getElementById('partner-location-input');
   if (addInput) addInput.value = '';
   _syncPartnerLocationAdder();
   _renderPartnerLocationChips();
+  _renderPartnerLocationSuggestions();
 }
 
-function _renderPartnerLocationChips() { singlesCityPicker.render(); }
+function _renderPartnerLocationChips() {
+  const wrap = document.getElementById('partner-location-chips');
+  const field = document.getElementById('partner-location-field');
+  if (field) field.classList.toggle('anywhere', !!partnerLocationAnywhere);
+  if (!wrap) return;
+  wrap.replaceChildren();
+  partnerLocationSelected.forEach((p, idx) => {
+    const chip = document.createElement('span');
+    chip.className = 'partner-location-chip';
+    const label = document.createElement('span');
+    label.className = 'partner-location-chip-label';
+    label.textContent = p.label;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'partner-location-chip-remove';
+    btn.dataset.idx = String(idx);
+    btn.setAttribute('aria-label', 'Remove ' + p.label);
+    btn.textContent = '\u00d7';
+    chip.append(label, btn);
+    wrap.appendChild(chip);
+  });
+}
 
 // ---- AGE RANGE SLIDER ----
 function touchAgeRange() { state.ageRangeTouched = true; hideError('age_range'); }
