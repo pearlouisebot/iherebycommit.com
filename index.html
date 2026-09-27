@@ -205,6 +205,53 @@
     /* Location city rows */
     .location-city-row { display: flex; align-items: center; background: #1a1a1a; border: 1px solid var(--dim); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
 
+    /* Ideal Partner Location — inline multi-select (no floating popup) */
+    #partner-location-label { text-transform: none; letter-spacing: 0.04em; line-height: 1.4; }
+    .partner-location-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .partner-location-chips:empty { display: none; }
+    .partner-location-chips:not(:empty) { margin-bottom: 8px; }
+    .partner-location-chip {
+      display: inline-flex; align-items: center; gap: 2px; max-width: 100%;
+      background: #2a2a28; border: 1px solid #444; color: var(--text);
+      font-family: 'Space Mono', monospace; font-size: 12px;
+      padding: 0 2px 0 10px; border-radius: 2px; min-height: 44px; box-sizing: border-box;
+    }
+    .partner-location-chip-label { word-break: break-word; }
+    .partner-location-chip-remove {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 22px; line-height: 1; min-width: 44px; min-height: 44px; padding: 0;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      touch-action: manipulation;
+    }
+    .partner-location-chip-remove:hover { color: var(--text); }
+    #partner-location-filter { margin-bottom: 8px; min-height: 44px; }
+    .partner-location-list {
+      max-height: 260px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      border: 1px solid var(--dim); border-radius: var(--radius); background: #141414;
+    }
+    .partner-location-row {
+      display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px;
+      margin: 0; padding: 8px 14px; background: transparent; border: 0; border-bottom: 1px solid #2a2a2a;
+      border-radius: 0; appearance: none; -webkit-appearance: none;
+      color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.3;
+      text-align: left; cursor: pointer; box-sizing: border-box; touch-action: manipulation;
+    }
+    .partner-location-row:last-child { border-bottom: 0; }
+    .partner-location-check {
+      width: 20px; height: 20px; flex-shrink: 0; border: 1px solid var(--dim); border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .partner-location-row.selected .partner-location-check {
+      background: var(--accent); border-color: var(--accent);
+    }
+    .partner-location-row.selected .partner-location-check::after {
+      content: '✓'; color: var(--bg); font-size: 14px; line-height: 1;
+    }
+    .partner-location-empty {
+      padding: 14px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted);
+    }
+
     /* ===================================================
        LANDING PAGE STYLES
        =================================================== */
@@ -872,24 +919,12 @@
           </div>
           <div class="field-error" id="err-gender_seeking"></div>
         </div>
-        <!-- LOCATION: split row -->
-        <div class="field-group" style="margin-bottom:20px;">
-          <div style="display:flex;gap:10px;align-items:flex-start;">
-            <div style="flex:1;min-width:0;">
-              <label class="field-label">Location</label>
-              <div id="location-primary-city" style="display:flex;align-items:center;min-height:40px;">
-                <span style="margin-right:6px;font-size:14px;">📍</span>
-                <span id="location-primary-city-name" style="font-family:'Space Mono',monospace;font-size:13px;"></span>
-              </div>
-              <div id="additional-cities-list"></div>
-            </div>
-            <div style="flex:1;min-width:0;">
-              <label class="field-label">Other cities</label>
-              <select class="field-input" id="add_city_native_select" onchange="onNativeCitySelect(this)" style="font-size:13px;">
-                <option value="">+ Add city…</option>
-              </select>
-            </div>
-          </div>
+        <!-- IDEAL PARTNER LOCATION: inline multi-select -->
+        <div class="field-group" id="partner-location-field" style="margin-bottom:20px;">
+          <label class="field-label" id="partner-location-label" for="partner-location-filter">Ideal Partner Location (select all that apply)</label>
+          <div id="partner-location-chips" class="partner-location-chips"></div>
+          <input class="field-input" id="partner-location-filter" type="text" placeholder="Filter cities…" autocomplete="off" enterkeyhint="search">
+          <div id="partner-location-list" class="partner-location-list" role="listbox" aria-multiselectable="true" aria-label="Ideal Partner Location"></div>
         </div>
         <!-- AGE RANGE SLIDER -->
         <div class="field-group" style="margin-bottom:20px;">
@@ -1324,10 +1359,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initCarousel();
   initFnModal();
-  initCityPicker();
   _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
-  initNativeCitySelect();
+  _bindPartnerLocationControls();
   onPhoneInput(); // init SMS checkbox state
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
@@ -1641,7 +1675,7 @@ function showScreen(id, direction) {
         const opp = state.gender === 'man' ? 'women' : state.gender === 'woman' ? 'men' : null;
         if (opp) setGenderSeeking(opp);
       }
-      renderPrimaryCity(); setDefaultAges(); initHeightSlider();
+      initPartnerLocationPicker(); setDefaultAges(); initHeightSlider();
     }
   }
 }
@@ -1738,7 +1772,7 @@ async function saveLead() {
     postal_code: state.locationMode === 'zip' ? (get('postal_code') || null) : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.zipLatLong || null,
-    open_to_city: (() => { const all = state.zipCity ? [state.zipCity, ...additionalCities] : [...additionalCities]; return all.length > 0 ? JSON.stringify(all) : null; })(),
+    open_to_city: openToCityPayload(),
     age_min: state.ageMin || null,
     age_max: state.ageMax || null,
     gender_seeking: state.genderSeeking || null,
@@ -2201,7 +2235,7 @@ async function doSubmit() {
     postal_code: state.locationMode === 'zip' ? document.getElementById('postal_code').value.trim() : null,
     zip_generated_city: state.locationMode === 'zip' ? (state.zipCity || null) : (document.getElementById('intl_city_input')?.value.trim() || null),
     zip_generated_lat_long: state.locationMode === 'zip' ? (state.zipLatLong || null) : null,
-    open_to_city: (() => { const all = state.zipCity ? [state.zipCity, ...additionalCities] : [...additionalCities]; return all.length > 0 ? JSON.stringify(all) : null; })(),
+    open_to_city: openToCityPayload(),
     age_min: state.ageMin || null,
     age_max: state.ageMax || null,
     gender_seeking: state.genderSeeking || null,
@@ -2558,8 +2592,11 @@ function _pickIntlCity(city) {
   hideError('postal_code');
 }
 
-const cityPickerState = { selected: [] };
-let additionalCities = [];
+// Selected ideal-partner cities. Until the singles picker is shown, partial
+// saves keep the previous shape: the applicant's own city only.
+let partnerLocationSelected = [];
+let partnerLocationReady = false;
+let partnerLocationTouched = false;
 
 // ---- SEEKING ----
 function setGenderSeeking(val) {
@@ -2571,41 +2608,138 @@ function setGenderSeeking(val) {
   hideError('gender_seeking');
 }
 
-// ---- LOCATION (city rows) ----
-function renderPrimaryCity() {
-  const el = document.getElementById('location-primary-city-name');
-  if (el) el.textContent = state.zipCity || '';
+// ---- IDEAL PARTNER LOCATION (inline multi-select) ----
+function _ownCityRaw() {
+  if (state.locationMode === 'zip') return (state.zipCity || '').trim();
+  return (state.zipCity || document.getElementById('intl_city_input')?.value || '').trim();
 }
 
-
-function initNativeCitySelect() {
-  const sel = document.getElementById('add_city_native_select');
-  if (!sel) return;
-  const list = _getCityList();
-  sel.innerHTML = '<option value="">+ Add city…</option>' +
-    list.map(c => `<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
+function _canonicalOwnCity() {
+  const raw = _ownCityRaw();
+  if (!raw) return null;
+  const match = _getCityList().find(c => c.toLowerCase() === raw.toLowerCase());
+  return match || raw;
 }
 
-function onNativeCitySelect(sel) {
-  const city = sel.value;
+function _partnerLocationOptions() {
+  const list = _getCityList().slice();
+  const own = _canonicalOwnCity();
+  if (own && !list.some(c => c.toLowerCase() === own.toLowerCase())) list.unshift(own);
+  return list;
+}
+
+function openToCityPayload() {
+  if (state.status === 'partnered' || !partnerLocationReady) {
+    const all = state.zipCity ? [state.zipCity] : [];
+    return all.length ? JSON.stringify(all) : null;
+  }
+  return partnerLocationSelected.length ? JSON.stringify(partnerLocationSelected) : null;
+}
+
+function _bindPartnerLocationControls() {
+  const filter = document.getElementById('partner-location-filter');
+  const list = document.getElementById('partner-location-list');
+  const chips = document.getElementById('partner-location-chips');
+  if (filter && !filter.dataset.bound) {
+    filter.dataset.bound = '1';
+    filter.addEventListener('input', () => _renderPartnerLocationRows());
+  }
+  if (list && !list.dataset.bound) {
+    list.dataset.bound = '1';
+    list.addEventListener('click', (e) => {
+      const row = e.target.closest('.partner-location-row');
+      if (!row || !list.contains(row)) return;
+      e.preventDefault();
+      _togglePartnerLocation(row.dataset.city);
+    });
+  }
+  if (chips && !chips.dataset.bound) {
+    chips.dataset.bound = '1';
+    chips.addEventListener('click', (e) => {
+      const btn = e.target.closest('.partner-location-chip-remove');
+      if (!btn || !chips.contains(btn)) return;
+      e.preventDefault();
+      _togglePartnerLocation(btn.dataset.city);
+    });
+  }
+}
+
+function initPartnerLocationPicker() {
+  _bindPartnerLocationControls();
+  partnerLocationReady = true;
+  if (!partnerLocationTouched) {
+    const own = _canonicalOwnCity();
+    partnerLocationSelected = own ? [own] : [];
+  }
+  _renderPartnerLocation();
+}
+
+function _togglePartnerLocation(city) {
   if (!city) return;
-  addAdditionalCity(city);
-  sel.value = '';
+  partnerLocationTouched = true;
+  const idx = partnerLocationSelected.findIndex(c => c.toLowerCase() === city.toLowerCase());
+  if (idx >= 0) partnerLocationSelected.splice(idx, 1);
+  else partnerLocationSelected.push(city);
+  _renderPartnerLocation();
 }
 
-function addAdditionalCity(city) {
-  if (!additionalCities.includes(city) && city !== state.zipCity) { additionalCities.push(city); renderAdditionalCities(); }
+function _renderPartnerLocation() {
+  _renderPartnerLocationChips();
+  _renderPartnerLocationRows();
 }
 
-function removeAdditionalCity(city) {
-  additionalCities = additionalCities.filter(c => c !== city);
-  renderAdditionalCities();
+function _renderPartnerLocationChips() {
+  const wrap = document.getElementById('partner-location-chips');
+  if (!wrap) return;
+  wrap.replaceChildren();
+  partnerLocationSelected.forEach(city => {
+    const chip = document.createElement('span');
+    chip.className = 'partner-location-chip';
+    const label = document.createElement('span');
+    label.className = 'partner-location-chip-label';
+    label.textContent = city;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'partner-location-chip-remove';
+    btn.dataset.city = city;
+    btn.setAttribute('aria-label', 'Remove ' + city);
+    btn.textContent = '\u00d7';
+    chip.append(label, btn);
+    wrap.appendChild(chip);
+  });
 }
 
-function renderAdditionalCities() {
-  const list = document.getElementById('additional-cities-list');
+function _renderPartnerLocationRows() {
+  const list = document.getElementById('partner-location-list');
   if (!list) return;
-  list.innerHTML = additionalCities.map(c => `<div class="location-city-row"><span style="margin-right:10px;font-size:15px;">📍</span><span style="font-family:'Space Mono',monospace;font-size:14px;flex:1;">${c}</span><button type="button" onmousedown="event.preventDefault();removeAdditionalCity(${JSON.stringify(c)})" style="font-size:20px;line-height:1;color:var(--muted,#888);background:none;border:none;cursor:pointer;padding:0 0 0 8px;flex-shrink:0;">×</button></div>`).join('');
+  const q = (document.getElementById('partner-location-filter')?.value || '').trim().toLowerCase();
+  const scroll = list.scrollTop;
+  list.replaceChildren();
+  const options = _partnerLocationOptions().filter(c => !q || c.toLowerCase().includes(q));
+  if (!options.length) {
+    const empty = document.createElement('div');
+    empty.className = 'partner-location-empty';
+    empty.textContent = 'No cities match';
+    list.appendChild(empty);
+    return;
+  }
+  options.forEach(city => {
+    const selected = partnerLocationSelected.some(c => c.toLowerCase() === city.toLowerCase());
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'partner-location-row' + (selected ? ' selected' : '');
+    row.setAttribute('role', 'option');
+    row.setAttribute('aria-selected', selected ? 'true' : 'false');
+    row.dataset.city = city;
+    const mark = document.createElement('span');
+    mark.className = 'partner-location-check';
+    mark.setAttribute('aria-hidden', 'true');
+    const name = document.createElement('span');
+    name.textContent = city;
+    row.append(mark, name);
+    list.appendChild(row);
+  });
+  list.scrollTop = scroll;
 }
 
 // ---- AGE RANGE SLIDER ----
@@ -2717,90 +2851,6 @@ function setDefaultAges() {
   const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = state.ageMax >= 80 ? '80+' : state.ageMax;
   _updateRangeFill();
   requestAnimationFrame(_updateAgeLabels);
-}
-
-function initCityPicker() {
-  const wrap = document.getElementById('city-picker-wrap');
-  if (!wrap) return;
-  const search = wrap.querySelector('.multiselect-search');
-  const dropdown = wrap.querySelector('.multiselect-dropdown');
-  const inputArea = wrap.querySelector('.multiselect-input-area');
-  search.addEventListener('focus', () => {
-    dropdown.classList.add('open');
-    _renderCityDropdown(search.value);
-  });
-  search.addEventListener('input', () => _renderCityDropdown(search.value));
-  search.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { dropdown.classList.remove('open'); search.blur(); }
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const q = search.value.trim();
-      if (q) { _selectCity(q); }
-    }
-  });
-  inputArea.addEventListener('click', e => { if (e.target !== search) search.focus(); });
-  document.addEventListener('click', e => {
-    if (!wrap.contains(e.target)) {
-      dropdown.classList.remove('open');
-      search.value = '';
-    }
-  });
-}
-
-
-
-function _renderCityDropdown(query) {
-  const wrap = document.getElementById('city-picker-wrap');
-  if (!wrap) return;
-  const dropdown = wrap.querySelector('.multiselect-dropdown');
-  const q = (query || '').trim();
-  const cityList = _getCityList();
-  const filtered = cityList.filter(c =>
-    c.toLowerCase().includes(q.toLowerCase()) && !cityPickerState.selected.includes(c)
-  );
-  let html = filtered.map(c =>
-    `<div class="multiselect-option" onmousedown="event.preventDefault();_selectCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
-  ).join('');
-  // Free-form: offer "+ Add" if typed text isn't in the list
-  if (q && !cityList.some(c => c.toLowerCase() === q.toLowerCase()) && !cityPickerState.selected.some(c => c.toLowerCase() === q.toLowerCase())) {
-    html += `<div class="multiselect-option multiselect-add-option" onmousedown="event.preventDefault();_selectCity('${q.replace(/'/g, "\\'")}')">+ Add \u201c${q}\u201d</div>`;
-  }
-  dropdown.innerHTML = html || '<div class="multiselect-empty">No cities found</div>';
-}
-
-function _selectCity(city) {
-  if (!cityPickerState.selected.includes(city)) {
-    cityPickerState.selected.push(city);
-    _renderCityChips();
-  }
-  const wrap = document.getElementById('city-picker-wrap');
-  const search = wrap.querySelector('.multiselect-search');
-  const dropdown = wrap.querySelector('.multiselect-dropdown');
-  search.value = '';
-  search.blur();
-  dropdown.classList.remove('open');
-}
-
-function _removeCityChip(city) {
-  cityPickerState.selected = cityPickerState.selected.filter(c => c !== city);
-  _renderCityChips();
-  const wrap = document.getElementById('city-picker-wrap');
-  const search = wrap && wrap.querySelector('.multiselect-search');
-  if (search) _renderCityDropdown(search.value);
-}
-
-function _renderCityChips() {
-  const wrap = document.getElementById('city-picker-wrap');
-  if (!wrap) return;
-  const inputArea = wrap.querySelector('.multiselect-input-area');
-  const search = wrap.querySelector('.multiselect-search');
-  Array.from(inputArea.children).forEach(el => { if (el !== search) el.remove(); });
-  cityPickerState.selected.forEach(c => {
-    const chip = document.createElement('span');
-    chip.className = 'multiselect-chip';
-    chip.innerHTML = c + `<button class="multiselect-chip-remove" onmousedown="event.preventDefault();_removeCityChip('${c.replace(/'/g, "\\'")}')">\u00d7</button>`;
-    inputArea.insertBefore(chip, search);
-  });
 }
 
 // ============================================================
