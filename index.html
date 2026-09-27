@@ -113,6 +113,8 @@
 
     /* Inputs */
     .field-group { margin-bottom: 12px; }
+    /* Keep Amanda's exact casing for this label; size/colour/spacing match the other labels. */
+    #partner-location-label { text-transform: none; }
     .field-label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     #screen-5 .field-label { text-transform: none; }
     #screen-5 .choice-grid {
@@ -131,7 +133,7 @@
     .who-cond:focus-visible { outline: none; border-color: var(--accent); }
     .who-cond-txt { display: flex; flex-direction: column; min-width: 0; }
     .who-cond-k { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
-    /* Answers wrap (up to two lines) instead of being cut off, e.g. "Yes, past relationship" in a half-width row. */
+    /* Answers wrap (up to two lines) instead of being cut off, e.g. "Yes from past relationship" in a half-width row. */
     .who-cond-v { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.4; white-space: normal; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .who-cond-edit { font-size: 10px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.1em; flex-shrink: 0; }
     #who-name.collapsed > .who-cond, #pt-name.collapsed > .who-cond { grid-column: 1 / -1; }
@@ -141,7 +143,7 @@
     .cr-pair.cr-stack:not(.cr-both), .cr-pair.cr-solo { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
     .cr-pair.cr-both { align-items: stretch; }
     .cr-pair.cr-both > .who-unit.collapsed > .who-cond { height: 100%; }
-    /* 320px phones: couples' "Have kids" answer ("Yes, past relationship") needs the full width, so that pair stacks. */
+    /* 320px phones: couples' "Have kids" answer ("Yes from past relationship") needs the full width, so that pair stacks. */
     @media (max-width: 359px) { body.couples-flow #fam-row-kids.cr-both { display: flex; flex-direction: column; gap: 12px; } }
     .cr-later, .cr-empty { display: none !important; }
     /* Form screens: the page is exactly one viewport tall, so NEXT stays on screen and only the questions scroll. */
@@ -968,7 +970,7 @@
         </div>
         <!-- PARTNER LOCATION: default chip, type to add more -->
         <div class="field-group" id="partner-location-field" style="margin-bottom:20px;">
-          <label class="field-label" id="partner-location-label" for="partner-location-input">Partner location</label>
+          <label class="field-label" id="partner-location-label" for="partner-location-input">Partner Location (select all):</label>
           <div id="partner-location-chips" class="partner-location-chips"></div>
           <button type="button" class="city-add-more" id="partner-location-add-more">+ Add more</button>
           <div class="city-add-row" id="partner-location-add-row" hidden>
@@ -1163,7 +1165,7 @@
             <select class="field-input" id="kids_timeline_select" onchange="setKidsTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
-              <option value="1_2_years">1-2 years</option>
+              <option value="1_2_years">2 years</option>
               <option value="3_4_years">3-4 years</option>
               <option value="5_10_years">5-10 years</option>
               <option value="10_plus_years">10+ years</option>
@@ -2048,7 +2050,7 @@ function childrenWithPayload() {
 const HAS_KIDS_OPTS_SINGLE = [{v:'yes',t:'Yes'},{v:'no',t:'No'}];
 const HAS_KIDS_OPTS_COUPLE = [
   {v:'no',t:'No'},{v:'yes_with_partner',t:'Yes, with my partner'},
-  {v:'yes_previous_relationship',t:'Yes, past relationship'},{v:'yes_both',t:'Yes, both'}
+  {v:'yes_previous_relationship',t:'Yes from past relationship'},{v:'yes_both',t:'Yes, both'}
 ];
 
 // Singles and couples get different "Do you have kids?" options. If the saved answer
