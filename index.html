@@ -694,6 +694,10 @@
     /* ===== COUPLES FLOW: every onboarding accent uses the couples orange ===== */
     body.couples-flow { --accent: var(--orange); }
     body.couples-flow .btn-primary:hover { background: #ff9152; }
+    /* Couples confirmation: yellow "Invite a Friend" button */
+    .btn-yellow { background: #FFC83D; color: #0e0e0e; }
+    .btn-yellow:hover { background: #ffd466; }
+    .btn-yellow:active { transform: scale(0.98); }
   </style>
 </head>
 <body class="landing-active">
@@ -1215,9 +1219,13 @@
       <div class="subject-label">YOUR SUBJECT NUMBER</div>
       <p class="confirm-priority">Applications are reviewed in the order they're received. The earlier you applied, the higher your priority for Cohort 01.</p>
       <div class="confirm-text" id="confirm-text"></div>
-      <div class="recruit-section">
+      <div class="recruit-section" id="recruit-single">
         <div class="field-label" style="margin-bottom:12px;">Know someone who should apply?</div>
-        <button class="btn btn-primary" onclick="shareLink()">SEND THEM THE LINK</button>
+        <button class="btn btn-primary" id="share-single-btn" onclick="shareLink()">SEND THEM THE LINK</button>
+      </div>
+      <div class="recruit-section" id="recruit-couple" style="display:none;">
+        <button class="btn btn-primary" id="share-partner-btn" onclick="sharePartnerLink()">Send your partner The Link</button>
+        <button class="btn btn-yellow" id="invite-friend-btn" style="margin-top:10px;" onclick="shareFriendLink()">Invite a Friend to Participate</button>
       </div>
     </div>
   </div>
@@ -2337,22 +2345,47 @@ function showConfirmation(subjectNumber) {
   document.getElementById('confirm-subject-num').textContent = '#' + String(subjectNumber).padStart(5, '0');
   const name = document.getElementById('first_name').value.trim();
   const textEl = document.getElementById('confirm-text');
-  if (state.status === 'partnered') {
-    const pn = document.getElementById('partner_name').value.trim();
-    textEl.innerHTML = `${name} and <span class="redact-field">${pn}</span> — you're in the record. When ${pn} applies, they'll be linked to you and share your place in line.`;
+  const couple = state.status === 'partnered';
+  const rs = document.getElementById('recruit-single'); if (rs) rs.style.display = couple ? 'none' : '';
+  const rc = document.getElementById('recruit-couple'); if (rc) rc.style.display = couple ? '' : 'none';
+  if (couple) {
+    // Partner's first name (first word of what they typed), falling back to "your partner".
+    const pnFirst = partnerFirstName();
+    const pnLabel = pnFirst || 'your partner';
+    const who = pnFirst ? `${name} and ${pnFirst}` : name;
+    textEl.textContent = `${who} — you're in the record. When ${pnLabel} applies, they'll be linked to you and share your place in line. You can still participate in the study if your partner chooses not to, but it may not be as fun...`;
+    const pb = document.getElementById('share-partner-btn'); if (pb) pb.textContent = `Send ${pnLabel} The Link`;
   } else {
     textEl.innerHTML = `${name} — you're subject #${subjectNumber}. You just volunteered to let science study your love life. We respect that enormously.`;
   }
   showScreen(8, 'forward');
 }
 
-function shareLink() {
+function partnerFirstName() {
+  const raw = (document.getElementById('partner_name')?.value || '').trim();
+  return raw ? raw.split(/\s+/)[0] : '';
+}
+
+// Share via the native sheet, else copy message + link to the clipboard.
+function _shareMessage(text) {
   const url = 'https://iherebycommit.com';
   if (navigator.share) {
-    navigator.share({ title: 'I Hereby Commit', text: 'I just applied for an independent relationship study.', url }).catch(()=>{});
+    navigator.share({ title: 'I Hereby Commit', text, url }).catch(()=>{});
   } else {
-    navigator.clipboard.writeText(url).then(() => showToast('Link copied!')).catch(() => window.open(url, '_blank'));
+    navigator.clipboard.writeText(text + ' ' + url).then(() => showToast('Link copied!')).catch(() => window.open(url, '_blank'));
   }
+}
+
+function shareLink() {
+  _shareMessage('Join this first-of-its-kind experiment on dating, love & long-lasting compatibility.');
+}
+
+function sharePartnerLink() {
+  _shareMessage('I just applied us for a research study, sign up so we can be prioritized');
+}
+
+function shareFriendLink() {
+  _shareMessage('Join this first-of-its-kind experiment on dating, love & long-lasting compatibility');
 }
 
 function showToast(msg) {
