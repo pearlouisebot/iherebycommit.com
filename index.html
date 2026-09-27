@@ -342,6 +342,26 @@
     .slider-bubble { position: absolute; top: -28px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
     /* Location city rows */
     .location-city-row { display: flex; align-items: center; background: #1a1a1a; border: 1px solid var(--dim); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
+    #city-quick-picks { margin-bottom: 12px; }
+    .city-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+    .city-chips:empty { display: none; }
+    .city-chip-remove {
+      font-size: 20px; line-height: 1; color: var(--muted);
+      background: none; border: none; cursor: pointer;
+      min-width: 44px; min-height: 44px; padding: 0; flex-shrink: 0;
+    }
+    .city-other-label { margin-top: 4px; }
+    .city-inline-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .city-inline-list:empty { display: none; }
+    .city-suggest {
+      display: flex; align-items: center; width: 100%; min-height: 44px;
+      padding: 10px 14px; box-sizing: border-box;
+      background: transparent; border: 1px solid var(--dim); border-radius: var(--radius);
+      color: var(--text); font-family: 'Space Mono', monospace; font-size: 14px;
+      line-height: 1.3; text-align: left; cursor: pointer;
+    }
+    .city-suggest-add { border-color: var(--accent); color: var(--accent); }
+    .screen-content.city-keyboard-pad { padding-bottom: 45vh; }
     .institution-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .institution-row .field-input { flex: 1; min-width: 0; }
     .institution-remove { font-size: 20px; line-height: 1; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0 0 0 4px; flex-shrink: 0; }
@@ -1164,13 +1184,12 @@
             <div class="location-city-row" id="location-primary-city">
               <span style="margin-right:10px;font-size:15px;">📍</span>
               <span id="location-primary-city-name" style="font-family:'Space Mono',monospace;font-size:14px;flex:1;"></span>
-              <button type="button" onclick="toggleAddCitySearch()" style="font-size:11px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:0.04em;background:none;border:none;cursor:pointer;flex-shrink:0;white-space:nowrap;">+ Add another city</button>
             </div>
-            <div id="additional-cities-list"></div>
-            <div id="add-city-search-wrap" style="display:none;position:relative;margin-bottom:8px;">
-              <input class="field-input" id="add_city_search_input" type="text" placeholder="Type to search cities…" autocomplete="off" oninput="onAddCityInput()" onfocus="onAddCityInput()">
-              <div class="multiselect-dropdown" id="add-city-dropdown"></div>
-            </div>
+            <div class="q-choices" id="city-quick-picks" role="group" aria-label="Cities"></div>
+            <div id="additional-cities-list" class="city-chips"></div>
+            <label class="field-label city-other-label" for="add_city_search_input">Other city</label>
+            <input class="field-input" id="add_city_search_input" type="text" placeholder="Type a city…" autocomplete="off" enterkeyhint="done">
+            <div id="add-city-suggestions" class="city-inline-list"></div>
             <button type="button" class="q-mini" onclick="qConfirm('want_location')">NEXT</button>
           </div>
         </div>
@@ -1226,9 +1245,9 @@
               <!-- Button labels are this option text. Edit the words here. -->
               <select class="field-input" id="degree_preference" onchange="setDegreePreference(this.value); qFinishEdit('degree_preference')" onblur="qCancelEdit('degree_preference')">
                 <option value="">— Select —</option>
+                <option value="ged_plus">High school / GED</option>
+                <option value="bachelors_plus">BA/BS</option>
                 <option value="masters_plus">Master's or higher</option>
-                <option value="bachelors_plus">BA/BS or higher</option>
-                <option value="ged_plus">High school / GED or higher</option>
                 <option value="no_preference">No preference</option>
               </select>
             </div>
@@ -2693,6 +2712,7 @@ function qConfirm(id, immediate) {
   if (!qValidate(id)) return false;
   qPassed.add(id);
   if (qEditing === id) qEditing = null;
+  if (id === 'want_location') document.querySelector('#screen-3 .screen-content')?.classList.remove('city-keyboard-pad');
   qSync(qScreenOf(id), { focus: true });
   return true;
 }
@@ -3547,93 +3567,127 @@ function setGenderSeeking(val) {
 }
 
 // ---- LOCATION (city rows) ----
+const LAUNCH_CITIES = [
+  { label: 'San Francisco', value: 'San Francisco, CA' },
+  { label: 'New York', value: 'New York City, NY' },
+  { label: 'Austin', value: 'Austin, TX' },
+  { label: 'Los Angeles', value: 'Los Angeles, CA' },
+];
+
 function renderPrimaryCity() {
   const el = document.getElementById('location-primary-city-name');
   if (el) el.textContent = state.zipCity || '';
+  initWantCityPicker();
 }
 
-function toggleAddCitySearch() {
-  const wrap = document.getElementById('add-city-search-wrap');
-  if (!wrap) return;
-  const isHidden = wrap.style.display === 'none';
-  wrap.style.display = isHidden ? '' : 'none';
-  if (!isHidden) _removeAddCityOverlay();
-  if (isHidden) setTimeout(() => document.getElementById('add_city_search_input')?.focus(), 50);
-}
-
-// A suggestion is removed on pointerdown, before click. Swallow that click so it
-// cannot land on whatever control slides up underneath (the location Next button).
-function swallowFollowingClick() {
-  const stop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    document.removeEventListener('click', stop, true);
-  };
-  document.addEventListener('click', stop, true);
-  setTimeout(() => document.removeEventListener('click', stop, true), 700);
-}
-
-function _removeAddCityOverlay() {
-  const ov = document.getElementById('add-city-overlay');
-  if (ov) ov.remove();
-}
-
-function _ensureAddCityOverlay() {
-  if (document.getElementById('add-city-overlay')) return;
-  const ov = document.createElement('div');
-  ov.id = 'add-city-overlay';
-  ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:199;background:transparent;-webkit-tap-highlight-color:transparent;';
-  const close = () => {
-    const d = document.getElementById('add-city-dropdown');
-    if (d) { d.innerHTML = ''; d.classList.remove('open'); }
-    ov.remove();
-  };
-  ov.addEventListener('touchstart', () => { close(); swallowFollowingClick(); }, {passive: true});
-  ov.addEventListener('click', close);
-  document.body.appendChild(ov);
-}
-
-function onAddCityInput() {
+function initWantCityPicker() {
+  renderLaunchCityPicks();
   const inp = document.getElementById('add_city_search_input');
-  const q = inp?.value.trim() || '';
-  const dd = document.getElementById('add-city-dropdown');
-  if (!dd) return;
-  if (!q) { dd.replaceChildren(); dd.classList.remove('open'); _removeAddCityOverlay(); return; }
-  const list = _getCityList();
-  const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && !additionalCities.includes(c) && c !== state.zipCity).slice(0, 8);
-  if (q && !list.some(c => c.toLowerCase() === q.toLowerCase()) && !additionalCities.some(c => c.toLowerCase() === q.toLowerCase())) filtered.push(q);
-  dd.replaceChildren();
-  filtered.forEach(city => {
-    const opt = document.createElement('div');
-    opt.className = 'multiselect-option';
-    opt.textContent = city;
-    // pointerdown + preventDefault selects before the search field blurs and drops the list.
-    opt.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      swallowFollowingClick();
-      addAdditionalCity(city);
-    });
-    dd.appendChild(opt);
+  if (!inp || inp.dataset.bound) return;
+  inp.dataset.bound = '1';
+  inp.addEventListener('input', () => renderCitySuggestions());
+  inp.addEventListener('focus', () => {
+    const sc = document.querySelector('#screen-3 .screen-content');
+    if (sc) sc.classList.add('city-keyboard-pad');
+    inp.scrollIntoView({ block: 'center', inline: 'nearest' });
   });
-  if (filtered.length) { dd.classList.add('open'); _ensureAddCityOverlay(); }
-  else { dd.classList.remove('open'); _removeAddCityOverlay(); }
+  inp.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const q = inp.value.trim();
+    if (!q) return;
+    const exact = _getCityList().find(c => c.toLowerCase() === q.toLowerCase());
+    addAdditionalCity(exact || q, { fromInput: true });
+  });
 }
 
-function addAdditionalCity(city) {
-  _removeAddCityOverlay();
-  if (!additionalCities.includes(city)) { additionalCities.push(city); renderAdditionalCities(); }
-  if (typeof qRefresh === 'function') qRefresh('want_location');
-  const wrap = document.getElementById('add-city-search-wrap');
-  if (wrap) wrap.style.display = 'none';
+function renderLaunchCityPicks() {
+  const box = document.getElementById('city-quick-picks');
+  if (!box) return;
+  if (!box.childElementCount) {
+    LAUNCH_CITIES.forEach(({ label, value }) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'toggle-btn';
+      btn.textContent = label;
+      btn.dataset.city = value;
+      btn.addEventListener('click', () => toggleLaunchCity(value));
+      box.appendChild(btn);
+    });
+  }
+  box.querySelectorAll('.toggle-btn').forEach(btn => {
+    const on = launchCityOn(btn.dataset.city);
+    btn.classList.toggle('selected', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+
+function launchCityOn(value) {
+  const key = String(value || '').toLowerCase();
+  if ((state.zipCity || '').toLowerCase() === key) return true;
+  return additionalCities.some(c => c.toLowerCase() === key);
+}
+
+function toggleLaunchCity(value) {
+  if ((state.zipCity || '').toLowerCase() === String(value).toLowerCase()) return;
+  if (additionalCities.some(c => c.toLowerCase() === String(value).toLowerCase())) removeAdditionalCity(value);
+  else addAdditionalCity(value);
+}
+
+function renderCitySuggestions() {
   const inp = document.getElementById('add_city_search_input');
-  if (inp) inp.value = '';
-  const dd = document.getElementById('add-city-dropdown');
-  if (dd) { dd.innerHTML = ''; dd.classList.remove('open'); }
+  const box = document.getElementById('add-city-suggestions');
+  if (!box) return;
+  const q = inp?.value.trim() || '';
+  box.replaceChildren();
+  if (!q) return;
+  const list = _getCityList();
+  const home = (state.zipCity || '').toLowerCase();
+  const filtered = list.filter(c => c.toLowerCase().includes(q.toLowerCase()) && c.toLowerCase() !== home && !additionalCities.some(s => s.toLowerCase() === c.toLowerCase())).slice(0, 8);
+  filtered.forEach(city => box.appendChild(citySuggestButton(city, () => addAdditionalCity(city, { fromInput: true }))));
+  const exact = list.some(c => c.toLowerCase() === q.toLowerCase());
+  const already = additionalCities.some(c => c.toLowerCase() === q.toLowerCase());
+  if (!exact && !already) {
+    const add = citySuggestButton('Add "' + q + '"', () => addAdditionalCity(q, { fromInput: true }));
+    add.classList.add('city-suggest-add');
+    box.appendChild(add);
+  }
+  const sc = document.querySelector('#screen-3 .screen-content');
+  if (sc) sc.classList.add('city-keyboard-pad');
+  const last = box.lastElementChild;
+  if (last) last.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+
+function citySuggestButton(label, onClick) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'city-suggest';
+  btn.textContent = label;
+  btn.addEventListener('click', onClick);
+  return btn;
+}
+
+function addAdditionalCity(city, opts) {
+  const name = String(city || '').trim();
+  if (!name) return;
+  const dupHome = (state.zipCity || '').toLowerCase() === name.toLowerCase();
+  const dupExtra = additionalCities.some(c => c.toLowerCase() === name.toLowerCase());
+  if (!dupHome && !dupExtra) additionalCities.push(name);
+  renderAdditionalCities();
+  renderLaunchCityPicks();
+  if (typeof qRefresh === 'function') qRefresh('want_location');
+  if (opts && opts.fromInput) {
+    const inp = document.getElementById('add_city_search_input');
+    if (inp) inp.value = '';
+    renderCitySuggestions();
+  }
 }
 
 function removeAdditionalCity(city) {
   additionalCities = additionalCities.filter(c => c !== city);
   renderAdditionalCities();
+  renderLaunchCityPicks();
+  renderCitySuggestions();
   if (typeof qRefresh === 'function') qRefresh('want_location');
 }
 
@@ -3642,27 +3696,18 @@ function renderAdditionalCities() {
   if (!list) return;
   list.replaceChildren();
   additionalCities.forEach(city => {
-    const row = document.createElement('div');
-    row.className = 'location-city-row';
-    const pin = document.createElement('span');
-    pin.style.marginRight = '10px';
-    pin.style.fontSize = '15px';
-    pin.textContent = '📍';
+    const chip = document.createElement('span');
+    chip.className = 'multiselect-chip';
     const name = document.createElement('span');
-    name.style.cssText = "font-family:'Space Mono',monospace;font-size:14px;flex:1;";
     name.textContent = city;
     const remove = document.createElement('button');
     remove.type = 'button';
+    remove.className = 'city-chip-remove';
     remove.textContent = '×';
     remove.setAttribute('aria-label', 'Remove ' + city);
-    remove.style.cssText = 'font-size:20px;line-height:1;color:var(--muted,#888);background:none;border:none;cursor:pointer;padding:0 0 0 8px;flex-shrink:0;';
-    remove.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      swallowFollowingClick();
-      removeAdditionalCity(city);
-    });
-    row.append(pin, name, remove);
-    list.appendChild(row);
+    remove.addEventListener('click', () => removeAdditionalCity(city));
+    chip.append(name, remove);
+    list.appendChild(chip);
   });
 }
 
