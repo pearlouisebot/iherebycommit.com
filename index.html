@@ -135,10 +135,25 @@
     .who-cond-v { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .who-cond-edit { font-size: 10px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.1em; flex-shrink: 0; }
     #who-name.collapsed > .who-cond { grid-column: 1 / -1; }
-    #who-hr-row { display: block; margin-bottom: 12px; }
-    #who-hr-row > #who-race { margin-top: 12px; }
-    #who-hr-row.paired { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
-    #who-hr-row.paired > #who-race { margin-top: 0; }
+    /* Paired rows (DOB + location, height + race): 50/50, collapse and expand together */
+    .who-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-bottom: 12px; align-items: start; }
+    .who-pair.pair-collapsed { align-items: stretch; }
+    .who-pair.pair-collapsed > .who-unit.collapsed > .who-cond { height: 100%; }
+    /* Race: compact multi-select picklist that expands inline (no floating overlay) */
+    .race-select { display: flex; align-items: center; justify-content: space-between; gap: 4px; text-align: left; cursor: pointer; font-size: 14px; padding: 14px 8px 14px 10px; }
+    .race-select-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .race-select-text.empty { color: var(--muted); font-size: 12px; letter-spacing: -0.03em; }
+    .race-caret { flex-shrink: 0; font-size: 11px; color: var(--muted); transition: transform 0.15s; }
+    .race-select[aria-expanded="true"] { border-color: var(--accent); }
+    .race-select[aria-expanded="true"] .race-caret { transform: rotate(180deg); }
+    .race-panel { grid-column: 1 / -1; display: none; border: 1px solid var(--dim); border-radius: var(--radius); padding: 6px; }
+    .race-panel.open { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 6px; }
+    .race-opt { display: flex; align-items: center; gap: 6px; min-width: 0; background: transparent; border: none; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; text-align: left; padding: 8px 4px; cursor: pointer; }
+    .race-opt-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .race-box { flex-shrink: 0; width: 16px; height: 16px; border: 1px solid var(--muted); border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; line-height: 1; color: var(--bg); }
+    .race-opt.selected .race-box { background: var(--accent); border-color: var(--accent); }
+    .race-opt.selected .race-box::after { content: '\2713'; }
+    .race-done { grid-column: 1 / -1; margin-top: 4px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 10px; cursor: pointer; }
     #screen-5 .choice-grid.error .toggle-btn:not(.selected) { border-color: var(--error); }
     #screen-5 .kids-pair {
       display: grid;
@@ -862,7 +877,7 @@
             <div class="field-error" id="err-last_name">Required</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="who-pair" id="who-dl-row">
           <div class="field-group who-unit" id="who-dob" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Date of birth" onclick="whoExpand('dob')"><span class="who-cond-txt"><span class="who-cond-k">Date of birth</span><span class="who-cond-v" id="who-dob-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Date of birth</label>
@@ -887,35 +902,37 @@
             </div>
           </div>
         </div>
-        <div id="who-hr-row">
+        <div class="who-pair" id="who-hr-row">
           <div class="field-group who-unit" id="who-height" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Height" onclick="whoExpand('height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="who-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Height</label>
             <div id="height-us-wrap">
-              <select class="field-input" id="height_ftin" style="font-size:14px;padding:14px 4px;min-width:80px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
+              <select class="field-input" id="height_ftin" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
                 <option value="">—</option>
               </select>
             </div>
             <div id="height-cm-wrap" style="display:none;">
-              <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;width:80px;" oninput="onHeightCmChange()">
+              <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;" oninput="onHeightCmChange()">
             </div>
           </div>
           <div class="field-group who-unit" id="who-race" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Race" onclick="whoExpand('race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="who-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-            <label class="field-label">Race (select all that apply)</label>
-            <div class="choice-grid" id="race" role="group" aria-label="Race">
-              <button type="button" class="toggle-btn" id="btn-race-0" data-race="Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Asian</button>
-              <button type="button" class="toggle-btn" id="btn-race-1" data-race="South Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)">South Asian</button>
-              <button type="button" class="toggle-btn" id="btn-race-2" data-race="Black" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Black</button>
-              <button type="button" class="toggle-btn" id="btn-race-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Hispanic / Latino</button>
-              <button type="button" class="toggle-btn" id="btn-race-4" data-race="MENA" aria-pressed="false" onclick="toggleRace(this.dataset.race)">MENA</button>
-              <button type="button" class="toggle-btn" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Native American</button>
-              <button type="button" class="toggle-btn" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Pacific Islander</button>
-              <button type="button" class="toggle-btn" id="btn-race-7" data-race="White" aria-pressed="false" onclick="toggleRace(this.dataset.race)">White</button>
-              <button type="button" class="toggle-btn" id="btn-race-8" data-race="Other" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Other</button>
-              <button type="button" class="toggle-btn" id="btn-race-9" data-race="Prefer not to say" aria-pressed="false" onclick="toggleRace(this.dataset.race)">Prefer not to say</button>
-            </div>
+            <label class="field-label" for="race">Race</label>
+            <button type="button" class="field-input race-select" id="race" aria-haspopup="true" aria-expanded="false" aria-controls="race-panel" onclick="toggleRacePanel()"><span class="race-select-text empty" id="race-select-text">Race (select all)</span><span class="race-caret" aria-hidden="true">&#9662;</span></button>
             <div class="field-error" id="err-race">Please make a selection</div>
+          </div>
+          <div class="race-panel" id="race-panel" role="group" aria-label="Race (select all that apply)">
+            <button type="button" class="race-opt" id="btn-race-0" data-race="Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
+            <button type="button" class="race-opt" id="btn-race-1" data-race="South Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
+            <button type="button" class="race-opt" id="btn-race-2" data-race="Black" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
+            <button type="button" class="race-opt" id="btn-race-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
+            <button type="button" class="race-opt" id="btn-race-4" data-race="MENA" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
+            <button type="button" class="race-opt" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
+            <button type="button" class="race-opt" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
+            <button type="button" class="race-opt" id="btn-race-7" data-race="White" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">White</span></button>
+            <button type="button" class="race-opt" id="btn-race-8" data-race="Other" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
+            <button type="button" class="race-opt" id="btn-race-9" data-race="Prefer not to say" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Prefer not to say</span></button>
+            <button type="button" class="race-done" id="race-done" onclick="closeRacePanel()">DONE</button>
           </div>
         </div>
         <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
@@ -2598,17 +2615,35 @@ function toggleRace(label) {
   else { state.race = state.race.filter(v => v !== RACE_EXCLUSIVE); state.race.push(label); }
   _syncRaceButtons();
   if (state.race.length) hideError('race');
-  // Collapse only 1.2s after the last tap (same as Looking for). A new tap restarts the timer.
-  clearTimeout(_whoTimers.race);
-  _whoTimers.race = state.race.length ? setTimeout(() => { _whoTimers.race = null; whoCollapse('race'); }, 1200) : null;
+  // No collapse here: Race is committed when the picklist closes (see closeRacePanel).
 }
 function _syncRaceButtons() {
-  document.querySelectorAll('#race .toggle-btn').forEach(btn => {
+  document.querySelectorAll('#race-panel .race-opt').forEach(btn => {
     const on = state.race.includes(btn.dataset.race);
     btn.classList.toggle('selected', on);
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
+  const t = document.getElementById('race-select-text');
+  if (t) {
+    const txt = state.race.length ? state.race.join(', ') : 'Race (select all)';
+    t.textContent = txt; t.title = state.race.length ? txt : '';
+    t.classList.toggle('empty', !state.race.length);
+  }
 }
+function isRacePanelOpen() { const p = document.getElementById('race-panel'); return !!p && p.classList.contains('open'); }
+function openRacePanel() {
+  const p = document.getElementById('race-panel'), c = document.getElementById('race');
+  if (!p) return;
+  clearTimeout(_whoTimers.pair_hr);
+  p.classList.add('open'); if (c) c.setAttribute('aria-expanded', 'true');
+}
+function closeRacePanel(noCommit) {
+  const p = document.getElementById('race-panel'), c = document.getElementById('race');
+  if (!p || !p.classList.contains('open')) return;
+  p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
+  if (!noCommit) whoTryPair('race', 300);
+}
+function toggleRacePanel() { if (isRacePanelOpen()) closeRacePanel(); else openRacePanel(); }
 function racePayload() {
   return Array.isArray(state.race) && state.race.length ? state.race.slice() : null;
 }
@@ -2649,24 +2684,60 @@ function whoCollapse(k) {
   _syncWhoPairs();
   return true;
 }
+// Paired units (DOB + location, height + race) never collapse on their own:
+// both collapse together once both are done, and both expand together.
+const WHO_PARTNER = { dob: 'loc', loc: 'dob', height: 'race', race: 'height' };
+const WHO_PAIR_ROW = { dob: 'who-dl-row', loc: 'who-dl-row', height: 'who-hr-row', race: 'who-hr-row' };
+function _whoTyping(el) { return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'); }
+function whoCollapsePair(k) {
+  const p = WHO_PARTNER[k];
+  const row = document.getElementById(WHO_PAIR_ROW[k]);
+  if (!p || !row) return false;
+  if (!whoValueText(k) || !whoValueText(p)) return false;
+  if (k === 'race' || p === 'race') {
+    if (isRacePanelOpen()) return false;
+    // A gender-based default height is not "chosen" until the user picks it or at least touches it.
+    if (!state.heightTouched && !state.heightAck) return false;
+  }
+  const a = document.activeElement;
+  if (row.contains(a) && _whoTyping(a)) return false; // still editing one of the pair
+  closeRacePanel(true);
+  const ok1 = whoCollapse(k), ok2 = whoCollapse(p);
+  if (!(ok1 && ok2)) { whoExpand(k, false); return false; }
+  return true;
+}
+function whoTryPair(k, delay) {
+  const key = 'pair_' + (WHO_PAIR_ROW[k] === 'who-dl-row' ? 'dl' : 'hr');
+  clearTimeout(_whoTimers[key]);
+  _whoTimers[key] = setTimeout(() => { _whoTimers[key] = null; whoCollapsePair(k); }, delay || 0);
+}
 const _WHO_FOCUS = { name: 'first_name', dob: 'birthdate', email: 'email' };
 function whoExpand(k, focus) {
   const u = _whoUnit(k);
   if (!u) return;
   clearTimeout(_whoTimers[k]); _whoTimers[k] = null;
   u.classList.remove('collapsed');
+  const pk = WHO_PARTNER[k];
+  if (pk) {
+    const pu = _whoUnit(pk);
+    clearTimeout(_whoTimers[pk]); _whoTimers[pk] = null;
+    clearTimeout(_whoTimers['pair_' + (WHO_PAIR_ROW[k] === 'who-dl-row' ? 'dl' : 'hr')]);
+    if (pu) pu.classList.remove('collapsed');
+  }
   _syncWhoPairs();
   if (focus === false) return;
   let id = _WHO_FOCUS[k];
   if (k === 'loc') id = state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input';
   if (k === 'height') id = state.locationMode === 'zip' ? 'height_ftin' : 'height_cm_input';
+  if (k === 'race') { openRacePanel(); id = 'race'; }
   const el = id && document.getElementById(id);
   if (el) { try { el.focus({ preventScroll: false }); } catch (e) {} }
 }
-// Height and Race share a row only once Race is condensed (they are adjacent).
 function _syncWhoPairs() {
-  const row = document.getElementById('who-hr-row');
-  if (row) row.classList.toggle('paired', whoIsCollapsed('race'));
+  const dl = document.getElementById('who-dl-row');
+  if (dl) dl.classList.toggle('pair-collapsed', whoIsCollapsed('dob') && whoIsCollapsed('loc'));
+  const hr = document.getElementById('who-hr-row');
+  if (hr) hr.classList.toggle('pair-collapsed', whoIsCollapsed('height') && whoIsCollapsed('race'));
 }
 // Keep condensed text current (e.g. the city arrives after the zip lookup).
 function whoRefresh() {
@@ -2689,7 +2760,7 @@ function whoExpandErrors() {
 function initWhoCondensed() {
   // Text-type units: collapse when focus leaves the whole unit with a value.
   // The short delay lets taps on in-unit controls (International?, city list) land first.
-  ['name', 'dob', 'loc', 'height', 'email'].forEach(k => {
+  ['name', 'email'].forEach(k => {
     const u = _whoUnit(k);
     if (!u) return;
     u.addEventListener('focusout', () => {
@@ -2698,6 +2769,29 @@ function initWhoCondensed() {
         if (!u.contains(document.activeElement)) whoCollapse(k);
       }, 200);
     });
+  });
+  // Paired rows: when focus leaves the row, collapse both if both are done.
+  // DOB + location: effectively "once the zip/city is complete" (DOB is pre-filled).
+  [['who-dl-row', 'loc'], ['who-hr-row', 'height']].forEach(([rid, k]) => {
+    const row = document.getElementById(rid);
+    if (!row) return;
+    row.addEventListener('focusout', () => {
+      setTimeout(() => { if (!row.contains(document.activeElement)) whoTryPair(k, 0); }, 200);
+    });
+  });
+  const hu0 = _whoUnit('height');
+  if (hu0) hu0.addEventListener('focusin', () => { state.heightAck = true; });
+  // Race picklist: a tap anywhere outside it (or Escape) closes and commits it.
+  document.addEventListener('pointerdown', e => {
+    if (!isRacePanelOpen()) return;
+    const p = document.getElementById('race-panel'), c = document.getElementById('race');
+    if (p.contains(e.target) || (c && c.contains(e.target))) return;
+    // Tapping Height (same row) just closes the list; the pair collapses once Height is picked.
+    const hu = _whoUnit('height');
+    closeRacePanel(!!hu && hu.contains(e.target));
+  }, true);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && isRacePanelOpen()) { closeRacePanel(); document.getElementById('race')?.focus(); }
   });
   const onEnter = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); fn(el); } }); };
   onEnter('first_name', () => document.getElementById('last_name')?.focus());
@@ -2733,8 +2827,8 @@ function onHeightFtInChange() {
   const val = document.getElementById('height_ftin').value;
   state.heightCm = val ? parseInt(val) : null;
   // A pick from the list is final; collapse ~1s later (a new pick restarts the timer).
-  clearTimeout(_whoTimers.height);
-  _whoTimers.height = val ? setTimeout(() => { _whoTimers.height = null; whoCollapse('height'); }, 1000) : null;
+  // Collapses together with Race only when Race is also done (~1s after the pick).
+  if (val) whoTryPair('height', 1000);
 }
 function onHeightCmChange() {
   state.heightTouched = true;
