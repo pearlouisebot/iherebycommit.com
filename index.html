@@ -992,7 +992,7 @@
 
       <!-- LOOKING FOR: always shown for singles, multi-select -->
       <div class="field-group" id="looking-for-group" style="margin-bottom:14px;">
-        <label class="field-label">Looking for</label>
+        <label class="field-label">Looking for (select multiple):</label>
         <div id="looking-for-collapsed" style="display:none;" onclick="expandLookingFor()" role="button" tabindex="0">
           <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid var(--dim);border-radius:var(--radius);padding:14px 16px;cursor:pointer;">
             <span id="looking-for-summary-text" style="font-family:'Space Mono',monospace;font-size:13px;color:var(--text);"></span>
@@ -1038,48 +1038,65 @@
         </div>
       </div>
 
-      <!-- WANT KIDS: full width, shows after have kids answered -->
-      <div id="wantkids-row" style="display:none;margin-bottom:14px;">
-        <div class="field-group" id="wants-children-group" style="margin-bottom:0;">
-          <label class="field-label" id="wants-children-label">Want kids?</label>
-          <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
-            <option value="">— Select —</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-            <option value="open_either_way">Open to either</option>
-            <option value="not_sure">Unsure</option>
-          </select>
-          <div class="field-error" id="err-wants_children">Please make a selection</div>
+      <!-- WANT KIDS + KIDS TIMELINE (condensed): flex row, kids timeline slides in when answered -->
+      <div id="wantkids-kidstimeline-row" style="display:none;flex-direction:row;gap:10px;margin-bottom:14px;">
+        <div id="wantkids-col" style="flex:1;min-width:0;">
+          <div class="field-group" id="wants-children-group" style="margin-bottom:0;">
+            <label class="field-label" id="wants-children-label">Want kids?</label>
+            <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
+              <option value="">— Select —</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+              <option value="open_either_way">Open to either</option>
+              <option value="not_sure">Unsure</option>
+            </select>
+            <div class="field-error" id="err-wants_children">Please make a selection</div>
+          </div>
         </div>
-      </div>
-
-      <!-- KIDS TIMELINE + FERTILITY: same flex row, fertility slides in after kids timeline answered -->
-      <div id="kidstimeline-fertility-row" style="display:none;flex-direction:row;gap:10px;margin-bottom:0;">
-        <div id="kidstimeline-col" style="flex:1;min-width:0;">
-          <div class="field-group" id="kids-timeline-group" style="margin-bottom:0;">
-            <label class="field-label" id="kids-timeline-label">Ideal timeline for kids?</label>
-            <select class="field-input" id="kids_timeline_select" onchange="setKidsTimeline(this.value)">
+        <div id="kidstimeline-condensed-col" style="flex:1;min-width:0;display:none;">
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label" style="font-size:12px;">Kids timeline</label>
+            <select class="field-input" id="kids_timeline_select_condensed" onchange="setKidsTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
               <option value="1_2_years">1-2 years</option>
               <option value="3_4_years">3-4 years</option>
               <option value="5_10_years">5-10 years</option>
               <option value="10_plus_years">10+ years</option>
+              <option value="no_timeline">No timeline</option>
             </select>
-            <div class="field-error" id="err-kids_timeline">Please make a selection</div>
           </div>
         </div>
-        <div id="fertility-col" style="flex:1;min-width:0;display:none;">
-          <div class="field-group" id="fertility-group" style="margin-bottom:0;">
-            <label class="field-label" id="fertility-label" style="font-size:12px;">Fertility plan?</label>
-            <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
-              <option value="">— Select —</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-              <option value="considering">Considering</option>
-            </select>
-            <div class="field-error" id="err-fertility">Please make a selection</div>
-          </div>
+      </div>
+
+      <!-- KIDS TIMELINE STANDALONE: full width, shows before answered -->
+      <div id="kidstimeline-standalone-row" style="display:none;margin-bottom:14px;">
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Ideal timeline for kids?</label>
+          <select class="field-input" id="kids_timeline_select" onchange="setKidsTimeline(this.value)">
+            <option value="">— Select —</option>
+            <option value="asap">ASAP</option>
+            <option value="1_2_years">1-2 years</option>
+            <option value="3_4_years">3-4 years</option>
+            <option value="5_10_years">5-10 years</option>
+            <option value="10_plus_years">10+ years</option>
+            <option value="no_timeline">No timeline</option>
+          </select>
+          <div class="field-error" id="err-kids_timeline">Please make a selection</div>
+        </div>
+      </div>
+
+      <!-- FERTILITY: full width, shows once kids timeline answered -->
+      <div id="fertility-row" style="display:none;margin-bottom:0;">
+        <div class="field-group" id="fertility-group" style="margin-bottom:0;">
+          <label class="field-label">Have you invested in fertility preservation?</label>
+          <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
+            <option value="">— Select —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="considering">Considering</option>
+          </select>
+          <div class="field-error" id="err-fertility">Please make a selection</div>
         </div>
       </div>
     </div>
@@ -1793,6 +1810,9 @@ function setHasChildren(val) {
 }
 function setKidsTimeline(val) {
   state.kidsTimeline = val || null;
+  // sync both selects
+  const s1 = document.getElementById('kids_timeline_select'); if (s1) s1.value = val || '';
+  const s2 = document.getElementById('kids_timeline_select_condensed'); if (s2) s2.value = val || '';
   hideError('kids_timeline');
   syncFamilyDrip();
 }
@@ -1901,7 +1921,7 @@ function syncFamilyDrip() {
     const MARRIAGE_OPTS = [
       {v:'asap',t:'ASAP'},{v:'6_12_months',t:'6-12 months'},{v:'1_2_years',t:'1-2 years'},
       {v:'3_5_years',t:'3-5 years'},{v:'5_10_years',t:'5-10 years'},{v:'10_plus_years',t:'10+ years'},
-      {v:'when_it_feels_right',t:'When it feels right'},{v:'no_timeline',t:'No timeline'}
+      {v:'no_timeline',t:'No timeline'}
     ];
     const DATING_OPTS = _casualOnly
       ? [{v:'dont_want_relationship',t:"Don't Want Relationship"},{v:'asap',t:'ASAP'},{v:'3_months',t:'Next 3 months'},{v:'6_months',t:'Next 6 months'},{v:'12_months',t:'Next 12 months'},{v:'no_timeline',t:'No timeline'}]
@@ -1928,37 +1948,31 @@ function syncFamilyDrip() {
   }
   if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
 
-  // wantkids-row: shows after have kids answered
-  const wkRow = document.getElementById('wantkids-row');
-  if (wkRow) wkRow.style.display = (hasLF && hasTL && hasKidsDone) ? 'block' : 'none';
+  // wantkids-kidstimeline-row: flex row, shows after have kids answered
+  const wkKtRow = document.getElementById('wantkids-kidstimeline-row');
+  if (wkKtRow) wkKtRow.style.display = (hasLF && hasTL && hasKidsDone) ? 'flex' : 'none';
   if (hasKidsDone) { const lbl = document.getElementById('wants-children-label'); if (lbl) lbl.textContent = state.hasChildren === true ? 'Want more kids?' : 'Want kids?'; }
 
-  // kidstimeline-fertility-row: shows when wants kids = yes
-  const ktfRow = document.getElementById('kidstimeline-fertility-row');
-  if (ktfRow) ktfRow.style.display = (state.wantsChildren === 'yes') ? 'flex' : 'none';
+  // kidstimeline-condensed-col: slides into wantkids row once kids timeline answered
+  const ktCondCol = document.getElementById('kidstimeline-condensed-col');
+  if (ktCondCol) ktCondCol.style.display = (state.wantsChildren === 'yes' && kidsTimelineDone) ? '' : 'none';
+  // sync condensed select value
+  const ktCondSel = document.getElementById('kids_timeline_select_condensed');
+  if (ktCondSel && state.kidsTimeline) ktCondSel.value = state.kidsTimeline;
 
-  // kidstimeline-col always visible when row is open
-  const ktCol = document.getElementById('kidstimeline-col');
-  if (ktCol) ktCol.style.display = (state.wantsChildren === 'yes') ? '' : 'none';
+  // kidstimeline-standalone-row: full width, shown while not yet answered
+  const ktStandaloneRow = document.getElementById('kidstimeline-standalone-row');
+  if (ktStandaloneRow) ktStandaloneRow.style.display = (state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
 
-  // fertility-col slides in once kids timeline answered
-  const fertCol = document.getElementById('fertility-col');
-  if (fertCol) fertCol.style.display = (state.wantsChildren === 'yes' && kidsTimelineDone) ? '' : 'none';
-
-  // Kids timeline label: full when alone, condensed when fertility visible
-  const ktLabel = document.getElementById('kids-timeline-label');
-  if (ktLabel) {
-    if (state.wantsChildren === 'yes' && kidsTimelineDone) {
-      ktLabel.style.fontSize = '12px'; ktLabel.textContent = 'Kids timeline';
-    } else {
-      ktLabel.style.fontSize = ''; ktLabel.textContent = 'Ideal timeline for kids?';
-    }
-  }
+  // fertility-row: full width, shows once kids timeline answered
+  const fertRow = document.getElementById('fertility-row');
+  if (fertRow) fertRow.style.display = (state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
 
   // Clear downstream if wantsChildren is not yes
   if (state.wantsChildren !== 'yes') {
     state.kidsTimeline = null; state.fertilityPreservation = null;
     const ktSel = document.getElementById('kids_timeline_select'); if (ktSel) ktSel.value = '';
+    const ktCSel = document.getElementById('kids_timeline_select_condensed'); if (ktCSel) ktCSel.value = '';
     const fs = document.getElementById('fertility_select'); if (fs) fs.value = '';
     hideError('kids_timeline'); hideError('fertility');
   }
@@ -2057,7 +2071,7 @@ function validateScreen(screenId) {
     if (hkColVisible) {
       if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
     }
-    const wkRowVisible = document.getElementById('wantkids-row')?.style.display !== 'none';
+    const wkRowVisible = document.getElementById('wantkids-kidstimeline-row')?.style.display !== 'none';
     if (wkRowVisible) {
       if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
       if (state.wantsChildren === 'yes') {
