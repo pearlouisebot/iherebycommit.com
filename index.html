@@ -326,6 +326,12 @@
     .slider-bubble { position: absolute; top: -28px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
     /* Location city rows */
     .location-city-row { display: flex; align-items: center; background: #1a1a1a; border: 1px solid var(--dim); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
+    .institution-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .institution-row .field-input { flex: 1; min-width: 0; }
+    .institution-remove { font-size: 20px; line-height: 1; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0 0 0 4px; flex-shrink: 0; }
+    .add-another-btn { font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.04em; background: none; border: none; cursor: pointer; padding: 4px 0 8px; }
+    #institutions-label { text-transform: none; letter-spacing: 0.02em; font-size: 13px; line-height: 1.4; }
+    .public-fields { display: flex; flex-direction: column; gap: 18px; }
 
     /* ===================================================
        LANDING PAGE STYLES
@@ -1037,6 +1043,69 @@
     </div>
   </div>
 
+  <!-- SCREEN 2: PROFESSION & EDUCATION -->
+  <div id="screen-2" class="screen">
+    <div class="progress-container"><div class="progress-steps" id="progress-2"></div></div>
+    <div id="badge-2" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step <span id="prof-step-num"></span> of <span class="step-total"></span></div>
+      <div class="screen-headline">PROFESSION &amp; <span class="accent">EDUCATION</span></div>
+      <div class="q" id="q-professional_title" data-q="professional_title" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('professional_title')" aria-label="Edit professional title">
+          <span class="q-row-label">Title</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <label class="field-label" for="professional_title">Professional title</label>
+          <input class="field-input" id="professional_title" type="text" placeholder="What do you do?" autocomplete="organization-title" onkeydown="qOnEnter(event,'professional_title')" onblur="qOnBlur('professional_title')">
+          <div class="field-error" id="err-professional_title">Required</div>
+          <button type="button" class="q-mini" onclick="qConfirm('professional_title')">NEXT</button>
+        </div>
+      </div>
+      <div class="q" id="q-highest_degree" data-q="highest_degree" data-kind="choice">
+        <button type="button" class="q-row" onclick="qEdit('highest_degree')" aria-label="Edit highest degree">
+          <span class="q-row-label">Degree</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <div class="field-label">Highest degree obtained</div>
+          <div class="q-choices" id="highest_degree_choices" role="group" aria-label="Highest degree obtained"></div>
+          <div class="q-native">
+            <!-- Button labels are this option text. Edit the words here. -->
+            <select class="field-input" id="highest_degree" onchange="setHighestDegree(this.value); qFinishEdit('highest_degree')" onblur="qCancelEdit('highest_degree')">
+              <option value="">— Select —</option>
+              <option value="ged">High school / GED</option>
+              <option value="bachelors">BA/BS</option>
+              <option value="masters">Master's</option>
+              <option value="doctorate">Doctorate</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-highest_degree">Please make a selection</div>
+        </div>
+      </div>
+      <div class="q" id="q-institutions" data-q="institutions" data-kind="text">
+        <button type="button" class="q-row" onclick="qEdit('institutions')" aria-label="Edit institutions">
+          <span class="q-row-label" id="institutions-row-label">Institution</span>
+          <span class="q-row-value" data-q-value></span>
+          <span class="q-row-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="q-panel">
+          <label class="field-label" id="institutions-label" for="institution-0">What institution did you attend?</label>
+          <div id="institutions-fields"></div>
+          <button type="button" class="add-another-btn" id="add-institution-btn" hidden>+ Add another institution</button>
+          <div class="field-error" id="err-institutions">Required</div>
+          <button type="button" class="q-mini" onclick="qConfirm('institutions')">NEXT</button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary q-next-hidden" id="screen-next-2" onclick="goNext(2)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
+    </div>
+  </div>
+
   <!-- SCREEN 3: WHERE YOU LIVE & DATE -->
   <div id="screen-3" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-3"></div></div>
@@ -1128,6 +1197,28 @@
               <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" oninput="onHeightRangeInput(this,'max')">
             </div>
             <button type="button" class="q-mini" onclick="qConfirm('height_pref')">NEXT</button>
+          </div>
+        </div>
+        <div class="q" id="q-degree_preference" data-q="degree_preference" data-kind="choice">
+          <button type="button" class="q-row" onclick="qEdit('degree_preference')" aria-label="Edit degree preference">
+            <span class="q-row-label">Degree</span>
+            <span class="q-row-value" data-q-value></span>
+            <span class="q-row-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="q-panel">
+            <div class="field-label">Degree</div>
+            <div class="q-choices" id="degree_preference_choices" role="group" aria-label="Degree preference"></div>
+            <div class="q-native">
+              <!-- Button labels are this option text. Edit the words here. -->
+              <select class="field-input" id="degree_preference" onchange="setDegreePreference(this.value); qFinishEdit('degree_preference')" onblur="qCancelEdit('degree_preference')">
+                <option value="">— Select —</option>
+                <option value="masters_plus">Master's or higher</option>
+                <option value="bachelors_plus">BA/BS or higher</option>
+                <option value="ged_plus">High school / GED or higher</option>
+                <option value="no_preference">No preference</option>
+              </select>
+            </div>
+            <div class="field-error" id="err-degree_preference">Please make a selection</div>
           </div>
         </div>
       </div>
@@ -1414,57 +1505,27 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="social-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR PUBLIC <span class="accent">SELF</span></div>
-      <div class="q" id="q-linkedin" data-q="linkedin" data-kind="text">
-        <button type="button" class="q-row" onclick="qEdit('linkedin')" aria-label="Edit LinkedIn">
-          <span class="q-row-label">LinkedIn</span>
-          <span class="q-row-value" data-q-value></span>
-          <span class="q-row-caret" aria-hidden="true">▾</span>
-        </button>
-        <div class="q-panel">
-          <label class="field-label" for="linkedin_username">LinkedIn <span style="color:var(--accent);font-size:10px;">REQUIRED</span></label>
+      <div class="public-fields">
+        <div class="public-field">
+          <label class="field-label" for="linkedin_username">LinkedIn <span class="optional-tag">optional</span></label>
           <div class="linkedin-prefix-wrap" id="linkedin-wrap">
             <span class="linkedin-prefix-text">linkedin.com/in/</span>
-            <input class="linkedin-username-input" id="linkedin_username" type="text" placeholder="yourname" autocomplete="off" oninput="validateLinkedInInline()" onkeydown="qOnEnter(event,'linkedin')" onblur="qOnBlur('linkedin')">
+            <input class="linkedin-username-input" id="linkedin_username" type="text" placeholder="yourname" autocomplete="off" oninput="validateLinkedInInline()">
           </div>
-          <div class="field-error" id="err-linkedin_username">LinkedIn username required</div>
+          <div class="field-error" id="err-linkedin_username">Use only letters, numbers, and hyphens</div>
           <div class="field-valid" id="ok-linkedin_username">✓ Looks good</div>
-          <button type="button" class="q-mini" onclick="qConfirm('linkedin')">NEXT</button>
         </div>
-      </div>
-      <div class="q" id="q-instagram" data-q="instagram" data-kind="text">
-        <button type="button" class="q-row" onclick="qEdit('instagram')" aria-label="Edit Instagram">
-          <span class="q-row-label">Instagram</span>
-          <span class="q-row-value" data-q-value></span>
-          <span class="q-row-caret" aria-hidden="true">▾</span>
-        </button>
-        <div class="q-panel">
-          <label class="field-label" for="instagram">Instagram</label>
-          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="instagram" type="text" placeholder="yourhandle" onkeydown="qOnEnter(event,'instagram')" onblur="qOnBlur('instagram')"></div>
-          <button type="button" class="q-mini" onclick="qConfirm('instagram')">NEXT</button>
+        <div class="public-field">
+          <label class="field-label" for="instagram">Instagram <span class="optional-tag">optional</span></label>
+          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="instagram" type="text" placeholder="yourhandle"></div>
         </div>
-      </div>
-      <div class="q" id="q-x_handle" data-q="x_handle" data-kind="text">
-        <button type="button" class="q-row" onclick="qEdit('x_handle')" aria-label="Edit X">
-          <span class="q-row-label">X</span>
-          <span class="q-row-value" data-q-value></span>
-          <span class="q-row-caret" aria-hidden="true">▾</span>
-        </button>
-        <div class="q-panel">
-          <label class="field-label" for="x_handle">X / Twitter</label>
-          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="x_handle" type="text" placeholder="yourhandle" onkeydown="qOnEnter(event,'x_handle')" onblur="qOnBlur('x_handle')"></div>
-          <button type="button" class="q-mini" onclick="qConfirm('x_handle')">NEXT</button>
+        <div class="public-field">
+          <label class="field-label" for="x_handle">X / Twitter <span class="optional-tag">optional</span></label>
+          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="x_handle" type="text" placeholder="yourhandle"></div>
         </div>
-      </div>
-      <div class="q" id="q-tiktok" data-q="tiktok" data-kind="text">
-        <button type="button" class="q-row" onclick="qEdit('tiktok')" aria-label="Edit TikTok">
-          <span class="q-row-label">TikTok</span>
-          <span class="q-row-value" data-q-value></span>
-          <span class="q-row-caret" aria-hidden="true">▾</span>
-        </button>
-        <div class="q-panel">
-          <label class="field-label" for="tiktok">TikTok</label>
-          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="tiktok" type="text" placeholder="yourhandle" onkeydown="qOnEnter(event,'tiktok')" onblur="qOnBlur('tiktok')"></div>
-          <button type="button" class="q-mini" onclick="qConfirm('tiktok')">NEXT</button>
+        <div class="public-field">
+          <label class="field-label" for="tiktok">TikTok <span class="optional-tag">optional</span></label>
+          <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="tiktok" type="text" placeholder="yourhandle"></div>
         </div>
       </div>
       <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
@@ -1598,13 +1659,15 @@ const state = {
   // so "user touched" is tracked separately from the current value.
   heightTouched: false,
   birthdateTouched: false,
+  degreePreference: null,
+  highestDegree: null,
 };
 let partnerCity = null;
 
 // ============================================================
 // PATHS
 // ============================================================
-function getPath() { return state.status === 'partnered' ? [1,3,4,5,7,6] : [1,5,3,7,6]; }
+function getPath() { return state.status === 'partnered' ? [1,2,3,4,5,7,6] : [1,2,5,3,7,6]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 function totalSteps() { return getPath().length; }
 
@@ -1625,6 +1688,10 @@ document.addEventListener('DOMContentLoaded', () => {
   _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
   onPhoneInput(); // init SMS checkbox state
+  document.getElementById('add-institution-btn')?.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    addInstitutionField();
+  });
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = 'block';
@@ -1963,7 +2030,7 @@ function renderProgress(screenId) {
 function renderStepNums(screenId) {
   const total = totalSteps();
   document.querySelectorAll('.screen.active .step-total').forEach(el => el.textContent = total);
-  ['rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
+  ['prof-step-num','rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       const parentScreen = el.closest('.screen');
@@ -2066,6 +2133,10 @@ async function saveLead() {
     tiktok: get('tiktok'),
     landing_headline: state.landingHeadline || null,
     height_cm: state.heightCm || null,
+    professional_title: professionalTitlePayload(),
+    highest_degree: state.highestDegree || null,
+    institutions: institutionsPayload(),
+    degree_preference: state.status === 'partnered' ? null : (state.degreePreference || null),
   };
   if (state.partialLeadId) data.id = state.partialLeadId;
   try {
@@ -2200,6 +2271,106 @@ function relationshipTimelinePayload() {
   return state.relationshipTimeline || null;
 }
 
+function professionalTitlePayload() {
+  return valOf('professional_title') || null;
+}
+
+function degreeAllowsInstitution(deg) {
+  return deg === 'bachelors' || deg === 'masters' || deg === 'doctorate';
+}
+function degreeAllowsManyInstitutions(deg) {
+  return deg === 'masters' || deg === 'doctorate';
+}
+
+let institutions = [''];
+
+function institutionEntries() {
+  const many = degreeAllowsManyInstitutions(state.highestDegree);
+  const list = many ? institutions : institutions.slice(0, 1);
+  return list.map(s => (s || '').trim()).filter(Boolean);
+}
+
+function institutionsPayload() {
+  if (!degreeAllowsInstitution(state.highestDegree)) return null;
+  const joined = institutionEntries().join('; ');
+  return joined || null;
+}
+
+function syncInstitutionPrompt() {
+  const many = degreeAllowsManyInstitutions(state.highestDegree);
+  const question = many ? 'What institutions did you attend?' : 'What institution did you attend?';
+  const label = document.getElementById('institutions-label');
+  const rowLabel = document.getElementById('institutions-row-label');
+  if (label) label.textContent = question;
+  if (rowLabel) rowLabel.textContent = many ? 'Institutions' : 'Institution';
+  const addBtn = document.getElementById('add-institution-btn');
+  if (addBtn) addBtn.hidden = !many;
+  renderInstitutionFields();
+}
+
+function renderInstitutionFields() {
+  const list = document.getElementById('institutions-fields');
+  if (!list) return;
+  if (!institutions.length) institutions = [''];
+  const many = degreeAllowsManyInstitutions(state.highestDegree);
+  const count = many ? institutions.length : 1;
+  list.replaceChildren();
+  for (let i = 0; i < count; i++) {
+    const row = document.createElement('div');
+    row.className = 'institution-row';
+    const input = document.createElement('input');
+    input.className = 'field-input';
+    input.type = 'text';
+    input.id = i === 0 ? 'institution-0' : '';
+    input.placeholder = 'Institution';
+    input.value = institutions[i] || '';
+    input.addEventListener('input', () => { institutions[i] = input.value; });
+    input.addEventListener('keydown', (e) => qOnEnter(e, 'institutions'));
+    input.addEventListener('blur', () => qOnBlur('institutions'));
+    row.appendChild(input);
+    if (many && count > 1) {
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'institution-remove';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', 'Remove institution');
+      remove.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        institutions.splice(i, 1);
+        if (!institutions.length) institutions = [''];
+        renderInstitutionFields();
+        document.querySelector('#q-institutions input')?.focus();
+      });
+      row.appendChild(remove);
+    }
+    list.appendChild(row);
+  }
+}
+
+function addInstitutionField() {
+  institutions.push('');
+  renderInstitutionFields();
+  const inputs = document.querySelectorAll('#institutions-fields input');
+  const last = inputs[inputs.length - 1];
+  if (last) last.focus();
+}
+
+function setDegreePreference(val) {
+  state.degreePreference = val || null;
+  const sel = document.getElementById('degree_preference');
+  if (sel && val && sel.value !== val) sel.value = val;
+  hideError('degree_preference');
+}
+
+function setHighestDegree(val) {
+  state.highestDegree = val || null;
+  const sel = document.getElementById('highest_degree');
+  if (sel && val && sel.value !== val) sel.value = val;
+  if (!degreeAllowsInstitution(val) && typeof qPassed !== 'undefined') qPassed.delete('institutions');
+  syncInstitutionPrompt();
+  hideError('highest_degree');
+}
+
 // ============================================================
 // LINKEDIN
 // ============================================================
@@ -2272,6 +2443,12 @@ function formatHandle(id) {
 }
 
 const QFLOW = {
+  2: [
+    { id: 'professional_title', required: true, applicable: () => true, answered: () => !!valOf('professional_title'), display: () => valOf('professional_title'), content: () => !!valOf('professional_title') },
+    { id: 'highest_degree', required: true, applicable: () => true, answered: () => !!state.highestDegree, display: () => optText('highest_degree', state.highestDegree), content: () => !!state.highestDegree,
+      syncEdit: () => { const s = document.getElementById('highest_degree'); if (s) s.value = state.highestDegree || ''; } },
+    { id: 'institutions', required: true, applicable: () => degreeAllowsInstitution(state.highestDegree), answered: () => institutionEntries().length > 0, display: () => institutionEntries().join('; '), content: () => institutionEntries().length > 0 },
+  ],
   1: [
     { id: 'gender', required: true, applicable: () => true, answered: () => !!state.gender, display: () => optText('gender_select', state.gender), content: () => !!state.gender,
       syncEdit: () => { const s = document.getElementById('gender_select'); if (s) s.value = state.gender || ''; } },
@@ -2292,6 +2469,8 @@ const QFLOW = {
       return !isNaN(minVal) && !isNaN(maxVal) && minVal >= 18 && maxVal >= 18 && minVal <= maxVal;
     }, display: () => formatAgeRange(), content: () => state.ageMin != null && state.ageMax != null },
     { id: 'height_pref', required: false, applicable: () => state.status !== 'partnered', answered: () => true, display: () => formatHeightPref(), content: () => state.heightPrefMinCm != null },
+    { id: 'degree_preference', required: true, applicable: () => state.status !== 'partnered', answered: () => !!state.degreePreference, display: () => optText('degree_preference', state.degreePreference), content: () => !!state.degreePreference,
+      syncEdit: () => { const s = document.getElementById('degree_preference'); if (s) s.value = state.degreePreference || ''; } },
     { id: 'lives_with_partner', required: false, applicable: () => state.status === 'partnered', answered: () => !!state.livesWithPartner, display: () => optText('lives_with_partner_select', state.livesWithPartner), content: () => !!state.livesWithPartner,
       syncEdit: () => { const s = document.getElementById('lives_with_partner_select'); if (s) s.value = state.livesWithPartner || ''; } },
     { id: 'partner_city', required: false, applicable: () => state.status === 'partnered' && (state.livesWithPartner === 'no' || state.livesWithPartner === 'part_time'), answered: () => true, display: () => partnerCity || valOf('partner_city_input') || '—', content: () => !!(partnerCity || valOf('partner_city_input')) },
@@ -2319,12 +2498,7 @@ const QFLOW = {
   6: [
     { id: 'phone', required: false, applicable: () => true, answered: () => !valOf('phone') || !!normalizePhone(valOf('phone')), display: () => valOf('phone') || '—', content: () => !!valOf('phone') },
   ],
-  7: [
-    { id: 'linkedin', required: true, applicable: () => true, answered: () => /^[a-zA-Z0-9\-]+$/.test(valOf('linkedin_username')), display: () => valOf('linkedin_username'), content: () => !!valOf('linkedin_username') },
-    { id: 'instagram', required: false, applicable: () => true, answered: () => true, display: () => formatHandle('instagram'), content: () => !!valOf('instagram') },
-    { id: 'x_handle', required: false, applicable: () => true, answered: () => true, display: () => formatHandle('x_handle'), content: () => !!valOf('x_handle') },
-    { id: 'tiktok', required: false, applicable: () => true, answered: () => true, display: () => formatHandle('tiktok'), content: () => !!valOf('tiktok') },
-  ],
+  7: [],
 };
 
 function qDef(id) {
@@ -2371,6 +2545,8 @@ function qPickChoice(id, value) {
   else if (id === 'has_children') setHasChildren(value);
   else if (id === 'wants_children') setWantsChildren(value);
   else if (id === 'fertility') setFertility(value);
+  else if (id === 'highest_degree') setHighestDegree(value);
+  else if (id === 'degree_preference') setDegreePreference(value);
   qConfirm(id);
 }
 function qSyncDynamic() {
@@ -2379,6 +2555,8 @@ function qSyncDynamic() {
   qRenderChoices('has_children', 'has_children_select', state.hasChildren === true ? 'yes' : state.hasChildren === false ? 'no' : '');
   qRenderChoices('wants_children', 'wants_children_select', state.wantsChildren || '');
   qRenderChoices('fertility', 'fertility_select', state.fertilityPreservation || '');
+  qRenderChoices('highest_degree', 'highest_degree', state.highestDegree || '');
+  qRenderChoices('degree_preference', 'degree_preference', state.degreePreference || '');
 }
 function qValidate(id) {
   const def = qDef(id);
@@ -2440,11 +2618,22 @@ function qValidate(id) {
     case 'partner_email':
       if (!isValidEmail(valOf('partner_email'))) { showError('partner_email', 'Valid email required'); return false; }
       hideError('partner_email'); return true;
+    case 'professional_title':
+      if (!valOf('professional_title')) { showError('professional_title', 'Required'); return false; }
+      hideError('professional_title'); return true;
+    case 'highest_degree':
+      if (!state.highestDegree) { showError('highest_degree', 'Please make a selection'); return false; }
+      hideError('highest_degree'); return true;
+    case 'institutions':
+      if (!institutionEntries().length) { showError('institutions', 'Required'); return false; }
+      hideError('institutions'); return true;
+    case 'degree_preference':
+      if (!state.degreePreference) { showError('degree_preference', 'Please make a selection'); return false; }
+      hideError('degree_preference'); return true;
     case 'linkedin': {
       const username = valOf('linkedin_username');
-      const valid = /^[a-zA-Z0-9\-]+$/.test(username);
       const wrap = document.getElementById('linkedin-wrap');
-      if (!valid) { showError('linkedin_username', username ? 'Use only letters, numbers, and hyphens' : 'LinkedIn username required'); if (wrap) wrap.classList.add('error'); return false; }
+      if (username && !/^[a-zA-Z0-9\-]+$/.test(username)) { showError('linkedin_username', 'Use only letters, numbers, and hyphens'); if (wrap) wrap.classList.add('error'); return false; }
       hideError('linkedin_username'); if (wrap) wrap.classList.remove('error'); return true;
     }
     case 'phone':
@@ -2628,6 +2817,7 @@ function qSync(screenId, opts) {
       if (typeof _updateHeightLabels === 'function') _updateHeightLabels();
     });
   }
+  if (screenId === 2 && typeof syncInstitutionPrompt === 'function') syncInstitutionPrompt();
   qUpdateNext(screenId);
   qSyncPairs();
   if (opts && opts.focus && openId) {
@@ -2722,7 +2912,15 @@ function validateScreen(screenId) {
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
         showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
       } else { hideError('age_range'); }
+      if (!state.degreePreference) { showError('degree_preference', 'Please make a selection'); ok = false; } else hideError('degree_preference');
     }
+  }
+  if (screenId === 2) {
+    if (!valOf('professional_title')) { showError('professional_title', 'Required'); ok = false; } else hideError('professional_title');
+    if (!state.highestDegree) { showError('highest_degree', 'Please make a selection'); ok = false; } else hideError('highest_degree');
+    if (degreeAllowsInstitution(state.highestDegree)) {
+      if (!institutionEntries().length) { showError('institutions', 'Required'); ok = false; } else hideError('institutions');
+    } else hideError('institutions');
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
@@ -2761,10 +2959,9 @@ function validateScreen(screenId) {
   }
   if (screenId === 7) {
     const username = document.getElementById('linkedin_username').value.trim();
-    const valid = username && /^[a-zA-Z0-9\-]+$/.test(username);
     const wrap = document.getElementById('linkedin-wrap');
-    if (!valid) { showError('linkedin_username', 'LinkedIn username required'); wrap.classList.add('error'); ok = false; }
-    else { hideError('linkedin_username'); wrap.classList.remove('error'); }
+    if (username && !/^[a-zA-Z0-9\-]+$/.test(username)) { showError('linkedin_username', 'Use only letters, numbers, and hyphens'); if (wrap) wrap.classList.add('error'); ok = false; }
+    else { hideError('linkedin_username'); if (wrap) wrap.classList.remove('error'); }
   }
   return ok;
 }
@@ -2832,6 +3029,7 @@ async function doSubmit() {
   const btn = document.getElementById('submit-btn');
   btn.textContent = 'SUBMITTING';
   const username = document.getElementById('linkedin_username').value.trim().replace(/^@/, '');
+  const linkedinUrl = username ? ('https://www.linkedin.com/in/' + username) : null;
   const body = {
     first_name: document.getElementById('first_name').value.trim(),
     last_name: document.getElementById('last_name').value.trim(),
@@ -2857,13 +3055,17 @@ async function doSubmit() {
     relationship_timeline: relationshipTimelinePayload(),
     phone: document.getElementById('phone').value.trim(),
     sms_consent: document.getElementById('sms_consent').checked,
-    linkedin_url: 'https://www.linkedin.com/in/' + username,
+    linkedin_url: linkedinUrl,
     instagram: document.getElementById('instagram').value.trim() || null,
     x_handle: document.getElementById('x_handle').value.trim() || null,
     tiktok: document.getElementById('tiktok').value.trim() || null,
     gender: state.gender || null,
     height_cm: state.heightCm || null,
     landing_headline: state.landingHeadline || null,
+    professional_title: professionalTitlePayload(),
+    highest_degree: state.highestDegree || null,
+    institutions: institutionsPayload(),
+    degree_preference: state.status === 'partnered' ? null : (state.degreePreference || null),
     partial_lead_id: state.partialLeadId || null,
     turnstileToken: state.turnstileToken || '',
     terms_version: '2026-10-01',
