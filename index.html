@@ -633,76 +633,6 @@
     .legal-consent-text a { color: var(--muted); text-decoration: underline; }
     .legal-consent-text a:hover { color: var(--text); }
 
-    /* ===== MULTI-SELECT CITY PICKER ===== */
-    .multiselect-wrap { position: relative; }
-    .multiselect-input-area {
-      min-height: 52px;
-      border: 1px solid var(--dim);
-      border-radius: var(--radius);
-      padding: 8px 14px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-      cursor: text;
-      transition: border-color 0.15s;
-    }
-    .multiselect-input-area:focus-within { border-color: var(--accent); }
-    .multiselect-chip {
-      background: #2a2a28;
-      border: 1px solid #444;
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      padding: 3px 6px 3px 10px;
-      border-radius: 2px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      white-space: normal;
-      word-break: break-word;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    .multiselect-chip-remove {
-      background: none; border: none;
-      color: var(--muted); cursor: pointer;
-      font-size: 16px; line-height: 1; padding: 0;
-      display: flex; align-items: center;
-    }
-    .multiselect-chip-remove:hover { color: var(--text); }
-    .multiselect-search {
-      flex: 1; min-width: 100px;
-      background: transparent; border: none; outline: none;
-      color: var(--text);
-      font-family: 'Space Mono', monospace; font-size: 16px;
-      padding: 4px 0;
-    }
-    .multiselect-search::placeholder { color: var(--muted); }
-    .multiselect-dropdown {
-      display: none;
-      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-      background: #1a1a18;
-      border: 1px solid var(--dim);
-      border-radius: var(--radius);
-      max-height: 220px; overflow-y: auto;
-      z-index: 200;
-    }
-    .multiselect-dropdown.open { display: block; }
-    .multiselect-option {
-      padding: 10px 14px;
-      font-family: 'Space Mono', monospace; font-size: 13px;
-      color: var(--body); cursor: pointer;
-      transition: background 0.1s, color 0.1s;
-    }
-    .multiselect-option:hover { background: #2a2a28; color: var(--text); }
-    .multiselect-empty {
-      padding: 10px 14px;
-      font-family: 'Space Mono', monospace; font-size: 13px;
-      color: var(--muted); font-style: italic;
-    }
-    .multiselect-add-option { color: var(--accent); }
     /* Partner notice + tip box */
     .partner-notice {
       font-family: 'Space Mono', monospace;
@@ -912,7 +842,6 @@
             </div>
             <div id="location-city-wrap" style="display:none; position:relative;">
               <input class="field-input" id="intl_city_input" type="text" placeholder="e.g. London, Dubai, Toronto…" autocomplete="off" oninput="onIntlCityInput()" onfocus="onIntlCityInput()">
-              <div class="multiselect-dropdown" id="intl-city-dropdown"></div>
             </div>
             <div class="field-error" id="err-postal_code">Zip code required</div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; min-height:18px;">
@@ -1506,7 +1435,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initCarousel();
   initFnModal();
   _buildHeightSelect(); // pre-populate ft/in options on load
-  initPartnerCityPicker();
   initPartnerCondensed();
   initCondensedRows();
   _bindPartnerLocationControls();
@@ -2575,80 +2503,6 @@ function showToast(msg) {
 }
 
 // ============================================================
-// MULTI-SELECT CITY PICKER
-// ============================================================
-const US_CITIES = [
-  'Atlanta, GA','Austin, TX','Boston, MA','Charlotte, NC',
-  'Chicago, IL','Cincinnati, OH','Cleveland, OH','Columbus, OH',
-  'Dallas, TX','Denver, CO','Detroit, MI','Hartford, CT',
-  'Houston, TX','Indianapolis, IN','Kansas City, MO','Las Vegas, NV',
-  'Los Angeles, CA','Miami, FL','Minneapolis, MN',
-  'Nashville, TN','New Orleans, LA','New York City, NY','Oklahoma City, OK',
-  'Orlando, FL','Philadelphia, PA','Phoenix, AZ',
-  'Pittsburgh, PA','Portland, OR','Raleigh, NC',
-  'Richmond, VA','Sacramento, CA','Saint Louis, MO','Salt Lake City, UT',
-  'San Antonio, TX','San Diego, CA','San Francisco, CA','Seattle, WA',
-  'Tampa, FL','Washington, DC'
-];
-
-const CITIES_BY_COUNTRY = {
-  'United Kingdom': ['London, United Kingdom','Manchester, United Kingdom','Edinburgh, United Kingdom','Oxford, United Kingdom'],
-  'India': ['Ahmedabad, India','Bengaluru, India','Mumbai, India','New Delhi, India','Pune, India'],
-  'Canada': ['Calgary, Alberta, Canada','Montreal, Quebec, Canada','Toronto, Ontario, Canada','Vancouver, British Columbia, Canada'],
-  'Germany': ['Berlin, Germany','Frankfurt, Germany','Munich, Germany'],
-  'Nigeria': ['Lagos, Nigeria','Abuja, Nigeria'],
-  'Kenya': ['Nairobi, Kenya'],
-  'France': ['Paris, France','Lyon, France'],
-  'South Africa': ['Cape Town, South Africa','Johannesburg, South Africa'],
-  'Turkey': ['Istanbul, Turkey','Ankara, Turkey'],
-  'Philippines': ['Manila, Philippines'],
-  'Israel': ['Tel Aviv, Israel'],
-  'Colombia': ['Bogot\u00e1, Colombia','Medell\u00edn, Colombia'],
-  'Mexico': ['Mexico City, Mexico','Guadalajara, Mexico','Monterrey, Mexico'],
-  'Brazil': ['S\u00e3o Paulo, Brazil','Rio de Janeiro, Brazil'],
-  'United Arab Emirates': ['Dubai, United Arab Emirates','Abu Dhabi, United Arab Emirates'],
-  'Australia': ['Sydney, Australia','Melbourne, Australia','Brisbane, Australia','Perth, Australia'],
-  'Netherlands': ['Amsterdam, Netherlands'],
-  'Singapore': ['Singapore, Singapore'],
-  'Japan': ['Tokyo, Japan','Osaka, Japan'],
-  'South Korea': ['Seoul, South Korea'],
-  'Sweden': ['Stockholm, Sweden'],
-  'Spain': ['Madrid, Spain','Barcelona, Spain'],
-  'Portugal': ['Lisbon, Portugal'],
-  'Ireland': ['Dublin, Ireland'],
-  'New Zealand': ['Auckland, New Zealand'],
-  'Argentina': ['Buenos Aires, Argentina'],
-};
-
-const ALL_INTL_CITIES = Object.values(CITIES_BY_COUNTRY).flat().sort();
-const ALL_LOCATION_CITIES = [...US_CITIES, ...ALL_INTL_CITIES].sort();
-
-function _getCityList() {
-  return ALL_LOCATION_CITIES;
-}
-
-function _parseCityEntry(entry) {
-  if (US_CITIES.includes(entry)) {
-    const parts = entry.split(', ');
-    return { city: parts[0], stateRegion: parts[1] || null, country: 'United States' };
-  }
-  for (const [country, cities] of Object.entries(CITIES_BY_COUNTRY)) {
-    if (cities.includes(entry)) {
-      const parts = entry.split(', ');
-      const city = parts[0];
-      let stateRegion = null;
-      if (parts.length >= 3) {
-        stateRegion = parts[1]; // e.g. "Toronto, Ontario, Canada" → Ontario
-      } else if (parts.length === 2 && parts[1] !== country) {
-        stateRegion = parts[1]; // e.g. "Mumbai, Maharashtra" (legacy) → Maharashtra
-      }
-      return { city, stateRegion, country };
-    }
-  }
-  return { city: entry, stateRegion: null, country: null };
-}
-
-// ============================================================
 // WHO YOU ARE: race picklist
 // ============================================================
 const RACE_OPTIONS = ['Asian', 'South Asian', 'Black', 'Hispanic / Latino', 'MENA', 'Native American', 'Pacific Islander', 'White', 'Other', 'Prefer not to say'];
@@ -2908,7 +2762,6 @@ function _crDefineAll() {
   crDef('who-loc', {
     partner: 'who-dob', focus: () => state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input',
     value: () => { if (state.locationMode === 'zip') { const z = _crV('postal_code'); return z ? z + (state.zipCity ? ' \u00b7 ' + state.zipCity : '') : ''; } return _crV('intl_city_input'); },
-    beforeCollapse: () => { const dd = _crEl('intl-city-dropdown'); if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; } },
   });
   crDef('who-height', {
     partner: 'who-race', focus: () => state.locationMode === 'zip' ? 'height_ftin' : 'height_cm_input',
@@ -3077,70 +2930,6 @@ function toggleLocationMode() {
   setTimeout(() => document.getElementById('intl_city_input')?.focus(), 50);
 }
 
-// Format matches zippopotam.us output (place name + state abbreviation).
-// Countries with clear abbrevs use them; others use City, Country for readability.
-const TOP_INTL_CITIES = [
-  // UK — ENG / SCT / WLS
-  'London, ENG','Manchester, ENG','Birmingham, ENG','Oxford, ENG',
-  'Newcastle upon Tyne, ENG','Edinburgh, SCT','Cardiff, WLS',
-  // Canada — province abbreviations
-  'Toronto, ON','Vancouver, BC','Montreal, QC','Ottawa, ON',
-  'Calgary, AB','Edmonton, AB','Hamilton, ON','Waterloo, ON',
-  'Winnipeg, MB','Kingston, ON',
-  // Australia — state abbreviations
-  'Sydney, NSW','Melbourne, VIC','Brisbane, QLD','Perth, WA',
-  // New Zealand
-  'Auckland, New Zealand','Wellington, New Zealand',
-  // India — state abbreviations
-  'Mumbai, MH','New Delhi, DL','Bengaluru, KA','Hyderabad, TG',
-  'Chennai, TN','Kolkata, WB','Ahmedabad, GJ','Pune, MH',
-  // Brazil — state abbreviations
-  'S\u00e3o Paulo, SP','Rio de Janeiro, RJ','Bras\u00edlia, DF',
-  'Belo Horizonte, MG','Curitiba, PR','Porto Alegre, RS','Florian\u00f3polis, SC',
-  // Germany — Bundesland abbreviations
-  'Berlin, BE','Frankfurt am Main, HE','Hamburg, HH','Munich, BY',
-  // Mexico
-  'Mexico City, CMX','Guadalajara, JAL',
-  // Everything else — City, Country (zippopotam codes are non-obvious)
-  'Abu Dhabi, United Arab Emirates','Amsterdam, Netherlands','Athens, Greece',
-  'Bangkok, Thailand','Barcelona, Spain','Beijing, China','Bogot\u00e1, Colombia',
-  'Brussels, Belgium','Budapest, Hungary','Buenos Aires, Argentina',
-  'Cape Town, South Africa','Casablanca, Morocco','Copenhagen, Denmark',
-  'Doha, Qatar','Dubai, United Arab Emirates','Dublin, Ireland',
-  'Helsinki, Finland','Ho Chi Minh City, Vietnam','Hong Kong',
-  'Istanbul, Turkey','Jakarta, Indonesia','Johannesburg, South Africa',
-  'Kuala Lumpur, Malaysia','Kuwait City, Kuwait','Kyiv, Ukraine',
-  'Lagos, Nigeria','Lima, Peru','Lisbon, Portugal','Lyon, France',
-  'Madrid, Spain','Manila, Philippines','Marseille, France',
-  'Milan, Italy','Moscow, Russia','Nairobi, Kenya','Oslo, Norway',
-  'Paris, France','Porto, Portugal','Quezon City, Philippines',
-  'Riyadh, Saudi Arabia','Rome, Italy','Santiago, Chile',
-  'Seoul, South Korea','Shanghai, China','Singapore',
-  'Stockholm, Sweden','Taipei, Taiwan','Tehran, Iran',
-  'Tel Aviv, Israel','Tokyo, Japan','Utrecht, Netherlands','Zurich, Switzerland',
-].sort();
-
-// Country lookup for dropdown picks so we can populate state.locationCountry
-const CITY_COUNTRY_MAP = {
-  'London, ENG':'United Kingdom','Manchester, ENG':'United Kingdom',
-  'Birmingham, ENG':'United Kingdom','Oxford, ENG':'United Kingdom',
-  'Newcastle upon Tyne, ENG':'United Kingdom','Edinburgh, SCT':'United Kingdom',
-  'Cardiff, WLS':'United Kingdom',
-  'Toronto, ON':'Canada','Vancouver, BC':'Canada','Montreal, QC':'Canada',
-  'Ottawa, ON':'Canada','Calgary, AB':'Canada','Edmonton, AB':'Canada',
-  'Hamilton, ON':'Canada','Waterloo, ON':'Canada','Winnipeg, MB':'Canada','Kingston, ON':'Canada',
-  'Sydney, NSW':'Australia','Melbourne, VIC':'Australia','Brisbane, QLD':'Australia','Perth, WA':'Australia',
-  'Auckland, New Zealand':'New Zealand','Wellington, New Zealand':'New Zealand',
-  'Mumbai, MH':'India','New Delhi, DL':'India','Bengaluru, KA':'India',
-  'Hyderabad, TG':'India','Chennai, TN':'India','Kolkata, WB':'India',
-  'Ahmedabad, GJ':'India','Pune, MH':'India',
-  'S\u00e3o Paulo, SP':'Brazil','Rio de Janeiro, RJ':'Brazil','Bras\u00edlia, DF':'Brazil',
-  'Belo Horizonte, MG':'Brazil','Curitiba, PR':'Brazil','Porto Alegre, RS':'Brazil',
-  'Florian\u00f3polis, SC':'Brazil',
-  'Berlin, BE':'Germany','Frankfurt am Main, HE':'Germany','Hamburg, HH':'Germany','Munich, BY':'Germany',
-  'Mexico City, CMX':'Mexico','Guadalajara, JAL':'Mexico',
-};
-
 function _looksLikePostalCode(text) {
   const p = text.trim().toUpperCase().replace(/\s+/g, '');
   if (/^\d{5}(-\d{4})?$/.test(p)) return true;   // US / many EU
@@ -3160,20 +2949,7 @@ function onIntlCityInput() {
   state.zipCity = val || null;
   state.locationCountry = null;
   if (val) hideError('postal_code');
-  // Suggestions dropdown
-  const dd = document.getElementById('intl-city-dropdown');
-  if (dd) {
-    if (!val) { dd.classList.remove('open'); dd.innerHTML = ''; }
-    else {
-      const matches = TOP_INTL_CITIES.filter(c => c.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
-      if (matches.length) {
-        dd.innerHTML = matches.map(c =>
-          `<div class="multiselect-option" onmousedown="event.preventDefault();_pickIntlCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
-        ).join('');
-        dd.classList.add('open');
-      } else { dd.classList.remove('open'); dd.innerHTML = ''; }
-    }
-  }
+  // Free text (no suggestion list, no overlay).
   // If it looks like a postal code, silently try the zip lookup
   if (val && _looksLikePostalCode(val)) {
     _intlCityTimer = setTimeout(() => _resolveIntlCityPostal(val), 700);
@@ -3213,17 +2989,6 @@ async function _resolveIntlCityPostal(postal) {
   // Nothing found — keep raw text as-is (no error)
 }
 
-function _pickIntlCity(city) {
-  const inp = document.getElementById('intl_city_input');
-  if (inp) inp.value = city;
-  setTimeout(crRefresh, 0);
-  state.zipCity = city;
-  state.locationCountry = CITY_COUNTRY_MAP[city] || null;
-  const dd = document.getElementById('intl-city-dropdown');
-  if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; }
-  hideError('postal_code');
-}
-
 // Selected ideal-partner cities. Until the singles picker is shown, partial
 // saves keep the previous shape: the applicant's own city only.
 let partnerLocationSelected = [];
@@ -3247,10 +3012,7 @@ function _ownCityRaw() {
 }
 
 function _canonicalOwnCity() {
-  const raw = _ownCityRaw();
-  if (!raw) return null;
-  const match = _getCityList().find(c => c.toLowerCase() === raw.toLowerCase());
-  return match || raw;
+  return _ownCityRaw() || null;
 }
 
 function openToCityPayload() {
@@ -3600,50 +3362,6 @@ function couplePayload() {
     partner_height: c ? (parseInt(g('partner_height'), 10) || null) : null,
     partner_city: (c && live === 'no') ? (partnerCity || null) : null,
   };
-}
-
-function initPartnerCityPicker() {
-  document.addEventListener('click', e => {
-    const wrap = document.getElementById('partner-city-wrap');
-    if (wrap && !wrap.contains(e.target)) {
-      const dd = wrap.querySelector('.partner-city-dropdown');
-      if (dd) dd.classList.remove('open');
-    }
-    const intlWrap = document.getElementById('location-city-wrap');
-    if (intlWrap && !intlWrap.contains(e.target)) {
-      const dd = document.getElementById('intl-city-dropdown');
-      if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; }
-    }
-
-  });
-}
-
-function _renderPartnerCityDropdown(query) {
-  const wrap = document.getElementById('partner-city-wrap');
-  if (!wrap) return;
-  const dropdown = wrap.querySelector('.partner-city-dropdown');
-  const q = (query || '').trim();
-  const allCities = [...US_CITIES, ...ALL_INTL_CITIES].sort();
-  const filtered = q
-    ? allCities.filter(c => c.toLowerCase().includes(q.toLowerCase())).slice(0, 25)
-    : allCities.slice(0, 25);
-  let html = filtered.map(c =>
-    `<div class="multiselect-option" onmousedown="event.preventDefault();_setPartnerCity('${c.replace(/'/g, "\\'")}')">` + c + '</div>'
-  ).join('');
-  if (q && !allCities.some(c => c.toLowerCase() === q.toLowerCase())) {
-    html += `<div class="multiselect-option multiselect-add-option" onmousedown="event.preventDefault();_setPartnerCity('${q.replace(/'/g, "\\'")}')">+ Use \u201c${q}\u201d</div>`;
-  }
-  dropdown.innerHTML = html || '<div class="multiselect-empty">Type a city name...</div>';
-  dropdown.classList.add('open');
-}
-
-function _setPartnerCity(city) {
-  partnerCity = city;
-  const inp = document.getElementById('partner_city_input');
-  if (inp) inp.value = city;
-  const wrap = document.getElementById('partner-city-wrap');
-  const dd = wrap && wrap.querySelector('.partner-city-dropdown');
-  if (dd) dd.classList.remove('open');
 }
 
 function onPhoneInput() {
