@@ -207,9 +207,8 @@
 
     /* Partner Location — chips + inline city autocomplete (no popup) */
     #partner-location-label { text-transform: none; letter-spacing: 0.04em; line-height: 1.4; }
-    .partner-location-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .partner-location-chips:empty { display: none; }
-    .partner-location-chips:not(:empty) { margin-bottom: 8px; }
+    /* Tag-input row: chips and the text input share one flex-wrap row; the input fills what is left. */
+    .partner-location-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .partner-location-chip {
       display: inline-flex; align-items: center; gap: 2px; max-width: 100%;
       background: #2a2a28; border: 1px solid #444; color: var(--text);
@@ -225,7 +224,10 @@
     }
     .partner-location-chip-remove:hover { color: var(--text); }
     /* Autocomplete: suggestions render inline in normal page flow (never absolute/fixed/overlay). */
-    #partner-location-input { width: 100%; min-height: 48px; }
+    #partner-location-input {
+      flex: 1 1 120px; min-width: 120px; width: auto; max-width: 100%;
+      min-height: 44px; padding: 10px 12px; font-size: 16px; /* >=16px: no iOS zoom */
+    }
     .partner-location-suggestions {
       position: static; display: flex; flex-direction: column; margin-top: 6px;
       border: 1px solid var(--dim); border-radius: var(--radius); overflow: hidden;
@@ -921,8 +923,9 @@
              City data: GeoNames (https://www.geonames.org), CC BY 4.0, trimmed in cities_grokbot.json. -->
         <div class="field-group" id="partner-location-field" style="margin-bottom:20px;">
           <label class="field-label" id="partner-location-label" for="partner-location-input">Partner Location (select all):</label>
-          <div id="partner-location-chips" class="partner-location-chips"></div>
-          <input class="field-input" id="partner-location-input" type="text" placeholder="Add a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="partner-location-suggestions" aria-expanded="false">
+          <div id="partner-location-row" class="partner-location-row">
+            <input class="field-input" id="partner-location-input" type="text" placeholder="+ Add a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="partner-location-suggestions" aria-expanded="false">
+          </div>
           <div id="partner-location-suggestions" class="partner-location-suggestions" role="listbox" aria-label="City suggestions" hidden></div>
           <label class="partner-location-anywhere" for="partner-location-anywhere">
             <input type="checkbox" id="partner-location-anywhere">
@@ -2771,7 +2774,7 @@ function _ownCityEntry() {
 
 function _bindPartnerLocationControls() {
   const input = document.getElementById('partner-location-input');
-  const chips = document.getElementById('partner-location-chips');
+  const chips = document.getElementById('partner-location-row');
   const box = document.getElementById('partner-location-suggestions');
   const any = document.getElementById('partner-location-anywhere');
   if (input && !input.dataset.bound) {
@@ -2907,11 +2910,12 @@ function initPartnerLocationPicker() {
 }
 
 function _renderPartnerLocationChips() {
-  const wrap = document.getElementById('partner-location-chips');
+  const wrap = document.getElementById('partner-location-row');
+  const input = document.getElementById('partner-location-input');
   const field = document.getElementById('partner-location-field');
   if (field) field.classList.toggle('anywhere', !!partnerLocationAnywhere);
   if (!wrap) return;
-  wrap.replaceChildren();
+  wrap.querySelectorAll('.partner-location-chip').forEach(el => el.remove());
   partnerLocationSelected.forEach((p, idx) => {
     const chip = document.createElement('span');
     chip.className = 'partner-location-chip';
@@ -2925,7 +2929,7 @@ function _renderPartnerLocationChips() {
     btn.setAttribute('aria-label', 'Remove ' + p.label);
     btn.textContent = '\u00d7';
     chip.append(label, btn);
-    wrap.appendChild(chip);
+    wrap.insertBefore(chip, input && input.parentNode === wrap ? input : null);
   });
 }
 
