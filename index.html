@@ -113,7 +113,6 @@
 
     /* Inputs */
     .field-group { margin-bottom: 12px; }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; }
     .field-label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     #screen-5 .field-label { text-transform: none; }
     #screen-5 .choice-grid {
@@ -164,16 +163,6 @@
     .race-opt.selected .race-box::after { content: '\2713'; }
     .race-done { grid-column: 1 / -1; margin-top: 4px; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 10px; cursor: pointer; }
     #screen-5 .choice-grid.error .toggle-btn:not(.selected) { border-color: var(--error); }
-    #screen-5 .kids-pair {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    #screen-5 .kids-pair .field-group { margin-bottom: 0; min-width: 0; }
-    /* Slightly tighter tracking so "Do you want more kids?" stays on one line in a 393px column. */
-    #screen-5 .kids-pair .field-label { letter-spacing: 0.08em; line-height: 1.35; }
-    #screen-5 .kids-pair .field-input { padding-left: 10px; padding-right: 10px; }
     .field-input { width: 100%; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px; min-height: 54px; box-sizing: border-box; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
     .field-input:focus { border-color: var(--accent); }
     .field-input.error { border-color: var(--error); }
@@ -222,7 +211,6 @@
     .subject-number { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--accent); line-height: 1; margin-bottom: 8px; }
     .subject-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
     .confirm-text { font-size: 14px; line-height: 1.8; color: var(--text); margin-bottom: 32px; }
-    .redact-field { background: var(--text); color: var(--text); border-radius: 2px; padding: 0 4px; user-select: none; display: inline-block; }
 
     /* Error toast */
     #error-toast { position: fixed; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--error); color: white; padding: 12px 20px; font-size: 13px; font-family: 'Space Mono', monospace; border-radius: var(--radius); max-width: 380px; width: calc(100% - 48px); z-index: 1000; display: none; text-align: center; }
@@ -237,8 +225,7 @@
     @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
     @keyframes slideBack { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
 
-    /* Divider, optional tag */
-    .section-divider { height: 1px; background: var(--dim); margin: 20px 0; }
+    /* Optional tag */
     .optional-tag { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-left: 6px; }
     /* Range slider */
     .range-slider-wrap { position: relative; height: 44px; display: flex; align-items: center; margin-top: 4px; }
@@ -247,11 +234,7 @@
     input[type=range].range-input { position: absolute; width: 100%; -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; z-index: 2; height: 44px; margin: 0; padding: 0; border: none; outline: none; }
     input[type=range].range-input::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); pointer-events: all; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     input[type=range].range-input::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); pointer-events: all; cursor: pointer; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
-    .age-range-vals { display: flex; justify-content: space-between; font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; margin-bottom: 6px; color: var(--text); }
     .slider-bubble { position: absolute; top: -28px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
-    /* Location city rows */
-    .location-city-row { display: flex; align-items: center; background: #1a1a1a; border: 1px solid var(--dim); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
-
     /* Partner Location — condensed chips, typed add (no list, no popup) */
     .partner-location-chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .partner-location-chips:empty { display: none; }
@@ -612,18 +595,7 @@
       .c-slide { transition: none; }
     }
 
-    /* ===== LEGAL LINKS ===== */
-    .legal-links {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-align: center;
-      padding: 4px 0 2px;
-    }
-    .legal-links a { color: var(--muted); }
-    .legal-links a:hover { color: var(--text); }
+    /* ===== LEGAL CONSENT ===== */
     .legal-consent-text {
       font-family: 'Space Mono', monospace;
       font-size: 11px;
@@ -798,7 +770,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 1: WHO ARE YOU (Name + Birthday + Email) -->
+  <!-- SCREEN 1: ABOUT YOU -->
   <div id="screen-1" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-1"></div></div>
     <div id="badge-1" class="applying-badge"></div>
@@ -905,7 +877,6 @@
     </div>
   </div>
 
-  <!-- SCREEN 3: WHERE YOU LIVE & DATE -->
   <!-- SCREEN 2: YOUR PARTNER (Couples only) -->
   <div id="screen-2" class="screen">
     <div class="progress-container"><div class="progress-steps" id="progress-2"></div></div>
@@ -1398,7 +1369,7 @@ const state = {
   zipLatLong: null,
   livesWithPartner: null, // couples: "Do you live together?" (yes / no / part_time)
   marriedBefore: null, // couples: neither / me / partner / both
-  locationMode: 'zip', // 'zip' | 'postal'
+  locationMode: 'zip', // 'zip' | 'city'
   intlPostal: null,
   locationCountry: null,
   landingHeadline: window.location.href,
@@ -1455,15 +1426,6 @@ async function loadCount() {
       els.forEach(el => el.textContent = data.count.toLocaleString());
     }
   } catch(e) {}
-}
-
-// ============================================================
-// LANDING SCROLL
-// ============================================================
-function scrollToScience(e) {
-  e.preventDefault();
-  const bf = document.getElementById('below-fold');
-  if (bf) bf.scrollIntoView({ behavior: 'smooth' });
 }
 
 // ============================================================
@@ -1752,14 +1714,8 @@ function showScreen(id, direction) {
     crSettleScreen(5);
   }
 
-  // Adjust screen 3 for singles vs couples
+  // Screen 3 (What You Want) is singles-only.
   if (id === 3) {
-    const hl = document.querySelector('#screen-3 .screen-headline');
-    if (hl) hl.innerHTML = state.status === 'partnered'
-      ? 'WHERE YOU &amp; YOUR<br><span class="accent">PARTNER LIVE</span>'
-      : 'WHAT YOU <span class="accent">WANT</span>';
-    const s = document.getElementById('cities-single-section');
-    if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
     if (state.status !== 'partnered') {
       // Default SEEKING to opposite gender (once only)
       if (!state.genderSeeking) {
@@ -1961,7 +1917,7 @@ async function saveLead() {
 }
 
 // ============================================================
-// KIDS
+// GENDER
 // ============================================================
 function setGender(val) {
   state.gender = val;
@@ -2122,7 +2078,6 @@ function syncFamilyDrip() {
   const hasLF = partnered || _lf.length > 0;
   const needsTL = lookingForNeedsTimeline();
   const _hasMarriage = _lf.includes('marriage');
-  const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
   const _datingOnly = _lf.length === 1 && _lf[0] === 'dating';
 
   // Timeline options: marriage vs other (unchanged values).
@@ -2133,9 +2088,7 @@ function syncFamilyDrip() {
       {v:'3_5_years',t:'3-5 years'},{v:'5_10_years',t:'5-10 years'},{v:'10_plus_years',t:'10+ years'},
       {v:'no_timeline',t:'No timeline'}
     ];
-    const DATING_OPTS = _casualOnly
-      ? [{v:'dont_want_relationship',t:"Don't Want Relationship"},{v:'asap',t:'ASAP'},{v:'3_months',t:'Next 3 months'},{v:'6_months',t:'Next 6 months'},{v:'12_months',t:'Next 12 months'},{v:'no_timeline',t:'No timeline'}]
-      : [{v:'asap',t:'ASAP'},{v:'3_months',t:'Next 3 months'},{v:'6_months',t:'Next 6 months'},{v:'12_months',t:'Next 12 months'},{v:'no_timeline',t:'No timeline'}];
+    const DATING_OPTS = [{v:'asap',t:'ASAP'},{v:'3_months',t:'Next 3 months'},{v:'6_months',t:'Next 6 months'},{v:'12_months',t:'Next 12 months'},{v:'no_timeline',t:'No timeline'}];
     const targetOpts = _hasMarriage ? MARRIAGE_OPTS : DATING_OPTS;
     const targetKeys = targetOpts.map(o => o.v).join(',');
     const currentKeys = Array.from(tlSel.options).map(o => o.value).filter(v => v).join(',');
@@ -3114,10 +3067,7 @@ const singlesCityPicker = cityChipPicker({
   onChange: () => { partnerLocationTouched = true; },
 });
 function _bindPartnerLocationControls() { singlesCityPicker.bind(); partnerCityPicker.bind(); }
-function _openPartnerLocationAdder() { singlesCityPicker.openAdder(); }
 function _syncPartnerLocationAdder() { singlesCityPicker.syncAdder(); }
-function _commitPartnerLocationInput() { partnerLocationTouched = true; singlesCityPicker.commit(); }
-function _removePartnerLocationChip(city) { singlesCityPicker.remove(city); }
 
 function initPartnerLocationPicker() {
   _bindPartnerLocationControls();
