@@ -156,6 +156,7 @@
 
     .q { display: none; margin-bottom: 10px; }
     .q.q-open, .q.q-done, .q.q-editing { display: block; }
+    .q.q-done { margin-bottom: 6px; }
     .q.q-reveal { animation: qReveal 280ms ease; }
     @keyframes qReveal {
       from { opacity: 0; transform: translateY(8px); }
@@ -176,7 +177,7 @@
       cursor: pointer;
       text-align: left;
     }
-    .q.q-done .q-row { display: flex; }
+    .q.q-done .q-row { display: flex; min-height: 44px; padding: 8px 10px; }
     .q-row:hover, .q-row:focus-visible { border-color: var(--muted); }
     .q-row-label {
       font-size: 10px;
@@ -196,16 +197,16 @@
       text-align: right;
     }
     .q-row-caret { color: var(--muted); font-size: 11px; flex-shrink: 0; }
-    .q-pair { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+    .q-pair { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
     .q-pair > .q { margin-bottom: 0; }
     .q-pair.q-pair-ready {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 8px;
+      gap: 6px;
       align-items: stretch;
     }
     .q-pair.q-pair-ready > .q { min-width: 0; }
-    .q-pair.q-pair-ready .q-row { min-width: 0; gap: 6px; padding: 10px 8px; }
+    .q-pair.q-pair-ready .q-row { min-width: 0; min-height: 44px; gap: 6px; padding: 8px; }
     .q-pair.q-pair-ready .q-row-label,
     .q-pair.q-pair-ready .q-row-value {
       overflow: hidden;
@@ -933,7 +934,6 @@
             <div class="field-error" id="err-gender">Please select one</div>
           </div>
         </div>
-        <div class="q-pair" data-q-pair="first_name,last_name">
           <div class="q" id="q-first_name" data-q="first_name" data-kind="text">
             <button type="button" class="q-row" onclick="qEdit('first_name')" aria-label="Edit first name">
               <span class="q-row-label">First name</span>
@@ -960,7 +960,6 @@
               <button type="button" class="q-mini" onclick="qConfirm('last_name')">NEXT</button>
             </div>
           </div>
-        </div>
         <div class="q" id="q-birthdate" data-q="birthdate" data-kind="text">
           <button type="button" class="q-row" onclick="qEdit('birthdate')" aria-label="Edit date of birth">
             <span class="q-row-label">Birthday</span>
@@ -1398,7 +1397,6 @@
           <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
         </div>
       </div>
-      <div class="q-pair" data-q-pair="has_children,wants_children">
       <div class="q" id="q-has_children" data-q="has_children" data-kind="choice">
         <button type="button" class="q-row" onclick="qEdit('has_children')" aria-label="Edit whether you have kids">
           <span class="q-row-label">Have kids</span>
@@ -1438,7 +1436,6 @@
           </div>
           <div class="field-error" id="err-wants_children">Please make a selection</div>
         </div>
-      </div>
       </div>
       <div class="q" id="q-fertility" data-q="fertility" data-kind="choice">
         <button type="button" class="q-row" onclick="qEdit('fertility')" aria-label="Edit fertility plan">
@@ -1692,6 +1689,9 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     addInstitutionField();
   });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { if (typeof qSyncPairs === 'function') qSyncPairs(); });
+  }
   // Show below-fold on initial load (page starts on screen 0)
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = 'block';
@@ -2828,14 +2828,117 @@ function qSync(screenId, opts) {
     }
   }
 }
-function qSyncPairs() {
-  document.querySelectorAll('.q-pair').forEach(pair => {
-    const ids = (pair.getAttribute('data-q-pair') || '').split(',').map(s => s.trim()).filter(Boolean);
-    const ready = ids.length > 1 && ids.every(id => {
-      const el = document.getElementById('q-' + id);
-      return el && el.classList.contains('q-done');
+// Related collapsed answers that can share one row. The helper pairs a candidate
+// only when both summaries fit in a half row without clipping. A question is
+// used by the first candidate that fits, so list the preferred partner first
+// (gender + birthday before gender + height). Future questions can also set
+// data-q-pair-with="other_id" on the .q element and are picked up here.
+const Q_PAIRS = [
+  ['first_name', 'last_name'],
+  ['gender', 'birthdate'],
+  ['gender', 'height'],
+  ['professional_title', 'highest_degree'],
+  ['age', 'height_pref'],
+  ['seeking', 'degree_preference'],
+  ['timeline', 'fertility'],
+  ['has_children', 'wants_children'],
+  ['relationship_stage', 'partner_name'],
+  ['lives_with_partner', 'partner_city'],
+];
+function qListedPairs() {
+  const seen = new Set();
+  const list = [];
+  const add = (a, b) => {
+    if (!a || !b || a === b) return;
+    const key = a < b ? a + '|' + b : b + '|' + a;
+    if (seen.has(key)) return;
+    seen.add(key);
+    list.push([a, b]);
+  };
+  Q_PAIRS.forEach(pair => add(pair[0], pair[1]));
+  document.querySelectorAll('.q[data-q-pair-with]').forEach(el => {
+    add(el.getAttribute('data-q'), el.getAttribute('data-q-pair-with'));
+  });
+  return list;
+}
+function qPairSlot(el) {
+  if (el._qSlot && el._qSlot.isConnected) return el._qSlot;
+  const slot = document.createComment('q');
+  el.parentNode.insertBefore(slot, el);
+  el._qSlot = slot;
+  return slot;
+}
+function qRestorePaired(el) {
+  const slot = el._qSlot;
+  if (slot && slot.parentNode) {
+    slot.parentNode.insertBefore(el, slot.nextSibling);
+    return;
+  }
+  const pair = el.parentElement;
+  if (pair && pair.classList.contains('q-pair') && pair.parentNode) pair.parentNode.insertBefore(el, pair);
+}
+function qClearAutoPairs() {
+  document.querySelectorAll('.q-pair[data-q-auto]').forEach(pair => {
+    [...pair.children].forEach(el => {
+      if (el.classList && el.classList.contains('q')) qRestorePaired(el);
     });
-    pair.classList.toggle('q-pair-ready', ready);
+    pair.remove();
+  });
+}
+function qPairReadable(el) {
+  const row = el.querySelector(':scope > .q-row');
+  if (!row || row.clientWidth === 0) return false;
+  const parts = row.querySelectorAll('.q-row-label, .q-row-value');
+  for (let i = 0; i < parts.length; i++) {
+    if (parts[i].scrollWidth > parts[i].clientWidth + 1) return false;
+  }
+  return true;
+}
+function qCanPair(id) {
+  const el = document.getElementById('q-' + id);
+  if (!el || !el.classList.contains('q-done') || qEditing === id) return false;
+  const def = qDef(id);
+  if (def && !def.applicable()) return false;
+  const screen = el.closest('.screen');
+  return !!(screen && screen.classList.contains('active'));
+}
+function qSyncPairs() {
+  document.querySelectorAll('.q[data-q]').forEach(el => {
+    if (el._qSlot && el._qSlot.isConnected) return;
+    if (el.parentElement && el.parentElement.classList.contains('q-pair')) return;
+    if (!el.parentNode) return;
+    qPairSlot(el);
+  });
+  qClearAutoPairs();
+  const used = new Set();
+  qListedPairs().forEach(pairIds => {
+    const a = pairIds[0];
+    const b = pairIds[1];
+    if (used.has(a) || used.has(b)) return;
+    if (!qCanPair(a) || !qCanPair(b)) return;
+    const elA = document.getElementById('q-' + a);
+    const elB = document.getElementById('q-' + b);
+    const slotA = elA._qSlot;
+    const slotB = elB._qSlot;
+    if (!slotA || !slotB || !slotA.parentNode) return;
+    const aFirst = (slotA.compareDocumentPosition(slotB) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+    const anchor = aFirst ? slotA : slotB;
+    const left = aFirst ? elA : elB;
+    const right = aFirst ? elB : elA;
+    const pair = document.createElement('div');
+    pair.className = 'q-pair q-pair-ready';
+    pair.setAttribute('data-q-auto', a + ',' + b);
+    anchor.parentNode.insertBefore(pair, anchor.nextSibling);
+    pair.appendChild(left);
+    pair.appendChild(right);
+    if (!qPairReadable(left) || !qPairReadable(right)) {
+      qRestorePaired(left);
+      qRestorePaired(right);
+      pair.remove();
+      return;
+    }
+    used.add(a);
+    used.add(b);
   });
 }
 function qUpdateNext(screenId) {
