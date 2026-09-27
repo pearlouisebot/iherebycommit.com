@@ -255,6 +255,14 @@
     }
     .q-choices-row .toggle-btn { flex: 1; width: auto; font-size: 16px; }
     .q-choices-grid .toggle-btn { font-size: 17px; }
+    .name-fields {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+    }
+    .name-fields .field-group { min-width: 0; margin-bottom: 0; }
+    .name-fields .field-input { width: 100%; }
+    #name-step.name-open #q-last_name { display: none; }
     .q-choices .toggle-btn:active { transform: scale(0.97); }
     .q-native, .q-multi-edit { display: none; }
     .q.q-editing[data-kind="choice"] .q-choices { display: none; }
@@ -985,6 +993,7 @@
             <div class="field-error" id="err-gender">Please select one</div>
           </div>
         </div>
+          <div id="name-step">
           <div class="q" id="q-first_name" data-q="first_name" data-kind="text">
             <button type="button" class="q-row" onclick="qEdit('first_name')" aria-label="Edit first name">
               <span class="q-row-label">First name</span>
@@ -992,10 +1001,19 @@
               <span class="q-row-caret" aria-hidden="true">▾</span>
             </button>
             <div class="q-panel">
-              <label class="field-label" for="first_name">First name</label>
-              <input class="field-input" id="first_name" type="text" placeholder="First name" autocomplete="given-name" onkeydown="qOnEnter(event,'first_name')" onblur="qOnBlur('first_name')">
-              <div class="field-error" id="err-first_name">Required</div>
-              <button type="button" class="q-mini" onclick="qConfirm('first_name')">NEXT</button>
+              <div class="name-fields">
+                <div class="field-group">
+                  <label class="field-label" for="first_name">First name</label>
+                  <input class="field-input" id="first_name" type="text" placeholder="First name" autocomplete="given-name" onkeydown="qOnFirstNameKey(event)" onblur="qOnNameBlur()" onfocus="qNameFocus('first')">
+                  <div class="field-error" id="err-first_name">Required</div>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="last_name">Last name</label>
+                  <input class="field-input" id="last_name" type="text" placeholder="Last name" autocomplete="family-name" onkeydown="qOnLastNameKey(event)" onblur="qOnNameBlur()" onfocus="qNameFocus('last')">
+                  <div class="field-error" id="err-last_name">Required</div>
+                </div>
+              </div>
+              <button type="button" class="q-mini" id="name-step-next" onclick="qNameNext()">NEXT</button>
             </div>
           </div>
           <div class="q" id="q-last_name" data-q="last_name" data-kind="text">
@@ -1004,12 +1022,7 @@
               <span class="q-row-value" data-q-value></span>
               <span class="q-row-caret" aria-hidden="true">▾</span>
             </button>
-            <div class="q-panel">
-              <label class="field-label" for="last_name">Last name</label>
-              <input class="field-input" id="last_name" type="text" placeholder="Last name" autocomplete="family-name" onkeydown="qOnEnter(event,'last_name')" onblur="qOnBlur('last_name')">
-              <div class="field-error" id="err-last_name">Required</div>
-              <button type="button" class="q-mini" onclick="qConfirm('last_name')">NEXT</button>
-            </div>
+          </div>
           </div>
         <div class="q" id="q-birthdate" data-q="birthdate" data-kind="text">
           <button type="button" class="q-row" onclick="qEdit('birthdate')" aria-label="Edit date of birth">
@@ -2894,7 +2907,56 @@ document.addEventListener('pointerdown', (e) => {
   if (!group) return;
   group.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('selected', b === btn));
 }, true);
+let nameStepField = 'first';
+function qNameFocus(which) { nameStepField = which; }
+function qNamesOpen() {
+  const step = document.getElementById('name-step');
+  return !!(step && step.classList.contains('name-open'));
+}
+function qOnFirstNameKey(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  nameStepField = 'last';
+  document.getElementById('last_name')?.focus();
+}
+function qOnLastNameKey(e) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  qConfirmNames();
+}
+function qNameNext() {
+  if (nameStepField !== 'last') {
+    nameStepField = 'last';
+    document.getElementById('last_name')?.focus();
+    return;
+  }
+  qConfirmNames();
+}
+function qOnNameBlur() {
+  setTimeout(() => {
+    if (!qNamesOpen()) return;
+    const panel = document.querySelector('#q-first_name .q-panel');
+    if (!panel || panel.contains(document.activeElement)) return;
+    if (!valOf('first_name') || !valOf('last_name')) return;
+    qConfirmNames();
+  }, 160);
+}
+function qConfirmNames() {
+  const okFirst = qValidate('first_name');
+  const okLast = qValidate('last_name');
+  if (!okFirst || !okLast) return false;
+  qPassed.add('first_name');
+  qPassed.add('last_name');
+  if (qEditing === 'first_name' || qEditing === 'last_name') qEditing = null;
+  nameStepField = 'first';
+  qSync(1, { focus: true });
+  return true;
+}
 function qConfirm(id, immediate) {
+  if ((id === 'first_name' || id === 'last_name') && qNamesOpen()) {
+    if (id === 'first_name') { qNameNext(); return true; }
+    return qConfirmNames();
+  }
   const el = document.getElementById('q-' + id);
   if (!immediate && el && el.getAttribute('data-kind') === 'choice' && el.classList.contains('q-open')) {
     const def = qDef(id);
@@ -2929,9 +2991,17 @@ function qEdit(id) {
   if (!def) return;
   if (qMultiTimers[id]) { clearTimeout(qMultiTimers[id]); qMultiTimers[id] = null; }
   if (qChoiceTimers[id]) { clearTimeout(qChoiceTimers[id]); qChoiceTimers[id] = null; }
+  if (id === 'first_name' || id === 'last_name') nameStepField = id === 'last_name' ? 'last' : 'first';
   qEditing = id;
   if (def.syncEdit) def.syncEdit();
   qSync(def.screen);
+  if (id === 'first_name' || id === 'last_name') {
+    setTimeout(() => {
+      const active = document.activeElement;
+      if (active && (active.id === 'first_name' || active.id === 'last_name') && active.id !== id) return;
+      try { document.getElementById(id)?.focus({ preventScroll: true }); } catch (err) { document.getElementById(id)?.focus(); }
+    }, 40);
+  }
 }
 function qCancelEdit(id) {
   setTimeout(() => {
@@ -3038,6 +3108,25 @@ function qSync(screenId, opts) {
       if (qLastOpen[screenId] !== def.id) el.classList.add('q-reveal');
     }
   });
+  if (screenId === 1) {
+    const step = document.getElementById('name-step');
+    const first = document.getElementById('q-first_name');
+    const last = document.getElementById('q-last_name');
+    const editingNames = qEditing === 'first_name' || qEditing === 'last_name';
+    const openingNames = !!(first && last && (editingNames || first.classList.contains('q-open') || last.classList.contains('q-open')));
+    if (step && openingNames) {
+      const cls = editingNames ? 'q-editing' : 'q-open';
+      const reveal = !editingNames && qLastOpen[screenId] !== 'first_name';
+      first.classList.remove('q-done', 'q-open', 'q-editing', 'q-reveal');
+      last.classList.remove('q-done', 'q-open', 'q-editing', 'q-reveal');
+      first.classList.add(cls);
+      last.classList.add(cls);
+      if (reveal) first.classList.add('q-reveal');
+      if (!editingNames && !step.classList.contains('name-open')) nameStepField = 'first';
+      step.classList.add('name-open');
+      openId = 'first_name';
+    } else if (step) step.classList.remove('name-open');
+  }
   qLastOpen[screenId] = openId;
   if (screenId === 4) {
     const aside = document.getElementById('partner-aside');
