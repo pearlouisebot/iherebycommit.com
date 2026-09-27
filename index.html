@@ -932,7 +932,7 @@
               </select>
             </div>
             <div id="height-cm-wrap" style="display:none;">
-              <input class="field-input" id="height_cm_input" type="number" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;" oninput="onHeightCmChange()">
+              <input class="field-input" id="height_cm_input" type="number" inputmode="numeric" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;" onfocus="_cmFocus(this)" onblur="_cmBlur(this)" oninput="onHeightCmChange()">
             </div>
           </div>
           <div class="field-group who-unit" id="who-race" style="margin-bottom:0;min-width:0;">
@@ -3032,6 +3032,16 @@ function onHeightFtInChange() {
   state.heightCm = val ? parseInt(val) : null;
   // Collapses 1.2s after the pick, together with Race once Race is also done.
   crTap('who-height');
+}
+// The cm box starts with the gender default. While it is untouched, focusing it empties the box (default shown
+// as the placeholder) so typing replaces it instead of appending (160 -> 160170); leaving it empty restores the default.
+function _cmFocus(el) {
+  if (state.heightTouched || !el.value) return;
+  el.dataset.def = el.value; el.placeholder = el.value; el.value = '';
+}
+function _cmBlur(el) {
+  if (el.dataset.def && !el.value && !state.heightTouched) el.value = el.dataset.def;
+  el.placeholder = 'cm'; delete el.dataset.def;
 }
 function onHeightCmChange() {
   state.heightTouched = true;
