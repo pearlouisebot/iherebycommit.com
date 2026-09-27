@@ -710,6 +710,17 @@
       font-family: 'Space Mono', monospace;
       font-size: 12px; color: var(--body); line-height: 1.6;
     }
+    /* YOUR PARTNER (couples step 2): answered inputs collapse; pairs share a line once both are collapsed */
+    #pt-name.collapsed > .who-cond { grid-column: 1 / -1; }
+    .pt-pair { margin-bottom: 12px; }
+    .pt-pair > .who-unit + .who-unit { margin-top: 12px; }
+    .pt-pair.both { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: stretch; }
+    .pt-pair.both > .who-unit + .who-unit { margin-top: 0; }
+    .pt-pair.both > .who-unit.collapsed > .who-cond { height: 100%; }
+    #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: -4px 0 12px; }
+    #screen-2 .bottom-action .partner-tip-box { margin: 2px 0 0; padding: 8px 12px; }
+    #screen-2 .bottom-action .partner-tip-box .tip-label { margin-bottom: 4px; }
+    #screen-2 .bottom-action .partner-tip-box .tip-text { font-size: 11px; line-height: 1.5; }
     .screen-subhead { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.6; margin: -12px 0 20px; }
     #married-before-group .toggle-btn { padding-left: 2px; padding-right: 2px; }
     /* Confirmation priority text */
@@ -962,7 +973,8 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="partner-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR <span class="accent">PARTNER</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div class="who-unit" id="pt-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner" onclick="ptExpand('name')"><span class="who-cond-txt"><span class="who-cond-k">Partner</span><span class="who-cond-v" id="pt-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" style="margin-bottom:0;min-width:0;">
           <label class="field-label" for="partner_first_name">Their first name</label>
           <input class="field-input" id="partner_first_name" type="text" placeholder="First name" autocomplete="off">
@@ -973,32 +985,51 @@
           <input class="field-input" id="partner_last_name" type="text" placeholder="Last name" autocomplete="off">
         </div>
       </div>
-      <div class="field-group">
-        <label class="field-label" for="partner_birthday">Their birthday</label>
-        <input class="field-input" id="partner_birthday" type="date" style="font-size:14px;padding:14px 10px;">
+      <div class="pt-pair" id="pt-row-bh">
+        <div class="field-group who-unit" id="pt-bday" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their birthday" onclick="ptExpand('bday')"><span class="who-cond-txt"><span class="who-cond-k">Their birthday</span><span class="who-cond-v" id="pt-bday-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_birthday">Their birthday</label>
+          <input class="field-input" id="partner_birthday" type="date" value="1990-01-01" style="font-size:14px;padding:14px 10px;">
+        </div>
+        <div class="field-group who-unit" id="pt-height" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their height" onclick="ptExpand('height')"><span class="who-cond-txt"><span class="who-cond-k">Their height</span><span class="who-cond-v" id="pt-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_height">Their height</label>
+          <select class="field-input" id="partner_height" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onPartnerHeightChange()">
+            <option value="">—</option>
+          </select>
+        </div>
       </div>
-      <div class="field-group">
+      <div class="field-group who-unit" id="pt-email" style="margin-bottom:12px;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their email" onclick="ptExpand('email')"><span class="who-cond-txt"><span class="who-cond-k">Their email</span><span class="who-cond-v" id="pt-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <label class="field-label" for="partner_email">Their email</label>
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
         <div class="field-error" id="err-partner_email">Valid email required</div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Do you live together?</label>
-        <div class="toggle-group" style="margin-bottom:0;">
-          <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes')">YES</button>
-          <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no')">NO</button>
-          <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time')">PART-TIME</button>
-        </div>
-      </div>
       <p class="partner-notice">We'll notify your partner when the study goes live.</p>
-      <div class="partner-tip-box">
-        <div class="tip-label">Priority tip</div>
-        <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
+      <div class="pt-pair" id="pt-row-lc">
+        <div class="field-group who-unit" id="pt-live" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Live together" onclick="ptExpand('live')"><span class="who-cond-txt"><span class="who-cond-k">Live together</span><span class="who-cond-v" id="pt-live-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label">Do you live together?</label>
+          <div class="toggle-group" style="margin-bottom:0;">
+            <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes', true)">YES</button>
+            <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no', true)">NO</button>
+            <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time', true)">PART-TIME</button>
+          </div>
+        </div>
+        <div class="field-group who-unit" id="pt-city" style="margin-bottom:0;min-width:0;display:none;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Lives in" onclick="ptExpand('city')"><span class="who-cond-txt"><span class="who-cond-k">Lives in</span><span class="who-cond-v" id="pt-city-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_city_input">Where does your partner live?</label>
+          <input class="field-input" id="partner_city_input" type="text" placeholder="City" autocomplete="off" oninput="partnerCity = this.value.trim() || null">
+        </div>
       </div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(2)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
+      <div class="partner-tip-box">
+        <div class="tip-label">Priority tip</div>
+        <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
+      </div>
     </div>
   </div>
 
@@ -1464,6 +1495,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFnModal();
   _buildHeightSelect(); // pre-populate ft/in options on load
   initPartnerCityPicker();
+  initPartnerCondensed();
   initWhoCondensed();
   _bindPartnerLocationControls();
   onPhoneInput(); // init SMS checkbox state
@@ -1762,6 +1794,7 @@ function showScreen(id, direction) {
   }
 
   if (id === 1) { _buildHeightSelect(); }
+  if (id === 2) { _buildHeightSelect('partner_height'); }
   if (id === 5) {
     // Couples: "Family & Intentions", answered for yourself. Singles unchanged.
     const couple = state.status === 'partnered';
@@ -1838,7 +1871,7 @@ function startAs(status) {
   showScreen(1, 'forward');
 }
 
-const COUPLE_INPUT_IDS = ['partner_first_name','partner_last_name','partner_birthday','partner_email','relationship_stage','first_date','engagement_date','wedding_date'];
+const COUPLE_INPUT_IDS = ['partner_first_name','partner_last_name','partner_birthday','partner_email','partner_height','partner_city_input','relationship_stage','first_date','engagement_date','wedding_date'];
 // "change" link: on screen 1 (identical for both flows) switch in place. From screen 2
 // onward, switch and go back to slide 1 of the other flow; slide-1 answers are kept.
 function changeStatus() {
@@ -1847,6 +1880,7 @@ function changeStatus() {
   if (state.status === 'single') {
     COUPLE_INPUT_IDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     setLivesWithPartner(null); setMarriedBefore(null); onRelationshipStageChange();
+    resetPartnerScreen();
   }
   syncFamilyDrip(); // has_children mapping for the new flow (Hotfix 5/7)
   _syncCouplesFlowClass();
@@ -1909,7 +1943,7 @@ async function saveLead() {
     children_with: childrenWithPayload(),
     race: racePayload(),
     wants_children: state.wantsChildren || null,
-    kids_timeline: state.status === 'partnered' ? null : (state.kidsTimeline || null),
+    kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
     looking_for: lookingForPayload(),
     relationship_timeline: relationshipTimelinePayload(),
@@ -2107,7 +2141,7 @@ function syncFamilyDrip() {
   const needsTL = lookingForNeedsTimeline();
   const hasTL = !needsTL || !!state.relationshipTimeline;
   const hasKidsDone = state.hasChildren !== null && state.hasChildren !== undefined;
-  const kidsTimelineDone = !partnered && !!state.kidsTimeline; // couples: no kids-timeline question
+  const kidsTimelineDone = !!state.kidsTimeline; // asked in both flows (couples again since Hotfix 11)
   const _lf = Array.isArray(state.lookingFor) ? state.lookingFor : [];
   const _hasMarriage = _lf.includes('marriage');
   const _casualOnly = _lf.length === 1 && _lf[0] === 'casual';
@@ -2206,12 +2240,12 @@ function syncFamilyDrip() {
 
   // kidstimeline-standalone-row: full width, shown while not yet answered
   const ktStandaloneRow = document.getElementById('kidstimeline-standalone-row');
-  if (ktStandaloneRow) ktStandaloneRow.style.display = (hasLF && !partnered && state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
+  if (ktStandaloneRow) ktStandaloneRow.style.display = (hasLF && state.wantsChildren === 'yes' && !kidsTimelineDone) ? 'block' : 'none';
 
   // fertility-row: full width, shows once kids timeline answered
   const fertRow = document.getElementById('fertility-row');
   // Couples: fertility follows want = Yes directly (no kids-timeline question).
-  if (fertRow) fertRow.style.display = (hasLF && state.wantsChildren === 'yes' && (partnered || kidsTimelineDone)) ? 'block' : 'none';
+  if (fertRow) fertRow.style.display = (hasLF && state.wantsChildren === 'yes' && kidsTimelineDone) ? 'block' : 'none';
 
   // Clear downstream if wantsChildren is not yes
   if (state.wantsChildren !== 'yes') {
@@ -2304,6 +2338,7 @@ function validateScreen(screenId) {
     const pe = document.getElementById('partner_email').value.trim();
     if (!pf) { showError('partner_first_name', 'Required'); ok = false; } else hideError('partner_first_name');
     if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
+    ptExpandErrors();
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
@@ -2324,7 +2359,7 @@ function validateScreen(screenId) {
     if (wkRowVisible) {
       if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
       if (state.wantsChildren === 'yes') {
-        if (state.status !== 'partnered' && !state.kidsTimeline) { showError('kids_timeline', 'Please make a selection'); ok = false; } else hideError('kids_timeline');
+        if (!state.kidsTimeline) { showError('kids_timeline', 'Please make a selection'); ok = false; } else hideError('kids_timeline');
         if (!state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
       } else { hideError('kids_timeline'); hideError('fertility'); }
     }
@@ -2429,7 +2464,7 @@ async function doSubmit() {
     children_with: childrenWithPayload(),
     race: racePayload(),
     wants_children: state.wantsChildren || null,
-    kids_timeline: state.status === 'partnered' ? null : (state.kidsTimeline || null),
+    kids_timeline: state.kidsTimeline || null,
     fertility_preservation: state.fertilityPreservation || null,
     looking_for: lookingForPayload(),
     relationship_timeline: relationshipTimelinePayload(),
@@ -2809,8 +2844,8 @@ function initWhoCondensed() {
 // ============================================================
 // HEIGHT
 // ============================================================
-function _buildHeightSelect() {
-  const sel = document.getElementById('height_ftin');
+function _buildHeightSelect(id) {
+  const sel = document.getElementById(id || 'height_ftin');
   if (!sel || sel.options.length > 1) return;
   // 4'10" or under (58 in = 147 cm) to 7'0" (84 in = 213 cm)
   for (let totalIn = 58; totalIn <= 84; totalIn++) {
@@ -3284,11 +3319,122 @@ const _ZIP_CC = {
 };
 let _zipTimer = null;
 
-function setLivesWithPartner(val) {
+function setLivesWithPartner(val, fromTap) {
   state.livesWithPartner = val || null;
   document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
   document.getElementById('btn-lives-no').classList.toggle('selected', val === 'no');
   document.getElementById('btn-lives-parttime').classList.toggle('selected', val === 'part_time');
+  // "Where does your partner live?" only when they don't live together (inline text field, no dropdown).
+  const cityUnit = document.getElementById('pt-city');
+  if (cityUnit) cityUnit.style.display = val === 'no' ? '' : 'none';
+  if (val !== 'no') {
+    partnerCity = null;
+    const inp = document.getElementById('partner_city_input'); if (inp) inp.value = '';
+    if (cityUnit) cityUnit.classList.remove('collapsed');
+  }
+  clearTimeout(_ptTimers.live);
+  if (fromTap && val) _ptTimers.live = setTimeout(() => { _ptTimers.live = null; ptCollapse('live'); }, 1000);
+  _ptSyncPairs();
+}
+
+// ============================================================
+// YOUR PARTNER: condensed rows (same idea as WHO YOU ARE)
+// While a field is being filled it has its own line; once answered it collapses
+// into a tappable row. Birthday + height and live together + partner city share
+// a line once both are collapsed. First + last name are always side by side.
+// ============================================================
+const _ptTimers = {};
+const PT_UNITS = ['name', 'bday', 'height', 'email', 'live', 'city'];
+function _ptVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function ptValueText(k) {
+  if (k === 'name') { const f = _ptVal('partner_first_name'), l = _ptVal('partner_last_name'); return f && l ? f + ' ' + l : ''; }
+  if (k === 'bday') {
+    if (!state.partnerBdayTouched) return ''; // the Jan 1, 1990 default alone doesn't count
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(_ptVal('partner_birthday'));
+    return m ? _MONTHS[parseInt(m[2], 10) - 1] + ' ' + parseInt(m[3], 10) + ', ' + m[1] : '';
+  }
+  if (k === 'height') { const sel = document.getElementById('partner_height'); return sel && sel.value ? sel.options[sel.selectedIndex].textContent : ''; }
+  if (k === 'email') { const e = _ptVal('partner_email'); return e && isValidEmail(e) ? e : ''; }
+  if (k === 'live') return ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '';
+  if (k === 'city') return state.livesWithPartner === 'no' ? _ptVal('partner_city_input') : '';
+  return '';
+}
+function _ptUnit(k) { return document.getElementById('pt-' + k); }
+function ptIsCollapsed(k) { const u = _ptUnit(k); return !!u && u.classList.contains('collapsed'); }
+function ptCollapse(k) {
+  const u = _ptUnit(k);
+  if (!u) return false;
+  const txt = ptValueText(k);
+  if (!txt) return false;
+  const a = document.activeElement;
+  if (u.contains(a) && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) return false; // still typing
+  const v = document.getElementById('pt-' + k + '-v');
+  if (v) { v.textContent = txt; v.title = txt; }
+  if (u.contains(a)) a.blur();
+  u.classList.add('collapsed');
+  _ptSyncPairs();
+  return true;
+}
+const _PT_FOCUS = { name: 'partner_first_name', bday: 'partner_birthday', height: 'partner_height', email: 'partner_email', city: 'partner_city_input' };
+function ptExpand(k, focus) {
+  const u = _ptUnit(k);
+  if (!u) return;
+  clearTimeout(_ptTimers[k]); _ptTimers[k] = null;
+  u.classList.remove('collapsed');
+  _ptSyncPairs();
+  if (focus === false) return;
+  const el = _PT_FOCUS[k] && document.getElementById(_PT_FOCUS[k]);
+  if (el) { try { el.focus({ preventScroll: false }); } catch (e) {} }
+}
+function _ptSyncPairs() {
+  const bh = document.getElementById('pt-row-bh');
+  if (bh) bh.classList.toggle('both', ptIsCollapsed('bday') && ptIsCollapsed('height'));
+  const lc = document.getElementById('pt-row-lc');
+  const cityShown = state.livesWithPartner === 'no';
+  if (lc) lc.classList.toggle('both', cityShown && ptIsCollapsed('live') && ptIsCollapsed('city'));
+}
+function ptExpandErrors() {
+  if (document.getElementById('err-partner_first_name')?.classList.contains('visible')) ptExpand('name', false);
+  if (document.getElementById('err-partner_email')?.classList.contains('visible')) ptExpand('email', false);
+}
+function onPartnerHeightChange() {
+  const val = document.getElementById('partner_height').value;
+  clearTimeout(_ptTimers.height);
+  _ptTimers.height = val ? setTimeout(() => { _ptTimers.height = null; ptCollapse('height'); }, 1000) : null;
+  if (!val) ptExpand('height', false);
+}
+// Back to a fresh Your Partner screen (used when switching to singles).
+function resetPartnerScreen() {
+  PT_UNITS.forEach(k => { const u = _ptUnit(k); if (u) u.classList.remove('collapsed'); });
+  Object.keys(_ptTimers).forEach(k => { clearTimeout(_ptTimers[k]); _ptTimers[k] = null; });
+  state.partnerBdayTouched = false;
+  const bd = document.getElementById('partner_birthday'); if (bd) bd.value = '1990-01-01';
+  partnerCity = null;
+  _ptSyncPairs();
+}
+function initPartnerCondensed() {
+  const bd = document.getElementById('partner_birthday');
+  if (bd) {
+    const touch = () => { state.partnerBdayTouched = true; };
+    bd.addEventListener('focus', touch); bd.addEventListener('input', touch); bd.addEventListener('change', touch);
+  }
+  ['name', 'bday', 'height', 'email', 'city'].forEach(k => {
+    const u = _ptUnit(k);
+    if (!u) return;
+    u.addEventListener('focusout', () => {
+      clearTimeout(_ptTimers[k + 'Blur']);
+      _ptTimers[k + 'Blur'] = setTimeout(() => { if (!u.contains(document.activeElement)) ptCollapse(k); }, 200);
+    });
+  });
+  const onEnter = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); fn(el); } }); };
+  onEnter('partner_first_name', () => document.getElementById('partner_last_name')?.focus());
+  onEnter('partner_last_name', el => { if (ptValueText('name')) el.blur(); });
+  onEnter('partner_birthday', el => el.blur());
+  onEnter('partner_email', el => { if (ptValueText('email')) el.blur(); });
+  onEnter('partner_city_input', el => { if (el.value.trim()) el.blur(); });
+  document.querySelectorAll('#screen-2 .who-cond').forEach(c => c.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); }
+  }));
 }
 
 function setMarriedBefore(val) {
@@ -3319,7 +3465,7 @@ function couplePayload() {
     partner_last_name: last,
     partner_name: c ? ([first, last].filter(Boolean).join(' ') || null) : null, // backward compat: "first last"
     partner_email: c && g('partner_email') ? g('partner_email').toLowerCase() : null,
-    partner_birthday: g('partner_birthday'),
+    partner_birthday: state.partnerBdayTouched ? g('partner_birthday') : null,
     live_together: live,
     lives_with_partner: live, // backward compat: same answer, older column
     relationship_stage: stage,
@@ -3327,6 +3473,9 @@ function couplePayload() {
     engagement_date: (stage === 'engaged' || stage === 'married') ? g('engagement_date') : null,
     wedding_date: stage === 'married' ? g('wedding_date') : null,
     married_before: c ? (state.marriedBefore || null) : null,
+    // Hotfix 11. Birthday: the Jan 1, 1990 default is only sent once the user has touched it.
+    partner_height: c ? (parseInt(g('partner_height'), 10) || null) : null,
+    partner_city: (c && live === 'no') ? g('partner_city_input') : null,
   };
 }
 
