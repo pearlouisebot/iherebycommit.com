@@ -214,6 +214,8 @@
     }
     .q-pair.q-pair-ready .q-row-label { flex: 0 1 auto; letter-spacing: 0.04em; font-size: 9px; }
     .q-pair.q-pair-ready .q-row-value { flex: 1 1 0; min-width: 0; text-align: right; }
+    #screen-5 .q-pair.q-pair-ready .q-row-label { font-size: 10px; letter-spacing: 0; }
+    #screen-5 .q-pair.q-pair-ready .q-row-value { flex: 0 1 auto; }
     .q-panel { display: none; }
     .q.q-open .q-panel, .q.q-editing .q-panel { display: block; }
     .q.q-open .q-row, .q.q-editing .q-row { display: none; }
@@ -1305,6 +1307,7 @@
           <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
         </div>
       </div>
+      <div class="q-pair" data-q-pair="has_children,wants_children">
       <div class="q" id="q-has_children" data-q="has_children" data-kind="choice">
         <button type="button" class="q-row" onclick="qEdit('has_children')" aria-label="Edit whether you have kids">
           <span class="q-row-label">Have kids</span>
@@ -1345,9 +1348,10 @@
           <div class="field-error" id="err-wants_children">Please make a selection</div>
         </div>
       </div>
+      </div>
       <div class="q" id="q-fertility" data-q="fertility" data-kind="choice">
-        <button type="button" class="q-row" onclick="qEdit('fertility')" aria-label="Edit fertility preservation">
-          <span class="q-row-label">Fertility</span>
+        <button type="button" class="q-row" onclick="qEdit('fertility')" aria-label="Edit fertility plan">
+          <span class="q-row-label">Fertility plan</span>
           <span class="q-row-value" data-q-value></span>
           <span class="q-row-caret" aria-hidden="true">▾</span>
         </button>
@@ -1928,11 +1932,6 @@ function showScreen(id, direction) {
     if (s) s.style.display = state.status === 'partnered' ? 'none' : '';
     if (c) c.style.display = state.status === 'partnered' ? '' : 'none';
     if (state.status !== 'partnered') {
-      // Default SEEKING to opposite gender (once only)
-      if (!state.genderSeeking) {
-        const opp = state.gender === 'man' ? 'women' : state.gender === 'woman' ? 'men' : null;
-        if (opp) setGenderSeeking(opp);
-      }
       renderPrimaryCity(); setDefaultAges(); initHeightSlider();
     }
   }
@@ -3331,32 +3330,7 @@ function _updateHeightFill() {
 }
 
 function initHeightSlider() {
-  if (!state.heightPrefMinCm) {
-    // Read height from DOM as primary (most reliable); fall back to state then gender default
-    const _hEl = document.getElementById('height_ftin');
-    const domHeightCm = (_hEl && _hEl.value) ? parseInt(_hEl.value) : null;
-    const userHeightCm = domHeightCm || state.heightCm || (state.gender === 'man' ? 175 : 160);
-    const userHeightIn = Math.round(userHeightCm / 2.54);
-    const seeking = state.genderSeeking;
-    let minIn, maxIn;
-    if (seeking === 'men') {
-      // Seeking men: her height - 3" to max
-      minIn = Math.max(58, userHeightIn - 3); maxIn = 84;
-    } else if (seeking === 'women') {
-      // Seeking women: min to his height + 3"
-      minIn = 58; maxIn = Math.min(84, userHeightIn + 3);
-    } else {
-      minIn = 60; maxIn = 78; // fallback
-    }
-    state.heightPrefMinCm = Math.round(minIn * 2.54);
-    state.heightPrefMaxCm = Math.round(maxIn * 2.54);
-    const minEl = document.getElementById('height_min_in'), maxEl = document.getElementById('height_max_in');
-    if (minEl) minEl.value = minIn;
-    if (maxEl) maxEl.value = maxIn;
-    const minL = document.getElementById('height_min_label'), maxL = document.getElementById('height_max_label');
-    if (minL) minL.textContent = _fmtHeight(minIn);
-    if (maxL) maxL.textContent = _fmtHeight(maxIn);
-  }
+  // What you want starts blank. Do not guess a partner-height range from gender.
   _updateHeightFill();
   requestAnimationFrame(_updateHeightLabels);
 }
