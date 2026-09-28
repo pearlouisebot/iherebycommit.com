@@ -1422,7 +1422,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27g';
+var PAGE_VERSION = '2026-09-27h';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2024,6 +2024,7 @@ function hasRevealedErrors(screenId) {
 }
 async function goNext(screenId) {
   if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
+  if (screenId === 3) _commitPartnerLocationTyped(); // typed partner location not yet added
   if (!validateScreen(screenId)) {
     if (document.getElementById('under18-msg')?.classList.contains('visible')) return; // under-18 message replaces the form
     hideUnrevealedErrors(screenId);
@@ -3386,6 +3387,9 @@ function partnerLocationsPayload() {
   return partnerLocationSelected.map(p => ({
     label: p.label, city: p.city ?? null, region: p.region ?? null, country: p.country ?? null,
     lat: p.lat ?? null, lng: p.lng ?? null, geonames_id: p.geonames_id ?? null, typed: !!p.typed,
+    // matched = has coordinates (picked from the city list, or the applicant's own geocoded city).
+    // Free text that isn't in the list is saved exactly as typed with matched:false and no coordinates.
+    matched: p.lat != null && p.lng != null && isFinite(p.lat) && isFinite(p.lng),
   }));
 }
 function openToAnywherePayload() {
@@ -3439,7 +3443,7 @@ function _searchPartnerCities(q, limit) {
 }
 function _plEntryFromCity(c, label) {
   return { label: label || c.label, city: c.city, region: c.region || null, country: c.country || null,
-    lat: c.lat, lng: c.lng, geonames_id: c.geonames_id, typed: false };
+    lat: c.lat, lng: c.lng, geonames_id: c.geonames_id, typed: false, matched: true };
 }
 function _isPartnerLocationSelected(label, geonamesId) {
   const f = _foldCity(label);
@@ -3552,6 +3556,7 @@ function cityChipPicker(cfg) {
     if (input && !input.dataset.bound) {
       input.dataset.bound = '1';
       input.addEventListener('keydown', e => { if (e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); e.stopPropagation(); p.commit(); });
+      input.addEventListener('blur', () => { setTimeout(() => { if (document.activeElement !== input && input.value.trim()) p.commit(); }, 150); });
     }
     if (chips && !chips.dataset.bound) {
       chips.dataset.bound = '1';
@@ -3570,6 +3575,7 @@ function cityChipPicker(cfg) {
 let _plOpen = false;
 let _plRows = [];
 let _plActive = 0;
+let _plNav = false; // true once the user arrows through the suggestions
 function _bindPartnerLocationControls() { _bindSinglesPartnerLocation(); partnerCityPicker.bind(); }
 function _bindSinglesPartnerLocation() {
   const more = document.getElementById('partner-location-add-more');
@@ -3580,27 +3586,29 @@ function _bindSinglesPartnerLocation() {
   if (more && !more.dataset.bound) { more.dataset.bound = '1'; more.addEventListener('click', e => { e.preventDefault(); _openPartnerLocationAdder(); }); }
   if (input && !input.dataset.bound) {
     input.dataset.bound = '1';
-    input.addEventListener('input', () => { _plActive = 0; loadPartnerCities(); _renderPartnerLocationSuggestions(); });
+    input.addEventListener('input', () => { _plNav = false; loadPartnerCities(); _renderPartnerLocationSuggestions(); });
     input.addEventListener('focus', () => { loadPartnerCities(); });
     input.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
-        // Enter never submits: pick the highlighted (default: top) suggestion.
+        // Enter never submits: adds the highlighted row (default: an exact list match, otherwise the text as typed).
         e.preventDefault(); e.stopPropagation();
         if (e.isComposing) return;
         _pickPartnerLocationRow(_plActive);
       } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         if (!_plRows.length) return;
         e.preventDefault();
+        _plNav = true;
         _plActive = (_plActive + (e.key === 'ArrowDown' ? 1 : -1) + _plRows.length) % _plRows.length;
         _renderPartnerLocationSuggestions();
       } else if (e.key === 'Escape') {
         input.value = ''; _renderPartnerLocationSuggestions(); input.blur();
       }
     });
-    // Leaving an empty box folds it back into "+ Add more" (typed text is kept with its suggestions).
+    // Leaving the box saves any typed text as a chip, then folds back into "+ Add more".
     input.addEventListener('blur', () => { setTimeout(() => {
-      if (document.activeElement === input) return;
-      if (!input.value.trim()) { _plOpen = false; _syncPartnerLocationAdder(); _renderPartnerLocationSuggestions(); }
+      if (document.activeElement === input || !_plOpen) return;
+      _commitPartnerLocationTyped();
+      _plOpen = false; _syncPartnerLocationAdder(); _renderPartnerLocationSuggestions();
     }, 150); });
   }
   if (box && !box.dataset.bound) {
@@ -3649,7 +3657,11 @@ function _renderPartnerLocationSuggestions() {
   const matches = _searchPartnerCities(typed, 12).filter(c => !_isPartnerLocationSelected(c.label, c.geonames_id)).slice(0, 6);
   _plRows = matches.map(c => ({ kind: 'city', c }));
   _plRows.push({ kind: 'typed', text: typed }); // always last: add exactly as typed
-  if (_plActive >= _plRows.length) _plActive = 0;
+  if (!_plNav) {
+    const f = _foldCity(typed);
+    const exact = matches.findIndex(c => c._label === f || c._names.includes(f));
+    _plActive = exact >= 0 ? exact : _plRows.length - 1;
+  } else if (_plActive >= _plRows.length) _plActive = 0;
   _plRows.forEach((r, idx) => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -3663,12 +3675,20 @@ function _renderPartnerLocationSuggestions() {
   box.hidden = false;
   input.setAttribute('aria-expanded', 'true');
 }
+// Text left in the box (blur / Next) is added like Enter: an exact list match, or exactly as typed.
+function _commitPartnerLocationTyped() {
+  const input = document.getElementById('partner-location-input');
+  if (!_plOpen || !input || !input.value.trim()) return false;
+  _renderPartnerLocationSuggestions();
+  _pickPartnerLocationRow(_plActive);
+  return true;
+}
 function _pickPartnerLocationRow(idx) {
   const r = _plRows[idx] || _plRows[0];
   if (!r) return;
   if (r.kind === 'city') _addPartnerLocation(_plEntryFromCity(r.c));
   else if (_typedIsDuplicate(r.text)) _addPartnerLocation(null);
-  else _addPartnerLocation({ label: r.text, city: r.text, region: null, country: null, lat: null, lng: null, geonames_id: null, typed: true });
+  else _addPartnerLocation({ label: r.text, city: r.text, region: null, country: null, lat: null, lng: null, geonames_id: null, typed: true, matched: false });
 }
 // Typed text that names a city already chosen (e.g. "brooklyn" when "Brooklyn, NY" is a chip) is a duplicate.
 function _typedIsDuplicate(text) {
@@ -3682,7 +3702,7 @@ function _addPartnerLocation(entry) {
   if (entry && entry.label && !_isPartnerLocationSelected(entry.label, entry.geonames_id)) partnerLocationSelected.push(entry);
   const input = document.getElementById('partner-location-input');
   if (input) input.value = '';
-  _plActive = 0;
+  _plActive = 0; _plNav = false;
   _renderPartnerLocationChips();
   _renderPartnerLocationSuggestions();
 }
