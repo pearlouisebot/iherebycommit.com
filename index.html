@@ -180,6 +180,11 @@
     /* Intentions & Family: the question being answered gets the larger label; answered ones are smaller. */
     #screen-5 .fam-unit .field-label { font-size: 11px; letter-spacing: 0.06em; line-height: 1.4; color: var(--muted); }
     #screen-5 .fam-unit.cr-active .field-label { font-size: 14px; letter-spacing: 0.02em; color: var(--text); }
+    /* What You Want (singles): same pattern - the open question's label is prominent, answered ones are condensed rows. */
+    #screen-3 .ww-unit { margin-bottom: 20px; }
+    #screen-3 .ww-unit.collapsed { margin-bottom: 12px; }
+    #screen-3 .ww-unit .field-label { font-size: 11px; letter-spacing: 0.06em; line-height: 1.4; color: var(--muted); }
+    #screen-3 .ww-unit.cr-active .field-label { font-size: 14px; letter-spacing: 0.02em; color: var(--text); }
     .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
@@ -1026,19 +1031,26 @@
       <div class="screen-headline">WHAT YOU <span class="accent">WANT</span></div>
 
       <div id="cities-single-section" style="">
+        <!-- One question at a time (2026-09-27l): Seeking alone; then Partner Location; then Age + Partner Height together.
+             Seeking and Location collapse into the shared condensed row (EDIT to change); the two ranges stay open. -->
         <!-- SEEKING -->
-        <div class="field-group" style="margin-bottom:20px;">
+        <div class="who-unit ww-unit" id="ww-seek">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Seeking" onclick="crExpand('ww-seek')"><span class="who-cond-txt"><span class="who-cond-k" id="ww-seek-k">Seeking</span><span class="who-cond-v" id="ww-seek-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="field-group" style="margin-bottom:0;">
           <label class="field-label">Seeking</label>
           <div class="toggle-group" style="margin-bottom:0;">
-            <button class="toggle-btn" id="btn-seek-men" onclick="setGenderSeeking('men')">MEN</button>
-            <button class="toggle-btn" id="btn-seek-women" onclick="setGenderSeeking('women')">WOMEN</button>
-            <button class="toggle-btn" id="btn-seek-both" onclick="setGenderSeeking('both')">BOTH</button>
+            <button class="toggle-btn" id="btn-seek-men" onclick="setGenderSeeking('men'); crTap('ww-seek')">MEN</button>
+            <button class="toggle-btn" id="btn-seek-women" onclick="setGenderSeeking('women'); crTap('ww-seek')">WOMEN</button>
+            <button class="toggle-btn" id="btn-seek-both" onclick="setGenderSeeking('both'); crTap('ww-seek')">BOTH</button>
           </div>
           <div class="field-error" id="err-gender_seeking"></div>
         </div>
+        </div>
         <!-- PARTNER LOCATION: registered-city chip and "+ Add more" on one row; "+ Add more" opens a city autocomplete.
              Suggestions are inline tap rows in normal flow. City data: GeoNames (https://www.geonames.org), CC BY 4.0, trimmed in cities_grokbot.json. -->
-        <div class="field-group" id="partner-location-field" style="margin-bottom:20px;">
+        <div class="who-unit ww-unit" id="ww-loc">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner location" onclick="crExpand('ww-loc')"><span class="who-cond-txt"><span class="who-cond-k" id="ww-loc-k">Partner location</span><span class="who-cond-v" id="ww-loc-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="field-group" id="partner-location-field" style="margin-bottom:0;">
           <label class="field-label" id="partner-location-label" for="partner-location-input">Partner Location (select all):</label>
           <div id="partner-location-row" class="partner-location-row">
             <div id="partner-location-chips" class="partner-location-chips"></div>
@@ -1051,6 +1063,9 @@
             <span>Any city - I would relocate for love</span>
           </label>
         </div>
+        </div>
+        <!-- AGE RANGE + PARTNER HEIGHT: shown together and never collapsed (untouched defaults are saved). -->
+        <div class="who-unit ww-unit" id="ww-ranges">
         <!-- AGE RANGE SLIDER -->
         <div class="field-group" style="margin-bottom:20px;">
           <label class="field-label">Age Range</label>
@@ -1065,7 +1080,7 @@
           <div class="field-error" id="err-age_range"></div>
         </div>
         <!-- HEIGHT PREFERENCE SLIDER -->
-        <div class="field-group" style="margin-bottom:20px;">
+        <div class="field-group" style="margin-bottom:0;">
           <label class="field-label">Partner Height</label>
           <div class="range-slider-wrap" style="margin-top:32px;">
             <div class="range-track"></div>
@@ -1075,6 +1090,7 @@
             <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" onpointerdown="touchHeightPref()" onkeydown="touchHeightPref()" oninput="onHeightRangeInput(this,'min')">
             <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" onpointerdown="touchHeightPref()" onkeydown="touchHeightPref()" oninput="onHeightRangeInput(this,'max')">
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -1426,7 +1442,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27k';
+var PAGE_VERSION = '2026-09-27l';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2893,9 +2909,11 @@ const CR_STEPS = {
   1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-email']],
   // Their birthday alone; Their height alone; Their race once height is touched (or Next is pressed) - like Who You Are.
   2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-race'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
+  // What You Want (singles): Seeking alone; Partner Location; then Age Range + Partner Height together (never collapsed).
+  3: [['ww-seek'], ['ww-loc'], ['ww-ranges']],
   4: [['rel-stage'], ['rel-first'], ['rel-eng'], ['rel-wed'], ['rel-mb']],
 };
-const _crFront = { 1: 0, 2: 0, 4: 0 };
+const _crFront = { 1: 0, 2: 0, 3: 0, 4: 0 };
 function crDef(id, cfg) { CR[id] = Object.assign({ id: id }, cfg); }
 function _crEl(id) { return document.getElementById(id); }
 function _crV(id) { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
@@ -3057,6 +3075,10 @@ function crSync() {
     row.classList.toggle('cr-solo', shown.length === 1);
     row.classList.toggle('cr-both', shown.length > 1 && shown.every(u => u.classList.contains('collapsed')));
   });
+  document.querySelectorAll('#screen-3 .ww-unit').forEach(u => u.classList.toggle('cr-active', !u.classList.contains('collapsed')));
+  // The slider value bubbles are positioned from the slider width, which is 0 while the set is hidden: place them on reveal.
+  const rg = _crEl('ww-ranges');
+  if (rg) { const vis = !rg.classList.contains('cr-later') && rg.offsetParent !== null; if (vis && !rg._crShown) requestAnimationFrame(() => { _updateAgeLabels(); _updateHeightLabels(); }); rg._crShown = vis; }
   document.querySelectorAll('#screen-5 .fam-unit').forEach(u => {
     const c = CR[u.id]; if (!c) return;
     const open = !u.classList.contains('collapsed');
@@ -3098,9 +3120,11 @@ function _crOnLeave(e) {
       if (scope && scope.contains(t)) return;
       const pp = crPartner(id), ppu = pp && _crEl(pp);
       if (ppu && ppu.contains(t)) return; // the tap was on its pair partner (e.g. EDIT reopened both): not moving on
+      if (c._shownAt && c._shownAt >= when) return; // revealed by this same tap (e.g. Next): not moved past yet
       if (!crText(id)) { if (c.optional && c._shownAt && c._shownAt < when) { c._passed = true; crSkip(id); } return; }
       c._movedOn = true;
       if (id === 'fam-lf') { clearTimeout(_lfCollapseTimer); _lfSettle(); return; }
+      if (id === 'ww-loc') { clearTimeout(_crT[id]); _crT[id] = null; } // leaving settles now (typed text is added on blur first)
       if (crSettle(id)) { clearTimeout(_crT[id]); _crT[id] = null; }
     });
     crSync();
@@ -3145,6 +3169,14 @@ function _crDefineAll() {
   crDef('rel-eng', { focus: 'engagement_date', optional: true, partner: 'rel-wed', applies: () => stage() === 'engaged' || stage() === 'married', value: () => _crMdy(_crV('engagement_date')) });
   crDef('rel-wed', { focus: 'wedding_date', optional: true, partner: 'rel-eng', applies: () => stage() === 'married', value: () => _crMdy(_crV('wedding_date')) });
   crDef('rel-mb', { optional: true, value: () => ({ neither: 'Neither', me: 'Me', partner: 'My partner', both: 'Both' })[state.marriedBefore] || '' });
+  // What You Want (singles)
+  crDef('ww-seek', { value: () => ({ men: 'Men', women: 'Women', both: 'Both' })[state.genderSeeking] || '' });
+  // Partner location: done once it has a city chip (list or free text) or "Any city". Collapses 1.2s after the last add /
+  // remove / Any-city tap (multi-select timing) or when you move on; never while text is still in the box. EDIT reopens it
+  // with the "+ Add more" box open so adding another city is one tap. Blank is allowed (it was never required): Next skips it.
+  crDef('ww-loc', { optional: true, busy: _plBusy, onExpand: f => { if (f) _openPartnerLocationAdder(); }, value: partnerLocationSummary });
+  // Age range + partner height: one set, shown together, never collapsed (no condensed row); defaults are saved untouched.
+  crDef('ww-ranges', { stepDone: () => false, value: () => '' });
   // Intentions & Family
   crDef('fam-lf', {
     applies: () => !!_famShow.lf,
@@ -3602,7 +3634,7 @@ function _bindSinglesPartnerLocation() {
   if (more && !more.dataset.bound) { more.dataset.bound = '1'; more.addEventListener('click', e => { e.preventDefault(); _openPartnerLocationAdder(); }); }
   if (input && !input.dataset.bound) {
     input.dataset.bound = '1';
-    input.addEventListener('input', () => { _plNav = false; loadPartnerCities(); _renderPartnerLocationSuggestions(); });
+    input.addEventListener('input', () => { _plNav = false; loadPartnerCities(); _renderPartnerLocationSuggestions(); if (input.value.trim()) { clearTimeout(_crT['ww-loc']); _crT['ww-loc'] = null; } });
     input.addEventListener('focus', () => { loadPartnerCities(); });
     input.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
@@ -3649,8 +3681,29 @@ function _bindSinglesPartnerLocation() {
   }
   if (any && !any.dataset.bound) {
     any.dataset.bound = '1';
-    any.addEventListener('change', () => { partnerLocationAnywhere = !!any.checked; partnerLocationTouched = true; _renderPartnerLocationChips(); });
+    any.addEventListener('change', () => { partnerLocationAnywhere = !!any.checked; partnerLocationTouched = true; _renderPartnerLocationChips(); _wwLocChanged(); });
   }
+}
+function partnerLocationSummary() {
+  const parts = partnerLocationSelected.map(p => p.label);
+  if (partnerLocationAnywhere) parts.push('Any city');
+  return parts.join(', ');
+}
+function _plBusy() { const i = document.getElementById('partner-location-input'); return !!(i && !i.hidden && i.value.trim()); }
+// A chip added / removed or "Any city" toggled: the question folds into its condensed row after the multi-select pause.
+function _wwLocChanged() {
+  if (!CR['ww-loc'] || _crHidden('ww-loc') || crIsCollapsed('ww-loc')) return;
+  clearTimeout(_crT['ww-loc']);
+  _crT['ww-loc'] = setTimeout(() => { _crT['ww-loc'] = null; _wwLocSettle(); }, CR_DELAY);
+  crSync();
+}
+function _wwLocSettle() {
+  if (_crHidden('ww-loc') || crIsCollapsed('ww-loc') || !crText('ww-loc') || _plBusy()) return; // still typing: wait
+  const i = document.getElementById('partner-location-input'), u = _crEl('ww-loc'), a = document.activeElement;
+  _plOpen = false;
+  if (a && u && u.contains(a)) a.blur(); // the text box or the "Any city" checkbox
+  _syncPartnerLocationAdder(); _renderPartnerLocationSuggestions();
+  crSettle('ww-loc'); crSync();
 }
 function _syncPartnerLocationAdder() {
   const more = document.getElementById('partner-location-add-more');
@@ -3659,6 +3712,7 @@ function _syncPartnerLocationAdder() {
   if (input) input.hidden = !_plOpen;
 }
 function _openPartnerLocationAdder() {
+  clearTimeout(_crT['ww-loc']); _crT['ww-loc'] = null; // opening the box to add another city: don't fold it away
   _plOpen = true; _syncPartnerLocationAdder(); loadPartnerCities();
   const input = document.getElementById('partner-location-input'); if (input) input.focus();
 }
@@ -3721,6 +3775,7 @@ function _addPartnerLocation(entry) {
   _plActive = 0; _plNav = false;
   _renderPartnerLocationChips();
   _renderPartnerLocationSuggestions();
+  _wwLocChanged();
 }
 function _removePartnerLocationChip(idx) {
   if (!(idx >= 0 && idx < partnerLocationSelected.length)) return;
@@ -3728,6 +3783,7 @@ function _removePartnerLocationChip(idx) {
   partnerLocationSelected.splice(idx, 1);
   _renderPartnerLocationChips();
   _renderPartnerLocationSuggestions();
+  _wwLocChanged();
 }
 
 function initPartnerLocationPicker() {
