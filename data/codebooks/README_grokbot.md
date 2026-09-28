@@ -9,3 +9,7 @@ https://github.com/mandyeebot/iherebycommit-research-data_grokbot
 
 Drive copy: GrokBot folder > "Research dataset codebooks_grokbot"
 (https://drive.google.com/drive/folders/1GvseBwVJofPicHDe2_J5i37RhQYZf_oR)
+
+## Datasets
+
+- **General Social Survey (GSS) 1972-2024 cumulative, NORC Release 3a** — Supabase tables: `research_gss`, `research_gss_variables`, `research_gss_value_labels` — codebook: https://github.com/mandyeebot/iherebycommit-research-data_grokbot/tree/main/codebooks/gss
