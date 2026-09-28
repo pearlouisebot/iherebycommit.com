@@ -258,6 +258,7 @@
       padding: 0 2px 0 10px; border-radius: 2px; min-height: 44px; box-sizing: border-box;
     }
     .partner-location-chip-label { word-break: break-word; }
+    .partner-location-chip.no-remove { padding: 0 10px; } /* the only city: no X (the list can't go to zero) */
     .partner-location-chip-remove {
       background: none; border: none; color: var(--muted); cursor: pointer;
       font-size: 22px; line-height: 1; min-width: 44px; min-height: 44px; padding: 0;
@@ -1061,6 +1062,7 @@
             <input class="field-input" id="partner-location-input" type="text" placeholder="Type a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="partner-location-suggestions" aria-expanded="false" hidden>
           </div>
           <div id="partner-location-suggestions" class="partner-location-suggestions" role="listbox" aria-label="City suggestions" hidden></div>
+          <div class="field-error" id="err-partner_location"></div>
           <label class="partner-location-anywhere" for="partner-location-anywhere">
             <input type="checkbox" id="partner-location-anywhere">
             <span>Any city - I would relocate for love</span>
@@ -1445,7 +1447,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27m';
+var PAGE_VERSION = '2026-09-27n';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2525,6 +2527,9 @@ function validateScreen(screenId) {
   if (screenId === 3) {
     if (state.status !== 'partnered') {
       if (!state.genderSeeking) { showError('gender_seeking', 'Please select one'); ok = false; } else hideError('gender_seeking');
+      // Partner location needs at least one city (2026-09-27n). Normally the zip's city is pre-filled and can't be removed;
+      // with no default (e.g. an unmapped zip) the applicant has to add one. "Any city" doesn't replace it.
+      if (partnerLocationReady && !partnerLocationSelected.length) { showError('partner_location', 'Add at least one city'); ok = false; } else hideError('partner_location');
       const minVal = parseInt(document.getElementById('age_min')?.value || '');
       const maxVal = parseInt(document.getElementById('age_max')?.value || '');
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
@@ -3172,8 +3177,8 @@ function _crDefineAll() {
   crDef('ww-seek', { value: () => ({ men: 'Men', women: 'Women', both: 'Both' })[state.genderSeeking] || '' });
   // Partner location: done once it has a city chip (list or free text) or "Any city". Collapses 1.2s after the last add /
   // remove / Any-city tap (multi-select timing) or when you move on; never while text is still in the box. EDIT reopens it
-  // with the "+ Add more" box open so adding another city is one tap. Blank is allowed (it was never required): Next skips it.
-  crDef('ww-loc', { optional: true, busy: _plBusy, onExpand: f => { if (f) _openPartnerLocationAdder(); }, value: partnerLocationSummary });
+  // with the "+ Add more" box open so adding another city is one tap. Required (2026-09-27n): at least one city, never empty.
+  crDef('ww-loc', { busy: _plBusy, onExpand: f => { if (f) _openPartnerLocationAdder(); }, value: partnerLocationSummary });
   // Age range + partner height: one set, shown together, never collapsed (no condensed row); defaults are saved untouched.
   crDef('ww-ranges', { stepDone: () => false, value: () => '' });
   // Intentions & Family
@@ -3686,6 +3691,7 @@ function _bindSinglesPartnerLocation() {
   }
 }
 function partnerLocationSummary() {
+  if (!partnerLocationSelected.length) return ''; // no city yet: stays open (Any city alone isn't an answer)
   const parts = partnerLocationSelected.map(p => p.label);
   if (partnerLocationAnywhere) parts.push('Any city');
   return parts.join(', ');
@@ -3771,6 +3777,7 @@ function _typedIsDuplicate(text) {
 function _addPartnerLocation(entry) {
   partnerLocationTouched = true;
   if (entry && entry.label && !_isPartnerLocationSelected(entry.label, entry.geonames_id)) partnerLocationSelected.push(entry);
+  if (partnerLocationSelected.length) hideError('partner_location');
   const input = document.getElementById('partner-location-input');
   if (input) input.value = '';
   _plActive = 0; _plNav = false;
@@ -3780,6 +3787,7 @@ function _addPartnerLocation(entry) {
 }
 function _removePartnerLocationChip(idx) {
   if (!(idx >= 0 && idx < partnerLocationSelected.length)) return;
+  if (partnerLocationSelected.length <= 1) return; // the last city can't be removed
   partnerLocationTouched = true;
   partnerLocationSelected.splice(idx, 1);
   _renderPartnerLocationChips();
@@ -3812,12 +3820,15 @@ function _renderPartnerLocationChips() {
   if (field) field.classList.toggle('anywhere', !!partnerLocationAnywhere);
   if (!wrap) return;
   wrap.replaceChildren();
+  // Every chip gets an X only while 2+ cities are shown; a single city (the default or any other) has none.
+  const removable = partnerLocationSelected.length > 1;
   partnerLocationSelected.forEach((p, idx) => {
     const chip = document.createElement('span');
-    chip.className = 'partner-location-chip';
+    chip.className = 'partner-location-chip' + (removable ? '' : ' no-remove');
     const label = document.createElement('span');
     label.className = 'partner-location-chip-label';
     label.textContent = p.label;
+    if (!removable) { chip.appendChild(label); wrap.appendChild(chip); return; }
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'partner-location-chip-remove';
