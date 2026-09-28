@@ -243,7 +243,10 @@
     input[type=range].range-input { position: absolute; width: 100%; -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; z-index: 2; height: 44px; margin: 0; padding: 0; border: none; outline: none; }
     input[type=range].range-input::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); pointer-events: all; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     input[type=range].range-input::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); pointer-events: all; cursor: pointer; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
-    .slider-bubble { position: absolute; top: -28px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
+    /* Range sliders: label, value readout and thumbs are evenly spaced (2026-09-27m). The label-to-readout gap equals the
+       readout-to-thumb gap (~11px between visible edges): readout sits 18px above the 44px track box, track 22.4px below the label. */
+    .field-label + .range-slider-wrap { margin-top: 22.4px; }
+    .slider-bubble { position: absolute; top: -18px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
     /* Partner Location — condensed chips, typed add (no list, no popup) */
     .partner-location-chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .partner-location-chips:empty { display: none; }
@@ -1069,7 +1072,7 @@
         <!-- AGE RANGE SLIDER -->
         <div class="field-group" style="margin-bottom:20px;">
           <label class="field-label">Age Range</label>
-          <div class="range-slider-wrap" style="margin-top:32px;">
+          <div class="range-slider-wrap">
             <div class="range-track"></div>
             <div class="range-fill" id="range-fill"></div>
             <span id="age_min_label" class="slider-bubble">28</span>
@@ -1082,7 +1085,7 @@
         <!-- HEIGHT PREFERENCE SLIDER -->
         <div class="field-group" style="margin-bottom:0;">
           <label class="field-label">Partner Height</label>
-          <div class="range-slider-wrap" style="margin-top:32px;">
+          <div class="range-slider-wrap">
             <div class="range-track"></div>
             <div class="range-fill" id="height-range-fill"></div>
             <span id="height_min_label" class="slider-bubble">5'0"</span>
@@ -1442,7 +1445,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27l';
+var PAGE_VERSION = '2026-09-27m';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -1902,11 +1905,7 @@ function showScreen(id, direction) {
   // Screen 3 (What You Want) is singles-only.
   if (id === 3) {
     if (state.status !== 'partnered') {
-      // Default SEEKING to opposite gender (once only)
-      if (!state.genderSeeking) {
-        const opp = state.gender === 'man' ? 'women' : state.gender === 'woman' ? 'men' : null;
-        if (opp) setGenderSeeking(opp);
-      }
+      // SEEKING starts with nothing selected (2026-09-27m): the user taps an option before Partner Location appears.
       initPartnerLocationPicker(); setDefaultAges(); initHeightSlider();
     }
   }
@@ -3408,6 +3407,8 @@ function setGenderSeeking(val) {
     if (btn) btn.classList.toggle('selected', v === val);
   });
   hideError('gender_seeking');
+  // The partner-height default range is based on who you're seeking: recompute it from the real answer while untouched.
+  if (!state.heightPrefTouched && document.getElementById('height_min_in')) { state.heightPrefMinCm = null; state.heightPrefMaxCm = null; initHeightSlider(); }
 }
 
 // ---- IDEAL PARTNER LOCATION (inline multi-select) ----
