@@ -309,6 +309,12 @@
     #pc-picker[hidden] { display: none; }
     #partner-location-input { width: 100%; min-height: 44px; padding: 10px 12px; font-size: 16px; box-sizing: border-box; }
     .pc-extra { margin-top: 6px; }
+    /* 2026-09-27r: tighter What You Want. The relocate checkbox sits right under "+ Add city" (both keep a 44px hit area,
+       touching but not overlapping); Partner Location -> Age Range and Age Range -> Partner Height gaps are 8px (were 20px).
+       Inside each slider (label / readout / thumbs) nothing changes. */
+    #pc-extra .partner-location-anywhere { margin-top: 0; }
+    #screen-3 #ww-loc:not(.collapsed) { margin-bottom: 8px; }
+    #ww-ranges .ww-age-group { margin-bottom: 8px !important; }
     .pc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .pc-tags:empty { display: none; }
     #partner-location-chips:not(:empty) { margin: 4px 0 2px; }
@@ -1096,7 +1102,7 @@
         <!-- AGE RANGE + PARTNER HEIGHT: shown together and never collapsed (untouched defaults are saved). -->
         <div class="who-unit ww-unit" id="ww-ranges">
         <!-- AGE RANGE SLIDER -->
-        <div class="field-group" style="margin-bottom:20px;">
+        <div class="field-group ww-age-group" style="margin-bottom:8px;">
           <label class="field-label">Age Range</label>
           <div class="range-slider-wrap">
             <div class="range-track"></div>
@@ -1471,7 +1477,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27q';
+var PAGE_VERSION = '2026-09-27r';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
