@@ -114,6 +114,8 @@
     /* Inputs */
     .field-group { margin-bottom: 12px; }
     /* Keep Amanda's exact casing for this label; size/colour/spacing match the other labels. */
+    /* The one question-label style for every screen (matches "I AM A"), 2026-09-27o. Collapsed-row keys (.who-cond-k) match it.
+       No exceptions: the open question in the one-at-a-time reveal (.cr-active) uses the same label too; it stands out by placement/spacing only. */
     .field-label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     #screen-5 .choice-grid {
       display: grid;
@@ -130,7 +132,7 @@
     .who-unit.collapsed > :not(.who-cond) { display: none !important; }
     .who-cond:focus-visible { outline: none; border-color: var(--accent); }
     .who-cond-txt { display: flex; flex-direction: column; min-width: 0; }
-    .who-cond-k { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
+    .who-cond-k { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
     /* Answers wrap (up to two lines) instead of being cut off, e.g. "Yes from past relationship" in a half-width row. */
     .who-cond-v { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.4; white-space: normal; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .who-unit.cr-skipped .who-cond-v { color: var(--muted); }
@@ -145,6 +147,9 @@
     .cr-pair.cr-both > .who-unit.collapsed > .who-cond { height: 100%; }
     /* 320px phones: couples' "Have kids" answer ("Yes from past relationship") needs the full width, so that pair stacks. */
     @media (max-width: 359px) { body.couples-flow #fam-row-kids.cr-both { display: flex; flex-direction: column; gap: 12px; } }
+    /* Narrow phones: half-width collapsed rows get slightly tighter padding so one-word keys at the shared label size
+       (e.g. "ENGAGEMENT") fit without breaking the pair (2026-09-27o). */
+    @media (max-width: 359px) { .cr-pair.cr-both > .who-unit.collapsed > .who-cond { padding-left: 10px; padding-right: 8px; gap: 6px; } }
     .cr-later, .cr-empty { display: none !important; }
     /* Form screens: the page is exactly one viewport tall, so NEXT stays on screen and only the questions scroll. */
     body.form-active #app { height: 100vh; height: 100dvh; min-height: 0; }
@@ -178,13 +183,9 @@
     .form-error-summary { display: none; font-size: 11px; color: var(--error); line-height: 1.5; padding: 2px 0 4px; }
     .form-error-summary.visible { display: block; }
     /* Intentions & Family: the question being answered gets the larger label; answered ones are smaller. */
-    #screen-5 .fam-unit .field-label { font-size: 11px; letter-spacing: 0.06em; line-height: 1.4; color: var(--muted); }
-    #screen-5 .fam-unit.cr-active .field-label { font-size: 14px; letter-spacing: 0.02em; color: var(--text); }
     /* What You Want (singles): same pattern - the open question's label is prominent, answered ones are condensed rows. */
     #screen-3 .ww-unit { margin-bottom: 20px; }
     #screen-3 .ww-unit.collapsed { margin-bottom: 12px; }
-    #screen-3 .ww-unit .field-label { font-size: 11px; letter-spacing: 0.06em; line-height: 1.4; color: var(--muted); }
-    #screen-3 .ww-unit.cr-active .field-label { font-size: 14px; letter-spacing: 0.02em; color: var(--text); }
     .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
@@ -1447,7 +1448,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27n';
+var PAGE_VERSION = '2026-09-27o';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
