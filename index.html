@@ -656,11 +656,13 @@
       font-size: 12px; color: var(--body); line-height: 1.6;
     }
     #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 6px 0 0; }
+    /* 2026-09-27i: Your Partner's bottom bar now matches every other screen (priority tip hidden). To restore the tip, uncomment these with the markup:
     #screen-2 .bottom-action .partner-tip-box { margin: 0; padding: 6px 12px; }
     #screen-2 .screen-content { padding-bottom: 4px; }
     #screen-2 .bottom-action .partner-tip-box .tip-label { display: inline; margin: 0 6px 0 0; }
     #screen-2 .bottom-action .partner-tip-box .tip-text { display: inline; font-size: 11px; line-height: 1.5; }
     #screen-2 .bottom-action .btn-ghost { padding: 8px 12px; }
+    */
     .screen-subhead { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.6; margin: -12px 0 20px; }
     #married-before-group .toggle-btn { padding-left: 2px; padding-right: 2px; }
     /* Confirmation priority text */
@@ -976,7 +978,7 @@
         <label class="field-label" for="partner_email">Their email</label>
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
         <div class="field-error" id="err-partner_email">Valid email required</div>
-        <p class="partner-notice">We'll notify them when we go live</p>
+        <p class="partner-notice">We'll link your accounts this way</p>
       </div>
       <div class="cr-pair cr-stack" id="pt-row-lc">
         <div class="field-group who-unit" id="pt-live" style="margin-bottom:0;min-width:0;">
@@ -1007,10 +1009,12 @@
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(2)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(2)">← BACK</button>
+      <!-- Priority tip: hidden from Your Partner since 2026-09-27i. To restore, uncomment this block (and the #screen-2 CSS rules marked "priority tip").
       <div class="partner-tip-box">
         <div class="tip-label">Priority tip</div>
         <div class="tip-text">When your partner applies, they're linked to you and share your place in line. Applications are reviewed in order.</div>
       </div>
+      -->
     </div>
   </div>
 
@@ -1422,7 +1426,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27h';
+var PAGE_VERSION = '2026-09-27i';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
