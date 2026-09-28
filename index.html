@@ -1271,18 +1271,15 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="contact-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">WE'LL TEXT YOU<br>WHEN WE'RE <span class="accent">LIVE</span></div>
-      <div class="field-group who-unit" id="tm-phone" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Phone number" onclick="crExpand('tm-phone')"><span class="who-cond-txt"><span class="who-cond-k">Phone number</span><span class="who-cond-v" id="tm-phone-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+      <div class="field-group">
         <label class="field-label">Phone number <span class="optional-tag">optional</span></label>
         <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" oninput="onPhoneInput()">
         <div class="field-error" id="err-phone">Valid phone number required</div>
       </div>
-      <div class="who-unit" id="tm-sms" style="display:none;">
       <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
         <input type="checkbox" id="sms_consent" disabled>
         <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. We will ask you for additional consents prior to enrolling you in any research study. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
       </label>
-      </div>
     </div>
     <div class="bottom-action">
       <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
@@ -1298,8 +1295,7 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="social-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR PUBLIC <span class="accent">SELF</span></div>
-      <div class="field-group who-unit" id="ps-li" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit LinkedIn" onclick="crExpand('ps-li')"><span class="who-cond-txt"><span class="who-cond-k">LinkedIn</span><span class="who-cond-v" id="ps-li-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+      <div class="field-group">
         <label class="field-label">LinkedIn <span style="color:var(--accent);font-size:10px;">REQUIRED</span></label>
         <div class="linkedin-prefix-wrap" id="linkedin-wrap">
           <span class="linkedin-prefix-text">linkedin.com/in/</span>
@@ -1308,18 +1304,15 @@
         <div class="field-error" id="err-linkedin_username">LinkedIn username required</div>
         <div class="field-valid" id="ok-linkedin_username">✓ Looks good</div>
       </div>
-      <div class="field-group who-unit" id="ps-ig" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Instagram" onclick="crExpand('ps-ig')"><span class="who-cond-txt"><span class="who-cond-k">Instagram</span><span class="who-cond-v" id="ps-ig-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+      <div class="field-group">
         <label class="field-label">Instagram</label>
         <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="instagram" type="text" placeholder="yourhandle"></div>
       </div>
-      <div class="field-group who-unit" id="ps-x" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit X / Twitter" onclick="crExpand('ps-x')"><span class="who-cond-txt"><span class="who-cond-k">X / Twitter</span><span class="who-cond-v" id="ps-x-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+      <div class="field-group">
         <label class="field-label">X / Twitter</label>
         <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="x_handle" type="text" placeholder="yourhandle"></div>
       </div>
-      <div class="field-group who-unit" id="ps-tt" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit TikTok" onclick="crExpand('ps-tt')"><span class="who-cond-txt"><span class="who-cond-k">TikTok</span><span class="who-cond-v" id="ps-tt-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+      <div class="field-group" style="margin-bottom:0;">
         <label class="field-label">TikTok</label>
         <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="tiktok" type="text" placeholder="yourhandle"></div>
       </div>
@@ -1429,7 +1422,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27f';
+var PAGE_VERSION = '2026-09-27g';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2617,10 +2610,6 @@ function onTurnstileSuccess(token) {
 async function submitForm() {
   if (state.submitting) return;
   if (!validateScreen(6)) { surfaceErrors(6); logValidationFailed(6); return; }
-  // One question at a time: a valid number that is still open collapses and the SMS consent is shown first.
-  const _smsUnseen = _crHidden('tm-sms');
-  crSettleScreen(6);
-  if (_smsUnseen && crApplies('tm-sms')) { _crFront[6] = 1; crSync(); _crClearErrors(6); _crFirstOpen(6); return; }
   clearErrorSummary(6);
   state.submitting = true;
   const btn = document.getElementById('submit-btn');
@@ -2887,13 +2876,9 @@ const CR_STEPS = {
   1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-email']],
   // Their birthday alone; Their height alone; Their race once height is touched (or Next is pressed) - like Who You Are.
   2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-race'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
-  // Your Public Self: LinkedIn, then each optional handle one at a time.
-  7: [['ps-li'], ['ps-ig'], ['ps-x'], ['ps-tt']],
-  // Text me: phone (optional); the SMS consent appears once a valid number is entered and the phone row collapses.
-  6: [['tm-phone'], ['tm-sms']],
   4: [['rel-stage'], ['rel-first'], ['rel-eng'], ['rel-wed'], ['rel-mb']],
 };
-const _crFront = { 1: 0, 2: 0, 4: 0, 6: 0, 7: 0 };
+const _crFront = { 1: 0, 2: 0, 4: 0 };
 function crDef(id, cfg) { CR[id] = Object.assign({ id: id }, cfg); }
 function _crEl(id) { return document.getElementById(id); }
 function _crV(id) { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
@@ -3138,16 +3123,6 @@ function _crDefineAll() {
   crDef('pt-moved', { optional: true, partner: 'pt-live', focus: 'moved_in_date', applies: () => state.livesWithPartner === 'yes', value: () => state.livesWithPartner === 'yes' ? _crMdy(_crV('moved_in_date')) : '' });
   // Your Relationship
   const stage = () => _crV('relationship_stage');
-  // Your Public Self
-  const _psHandle = id => { const v = _crV(id).replace(/^@/, ''); return v ? '@' + v : ''; };
-  crDef('ps-li', { focus: 'linkedin_username', value: () => { const v = _crV('linkedin_username'); return v && /^[a-zA-Z0-9\-]+$/.test(v) ? 'linkedin.com/in/' + v : ''; } });
-  crDef('ps-ig', { focus: 'instagram', optional: true, value: () => _psHandle('instagram') });
-  crDef('ps-x', { focus: 'x_handle', optional: true, value: () => _psHandle('x_handle') });
-  crDef('ps-tt', { focus: 'tiktok', optional: true, value: () => _psHandle('tiktok') });
-  // Text me: the phone row collapses once a valid number is left; the SMS consent (never collapsed, its copy stays readable)
-  // is shown only after that and only while the number is valid.
-  crDef('tm-phone', { focus: 'phone', optional: true, value: () => { const v = _crV('phone'); return v && normalizePhone(v) ? v : ''; } });
-  crDef('tm-sms', { optional: true, applies: () => { const v = _crV('phone'); return !!v && !!normalizePhone(v); }, value: () => '' });
   crDef('rel-stage', { focus: 'relationship_stage', value: () => _crOpt('relationship_stage', stage()) });
   crDef('rel-first', { focus: 'first_date', optional: true, value: () => _crMdy(_crV('first_date')) });
   crDef('rel-eng', { focus: 'engagement_date', optional: true, partner: 'rel-wed', applies: () => stage() === 'engaged' || stage() === 'married', value: () => _crMdy(_crV('engagement_date')) });
@@ -3237,9 +3212,6 @@ function initCondensedRows() {
   onEnter('partner_birthday', el => el.blur());
   onEnter('partner_email', el => { if (crText('pt-email')) el.blur(); });
   onEnter('moved_in_date', el => el.blur());
-  onEnter('linkedin_username', el => { if (crText('ps-li')) el.blur(); });
-  ['instagram', 'x_handle', 'tiktok'].forEach(id => onEnter(id, el => el.blur()));
-  onEnter('phone', el => { if (crText('tm-phone')) el.blur(); });
   onEnter('first_date', el => el.blur());
   onEnter('engagement_date', el => el.blur());
   onEnter('wedding_date', el => el.blur());
@@ -4013,10 +3985,6 @@ function onPhoneInput() {
   if (!hasPhone) checkbox.checked = false;
   // An earlier "valid phone" error clears as soon as the number is valid (or removed).
   if (!hasPhone || normalizePhone(phone.value.trim())) hideError('phone');
-  // The SMS consent only exists for a valid number (see tm-sms).
-  const sms = document.getElementById('tm-sms');
-  if (sms) sms.style.display = (hasPhone && normalizePhone(phone.value.trim())) ? '' : 'none';
-  crRefresh();
 }
 
 function onZipInput() {
