@@ -1276,7 +1276,7 @@
       <div class="screen-label">Step <span id="contact-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">WE'LL TEXT YOU<br>WHEN WE'RE <span class="accent">LIVE</span></div>
       <div class="field-group">
-        <label class="field-label">Phone number <span class="optional-tag">optional</span></label>
+        <label class="field-label">Phone number</label>
         <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" oninput="onPhoneInput()">
         <div class="field-error" id="err-phone">Valid phone number required</div>
       </div>
@@ -1426,7 +1426,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27i';
+var PAGE_VERSION = '2026-09-27j';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
