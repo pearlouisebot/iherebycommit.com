@@ -1278,7 +1278,7 @@
       <div class="field-group">
         <label class="field-label">Phone number</label>
         <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" oninput="onPhoneInput()">
-        <div class="field-error" id="err-phone">Valid phone number required</div>
+        <div class="field-error" id="err-phone">Please enter your phone number so we can text you when it's live</div>
       </div>
       <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
         <input type="checkbox" id="sms_consent" disabled>
@@ -1426,7 +1426,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27j';
+var PAGE_VERSION = '2026-09-27k';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2558,8 +2558,10 @@ function validateScreen(screenId) {
   }
   if (screenId === 6) {
     const phone = document.getElementById('phone').value.trim();
-    // Phone is optional — only validate format if a value was entered
-    if (phone && !normalizePhone(phone)) { showError('phone', 'Enter a valid phone number or leave blank'); ok = false; } else hideError('phone');
+    // Phone is required (2026-09-27k). No hint on the label: the error only appears after pressing Submit.
+    if (!phone) { showError('phone', "Please enter your phone number so we can text you when it's live"); ok = false; }
+    else if (!isValidPhone(phone)) { showError('phone', 'Please enter a valid phone number (10 digits)'); ok = false; }
+    else hideError('phone');
   }
   if (screenId === 7) {
     const username = document.getElementById('linkedin_username').value.trim();
@@ -2569,6 +2571,16 @@ function validateScreen(screenId) {
     else { hideError('linkedin_username'); wrap.classList.remove('error'); }
   }
   return ok;
+}
+
+// US: 10 digits after stripping formatting (area code 2-9), or 11 with a leading 1. A number typed with a leading "+"
+// and another country code (8-15 digits) is also accepted so international applicants aren't blocked.
+function isValidPhone(phone) {
+  const v = String(phone || '').trim();
+  const digits = v.replace(/\D/g, '');
+  if (digits.length === 10) return /^[2-9]/.test(digits);            // area codes never start with 0 or 1
+  if (digits.length === 11 && digits.startsWith('1')) return /^1[2-9]/.test(digits);
+  return /^\+/.test(v) && !digits.startsWith('1') && digits.length >= 8 && digits.length <= 15;
 }
 
 function normalizePhone(phone) {
@@ -4007,8 +4019,8 @@ function onPhoneInput() {
   checkbox.disabled = !hasPhone;
   if (label) label.style.opacity = hasPhone ? '1' : '0.5';
   if (!hasPhone) checkbox.checked = false;
-  // An earlier "valid phone" error clears as soon as the number is valid (or removed).
-  if (!hasPhone || normalizePhone(phone.value.trim())) hideError('phone');
+  // An earlier phone error (shown only after pressing Submit) clears as soon as the number is valid.
+  if (isValidPhone(phone.value)) hideError('phone');
 }
 
 function onZipInput() {
