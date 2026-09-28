@@ -247,7 +247,7 @@
     /* Range sliders: label, value readout and thumbs are evenly spaced (2026-09-27m). The label-to-readout gap equals the
        readout-to-thumb gap (~11px between visible edges): readout sits 18px above the 44px track box, track 22.4px below the label. */
     .field-label + .range-slider-wrap { margin-top: 22.4px; }
-    .slider-bubble { position: absolute; top: -18px; transform: translateX(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
+    .slider-bubble { position: absolute; top: -18px; transform: none; font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: var(--text); white-space: nowrap; pointer-events: none; z-index: 3; }
     /* Partner Location — condensed chips, typed add (no list, no popup) */
     .partner-location-chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .partner-location-chips:empty { display: none; }
@@ -1068,7 +1068,7 @@
           <div class="field-error" id="err-gender_seeking"></div>
         </div>
         </div>
-        <!-- PARTNER LOCATION (2026-09-27p): "Partner city" is one primary city (defaults to the zip's city; "Change" swaps it with a
+        <!-- PARTNER LOCATION (2026-09-27q: stays open, never auto-collapses; relocate checkbox relabelled, still saves open_to_anywhere) (2026-09-27p): "Partner city" is one primary city (defaults to the zip's city; "Change" swaps it with a
              single-select picker; it can't be removed). "+ Add city" below adds extra cities as tags with an X; the tags and their
              X stay in the condensed row. One shared autocomplete input moves to whichever control opened it; free text is kept as typed.
              City data: GeoNames (https://www.geonames.org), CC BY 4.0, trimmed in cities_grokbot.json. -->
@@ -1088,7 +1088,7 @@
             </div></div>
             <label class="partner-location-anywhere" for="partner-location-anywhere">
               <input type="checkbox" id="partner-location-anywhere">
-              <span>Any city - I would relocate for love</span>
+              <span>I'm open to relocating for love</span>
             </label>
           </div>
         </div>
@@ -1471,7 +1471,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27p';
+var PAGE_VERSION = '2026-09-27q';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2555,7 +2555,7 @@ function validateScreen(screenId) {
     if (state.status !== 'partnered') {
       if (!state.genderSeeking) { showError('gender_seeking', 'Please select one'); ok = false; } else hideError('gender_seeking');
       // Partner city is required (2026-09-27p). Normally the zip's city is pre-filled and can only be changed, not removed;
-      // with no default (e.g. an unmapped zip) the applicant has to choose one. "Any city" and extra cities don't replace it.
+      // with no default (e.g. an unmapped zip) the applicant has to choose one. the relocate checkbox and extra cities don't replace it.
       if (partnerLocationReady && !partnerCityPrimary) { showError('partner_location', 'Choose a partner city'); ok = false; } else hideError('partner_location');
       const minVal = parseInt(document.getElementById('age_min')?.value || '');
       const maxVal = parseInt(document.getElementById('age_max')?.value || '');
@@ -3036,6 +3036,7 @@ function crSettle(id) {
   const c = CR[id];
   if (!c || !crApplies(id) || crIsCollapsed(id) || _crHidden(id)) return false;
   if (!crText(id) || (c.busy && c.busy())) return false;
+  if (c.noCollapse) return false; // stays open (Partner location)
   if (!crCollapse(id)) return false;
   const p = crPartner(id), pu = p && _crEl(p), pc = p && CR[p];
   if (pu && !crIsCollapsed(p) && !_crHidden(p) && crText(p) && !(pc.busy && pc.busy()) && !pu.contains(document.activeElement)) crCollapse(p);
@@ -3205,10 +3206,11 @@ function _crDefineAll() {
   crDef('rel-mb', { optional: true, value: () => ({ neither: 'Neither', me: 'Me', partner: 'My partner', both: 'Both' })[state.marriedBefore] || '' });
   // What You Want (singles)
   crDef('ww-seek', { value: () => ({ men: 'Men', women: 'Women', both: 'Both' })[state.genderSeeking] || '' });
-  // Partner location: done once it has a city chip (list or free text) or "Any city". Collapses 1.2s after the last add /
-  // remove / Any-city tap (multi-select timing) or when you move on; never while text is still in the box. EDIT reopens it
-  // with the "+ Add more" box open so adding another city is one tap. Required (2026-09-27n): at least one city, never empty.
-  crDef('ww-loc', { busy: _plBusy, value: partnerLocationSummary });
+  // Partner location (2026-09-27q): stays open - it never folds on its own (no 1.2s collapse, not on moving on, not on
+  // returning to the screen), so Partner city + Change, "+ Add city" with its tags and the relocate checkbox are always in view.
+  // It doesn't hold back Age Range + Partner Height: they appear with it (a missing primary city is caught by Next with
+  // "Choose a partner city"). If it ever is collapsed, EDIT reopens it as before.
+  crDef('ww-loc', { busy: _plBusy, noCollapse: true, stepDone: () => true, value: partnerLocationSummary });
   // Age range + partner height: one set, shown together, never collapsed (no condensed row); defaults are saved untouched.
   crDef('ww-ranges', { stepDone: () => false, value: () => '' });
   // Intentions & Family
@@ -3750,26 +3752,18 @@ function _bindSinglesPartnerLocation() {
     any.addEventListener('change', () => { partnerLocationAnywhere = !!any.checked; partnerLocationTouched = true; _renderPartnerLocationChips(); _wwLocChanged(); });
   }
 }
-// Condensed row: the primary city (plus "Any city"); the extra cities show as tags with X underneath.
+// Condensed row (only if it is ever collapsed): the primary city (plus the relocate answer); extra cities show as tags with X.
 function partnerLocationSummary() {
   if (!partnerCityPrimary) return ''; // no primary city yet: stays open (extras / Any city alone aren't an answer)
-  return partnerCityPrimary.label + (partnerLocationAnywhere ? ', Any city' : '');
+  return partnerCityPrimary.label + (partnerLocationAnywhere ? ', open to relocating' : '');
 }
 function _plBusy() { return !!(_plOpen && document.getElementById('partner-location-input')?.value.trim()); }
-// A city chosen / removed or "Any city" toggled: the question folds into its condensed row after the multi-select pause.
+// A city chosen / removed or the relocate box toggled: the question stays open (2026-09-27q: no auto-collapse); if it is
+// collapsed, only the condensed row updates.
 function _wwLocChanged() {
-  if (!CR['ww-loc'] || _crHidden('ww-loc') || crIsCollapsed('ww-loc')) { crSync(); return; }
-  clearTimeout(_crT['ww-loc']);
-  _crT['ww-loc'] = setTimeout(() => { _crT['ww-loc'] = null; _wwLocSettle(); }, CR_DELAY);
+  clearTimeout(_crT['ww-loc']); _crT['ww-loc'] = null;
+  if (crIsCollapsed('ww-loc')) _crFill('ww-loc', crText('ww-loc'));
   crSync();
-}
-function _wwLocSettle() {
-  if (_crHidden('ww-loc') || crIsCollapsed('ww-loc') || !crText('ww-loc') || _plBusy()) return; // still typing: wait
-  const u = _crEl('ww-loc'), a = document.activeElement;
-  _plOpen = false;
-  if (a && u && u.contains(a)) a.blur(); // the text box or the "Any city" checkbox
-  _syncPartnerLocationAdder(); _renderPartnerLocationSuggestions();
-  crSettle('ww-loc'); crSync();
 }
 // No primary city yet: the picker stays open under "Partner city" (primary mode) until one is chosen.
 function _plNeedsPrimary() { return partnerLocationReady && !partnerCityPrimary; }
@@ -3953,24 +3947,41 @@ function onAgeRangeInput(el, which) {
   const minL = document.getElementById('age_min_label'); if (minL) minL.textContent = minVal;
   const maxL = document.getElementById('age_max_label'); if (maxL) maxL.textContent = maxVal >= 80 ? '80+' : maxVal;
   _updateRangeFill();
-  _updateSliderLabel(minL, document.getElementById('age_min'));
-  _updateSliderLabel(maxL, document.getElementById('age_max'));
 }
 
-function _updateSliderLabel(labelEl, inputEl) {
-  if (!labelEl || !inputEl) return;
-  const w = inputEl.offsetWidth; if (!w) return;
-  const min = parseFloat(inputEl.min), max = parseFloat(inputEl.max), val = parseFloat(inputEl.value), thumbW = 26;
-  labelEl.style.left = ((val - min) / (max - min) * (w - thumbW) + thumbW / 2) + 'px';
+// Thumb readouts (2026-09-27q): each sits centred over its thumb, but is kept inside the track (0..width) at the
+// ends, and the two never overlap - when the thumbs are close the pair is laid side by side around their midpoint.
+const SLIDER_THUMB_W = 26, SLIDER_BUBBLE_GAP = 8;
+function _sliderThumbX(inputEl, w) {
+  const min = parseFloat(inputEl.min), max = parseFloat(inputEl.max), val = parseFloat(inputEl.value);
+  return (val - min) / (max - min) * (w - SLIDER_THUMB_W) + SLIDER_THUMB_W / 2;
+}
+function _placeSliderBubbles(minL, minEl, maxL, maxEl) {
+  if (!minL || !maxL || !minEl || !maxEl) return;
+  const w = minEl.offsetWidth; if (!w) return; // hidden: placed again on reveal
+  const a = minL.getBoundingClientRect().width, b = maxL.getBoundingClientRect().width;
+  const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+  let l1 = clamp(_sliderThumbX(minEl, w) - a / 2, 0, Math.max(0, w - a));
+  let l2 = clamp(_sliderThumbX(maxEl, w) - b / 2, 0, Math.max(0, w - b));
+  if (l1 + a + SLIDER_BUBBLE_GAP > l2) {
+    const total = a + SLIDER_BUBBLE_GAP + b;
+    const mid = ((_sliderThumbX(minEl, w)) + (_sliderThumbX(maxEl, w))) / 2;
+    l1 = clamp(mid - total / 2, 0, Math.max(0, w - total));
+    l2 = l1 + a + SLIDER_BUBBLE_GAP;
+  }
+  minL.style.left = l1 + 'px';
+  maxL.style.left = l2 + 'px';
 }
 function _updateAgeLabels() {
-  _updateSliderLabel(document.getElementById('age_min_label'), document.getElementById('age_min'));
-  _updateSliderLabel(document.getElementById('age_max_label'), document.getElementById('age_max'));
+  _placeSliderBubbles(document.getElementById('age_min_label'), document.getElementById('age_min'), document.getElementById('age_max_label'), document.getElementById('age_max'));
 }
 function _updateHeightLabels() {
-  _updateSliderLabel(document.getElementById('height_min_label'), document.getElementById('height_min_in'));
-  _updateSliderLabel(document.getElementById('height_max_label'), document.getElementById('height_max_in'));
+  _placeSliderBubbles(document.getElementById('height_min_label'), document.getElementById('height_min_in'), document.getElementById('height_max_label'), document.getElementById('height_max_in'));
 }
+// Readout widths change once Bebas Neue loads and the track width changes on resize / rotation: place them again.
+function _placeAllSliderBubbles() { _updateAgeLabels(); _updateHeightLabels(); }
+window.addEventListener('resize', () => requestAnimationFrame(_placeAllSliderBubbles));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestAnimationFrame(_placeAllSliderBubbles));
 function _updateRangeFill() {
   const minEl = document.getElementById('age_min'), maxEl = document.getElementById('age_max'), fill = document.getElementById('range-fill');
   if (!minEl || !maxEl || !fill) return;
@@ -3995,8 +4006,6 @@ function onHeightRangeInput(el, which) {
   const minL = document.getElementById('height_min_label'); if (minL) minL.textContent = _fmtHeight(minVal);
   const maxL = document.getElementById('height_max_label'); if (maxL) maxL.textContent = _fmtHeight(maxVal);
   _updateHeightFill();
-  _updateSliderLabel(minL, document.getElementById('height_min_in'));
-  _updateSliderLabel(maxL, document.getElementById('height_max_in'));
 }
 
 function _updateHeightFill() {
