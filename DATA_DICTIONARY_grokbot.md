@@ -1,10 +1,10 @@
 # IHereByCommit Data Dictionary_grokbot
 
-Supabase project dqrmyqmpqnlemkwdndsf, schema public. Generated 2026-09-27 (PT), front end PAGE_VERSION 2026-09-27h. Updated 2026-09-27 evening (PT): partner location free text (mapped vs unmapped), access tightened. Updated again 2026-09-27 (PT): responses_deidentified dropped; responses_research is the only public research view. Updated 2026-09-27 9:50 PM (PT): CDC NHANES height metrics loaded into metrics/benchmarks, three nullable columns added to metrics, helper functions height_cdf_pct and height_share_in_range added (see [metrics / benchmarks: CDC NHANES height](#metrics--benchmarks-cdc-nhanes-height)). Flow: **singles** = status single, **couples** = status partnered, **both** = asked in or applies to both. All columns are nullable, with no value check constraints. Codes are stored as shown under Allowed / example values.
+Supabase project dqrmyqmpqnlemkwdndsf, schema public. Generated 2026-09-27 (PT), front end PAGE_VERSION 2026-09-27h. Updated 2026-09-27 evening (PT): partner location free text (mapped vs unmapped), access tightened. Updated again 2026-09-27 (PT): responses_deidentified dropped; responses_research is the only public research view. Updated 2026-09-27 9:50 PM (PT): CDC NHANES height metrics loaded into metrics/benchmarks (2021–2023 and 2015–2018 official NCHS tables), three nullable columns added to metrics, helper functions height_share_in_range, height_cdf_pct and height_z_for_pct added (see [metrics / benchmarks: CDC NHANES height](#metrics--benchmarks-cdc-nhanes-height)). Flow: **singles** = status single, **couples** = status partnered, **both** = asked in or applies to both. All columns are nullable, with no value check constraints. Codes are stored as shown under Allowed / example values.
 
 Helper functions (public, immutable): ihbc_text_list(text), ihbc_jsonb_list(jsonb), ihbc_location_cities(jsonb) (mapped entries only), ihbc_pl_is_mapped(jsonb), ihbc_partner_locations(jsonb) (mapped count, unmapped text, unmapped count), ihbc_translate(race, partner_race, looking_for, open_to_city, partner_locations).
 
-**Access.** anon/authenticated can SELECT only responses_research (the only public research view). Every table, the \_readable views and onboarding_screen_times are service-role only (RLS on, no policies, no grants), and new tables in public no longer auto-grant to anon/authenticated. get_benchmark, set_priority_number, height_cdf_pct and height_share_in_range are not executable by public roles (service_role only).
+**Access.** anon/authenticated can SELECT only responses_research (the only public research view). Every table, the \_readable views and onboarding_screen_times are service-role only (RLS on, no policies, no grants), and new tables in public no longer auto-grant to anon/authenticated. get_benchmark, set_priority_number, height_share_in_range, height_cdf_pct and height_z_for_pct are not executable by public roles (service_role only).
 
 ## Contents
 
@@ -304,18 +304,25 @@ VIEW (security_invoker; internal). Per lead and screen: times shown and time spe
 
 ## metrics / benchmarks: CDC NHANES height
 
-Public benchmark catalog (service-role only; RLS on, no policies). Loaded 2026-09-27 (PT) by grokbot. 560 metrics and 560 benchmark rows, all at the nation geography (geographies geo_level = nation, geo_code = 1), vintage 2018, unit cm. Totals after the load: 631 metrics, 1,655,125 benchmark rows.
+Public benchmark catalog (service-role only; RLS on, no policies). Loaded 2026-09-27 (PT) by grokbot. 560 metrics and 718 benchmark rows, all at the nation geography (geographies geo_level = nation, geo_code = 1), unit cm. Totals after the load: 631 metrics, 1,655,283 benchmark rows.
 
-**Source.** CDC/NCHS, *Anthropometric Reference Data for Children and Adults: United States, 2015–2018*, Vital and Health Statistics Series 3, No. 46 (Jan 2021), Table 11 (adult males) and Table 9 (adult females): https://www.cdc.gov/nchs/data/series/sr_03/sr03-046-508.pdf. Values are the published NHANES 2015–2018 weighted estimates, loaded verbatim (retrieved through the Internet Archive copy because cdc.gov returns 403 to the load machine). Method check: recomputing from the raw NHANES 2015–2016 and 2017–2018 BMX + DEMO files with WTMEC2YR/2 reproduced the published n, means and percentiles. Heights are measured, not self-reported.
+**Sources (official CDC/NCHS published tables, loaded verbatim; measured heights, not self-reported).**
 
-**Metric key pattern.** `height_cm_{sex}_{age}[_{group}]_{stat}`
+| vintage | Survey cycle | Report | Tables | Rows |
+|---|---|---|---|---|
+| 2023 (latest; default in the helpers) | NHANES August 2021–August 2023 | *Anthropometric Reference Data for Children and Adults: United States, August 2021–August 2023*, Vital and Health Statistics Series 3, No. 50: https://www.cdc.gov/nchs/data/series/sr_03/sr03-050.pdf | Table 7 (adults by sex and age) | 158 (by sex × 8 age bands; the 80+ 95th percentile is not published) |
+| 2018 | NHANES 2015–2018 | *Anthropometric Reference Data for Children and Adults: United States, 2015–2018*, Series 3, No. 46 (Jan 2021): https://www.cdc.gov/nchs/data/series/sr_03/sr03-046-508.pdf | Table 11 (men), Table 9 (women) | 560 (sex × age bands, plus race and Hispanic-origin groups) |
+
+Both reports were retrieved through the Internet Archive copy because cdc.gov returns 403 to the load machine. Cross-check: recomputing from the raw NHANES files (2015–2016 + 2017–2018 BMX/DEMO with WTMEC2YR/2; 2021–2023 BMX_L/DEMO_L with WTMEC2YR) reproduced the published n and means (and, for 2015–2018, the percentiles).
+
+**Metric key pattern.** `height_cm_{sex}_{age}[_{group}]_{stat}` (the same key holds both vintages; pick one with `benchmarks.vintage`)
 
 - sex: `m` or `f`
 - age: `20plus`, `20_29`, `30_39`, `40_49`, `50_59`, `60_69`, `70_79`, `80plus` (all groups); race/Hispanic-origin groups use `20plus`, `20_39`, `40_59`, `60plus` (as published)
-- group (optional; omitted = all race and Hispanic-origin groups): `nh_white`, `nh_black`, `nh_asian`, `hispanic` (includes Mexican American), `mexican_american`. **Research/background only; never on share cards.**
+- group (optional; omitted = all race and Hispanic-origin groups): `nh_white`, `nh_black`, `nh_asian`, `hispanic` (includes Mexican American), `mexican_american`. 2015–2018 only. **Research/background only; never on share cards.**
 - stat: `mean`, `p05`, `p10`, `p15`, `p25`, `p50`, `p75`, `p85`, `p90`, `p95`
 
-Examples: `height_cm_m_20plus_mean` = 175.3, `height_cm_f_20plus_mean` = 161.3, `height_cm_m_30_39_p50` = 176.7. On mean rows, `benchmarks.moe` = 1.645 × the published standard error (90% CI half-width, ACS convention); percentile rows have moe null. `benchmarks.source` includes the table number and unweighted n examined.
+Examples (vintage 2023 / 2018): `height_cm_m_20plus_mean` = 175.1 / 175.3; `height_cm_f_20plus_mean` = 161.2 / 161.3; `height_cm_m_30_39_p50` = 176.4 / 176.7. On mean rows, `benchmarks.moe` = 1.645 × the published standard error (90% CI half-width, ACS convention); percentile rows have moe null. `benchmarks.source` names the report, table, cycle and unweighted n examined.
 
 **New nullable columns on metrics** (no constraints; null for all pre-existing metrics):
 
@@ -325,14 +332,27 @@ Examples: `height_cm_m_20plus_mean` = 175.3, `height_cm_f_20plus_mean` = 161.3, 
 | percentile | numeric | Percentile level when the value is a percentile; null for means. | 5, 10, 15, 25, 50, 75, 85, 90, 95 \| null |
 | race_ethnicity | text | Race/Hispanic-origin group as published; null = all groups. Sensitive. | nh_white \| nh_black \| nh_asian \| hispanic \| mexican_american \| null |
 
-**Helper functions** (plpgsql/sql, STABLE, SECURITY INVOKER, service_role only):
+**Helper functions** (STABLE/IMMUTABLE, SECURITY INVOKER, service_role only; not executable by anon/authenticated):
 
-- `height_cdf_pct(p_sex text, p_cm numeric, p_age_band text default '20plus', p_group text default null)` returns the percent of adults at or below `p_cm`. Linear interpolation between the published 5th–95th percentiles; outside them, a normal tail anchored at the median with sigma from that side's spread ((p50 − p5)/1.645 or (p95 − p50)/1.645).
-- `height_share_in_range(p_sex text, p_min_cm numeric, p_max_cm numeric, p_age_band text default '20plus', p_group text default null)` returns the percent (0–100, 2 decimals) between two heights; null min or max = open-ended.
+- `height_share_in_range(p_sex text, p_min_cm numeric, p_max_cm numeric, p_age_band text default '20plus', p_group text default null, p_vintage int default null)` returns the percent (0–100, 2 decimals) of adults between two heights; null min or max = open-ended; null vintage = latest available for that band.
+- `height_cdf_pct(p_sex, p_cm, p_age_band, p_group, p_vintage)` returns the percent at or below `p_cm`. Linear interpolation between the published percentiles of one vintage; outside the lowest/highest published percentile, a normal tail anchored at the median with sigma from that outermost point.
+- `height_z_for_pct(p numeric)` is a small lookup of standard-normal z values for the published percentile levels.
 
-**Sanity checks (2026-09-27).** Men 20+ mean 175.3 cm, women 161.3 cm (gap 14.0 cm). `height_share_in_range('m',182.88,null)` (6′0″ or taller) = 15.07% (raw microdata: 15.3%). `height_share_in_range('m',177.8,193.04)` (5′10″–6′4″) = 36.72% (microdata: 36.9%); men 30–39 = 42.89%. Women 5′0″–5′6″ = 72.02%.
+Example: men 5′10″–6′4″ = `height_share_in_range('m',177.8,193.04)`.
 
-**Other cycles considered, not loaded.** Computed from raw files for comparison: NHANES 2017–March 2020 pre-pandemic (P_BMX + P_DEMO, WTMECPRP): men 175.0 / women 161.2 cm, men ≥ 6′0″ 14.1%, men 5′10″–6′4″ 34.7%. NHANES August 2021–August 2023 (BMX_L + DEMO_L, WTMEC2YR): men 175.1 / women 161.2 cm, men ≥ 6′0″ 15.9%, men 5′10″–6′4″ 34.0%. Neither has an official NCHS percentile report yet, so the published 2015–2018 tables remain the loaded source.
+**Sanity checks (2026-09-27).**
+
+| Check | 2021–2023 (default) | 2015–2018 | Raw microdata, 2021–2023 / 2015–2018 |
+|---|---|---|---|
+| Men 20+ mean | 175.1 cm | 175.3 cm | 175.1 / 175.3 |
+| Women 20+ mean | 161.2 cm | 161.3 cm | 161.2 / 161.3 |
+| Mean gap | 13.9 cm | 14.0 cm | 13.8 / 14.0 |
+| Men ≥ 6′0″ | 15.41% | 15.07% | 15.9% / 15.3% |
+| Men 5′10″–6′4″ | 36.01% | 36.72% | 34.0% / 36.9% |
+| Men 30–39, 5′10″–6′4″ | 41.70% | 42.89% | n/a |
+| Women 5′0″–5′6″ | 70.11% | 72.02% | n/a |
+
+Interpolating between published percentiles lands within about 0.5 points of the raw microdata for 2015–2018 and within about 2 points for 2021–2023, where the published percentiles are bumpier. Also computed but not loaded: NHANES 2017–March 2020 pre-pandemic (P_BMX + P_DEMO, WTMECPRP): men 175.0 / women 161.2 cm, men ≥ 6′0″ 14.1%, men 5′10″–6′4″ 34.7%. It has no NCHS anthropometric reference report.
 
 ## Legacy / redundant columns (kept, not dropped)
 
