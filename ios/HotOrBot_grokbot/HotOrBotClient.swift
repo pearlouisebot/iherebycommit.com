@@ -26,8 +26,8 @@ enum HotOrBotConfig {
     /// Publishable key (`sb_publishable_...`). Same value as the website.
     static let publishableKey = "sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG"
     /// Passed to `get_swipe_deck`. The server clamps the value to 1...50.
-    /// The rating screen shows however many rows come back (the mockup aims for 25).
-    static let deckLimit = 25
+    /// The live deck is 16 clips and growing toward about 50. The screen shows however many rows come back.
+    static let deckLimit = 50
 }
 
 enum HotOrBotError: Error, LocalizedError {
@@ -206,6 +206,8 @@ final class HotOrBotDeckModel: ObservableObject {
     @Published private(set) var banner: String?
     @Published private(set) var phase: Phase = .loading
     @Published var soundOn = false
+    /// Landscape clips letterbox. Portrait clips fill the frame.
+    @Published private(set) var letterbox = false
 
     enum Phase { case loading, playing, empty, failed }
 
@@ -285,6 +287,8 @@ final class HotOrBotDeckModel: ObservableObject {
 
     private func playCurrent() {
         guard let card = current else { return }
+        // Portrait covers. Landscape (wider than tall, e.g. 1280x720) letterboxes.
+        letterbox = card.width > 0 && card.height > 0 && card.width > card.height
         // Cancel the previous file before opening the next. Only this card's video_url is loaded.
         releaseCurrentItem()
         let item = AVPlayerItem(url: card.video_url)
@@ -408,13 +412,13 @@ struct HotOrBotDeckView: View {
         ZStack(alignment: .bottom) {
             if let poster = model.current?.poster_url {
                 AsyncImage(url: poster) { image in
-                    image.resizable().scaledToFill()
+                    image.resizable().aspectRatio(contentMode: model.letterbox ? .fit : .fill)
                 } placeholder: {
-                    Color(red: 0.08, green: 0.08, blue: 0.08)
+                    Color.black
                 }
                 .ignoresSafeArea(edges: .horizontal)
             }
-            HotOrBotPlayerView(player: model.player)
+            HotOrBotPlayerView(player: model.player, letterbox: model.letterbox)
                 .onTapGesture { model.toggleSound() }
             if let banner = model.banner {
                 Text(banner)
@@ -486,16 +490,20 @@ struct HotOrBotDeckView: View {
 
 struct HotOrBotPlayerView: UIViewRepresentable {
     let player: AVPlayer
+    var letterbox: Bool
 
     func makeUIView(context: Context) -> HotOrBotPlayerUIView {
         let view = HotOrBotPlayerUIView()
+        view.backgroundColor = .black
         view.playerLayer.player = player
-        view.playerLayer.videoGravity = .resizeAspectFill
+        view.playerLayer.backgroundColor = UIColor.black.cgColor
+        view.playerLayer.videoGravity = letterbox ? .resizeAspect : .resizeAspectFill
         return view
     }
 
     func updateUIView(_ uiView: HotOrBotPlayerUIView, context: Context) {
         uiView.playerLayer.player = player
+        uiView.playerLayer.videoGravity = letterbox ? .resizeAspect : .resizeAspectFill
     }
 }
 

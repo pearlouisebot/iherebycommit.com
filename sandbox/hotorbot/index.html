@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#121214">
   <title>Hot or Bot — I Hereby Commit</title>
   <meta name="description" content="Free to rate. Pay to match.">
-  <link rel="canonical" href="https://iherebycommit.com/hotorbot/">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://dqrmyqmpqnlemkwdndsf.supabase.co">
   <style>
@@ -61,23 +61,27 @@
       background: var(--card); border-radius: 20px;
       overflow: hidden; display: flex;
       flex-direction: column; min-height: 0;
+      width: min(100%, calc(56vh * 9 / 16));
+      margin-left: auto;
+      margin-right: auto;
     }
     .profile-visual {
       flex: none;
-      aspect-ratio: 4 / 3;
-      max-height: 48vh;
+      aspect-ratio: 9 / 16;
       width: 100%;
       position: relative;
       overflow: hidden;
-      background: #1e1e22 center / cover no-repeat;
+      background: #000 center / cover no-repeat;
     }
+    .profile-visual.landscape { background-size: contain; }
     .profile-visual video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
       z-index: 1;
-      background: transparent;
+      background: #000;
     }
+    .profile-visual.landscape video { object-fit: contain; }
     .sound-btn {
       position: absolute; z-index: 2; left: 12px; bottom: 12px;
       border: 1px solid var(--border); background: rgba(18,18,20,0.72);
@@ -234,7 +238,7 @@
     <div class="confirm-mark">+</div>
     <div class="confirm-title">You're in.</div>
     <div class="confirm-sub" id="confirm-sub">We'll text you when someone rated you highly. Keep your phone close.</div>
-    <a class="btn btn-secondary" id="confirm-home" href="../" style="margin-top:18px;">Back to the study</a>
+    <a class="btn btn-secondary" id="confirm-home" href="/" style="margin-top:18px;">Back to the study</a>
     <div class="spacer"></div>
   </div>
 
@@ -243,7 +247,7 @@
     <div class="status-title">You've seen them all</div>
     <p class="status-body" id="empty-body">Nothing left to rate right now.</p>
     <div class="spacer"></div>
-    <a class="btn btn-secondary" href="../">Back to the study</a>
+    <a class="btn btn-secondary" href="/">Back to the study</a>
   </div>
 
   <div id="screen-error" class="screen">
@@ -262,8 +266,8 @@
   var SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
   var SUPABASE_ANON_KEY = 'sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
   // How many clips to ask for. The screen uses however many rows come back.
-  // The server clamps this to 1..50. The mockup's goal is 25 ratings.
-  var DECK_LIMIT = 25;
+  // The live deck is 16 and growing toward ~50. The server clamps this to 1..50.
+  var DECK_LIMIT = 50;
   var VOTE_CLOSED = "Voting isn't open yet — sign-in is turned off. You can still watch the deck.";
 
   var video = document.getElementById('profile-video');
@@ -285,12 +289,14 @@
   var playRequestedAt = 0;
   var loadGen = 0;
   var posterCache = [];
-  var fromOnboarding = false;
 
   video.playsInline = true;
   video.muted = true;
   video.addEventListener('playing', function () {
     if (videoStartedAt == null) videoStartedAt = performance.now();
+  });
+  video.addEventListener('loadedmetadata', function () {
+    if (video.videoWidth && video.videoHeight) applyFit(video.videoWidth, video.videoHeight);
   });
 
   function safeUrl(value) {
@@ -374,10 +380,18 @@
     return parts.join(' · ');
   }
 
+  // Portrait fills the 9:16 card. Landscape (1280x720) letterboxes so the whole frame stays visible.
+  function applyFit(w, h) {
+    var width = Number(w);
+    var height = Number(h);
+    visual.classList.toggle('landscape', width > 0 && height > 0 && width > height);
+  }
+
   function playClip(entry) {
     var src = safeUrl(entry.video_url);
     var poster = safeUrl(entry.poster_url);
     var keepSound = soundOn;
+    applyFit(entry.width, entry.height);
     unloadClip();
     videoStartedAt = null;
     playRequestedAt = performance.now();
@@ -578,12 +592,6 @@
     });
   }
 
-  function cameFromOnboarding() {
-    var q = new URLSearchParams(location.search);
-    if (q.get('rate') === '1') return true;
-    try { return sessionStorage.getItem('hotorbot-after-onboarding') === '1'; } catch (e) { return false; }
-  }
-
   soundBtn.addEventListener('click', function (e) {
     e.stopPropagation();
     soundOn = !soundOn;
@@ -609,12 +617,7 @@
   });
   document.getElementById('report-register').addEventListener('click', function () { showScreen('register'); });
   document.getElementById('register-submit').addEventListener('click', function () {
-    var sub = document.getElementById('confirm-sub');
-    if (fromOnboarding) {
-      sub.textContent = "You're already in the study. We'll text you when someone rated you highly.";
-    } else {
-      sub.textContent = 'The study application is where an account is actually created.';
-    }
+    document.getElementById('confirm-sub').textContent = 'The study application is where an account is actually created.';
     showScreen('confirm');
   });
   document.getElementById('reset-link').addEventListener('click', loadDeck);
@@ -625,14 +628,12 @@
     else if (e.key === '0') handleRating(10);
   });
 
-  fromOnboarding = cameFromOnboarding();
   if (!window.supabase || !window.supabase.createClient) {
     showScreen('error');
   } else {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
     });
-    if (fromOnboarding) loadDeck();
   }
 </script>
 </body>
