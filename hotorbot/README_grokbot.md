@@ -10,9 +10,15 @@ The page asks for a deck (`get_swipe_deck`). How many to ask for is the `DECK_LI
 
 Play and show only the `video_url` and `poster_url` on each row. Do not build storage paths in the client. Those paths can change (for example `clips/v2/clip-N.mp4` instead of `clips/clip-N.mp4`) when the placeholder clips are replaced with real footage.
 
-The clip on screen plays inline, muted, and looped, even if the file has audio. Tap the picture (or "Tap for sound") to unmute. Only that clip's video is loaded. Leaving the card cancels that download. The next card preloads its poster image and does not fetch its video until it is on screen. Swipe right or tap Hot. Swipe left or tap Not. Bot and Human are buttons. The page times the watch from when the video starts until the vote, and sends that as `dwell_ms` with `client` set to `web`.
+The page matches the post-onboarding mockup: splash ("HOT or BOT", "Free to rate. Pay to match."), a profile card, then a 1–10 score. After each score there is a short rated screen and a Next button. At the end you see your average. Someone who just finished the study application skips the splash and lands on the first clip.
 
-Voting needs a signed-in Supabase user. The first vote calls `supabase.auth.signInAnonymously()`. Anonymous sign-ins are off in the dashboard right now (Authentication → Sign In / Providers → Allow anonymous sign-ins). Until that is turned on, the deck still loads and plays. A vote shows: "Voting isn't open yet — sign-in is turned off. You can still watch the deck." The page does not crash, and it does not pretend the vote was saved.
+The clip on screen plays inline, muted, and looped, even if the file has audio. Tap the picture (or "Tap for sound") to unmute. Only that clip's video is loaded. Leaving the card cancels that download. The next card preloads its poster image and does not fetch its video until it is on screen. The page times the watch from when the video starts until the score, and sends that as `dwell_ms` with `client` set to `web`.
+
+The score buttons are 1 through 10, as in the mockup. The vote call only accepts `hot`, `not`, `bot`, or `human`, so 1–5 is stored as `not` and 6–10 as `hot`. The page does not label anyone bot or human. That ground truth is not in the deck response, and the clips may be real people. Name, school, and job lines stay empty unless a deck row actually includes them. The counter uses the number of rows returned, not a hardcoded 25.
+
+Voting needs a signed-in Supabase user. The first score calls `supabase.auth.signInAnonymously()`. Anonymous sign-ins are off in the dashboard right now (Authentication → Sign In / Providers → Allow anonymous sign-ins). Until that is turned on, the deck still loads and plays. A score shows: "Voting isn't open yet — sign-in is turned off. You can still watch the deck." The page does not crash, and it does not pretend the score was saved.
+
+After the study form is submitted, the site opens `/hotorbot/`. The application screens themselves are unchanged. `/hotorbot/` also works on its own.
 
 ## Call it from the web
 
@@ -51,7 +57,7 @@ let row = try await api.castVote(                  // signs in anonymously if ne
 
 `HotOrBotDeckView()` is a small SwiftUI screen with the same votes, muted looping playback, and the same message when anonymous sign-in is off.
 
-Playback on iOS is one `AVPlayerItem` at a time, created from `video_url`, muted until the viewer taps for sound (so a soundtrack does not block autoplay). Looping seeks back to the start. The next card preloads `poster_url` only. Dwell time starts when `play()` is called.
+Playback on iOS is one `AVPlayerItem` at a time, created from `video_url`, muted until the viewer taps for sound (so a soundtrack does not block autoplay). Looping seeks back to the start. The next card preloads `poster_url` only. The on-screen scores are 1–10; `castVote` is called with `not` for 1–5 and `hot` for 6–10. Dwell time starts when `play()` is called.
 
 ## SQL
 

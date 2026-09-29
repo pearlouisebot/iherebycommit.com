@@ -26,7 +26,8 @@ enum HotOrBotConfig {
     /// Publishable key (`sb_publishable_...`). Same value as the website.
     static let publishableKey = "sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG"
     /// Passed to `get_swipe_deck`. The server clamps the value to 1...50.
-    static let deckLimit = 10
+    /// The rating screen shows however many rows come back (the mockup aims for 25).
+    static let deckLimit = 25
 }
 
 enum HotOrBotError: Error, LocalizedError {
@@ -196,8 +197,8 @@ final class HotOrBotClient {
 /// Minimal swipe deck. Present `HotOrBotDeckView()` from any screen.
 /// One player item at a time, using `video_url` / `poster_url` from the deck
 /// (storage paths may be versioned). Muted until the viewer taps for sound,
-/// including when a clip has audio. Buttons and a horizontal drag cast a
-/// single vote (`hot` / `not` / `bot` / `human`).
+/// including when a clip has audio. Scores are 1...10, stored as `not` (1...5)
+/// or `hot` (6...10). Ground truth bot/human is not available to the client.
 @MainActor
 final class HotOrBotDeckModel: ObservableObject {
     @Published private(set) var cards: [HotOrBotDeckCard] = []
@@ -252,10 +253,12 @@ final class HotOrBotDeckModel: ObservableObject {
         }
     }
 
-    func vote(_ choice: String) async {
-        guard !voting, let card = current else { return }
+    /// Scores 1...5 are stored as `not` and 6...10 as `hot`. The RPC has no 1...10 value.
+    func vote(score: Int) async {
+        guard !voting, let card = current, (1...10).contains(score) else { return }
         voting = true
         defer { voting = false }
+        let choice = score >= 6 ? "hot" : "not"
         let dwell = dwellMs()
         do {
             _ = try await api.castVote(videoProfileId: card.id, vote: choice, dwellMs: dwell, clientName: "ios")
@@ -356,7 +359,6 @@ final class HotOrBotDeckModel: ObservableObject {
 
 struct HotOrBotDeckView: View {
     @StateObject private var model = HotOrBotDeckModel()
-    @State private var dragX: CGFloat = 0
 
     var body: some View {
         ZStack {
@@ -438,50 +440,30 @@ struct HotOrBotDeckView: View {
             .padding(.bottom, 14)
         }
         .clipped()
-        .offset(x: dragX)
-        .rotationEffect(.degrees(Double(dragX / 18)))
-        .gesture(
-            DragGesture()
-                .onChanged { dragX = $0.translation.width }
-                .onEnded { value in
-                    let dx = value.translation.width
-                    dragX = 0
-                    guard abs(dx) > 72, abs(dx) > abs(value.translation.height) else { return }
-                    Task { await model.vote(dx > 0 ? "hot" : "not") }
-                }
-        )
     }
 
     private var controls: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 8) {
-                voteButton("Not", "not")
-                voteButton("Hot", "hot")
+        VStack(spacing: 7) {
+            HStack(spacing: 7) {
+                ForEach(1...5, id: \.self) { scoreButton($0) }
             }
-            HStack(spacing: 8) {
-                voteButton("Bot", "bot")
-                voteButton("Human", "human")
+            HStack(spacing: 7) {
+                ForEach(6...10, id: \.self) { scoreButton($0) }
             }
-            Text("Swipe left not · right hot · one vote each")
-                .font(.system(size: 10, design: .monospaced))
-                .textCase(.uppercase)
-                .foregroundStyle(.secondary)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.vertical, 12)
     }
 
-    private func voteButton(_ title: String, _ vote: String) -> some View {
-        Button(title) {
-            Task { await model.vote(vote) }
+    private func scoreButton(_ score: Int) -> some View {
+        Button(String(score)) {
+            Task { await model.vote(score: score) }
         }
-        .font(.system(size: 22, weight: .semibold))
-        .textCase(.uppercase)
-        .frame(maxWidth: .infinity, minHeight: 52)
-        .background(vote == "hot" ? Color(red: 0.784, green: 0.945, blue: 0.208) : Color.clear)
-        .foregroundStyle(vote == "hot" ? Color.black : Color(red: 0.94, green: 0.925, blue: 0.88))
-        .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.white.opacity(0.25), lineWidth: 1))
-        .clipShape(RoundedRectangle(cornerRadius: 4))
+        .font(.system(size: 16, weight: .semibold))
+        .frame(maxWidth: .infinity, minHeight: 48)
+        .background(Color(red: 0.102, green: 0.102, blue: 0.114))
+        .foregroundStyle(Color(red: 0.965, green: 0.953, blue: 0.933))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     private func status(title: String, body: String) -> some View {

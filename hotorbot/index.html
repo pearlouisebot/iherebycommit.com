@@ -2,749 +2,638 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0e0e0e">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#121214">
   <title>Hot or Bot — I Hereby Commit</title>
-  <meta name="description" content="A short deck of vertical clips. Vote hot, not, bot, or human.">
-  <meta property="og:title" content="Hot or Bot — I Hereby Commit">
-  <meta property="og:description" content="A short deck of vertical clips. Vote hot, not, bot, or human.">
-  <meta property="og:url" content="https://iherebycommit.com/hotorbot/">
-  <meta property="og:type" content="website">
+  <meta name="description" content="Free to rate. Pay to match.">
   <link rel="canonical" href="https://iherebycommit.com/hotorbot/">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://dqrmyqmpqnlemkwdndsf.supabase.co">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0e0e0e;
-      --text: #f0ece0;
-      --body: #9a978c;
-      --accent: #c8f135;
-      --orange: #FF7A2F;
-      --muted: #888;
-      --dim: #333;
-      --error: #ff4f4f;
-      --radius: 4px;
+      --bg: #121214;
+      --text: #F6F3EE;
+      --accent: #E2543C;
+      --card: #1A1A1D;
+      --muted: rgba(246,243,238,0.42);
+      --border: rgba(246,243,238,0.1);
+      --radius: 18px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { color-scheme: dark; background: var(--bg); }
     html, body {
       height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
       overflow: hidden;
       overscroll-behavior: none;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-size: 14px;
-      line-height: 1.5;
-      -webkit-tap-highlight-color: transparent;
     }
-    body::before {
-      content: '';
-      position: fixed; top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      pointer-events: none; z-index: 40; opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 256px 256px;
-      animation: grain 0.3s steps(1) infinite;
-    }
-    @keyframes grain {
-      0% { transform: translate(0,0); } 25% { transform: translate(-2%, 1%); }
-      50% { transform: translate(1%, -2%); } 75% { transform: translate(-1%, 2%); }
-      100% { transform: translate(2%, -1%); }
-    }
-    a { color: inherit; }
-    button, a { touch-action: manipulation; }
     #app {
-      position: fixed;
-      top: 0; bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(430px, 100%);
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background: var(--bg);
-      touch-action: none;
-    }
-    header {
-      flex-shrink: 0;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 8px;
-      padding: calc(10px + env(safe-area-inset-top)) 16px 8px;
-      background: var(--bg);
-    }
-    .back {
-      justify-self: start;
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-decoration: none;
-    }
-    .wordmark {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 0.06em;
-      line-height: 1;
-      text-align: center;
-    }
-    .wordmark .hot { color: var(--accent); }
-    .wordmark .or { color: var(--muted); font-size: 0.62em; letter-spacing: 0.14em; }
-    .wordmark .bot { color: var(--orange); }
-    #count {
-      justify-self: end;
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      min-width: 4.5em;
-      text-align: right;
-    }
-    .progress {
-      flex-shrink: 0;
-      display: flex;
-      gap: 4px;
-      padding: 0 16px 8px;
-      background: var(--bg);
-    }
-    .progress span {
-      flex: 1;
-      height: 3px;
-      background: var(--dim);
-    }
-    .progress span.done { background: var(--accent); }
-    .progress span.active { background: var(--text); }
-    #stage {
-      position: relative;
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
-      background: #141414;
-    }
-    #card {
-      position: absolute;
-      inset: 0;
-      background: #141414 center / cover no-repeat;
-      will-change: transform;
-      transition: transform 220ms ease;
-    }
-    #card.dragging { transition: none; }
-    #clip {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      background: transparent;
-      display: block;
-      pointer-events: none;
-    }
-    #sound {
-      position: absolute;
-      left: 50%;
-      bottom: 14px;
-      transform: translateX(-50%);
-      z-index: 3;
-      border: 1px solid var(--dim);
-      background: rgba(14, 14, 14, 0.72);
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 8px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-    .stamp {
-      position: absolute;
-      top: 28px;
-      z-index: 2;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 64px;
-      letter-spacing: 0.06em;
-      line-height: 1;
-      padding: 4px 10px;
-      border: 4px solid currentColor;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .stamp-hot { left: 18px; color: var(--accent); transform: rotate(-12deg); }
-    .stamp-not { right: 18px; color: var(--error); transform: rotate(12deg); }
-    #banner {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      z-index: 6;
-      pointer-events: none;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--accent);
-      border-radius: var(--radius);
-      padding: 10px 12px;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    #state {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
       justify-content: center;
-      padding: 28px 24px;
+      height: 100%;
+      min-height: 100dvh;
+    }
+    .phone {
+      width: 100%;
+      max-width: 420px;
+      height: 100%;
       background: var(--bg);
-    }
-    #state[hidden], #card[hidden], #dock[hidden], #banner[hidden], .progress[hidden] { display: none !important; }
-    .eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-    #state h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 56px;
-      line-height: 0.92;
-      letter-spacing: 0.02em;
-      margin-bottom: 16px;
-    }
-    #state p { color: var(--body); font-size: 13px; line-height: 1.6; max-width: 28em; }
-    #state-action, .text-link {
-      margin-top: 22px;
-      align-self: flex-start;
-      background: var(--accent);
-      color: var(--bg);
-      border: none;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      letter-spacing: 0.08em;
-      padding: 12px 18px;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    #dock {
-      flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
-      background: var(--bg);
+      position: relative;
+      overflow: hidden;
     }
-    #dock.busy { opacity: 0.72; }
-    .vote-row { display: flex; gap: 8px; }
-    .vote {
-      flex: 1;
-      min-height: 52px;
-      border-radius: var(--radius);
-      border: 1px solid var(--dim);
+    .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 32px 24px 28px; overflow: auto; }
+    .screen.active { display: flex; }
+    #screen-splash { align-items: center; justify-content: center; text-align: center; }
+    .splash-title { font-size: 58px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+    .splash-title span { color: var(--accent); }
+    .splash-tagline { margin-top: 14px; font-size: 15px; color: var(--muted); }
+    .splash-spacer { flex: 1; }
+    #screen-rate { padding: 16px 16px calc(18px + env(safe-area-inset-bottom)); gap: 0; }
+    .rate-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; padding: 0 4px; gap: 12px; }
+    .rate-header-title { font-size: 14px; font-weight: 600; color: var(--muted); line-height: 1.4; flex: 1; }
+    .rate-counter { font-size: 13px; color: var(--muted); white-space: nowrap; padding-top: 1px; }
+    .profile-card {
+      background: var(--card); border-radius: 20px;
+      overflow: hidden; display: flex;
+      flex-direction: column; min-height: 0;
+    }
+    .profile-visual {
+      flex: none;
+      aspect-ratio: 4 / 3;
+      max-height: 48vh;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #1e1e22 center / cover no-repeat;
+    }
+    .profile-visual video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 1;
       background: transparent;
+    }
+    .sound-btn {
+      position: absolute; z-index: 2; left: 12px; bottom: 12px;
+      border: 1px solid var(--border); background: rgba(18,18,20,0.72);
+      color: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;
+      border-radius: 999px; padding: 7px 12px; cursor: pointer;
+    }
+    .profile-info {
+      padding: 14px 18px 12px;
+      display: flex; flex-direction: column; gap: 3px;
+      border-top: 1px solid var(--border);
+    }
+    .profile-name { font-size: 21px; font-weight: 700; letter-spacing: -0.4px; }
+    .profile-school-job { font-size: 13px; color: var(--muted); }
+    .profile-social { font-size: 11px; color: rgba(246,243,238,0.2); margin-top: 5px; font-style: italic; }
+    .rating-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+    .rating-btn {
+      min-height: 48px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text); font-size: 16px; font-weight: 600;
+      cursor: pointer; font-family: var(--font);
+      transition: background 0.1s, border-color 0.1s, transform 0.1s;
+    }
+    .rating-btn:hover { background: rgba(226,84,60,0.18); border-color: var(--accent); }
+    .rating-btn:active { transform: scale(0.93); }
+    .rating-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+    .rating-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .banner {
+      margin: 0 4px 10px;
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.45;
       color: var(--text);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 26px;
-      letter-spacing: 0.08em;
-      cursor: pointer;
+      background: var(--card);
     }
-    .vote:active { transform: scale(0.98); }
-    .vote:focus-visible, #sound:focus-visible, .back:focus-visible, #state-action:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+    #screen-reveal { padding: 0; }
+    .reveal-inner { flex: 1; display: flex; flex-direction: column; padding: 32px 24px 24px; gap: 18px; }
+    .reveal-badge {
+      display: inline-block; padding: 5px 14px;
+      border-radius: 999px; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--accent); color: #fff;
     }
-    .vote-hot { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-    .vote-not { color: var(--text); }
-    .vote-bot { color: var(--orange); border-color: var(--orange); }
-    .vote-human { color: var(--accent); border-color: var(--accent); }
-    .hint {
-      text-align: center;
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      #card { transition: none; }
-      body::before { animation: none; }
-    }
+    .reveal-title { font-size: 40px; font-weight: 800; letter-spacing: -1px; margin-top: 10px; }
+    .reveal-body { font-size: 15px; color: var(--muted); line-height: 1.6; }
+    .reveal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+    .reveal-progress-wrap { padding: 0 24px calc(28px + env(safe-area-inset-bottom)); }
+    .reveal-progress-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .reveal-progress-track { height: 4px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .reveal-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+    .report-headline { font-size: 32px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.2; }
+    .report-headline span { color: var(--accent); }
+    .report-stats { margin-top: 22px; background: var(--card); border-radius: var(--radius); padding: 18px 20px; display: flex; }
+    .stat-item { flex: 1; text-align: center; }
+    .stat-item + .stat-item { border-left: 1px solid var(--border); }
+    .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .reset-link { display: block; text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; background: none; border: none; font-family: var(--font); }
+    .register-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .register-sub { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+    #screen-confirm { text-align: center; justify-content: center; align-items: center; gap: 10px; }
+    .confirm-mark { width: 68px; height: 68px; border-radius: 50%; background: #1e3d2a; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #7de0a8; margin-bottom: 8px; }
+    .confirm-title { font-size: 26px; font-weight: 700; }
+    .confirm-sub { font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 280px; }
+    .btn { display: block; width: 100%; padding: 16px; border-radius: var(--radius); border: none; font-size: 16px; font-weight: 700; cursor: pointer; font-family: var(--font); transition: opacity 0.15s; text-align: center; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .spacer { flex: 1; }
+    .status-title { font-size: 40px; font-weight: 800; letter-spacing: -1px; line-height: 1.05; }
+    .status-body { margin-top: 14px; font-size: 15px; color: var(--muted); line-height: 1.6; }
   </style>
 </head>
 <body>
-  <div id="app">
-    <header>
-      <a class="back" href="../">Study</a>
-      <div class="wordmark"><span class="hot">HOT</span> <span class="or">OR</span> <span class="bot">BOT</span></div>
-      <div id="count" aria-live="polite"></div>
-    </header>
-    <div class="progress" id="progress" hidden></div>
-    <div id="stage">
-      <article id="card" hidden>
-        <video id="clip" playsinline webkit-playsinline muted autoplay loop preload="none" poster="" disablepictureinpicture disableremoteplayback></video>
-        <div class="stamp stamp-hot" id="stamp-hot" aria-hidden="true">HOT</div>
-        <div class="stamp stamp-not" id="stamp-not" aria-hidden="true">NOT</div>
-        <button type="button" id="sound">Tap for sound</button>
-      </article>
-      <p id="banner" hidden role="status"></p>
-      <section id="state">
-        <p class="eyebrow" id="state-kicker">Deck</p>
-        <h1 id="state-title">Loading the deck…</h1>
-        <p id="state-body">Pulling the next set of clips.</p>
-        <button type="button" id="state-action" hidden>Try again</button>
-      </section>
+<div id="app">
+<div class="phone">
+
+  <div id="screen-splash" class="screen active">
+    <div class="splash-spacer"></div>
+    <div class="splash-title">HOT<br>or <span>BOT</span></div>
+    <div class="splash-tagline">Free to rate. Pay to match.</div>
+    <div class="splash-spacer"></div>
+    <button class="btn btn-primary" id="start-rating" type="button">Start rating</button>
+  </div>
+
+  <div id="screen-rate" class="screen">
+    <p id="banner" class="banner" hidden></p>
+    <div class="rate-header">
+      <div class="rate-header-title" id="rate-title">Get your personalized algorithm by completing 25 ratings</div>
+      <div class="rate-counter" id="rate-counter">1 / 25</div>
     </div>
-    <div id="dock" hidden>
-      <div class="vote-row">
-        <button type="button" class="vote vote-not" data-vote="not">Not</button>
-        <button type="button" class="vote vote-hot" data-vote="hot">Hot</button>
+    <div class="profile-card">
+      <div class="profile-visual" id="profile-visual">
+        <video id="profile-video" autoplay loop muted playsinline webkit-playsinline preload="none" poster="" disablepictureinpicture disableremoteplayback></video>
+        <button type="button" class="sound-btn" id="sound-btn">Tap for sound</button>
       </div>
-      <div class="vote-row">
-        <button type="button" class="vote vote-bot" data-vote="bot">Bot</button>
-        <button type="button" class="vote vote-human" data-vote="human">Human</button>
+      <div class="profile-info">
+        <div class="profile-name" id="profile-name">Profile</div>
+        <div class="profile-school-job" id="profile-school-job" hidden></div>
+        <div class="profile-social">instagram · linkedin · x · tiktok — unlocked after you match</div>
       </div>
-      <p class="hint">Swipe left not · right hot · one vote each</p>
+    </div>
+    <div class="rating-grid" id="rating-grid"></div>
+  </div>
+
+  <div id="screen-reveal" class="screen">
+    <div class="reveal-inner">
+      <div>
+        <span class="reveal-badge" id="reveal-badge">Rated</span>
+        <div class="reveal-title" id="reveal-title">8</div>
+      </div>
+      <div class="reveal-body" id="reveal-body"></div>
+      <div class="spacer"></div>
+      <div class="reveal-actions">
+        <button class="btn btn-primary" id="reveal-next" type="button">Next</button>
+      </div>
+    </div>
+    <div class="reveal-progress-wrap">
+      <div class="reveal-progress-label" id="reveal-progress-label">1 of 25 rated</div>
+      <div class="reveal-progress-track">
+        <div class="reveal-progress-fill" id="reveal-progress-fill" style="width:0%"></div>
+      </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
-  <script>
-    // Same publishable key as the waitlist in index.html. Never a service-role key.
-    var SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
-    var SUPABASE_ANON_KEY = 'sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
-    // How many clips to request. The server clamps this to 1..50.
-    var DECK_LIMIT = 10;
-    var VOTE_CLOSED = "Voting isn't open yet — sign-in is turned off. You can still watch the deck.";
 
-    var clip = document.getElementById('clip');
-    var card = document.getElementById('card');
-    var dock = document.getElementById('dock');
-    var banner = document.getElementById('banner');
-    var countEl = document.getElementById('count');
-    var progressEl = document.getElementById('progress');
-    var stateEl = document.getElementById('state');
-    var stateKicker = document.getElementById('state-kicker');
-    var stateTitle = document.getElementById('state-title');
-    var stateBody = document.getElementById('state-body');
-    var stateAction = document.getElementById('state-action');
-    var soundBtn = document.getElementById('sound');
-    var stampHot = document.getElementById('stamp-hot');
-    var stampNot = document.getElementById('stamp-not');
+  <div id="screen-report" class="screen">
+    <div class="report-headline">Your ratings<br>are <span>in.</span></div>
+    <div class="report-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="stat-avg">–</div>
+        <div class="stat-label">Avg score given</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-count">–</div>
+        <div class="stat-label">Ratings</div>
+      </div>
+    </div>
+    <div style="margin-top:22px">
+      <button class="btn btn-primary" id="report-register" type="button">Register to see results &amp; keep voting</button>
+    </div>
+    <button class="reset-link" id="reset-link" type="button">Rate again</button>
+  </div>
 
-    var sb = null;
-    var deck = [];
-    var index = 0;
-    var locked = false;
-    var soundOn = false;
-    var authBlocked = false;
-    var sawAuthBlock = false;
-    var lastAuthAnonDisabled = true;
-    var videoStartedAt = null;
-    var playRequestedAt = 0;
-    var loadGen = 0;
-    var posterCache = [];
-    var drag = null;
+  <div id="screen-register" class="screen">
+    <div class="register-title">Create your account</div>
+    <div class="register-sub">See who rated you. Get matched. Start meeting people.</div>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="register-submit" type="button">Create account</button>
+  </div>
 
-    clip.playsInline = true;
-    clip.muted = true;
-    clip.addEventListener('playing', function () {
-      if (videoStartedAt == null) videoStartedAt = performance.now();
-    });
+  <div id="screen-confirm" class="screen">
+    <div class="spacer"></div>
+    <div class="confirm-mark">+</div>
+    <div class="confirm-title">You're in.</div>
+    <div class="confirm-sub" id="confirm-sub">We'll text you when someone rated you highly. Keep your phone close.</div>
+    <a class="btn btn-secondary" id="confirm-home" href="../" style="margin-top:18px;">Back to the study</a>
+    <div class="spacer"></div>
+  </div>
 
-    function safeUrl(value) {
-      if (!value) return '';
-      try {
-        var url = new URL(value);
-        return url.protocol === 'https:' ? url.href : '';
-      } catch (e) {
-        return '';
-      }
+  <div id="screen-empty" class="screen">
+    <div class="spacer"></div>
+    <div class="status-title">You've seen them all</div>
+    <p class="status-body" id="empty-body">Nothing left to rate right now.</p>
+    <div class="spacer"></div>
+    <a class="btn btn-secondary" href="../">Back to the study</a>
+  </div>
+
+  <div id="screen-error" class="screen">
+    <div class="spacer"></div>
+    <div class="status-title">Couldn't load the deck</div>
+    <p class="status-body">Check your connection and try again.</p>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="retry" type="button">Try again</button>
+  </div>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script>
+  // Same publishable key as the waitlist. Never a service-role key.
+  var SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
+  // How many clips to ask for. The screen uses however many rows come back.
+  // The server clamps this to 1..50. The mockup's goal is 25 ratings.
+  var DECK_LIMIT = 25;
+  var VOTE_CLOSED = "Voting isn't open yet — sign-in is turned off. You can still watch the deck.";
+
+  var video = document.getElementById('profile-video');
+  var visual = document.getElementById('profile-visual');
+  var soundBtn = document.getElementById('sound-btn');
+  var banner = document.getElementById('banner');
+  var grid = document.getElementById('rating-grid');
+
+  var sb = null;
+  var deck = [];
+  var index = 0;
+  var ratings = [];
+  var locked = false;
+  var soundOn = false;
+  var authBlocked = false;
+  var sawAuthBlock = false;
+  var lastAuthAnonDisabled = true;
+  var videoStartedAt = null;
+  var playRequestedAt = 0;
+  var loadGen = 0;
+  var posterCache = [];
+  var fromOnboarding = false;
+
+  video.playsInline = true;
+  video.muted = true;
+  video.addEventListener('playing', function () {
+    if (videoStartedAt == null) videoStartedAt = performance.now();
+  });
+
+  function safeUrl(value) {
+    if (!value) return '';
+    try {
+      var url = new URL(value);
+      return url.protocol === 'https:' ? url.href : '';
+    } catch (e) {
+      return '';
     }
+  }
 
-    function showBanner(text) {
-      banner.textContent = text;
-      banner.hidden = false;
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
+    var el = document.getElementById('screen-' + id);
+    if (el) el.classList.add('active');
+  }
+
+  function showBanner(text) {
+    banner.textContent = text;
+    banner.hidden = !text;
+  }
+
+  function unloadClip() {
+    video.pause();
+    video.preload = 'none';
+    video.removeAttribute('src');
+    video.load();
+  }
+
+  function preloadPoster(entry) {
+    var href = entry ? safeUrl(entry.poster_url) : '';
+    if (!href) return;
+    var img = new Image();
+    img.decoding = 'async';
+    img.src = href;
+    posterCache.push(img);
+    var link = document.getElementById('next-poster');
+    if (!link) {
+      link = document.createElement('link');
+      link.id = 'next-poster';
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = href;
+      document.head.appendChild(link);
+    } else if (link.href !== href) {
+      link.href = href;
     }
+  }
 
-    function showState(kind, detail) {
-      unloadClip();
-      card.hidden = true;
-      dock.hidden = true;
-      progressEl.hidden = true;
-      banner.hidden = true;
-      stateEl.hidden = false;
-      stateAction.hidden = kind !== 'error';
-      if (kind === 'loading') {
-        stateKicker.textContent = 'Deck';
-        stateTitle.textContent = 'Loading the deck…';
-        stateBody.textContent = 'Pulling the next set of clips.';
-        countEl.textContent = '';
-      } else if (kind === 'empty') {
-        stateKicker.textContent = 'Deck';
-        stateTitle.textContent = "You've seen them all";
-        stateBody.textContent = detail || 'Nothing left to vote on right now.';
-        countEl.textContent = deck.length ? (deck.length + ' / ' + deck.length) : '';
-      } else {
-        stateKicker.textContent = 'Deck';
-        stateTitle.textContent = 'Couldn’t load the deck';
-        stateBody.textContent = detail || 'Check your connection and try again.';
-        countEl.textContent = '';
-      }
-    }
+  function updateSound() {
+    soundBtn.textContent = soundOn ? 'Sound on' : 'Tap for sound';
+    soundBtn.setAttribute('aria-label', soundOn ? 'Mute video' : 'Unmute video');
+    video.muted = !soundOn;
+    if (soundOn) video.removeAttribute('muted');
+    else video.setAttribute('muted', '');
+  }
 
-    function renderProgress() {
-      progressEl.hidden = false;
-      progressEl.replaceChildren();
-      deck.forEach(function (_, i) {
-        var bar = document.createElement('span');
-        if (i < index) bar.className = 'done';
-        else if (i === index) bar.className = 'active';
-        progressEl.appendChild(bar);
+  function dwellMs() {
+    var start = videoStartedAt || playRequestedAt || performance.now();
+    var ms = Math.round(performance.now() - start);
+    if (!isFinite(ms) || ms < 0) return 0;
+    return ms;
+  }
+
+  // 1–5 store as not, 6–10 as hot. The vote RPC only accepts hot|not|bot|human.
+  function voteForScore(score) {
+    return score >= 6 ? 'hot' : 'not';
+  }
+
+  function profileTitle(entry, n) {
+    if (entry.name && entry.age) return entry.name + ', ' + entry.age;
+    if (entry.name) return entry.name;
+    return 'Profile ' + n;
+  }
+
+  function profileDetail(entry) {
+    var parts = [];
+    if (entry.school) parts.push(entry.school);
+    if (entry.job) parts.push(entry.job);
+    return parts.join(' · ');
+  }
+
+  function playClip(entry) {
+    var src = safeUrl(entry.video_url);
+    var poster = safeUrl(entry.poster_url);
+    var keepSound = soundOn;
+    unloadClip();
+    videoStartedAt = null;
+    playRequestedAt = performance.now();
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.setAttribute('muted', '');
+    video.preload = src ? 'auto' : 'none';
+    video.poster = poster;
+    visual.style.backgroundImage = poster ? 'url("' + poster.replace(/["\\]/g, '') + '")' : 'none';
+    soundBtn.textContent = keepSound ? 'Sound on' : 'Tap for sound';
+    if (!src) return;
+    video.src = src;
+    var attempt = video.play();
+    var restore = function () {
+      if (!keepSound || !soundOn) return;
+      video.muted = false;
+      video.removeAttribute('muted');
+    };
+    if (attempt && attempt.then) {
+      attempt.then(restore).catch(function () {
+        soundOn = false;
+        video.muted = true;
+        video.setAttribute('muted', '');
+        soundBtn.textContent = 'Tap for sound';
+        video.play().catch(function () {});
       });
     }
+  }
 
-    function updateSound() {
-      soundBtn.textContent = soundOn ? 'Sound on' : 'Tap for sound';
-      soundBtn.setAttribute('aria-label', soundOn ? 'Mute video' : 'Unmute video');
-      clip.muted = !soundOn;
-      if (soundOn) clip.removeAttribute('muted');
-      else clip.setAttribute('muted', '');
+  function buildRatingButtons() {
+    grid.replaceChildren();
+    for (var i = 1; i <= 10; i++) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'rating-btn';
+      b.textContent = String(i);
+      b.dataset.score = String(i);
+      grid.appendChild(b);
     }
+  }
 
-    function dwellMs() {
-      var start = videoStartedAt || playRequestedAt || performance.now();
-      var ms = Math.round(performance.now() - start);
-      if (!isFinite(ms) || ms < 0) return 0;
-      return ms;
+  function setButtonsDisabled(disabled) {
+    grid.querySelectorAll('.rating-btn').forEach(function (b) { b.disabled = disabled; });
+  }
+
+  function showRate() {
+    var entry = deck[index];
+    if (!entry) {
+      showReport();
+      return;
     }
+    showScreen('rate');
+    var total = deck.length;
+    document.getElementById('rate-title').textContent = 'Get your personalized algorithm by completing ' + total + (total === 1 ? ' rating' : ' ratings');
+    document.getElementById('rate-counter').textContent = (index + 1) + ' / ' + total;
+    document.getElementById('profile-name').textContent = profileTitle(entry, index + 1);
+    var detail = profileDetail(entry);
+    var detailEl = document.getElementById('profile-school-job');
+    detailEl.hidden = !detail;
+    detailEl.textContent = detail;
+    showBanner(sawAuthBlock ? (lastAuthAnonDisabled ? VOTE_CLOSED : "Voting isn't available right now. You can still watch the deck.") : '');
+    setButtonsDisabled(false);
+    grid.querySelectorAll('.rating-btn').forEach(function (b) { b.classList.remove('selected'); });
+    playClip(entry);
+    preloadPoster(deck[index + 1]);
+  }
 
-    // Drop the current mp4 so a large file stops downloading when the card leaves.
-    // Nothing is fetched until playClip assigns the visible card's video_url.
-    function unloadClip() {
-      clip.pause();
-      clip.preload = 'none';
-      clip.removeAttribute('src');
-      clip.load();
-    }
+  function isAnonDisabled(error) {
+    var blob = ((error && (error.code || error.error_code || error.message)) || '') + '';
+    return /anonymous/i.test(blob) || /sign-?ins are disabled/i.test(blob);
+  }
 
-    // Poster only. The next card's video_url is not requested until that card is shown.
-    function preloadPoster(entry) {
-      var href = entry ? safeUrl(entry.poster_url) : '';
-      if (!href) return;
-      var img = new Image();
-      img.decoding = 'async';
-      img.src = href;
-      posterCache.push(img);
-      var link = document.getElementById('next-poster');
-      if (!link) {
-        link = document.createElement('link');
-        link.id = 'next-poster';
-        link.rel = 'preload';
-        link.as = 'image';
-        link.href = href;
-        document.head.appendChild(link);
-      } else if (link.href !== href) {
-        link.href = href;
-      }
-    }
+  async function ensureSession() {
+    if (authBlocked) return null;
+    var current = await sb.auth.getSession();
+    if (current && current.data && current.data.session) return current.data.session;
+    var signed = await sb.auth.signInAnonymously();
+    if (signed && signed.data && signed.data.session) return signed.data.session;
+    authBlocked = true;
+    sawAuthBlock = true;
+    lastAuthAnonDisabled = !signed || !signed.error || isAnonDisabled(signed.error);
+    return null;
+  }
 
-    function playClip(entry) {
-      // URLs come only from this deck row. Paths can change (clips/v2/...) and are not built here.
-      var src = safeUrl(entry.video_url);
-      var poster = safeUrl(entry.poster_url);
-      var keepSound = soundOn;
-      unloadClip();
-      videoStartedAt = null;
-      playRequestedAt = performance.now();
-      clip.playsInline = true;
-      clip.setAttribute('playsinline', '');
-      clip.setAttribute('webkit-playsinline', '');
-      clip.autoplay = true;
-      clip.loop = true;
-      // Start muted so autoplay still works when a clip has a soundtrack.
-      clip.muted = true;
-      clip.defaultMuted = true;
-      clip.setAttribute('muted', '');
-      clip.preload = src ? 'auto' : 'none';
-      clip.poster = poster;
-      card.style.backgroundImage = poster ? 'url("' + poster.replace(/["\\]/g, '') + '")' : 'none';
-      soundBtn.textContent = keepSound ? 'Sound on' : 'Tap for sound';
-      soundBtn.setAttribute('aria-label', keepSound ? 'Mute video' : 'Unmute video');
-      if (!src) return;
-      clip.src = src;
-      var attempt = clip.play();
-      var restoreSound = function () {
-        if (!keepSound || !soundOn) return;
-        clip.muted = false;
-        clip.removeAttribute('muted');
-      };
-      if (attempt && attempt.then) {
-        attempt.then(restoreSound).catch(function () {
-          soundOn = false;
-          clip.muted = true;
-          clip.setAttribute('muted', '');
-          soundBtn.textContent = 'Tap for sound';
-          soundBtn.setAttribute('aria-label', 'Unmute video');
-          clip.play().catch(function () {});
-        });
-      }
-    }
-
-    function resetMotion() {
-      card.classList.remove('dragging');
-      card.style.transition = 'none';
-      card.style.transform = 'none';
-      stampHot.style.opacity = '0';
-      stampNot.style.opacity = '0';
-      void card.offsetWidth;
-      card.style.transition = '';
-    }
-
-    function showCard() {
-      var entry = deck[index];
-      if (!entry) {
-        var note = sawAuthBlock
-          ? 'Your votes were not saved because sign-in is turned off. These clips will still be here when voting opens.'
-          : 'Nothing left to vote on right now.';
-        showState('empty', note);
-        return;
-      }
-      stateEl.hidden = true;
-      card.hidden = false;
-      dock.hidden = false;
-      countEl.textContent = (index + 1) + ' / ' + deck.length;
-      renderProgress();
-      resetMotion();
-      playClip(entry);
-      preloadPoster(deck[index + 1]);
-    }
-
-    function isAnonDisabled(error) {
-      var blob = ((error && (error.code || error.error_code || error.message)) || '') + '';
-      return /anonymous/i.test(blob) || /sign-?ins are disabled/i.test(blob);
-    }
-
-    async function ensureSession() {
-      if (authBlocked) return null;
-      var current = await sb.auth.getSession();
-      if (current && current.data && current.data.session) return current.data.session;
-      var signed = await sb.auth.signInAnonymously();
-      if (signed && signed.data && signed.data.session) return signed.data.session;
+  async function saveVote(entry, vote, dwell) {
+    var session = null;
+    try {
+      session = await ensureSession();
+    } catch (err) {
       authBlocked = true;
       sawAuthBlock = true;
-      lastAuthAnonDisabled = !signed || !signed.error || isAnonDisabled(signed.error);
-      return null;
+      lastAuthAnonDisabled = isAnonDisabled(err);
+      return false;
     }
-
-    async function saveVote(entry, vote, dwell) {
-      var session = null;
-      try {
-        session = await ensureSession();
-      } catch (err) {
+    if (!session) return false;
+    var result = await sb.rpc('cast_swipe_vote', {
+      p_video_profile_id: entry.id,
+      p_vote: vote,
+      p_dwell_ms: dwell,
+      p_client: 'web'
+    });
+    if (result.error) {
+      var code = result.error.code || '';
+      var message = result.error.message || '';
+      if (code === '28000' || code === '42501' || /not authenticated|permission denied/i.test(message)) {
         authBlocked = true;
         sawAuthBlock = true;
-        lastAuthAnonDisabled = isAnonDisabled(err);
-        showBanner(lastAuthAnonDisabled ? VOTE_CLOSED : "Voting isn't available right now. You can still watch the deck.");
         return false;
       }
-      if (!session) {
-        showBanner(lastAuthAnonDisabled ? VOTE_CLOSED : "Voting isn't available right now. You can still watch the deck.");
-        return false;
-      }
-      var result = await sb.rpc('cast_swipe_vote', {
-        p_video_profile_id: entry.id,
-        p_vote: vote,
-        p_dwell_ms: dwell,
-        p_client: 'web'
-      });
-      if (result.error) {
-        var code = result.error.code || '';
-        var message = result.error.message || '';
-        if (code === '28000' || code === '42501' || /not authenticated|permission denied/i.test(message)) {
-          authBlocked = true;
-          sawAuthBlock = true;
-          showBanner(VOTE_CLOSED);
-          return false;
-        }
-        showBanner("That vote didn't save. You can try again.");
-        throw result.error;
-      }
-      banner.hidden = true;
-      return true;
+      throw result.error;
     }
+    return true;
+  }
 
-    function fly(dir) {
-      return new Promise(function (resolve) {
-        var settled = false;
-        var finish = function () {
-          if (settled) return;
-          settled = true;
-          resolve();
-        };
-        var onEnd = function (ev) {
-          if (ev.propertyName !== 'transform') return;
-          card.removeEventListener('transitionend', onEnd);
-          finish();
-        };
-        card.addEventListener('transitionend', onEnd);
-        var x = 0;
-        var y = 0;
-        var rot = 0;
-        if (dir === 'left') { x = -window.innerWidth; rot = -14; }
-        else if (dir === 'right') { x = window.innerWidth; rot = 14; }
-        else if (dir === 'up') { y = -window.innerHeight; }
-        else { y = window.innerHeight * 0.45; }
-        card.classList.remove('dragging');
-        card.style.transition = 'transform 260ms ease-in';
-        card.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + rot + 'deg)';
-        setTimeout(finish, 420);
-      });
-    }
+  function showReveal(score, saved) {
+    unloadClip();
+    var n = ratings.length;
+    var total = deck.length || 1;
+    document.getElementById('reveal-badge').textContent = 'Rated';
+    document.getElementById('reveal-title').textContent = String(score);
+    var body = saved
+      ? 'Next profile when you are ready.'
+      : (lastAuthAnonDisabled ? VOTE_CLOSED : "That score didn't save. You can still keep watching.");
+    document.getElementById('reveal-body').textContent = body;
+    document.getElementById('reveal-progress-label').textContent = n + ' of ' + total + ' rated';
+    document.getElementById('reveal-progress-fill').style.width = ((n / total) * 100) + '%';
+    var next = document.getElementById('reveal-next');
+    next.textContent = index + 1 >= deck.length ? 'See your ratings' : 'Next';
+    showScreen('reveal');
+  }
 
-    function directionFor(vote) {
-      if (vote === 'hot') return 'right';
-      if (vote === 'not') return 'left';
-      if (vote === 'human') return 'up';
-      return 'down';
-    }
-
-    async function cast(vote, dir) {
-      if (locked || !deck[index]) return;
-      var allowed = { hot: 1, not: 1, bot: 1, human: 1 };
-      if (!allowed[vote]) return;
-      locked = true;
-      dock.classList.add('busy');
-      var entry = deck[index];
-      var dwell = dwellMs();
-      var saved = false;
-      try {
-        saved = await saveVote(entry, vote, dwell);
-      } catch (err) {
-        resetMotion();
-        locked = false;
-        dock.classList.remove('busy');
-        return;
-      }
-      if (!saved && !sawAuthBlock) {
-        resetMotion();
-        locked = false;
-        dock.classList.remove('busy');
-        return;
-      }
-      unloadClip();
-      await fly(dir || directionFor(vote));
-      index += 1;
+  async function handleRating(score) {
+    if (locked || !deck[index]) return;
+    locked = true;
+    setButtonsDisabled(true);
+    var chosen = grid.querySelector('[data-score="' + score + '"]');
+    if (chosen) chosen.classList.add('selected');
+    var entry = deck[index];
+    var dwell = dwellMs();
+    var saved = false;
+    try {
+      saved = await saveVote(entry, voteForScore(score), dwell);
+    } catch (err) {
       locked = false;
-      dock.classList.remove('busy');
-      showCard();
+      setButtonsDisabled(false);
+      showBanner("That score didn't save. You can try again.");
+      return;
     }
+    ratings.push({ id: entry.id, score: score, saved: saved });
+    showReveal(score, saved);
+    locked = false;
+  }
 
-    function loadDeck() {
-      var gen = ++loadGen;
-      showState('loading');
-      banner.hidden = true;
-      deck = [];
-      index = 0;
-      sb.rpc('get_swipe_deck', { p_limit: DECK_LIMIT }).then(function (result) {
-        if (gen !== loadGen) return;
-        if (result.error) {
-          showState('error');
-          return;
-        }
-        deck = Array.isArray(result.data) ? result.data : [];
-        if (!deck.length) {
-          showState('empty');
-          return;
-        }
-        showCard();
-      }).catch(function () {
-        if (gen === loadGen) showState('error');
-      });
-    }
+  function showReport() {
+    unloadClip();
+    var count = ratings.length;
+    var avg = count ? (ratings.reduce(function (sum, r) { return sum + r.score; }, 0) / count) : 0;
+    document.getElementById('stat-avg').textContent = count ? avg.toFixed(1) : '–';
+    document.getElementById('stat-count').textContent = String(count);
+    showScreen('report');
+  }
 
-    soundBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      soundOn = !soundOn;
-      updateSound();
-      if (clip.paused) clip.play().catch(function () {});
-    });
+  function showEmpty(note) {
+    unloadClip();
+    document.getElementById('empty-body').textContent = note || 'Nothing left to rate right now.';
+    showScreen('empty');
+  }
 
-    dock.addEventListener('click', function (e) {
-      var btn = e.target.closest('[data-vote]');
-      if (!btn) return;
-      cast(btn.getAttribute('data-vote'));
-    });
-
-    stateAction.addEventListener('click', function () { loadDeck(); });
-
-    card.addEventListener('pointerdown', function (e) {
-      if (locked || e.button > 0) return;
-      if (e.target.closest('button')) return;
-      card.setPointerCapture(e.pointerId);
-      drag = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0 };
-      card.classList.add('dragging');
-    });
-
-    card.addEventListener('pointermove', function (e) {
-      if (!drag || drag.id !== e.pointerId) return;
-      drag.dx = e.clientX - drag.x;
-      drag.dy = e.clientY - drag.y;
-      var rot = Math.max(-12, Math.min(12, drag.dx / 18));
-      card.style.transform = 'translate(' + drag.dx + 'px, ' + (drag.dy * 0.12) + 'px) rotate(' + rot + 'deg)';
-      stampHot.style.opacity = String(Math.max(0, Math.min(1, drag.dx / 90)));
-      stampNot.style.opacity = String(Math.max(0, Math.min(1, -drag.dx / 90)));
-    });
-
-    function endDrag(e) {
-      if (!drag || (e && drag.id !== e.pointerId)) return;
-      var dx = drag.dx;
-      var dy = drag.dy;
-      drag = null;
-      card.classList.remove('dragging');
-      if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
-        soundOn = !soundOn;
-        updateSound();
-        if (clip.paused) clip.play().catch(function () {});
-        resetMotion();
+  function loadDeck() {
+    var gen = ++loadGen;
+    showScreen('rate');
+    document.getElementById('rate-title').textContent = 'Loading the deck…';
+    document.getElementById('rate-counter').textContent = '';
+    grid.replaceChildren();
+    banner.hidden = true;
+    deck = [];
+    index = 0;
+    ratings = [];
+    sb.rpc('get_swipe_deck', { p_limit: DECK_LIMIT }).then(function (result) {
+      if (gen !== loadGen) return;
+      if (result.error) {
+        showScreen('error');
         return;
       }
-      if (Math.abs(dx) > 72 && Math.abs(dx) > Math.abs(dy)) {
-        cast(dx > 0 ? 'hot' : 'not', dx > 0 ? 'right' : 'left');
+      deck = Array.isArray(result.data) ? result.data : [];
+      if (!deck.length) {
+        showEmpty("You've seen them all");
         return;
       }
-      resetMotion();
-    }
-
-    card.addEventListener('pointerup', endDrag);
-    card.addEventListener('pointercancel', function () {
-      drag = null;
-      resetMotion();
+      buildRatingButtons();
+      showRate();
+    }).catch(function () {
+      if (gen === loadGen) showScreen('error');
     });
+  }
 
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight') cast('hot');
-      else if (e.key === 'ArrowLeft') cast('not');
-      else if (e.key === 'ArrowUp') cast('human');
-      else if (e.key === 'ArrowDown') cast('bot');
-      else if (e.key === 'm' || e.key === 'M') soundBtn.click();
-    });
+  function cameFromOnboarding() {
+    var q = new URLSearchParams(location.search);
+    if (q.get('rate') === '1') return true;
+    try { return sessionStorage.getItem('hotorbot-after-onboarding') === '1'; } catch (e) { return false; }
+  }
 
-    document.addEventListener('touchmove', function (e) {
-      if (e.target.closest('a, button')) return;
-      e.preventDefault();
-    }, { passive: false });
-
-    if (!window.supabase || !window.supabase.createClient) {
-      showState('error', 'The page could not reach its connection library. Refresh and try again.');
+  soundBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    soundOn = !soundOn;
+    updateSound();
+    if (video.paused) video.play().catch(function () {});
+  });
+  visual.addEventListener('click', function (e) {
+    if (e.target.closest('button')) return;
+    soundOn = !soundOn;
+    updateSound();
+    if (video.paused) video.play().catch(function () {});
+  });
+  grid.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-score]');
+    if (!btn) return;
+    handleRating(Number(btn.dataset.score));
+  });
+  document.getElementById('start-rating').addEventListener('click', loadDeck);
+  document.getElementById('reveal-next').addEventListener('click', function () {
+    index += 1;
+    if (!deck[index]) showReport();
+    else showRate();
+  });
+  document.getElementById('report-register').addEventListener('click', function () { showScreen('register'); });
+  document.getElementById('register-submit').addEventListener('click', function () {
+    var sub = document.getElementById('confirm-sub');
+    if (fromOnboarding) {
+      sub.textContent = "You're already in the study. We'll text you when someone rated you highly.";
     } else {
-      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: false
-        }
-      });
-      loadDeck();
+      sub.textContent = 'The study application is where an account is actually created.';
     }
-  </script>
+    showScreen('confirm');
+  });
+  document.getElementById('reset-link').addEventListener('click', loadDeck);
+  document.getElementById('retry').addEventListener('click', loadDeck);
+  document.addEventListener('keydown', function (e) {
+    if (!document.getElementById('screen-rate').classList.contains('active')) return;
+    if (e.key >= '1' && e.key <= '9') handleRating(Number(e.key));
+    else if (e.key === '0') handleRating(10);
+  });
+
+  fromOnboarding = cameFromOnboarding();
+  if (!window.supabase || !window.supabase.createClient) {
+    showScreen('error');
+  } else {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+    });
+    if (fromOnboarding) loadDeck();
+  }
+</script>
 </body>
 </html>

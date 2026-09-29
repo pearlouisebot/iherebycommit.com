@@ -2767,7 +2767,13 @@ async function doSubmit() {
     const data = await resp.json();
     if (resp.status === 200) {
       showConfirmation(data.subject_number);
-      setTimeout(saveLead, 0); // flush confirmation screen_shown (save-lead stores events only for converted rows)
+      // Onboarding itself is unchanged. Once it completes, open the Hot or Bot deck.
+      // save-lead uses keepalive, so the confirmation event can finish as the page changes.
+      setTimeout(function () {
+        saveLead();
+        try { sessionStorage.setItem('hotorbot-after-onboarding', '1'); } catch (e) {}
+        window.location.href = 'hotorbot/';
+      }, 0);
     } else {
       showToast(data.error || 'Something went wrong. Please try again.');
       btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false;
