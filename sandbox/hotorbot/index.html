@@ -3,29 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#121214">
-  <title>Hot or Bot — I Hereby Commit</title>
-  <meta name="description" content="Free to rate. Pay to match.">
+  <meta name="theme-color" content="#0e0e0e">
+  <title>I Hereby Commit — AI video</title>
+  <meta name="description" content="AI video swipe sandbox.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://dqrmyqmpqnlemkwdndsf.supabase.co">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #121214;
-      --text: #F6F3EE;
-      --accent: #E2543C;
-      --card: #1A1A1D;
-      --muted: rgba(246,243,238,0.42);
-      --border: rgba(246,243,238,0.1);
-      --radius: 18px;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      --bg: #0e0e0e;
+      --text: #f0ece0;
+      --accent: #c8f135;
+      --card: #161616;
+      --muted: #888;
+      --border: #333;
+      --radius: 4px;
+      --font: 'Space Mono', monospace;
+      --display: 'Bebas Neue', sans-serif;
     }
     html, body {
       height: 100%;
       background: var(--bg);
       color: var(--text);
       font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       overflow: hidden;
       overscroll-behavior: none;
@@ -49,16 +55,20 @@
     .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 32px 24px 28px; overflow: auto; }
     .screen.active { display: flex; }
     #screen-splash { align-items: center; justify-content: center; text-align: center; }
-    .splash-title { font-size: 58px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
-    .splash-title span { color: var(--accent); }
-    .splash-tagline { margin-top: 14px; font-size: 15px; color: var(--muted); }
+    .wordmark-wrap { display: inline-block; line-height: 1; }
+    .wordmark-text { font-family: var(--display); letter-spacing: 0.06em; display: block; font-size: 68px; line-height: 0.88; }
+    .wm-white { color: var(--text); }
+    .wm-green { color: var(--accent); }
+    .wordmark-wrap::after { content: ''; display: block; height: 4px; background: var(--accent); margin-top: 4px; }
+    .splash-kicker { margin-top: 22px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+    .splash-tagline { margin-top: 8px; font-size: 13px; color: var(--muted); }
     .splash-spacer { flex: 1; }
     #screen-rate { padding: 16px 16px calc(18px + env(safe-area-inset-bottom)); gap: 0; }
     .rate-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; padding: 0 4px; gap: 12px; }
-    .rate-header-title { font-size: 14px; font-weight: 600; color: var(--muted); line-height: 1.4; flex: 1; }
-    .rate-counter { font-size: 13px; color: var(--muted); white-space: nowrap; padding-top: 1px; }
+    .rate-header-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); line-height: 1.4; flex: 1; padding-top: 2px; }
+    .rate-counter { font-size: 12px; color: var(--muted); white-space: nowrap; padding-top: 1px; }
     .profile-card {
-      background: var(--card); border-radius: 20px;
+      background: var(--card); border-radius: var(--radius); border: 1px solid var(--border);
       overflow: hidden; display: flex;
       flex-direction: column; min-height: 0;
       width: min(100%, calc(56vh * 9 / 16));
@@ -101,18 +111,18 @@
       transform: translate(-50%, -50%);
       border: 0;
       background: var(--accent);
-      color: #fff;
-      font-family: var(--font);
-      font-size: 15px;
-      font-weight: 700;
-      border-radius: 999px;
-      padding: 12px 22px;
+      color: var(--bg);
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      border-radius: var(--radius);
+      padding: 10px 22px;
       cursor: pointer;
     }
     .sound-btn {
       position: absolute; z-index: 2; left: 12px; bottom: 12px;
-      border: 1px solid var(--border); background: rgba(18,18,20,0.72);
-      color: var(--text); font-family: var(--font); font-size: 12px; font-weight: 600;
+      border: 1px solid var(--border); background: rgba(14,14,14,0.82);
+      color: var(--text); font-family: var(--font); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
       border-radius: 999px; padding: 7px 12px; cursor: pointer;
     }
     .profile-info {
@@ -120,25 +130,25 @@
       display: flex; flex-direction: column; gap: 3px;
       border-top: 1px solid var(--border);
     }
-    .profile-name { font-size: 21px; font-weight: 700; letter-spacing: -0.4px; }
+    .profile-name { font-family: var(--display); font-size: 32px; letter-spacing: 0.04em; line-height: 1; }
     .profile-school-job { font-size: 13px; color: var(--muted); }
     .profile-social { font-size: 11px; color: rgba(246,243,238,0.2); margin-top: 5px; font-style: italic; }
     .rating-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
     .rating-btn {
-      min-height: 48px; border-radius: 12px;
-      border: 1px solid var(--border); background: var(--card);
-      color: var(--text); font-size: 16px; font-weight: 600;
+      min-height: 48px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text); font-size: 16px;
       cursor: pointer; font-family: var(--font);
       transition: background 0.1s, border-color 0.1s, transform 0.1s;
     }
-    .rating-btn:hover { background: rgba(226,84,60,0.18); border-color: var(--accent); }
+    .rating-btn:hover { border-color: var(--accent); }
     .rating-btn:active { transform: scale(0.93); }
     .rating-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-    .rating-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .rating-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
     .banner {
       margin: 0 4px 10px;
       border: 1px solid var(--accent);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 10px 12px;
       font-size: 13px;
       line-height: 1.45;
@@ -151,35 +161,35 @@
       display: inline-block; padding: 5px 14px;
       border-radius: 999px; font-size: 11px; font-weight: 700;
       letter-spacing: 0.12em; text-transform: uppercase;
-      background: var(--accent); color: #fff;
+      background: var(--accent); color: var(--bg);
     }
-    .reveal-title { font-size: 40px; font-weight: 800; letter-spacing: -1px; margin-top: 10px; }
+    .reveal-title { font-family: var(--display); font-size: 72px; letter-spacing: 0.02em; line-height: 1; margin-top: 10px; color: var(--accent); }
     .reveal-body { font-size: 15px; color: var(--muted); line-height: 1.6; }
     .reveal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
     .reveal-progress-wrap { padding: 0 24px calc(28px + env(safe-area-inset-bottom)); }
     .reveal-progress-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
     .reveal-progress-track { height: 4px; background: var(--border); border-radius: 999px; overflow: hidden; }
     .reveal-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
-    .report-headline { font-size: 32px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.2; }
+    .report-headline { font-family: var(--display); font-size: 52px; letter-spacing: 0.02em; line-height: 0.95; }
     .report-headline span { color: var(--accent); }
     .report-stats { margin-top: 22px; background: var(--card); border-radius: var(--radius); padding: 18px 20px; display: flex; }
     .stat-item { flex: 1; text-align: center; }
     .stat-item + .stat-item { border-left: 1px solid var(--border); }
-    .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+    .stat-num { font-family: var(--display); font-size: 40px; color: var(--accent); letter-spacing: 0.02em; }
     .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
     .reset-link { display: block; text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; background: none; border: none; font-family: var(--font); }
-    .register-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .register-title { font-family: var(--display); font-size: 48px; letter-spacing: 0.02em; line-height: 0.95; }
     .register-sub { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
     #screen-confirm { text-align: center; justify-content: center; align-items: center; gap: 10px; }
-    .confirm-mark { width: 68px; height: 68px; border-radius: 50%; background: #1e3d2a; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #7de0a8; margin-bottom: 8px; }
-    .confirm-title { font-size: 26px; font-weight: 700; }
+    .confirm-mark { width: 68px; height: 68px; border-radius: 50%; background: #1a2208; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 36px; color: var(--accent); margin-bottom: 8px; }
+    .confirm-title { font-family: var(--display); font-size: 48px; letter-spacing: 0.02em; }
     .confirm-sub { font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 280px; }
-    .btn { display: block; width: 100%; padding: 16px; border-radius: var(--radius); border: none; font-size: 16px; font-weight: 700; cursor: pointer; font-family: var(--font); transition: opacity 0.15s; text-align: center; text-decoration: none; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { opacity: 0.88; }
+    .btn { display: block; width: 100%; padding: 18px 24px; border-radius: var(--radius); border: none; font-size: 22px; letter-spacing: 0.1em; cursor: pointer; font-family: var(--display); transition: background 0.15s; text-align: center; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: #d8ff40; }
     .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
     .spacer { flex: 1; }
-    .status-title { font-size: 40px; font-weight: 800; letter-spacing: -1px; line-height: 1.05; }
+    .status-title { font-family: var(--display); font-size: 52px; letter-spacing: 0.02em; line-height: 0.95; }
     .status-body { margin-top: 14px; font-size: 15px; color: var(--muted); line-height: 1.6; }
   </style>
 </head>
@@ -189,8 +199,11 @@
 
   <div id="screen-splash" class="screen active">
     <div class="splash-spacer"></div>
-    <div class="splash-title">HOT<br>or <span>BOT</span></div>
-    <div class="splash-tagline">Free to rate. Pay to match.</div>
+    <div class="wordmark-wrap">
+      <span class="wordmark-text"><span class="wm-white">I HEREBY</span><br><span class="wm-green">COMMIT</span></span>
+    </div>
+    <div class="splash-kicker">AI video</div>
+    <div class="splash-tagline">Swipe sandbox</div>
     <div class="splash-spacer"></div>
     <button class="btn btn-primary" id="start-rating" type="button">Start rating</button>
   </div>
@@ -198,7 +211,7 @@
   <div id="screen-rate" class="screen">
     <p id="banner" class="banner" hidden></p>
     <div class="rate-header">
-      <div class="rate-header-title" id="rate-title">Get your personalized algorithm by completing 25 ratings</div>
+      <div class="rate-header-title" id="rate-title">AI video</div>
       <div class="rate-counter" id="rate-counter">1 / 25</div>
     </div>
     <div class="profile-card">
@@ -211,7 +224,6 @@
       <div class="profile-info">
         <div class="profile-name" id="profile-name">Profile</div>
         <div class="profile-school-job" id="profile-school-job" hidden></div>
-        <div class="profile-social">instagram · linkedin · x · tiktok — unlocked after you match</div>
       </div>
     </div>
     <div class="rating-grid" id="rating-grid"></div>
@@ -250,23 +262,23 @@
       </div>
     </div>
     <div style="margin-top:22px">
-      <button class="btn btn-primary" id="report-register" type="button">Register to see results &amp; keep voting</button>
+      <button class="btn btn-primary" id="report-register" type="button">Done</button>
     </div>
     <button class="reset-link" id="reset-link" type="button">Rate again</button>
   </div>
 
   <div id="screen-register" class="screen">
-    <div class="register-title">Create your account</div>
-    <div class="register-sub">See who rated you. Get matched. Start meeting people.</div>
+    <div class="register-title">AI video sandbox</div>
+    <div class="register-sub">This sandbox does not create an account. The study application does.</div>
     <div class="spacer"></div>
-    <button class="btn btn-primary" id="register-submit" type="button">Create account</button>
+    <button class="btn btn-primary" id="register-submit" type="button">Back</button>
   </div>
 
   <div id="screen-confirm" class="screen">
     <div class="spacer"></div>
     <div class="confirm-mark">+</div>
-    <div class="confirm-title">You're in.</div>
-    <div class="confirm-sub" id="confirm-sub">We'll text you when someone rated you highly. Keep your phone close.</div>
+    <div class="confirm-title">That's the deck.</div>
+    <div class="confirm-sub" id="confirm-sub">Accounts are created in the study application.</div>
     <a class="btn btn-secondary" id="confirm-home" href="/" style="margin-top:18px;">Back to the study</a>
     <div class="spacer"></div>
   </div>
@@ -547,7 +559,7 @@
     }
     showScreen('rate');
     var total = deck.length;
-    document.getElementById('rate-title').textContent = 'Get your personalized algorithm by completing ' + total + (total === 1 ? ' rating' : ' ratings');
+    document.getElementById('rate-title').textContent = 'AI video';
     document.getElementById('rate-counter').textContent = (index + 1) + ' / ' + total;
     document.getElementById('profile-name').textContent = profileTitle(entry, index + 1);
     var detail = profileDetail(entry);
@@ -733,7 +745,7 @@
   });
   document.getElementById('report-register').addEventListener('click', function () { showScreen('register'); });
   document.getElementById('register-submit').addEventListener('click', function () {
-    document.getElementById('confirm-sub').textContent = 'The study application is where an account is actually created.';
+    document.getElementById('confirm-sub').textContent = 'Accounts are created in the study application.';
     showScreen('confirm');
   });
   document.getElementById('reset-link').addEventListener('click', loadDeck);

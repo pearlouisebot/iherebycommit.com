@@ -392,7 +392,7 @@ struct HotOrBotDeckView: View {
 
     private var header: some View {
         HStack {
-            Text("HOT OR BOT")
+            Text("I HEREBY COMMIT")
                 .font(.system(size: 28, weight: .regular, design: .default))
                 .kerning(1)
             Spacer()

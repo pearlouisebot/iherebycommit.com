@@ -1,6 +1,8 @@
-# Hot or Bot
+# I Hereby Commit — AI video sandbox
 
-A sandbox rating deck. Open `/sandbox/hotorbot/` on a phone-sized window. It is not linked from the study application, and finishing onboarding does not open it.
+A swipe deck for short clips, branded like the study site (wordmark, Bebas Neue, Space Mono, `#0e0e0e` / `#c8f135`). Open `/sandbox/hotorbot/` on a phone-sized window. It is not linked from the study application, and finishing onboarding does not open it.
+
+The page does not say Hot or Bot. The database names stay as they are: public bucket `hotorbot-videos`, and the RPCs `get_swipe_deck`, `cast_swipe_vote`, and `get_video_profile_tallies`.
 
 The database is already live on the same Supabase project as the waitlist (`dqrmyqmpqnlemkwdndsf`). This page does not create tables. It uses the publishable key already in the site. There is no service-role key in the client.
 
@@ -10,7 +12,7 @@ The page asks for a deck (`get_swipe_deck`). How many to ask for is the `DECK_LI
 
 Play and show only the `video_url` and `poster_url` on each row. Do not build storage paths in the client. Those paths are already versioned and can change again.
 
-The layout follows the mockup as a visual reference only: splash ("HOT or BOT", "Free to rate. Pay to match."), a profile card, then a 1–10 score. After each score there is a short rated screen and a Next button. At the end you see your average. The page always starts on the splash. It does not read a query string or session flag from onboarding.
+The splash is the I HEREBY COMMIT wordmark, then "AI video" and "Swipe sandbox", then a profile card and a 1–10 score. After each score there is a short rated screen and a Next button. At the end you see your average. The page always starts on the splash. It does not read a query string or session flag from onboarding.
 
 Clips are mixed 720×1280 portrait and 1280×720 landscape, and they can include audio. The card is 9:16. A portrait frame uses `object-fit: cover`. A landscape frame (width greater than height, from the deck row and then from the video's own metadata) uses `object-fit: contain`, so the full frame letterboxes on black. The clip plays inline, muted, and looped. The poster image stays on top of the video until a frame is actually playing, because the video element otherwise paints black over that still (most visibly on the first card, before any bytes have arrived). If autoplay is blocked, a Play button starts it from the tap. Tap the picture (or "Tap for sound") to unmute once it is playing. A clip that fails to load keeps the poster and a short message. Only that clip's video is loaded. Leaving the card cancels that download. The next card preloads its poster image and does not fetch its video until it is on screen. The page times the watch from when the video starts until the score, and sends that as `dwell_ms` with `client` set to `web`.
 
@@ -60,3 +62,7 @@ Playback on iOS is one `AVPlayerItem` at a time, created from `video_url`, muted
 ## SQL
 
 The schema, seed, storage bucket, and deck fix are already applied. This repo does not keep a `migrations/` or `supabase/` SQL folder (research SQL lives in a private repo, and `master` is published by GitHub Pages), so those reference files were not copied in here.
+
+## Hosting
+
+`https://iherebycommit.com` is GitHub Pages from the `master` branch only, with `CNAME` set to that domain and Cloudflare in front. The Pages environment allows deploys from `master`, `main`, and `gh-pages`. There is no sandbox branch in that policy, no Actions workflow, no Cloudflare Pages or Workers project, and `sandbox.iherebycommit.com` does not resolve. This page stays on `sandbox/hotorbot_grokbot` and is not copied onto `master`. Switching the Pages source would replace the live study site, so that setting is left alone.
