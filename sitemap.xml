@@ -7,6 +7,12 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://iherebycommit.com/hotorbot/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://iherebycommit.com/privacy/</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>yearly</changefreq>

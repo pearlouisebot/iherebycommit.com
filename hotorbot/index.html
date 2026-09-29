@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0e0e0e">
+  <title>Hot or Bot — I Hereby Commit</title>
+  <meta name="description" content="A short deck of vertical clips. Vote hot, not, bot, or human.">
+  <meta property="og:title" content="Hot or Bot — I Hereby Commit">
+  <meta property="og:description" content="A short deck of vertical clips. Vote hot, not, bot, or human.">
+  <meta property="og:url" content="https://iherebycommit.com/hotorbot/">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://iherebycommit.com/hotorbot/">
+  <link rel="preconnect" href="https://dqrmyqmpqnlemkwdndsf.supabase.co">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --text: #f0ece0;
+      --body: #9a978c;
+      --accent: #c8f135;
+      --orange: #FF7A2F;
+      --muted: #888;
+      --dim: #333;
+      --error: #ff4f4f;
+      --radius: 4px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; background: var(--bg); }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body::before {
+      content: '';
+      position: fixed; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      pointer-events: none; z-index: 40; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      animation: grain 0.3s steps(1) infinite;
+    }
+    @keyframes grain {
+      0% { transform: translate(0,0); } 25% { transform: translate(-2%, 1%); }
+      50% { transform: translate(1%, -2%); } 75% { transform: translate(-1%, 2%); }
+      100% { transform: translate(2%, -1%); }
+    }
+    a { color: inherit; }
+    button, a { touch-action: manipulation; }
+    #app {
+      position: fixed;
+      top: 0; bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(430px, 100%);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+      touch-action: none;
+    }
+    header {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: calc(10px + env(safe-area-inset-top)) 16px 8px;
+      background: var(--bg);
+    }
+    .back {
+      justify-self: start;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .wordmark {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-align: center;
+    }
+    .wordmark .hot { color: var(--accent); }
+    .wordmark .or { color: var(--muted); font-size: 0.62em; letter-spacing: 0.14em; }
+    .wordmark .bot { color: var(--orange); }
+    #count {
+      justify-self: end;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      min-width: 4.5em;
+      text-align: right;
+    }
+    .progress {
+      flex-shrink: 0;
+      display: flex;
+      gap: 4px;
+      padding: 0 16px 8px;
+      background: var(--bg);
+    }
+    .progress span {
+      flex: 1;
+      height: 3px;
+      background: var(--dim);
+    }
+    .progress span.done { background: var(--accent); }
+    .progress span.active { background: var(--text); }
+    #stage {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      background: #141414;
+    }
+    #card {
+      position: absolute;
+      inset: 0;
+      background: #141414 center / cover no-repeat;
+      will-change: transform;
+      transition: transform 220ms ease;
+    }
+    #card.dragging { transition: none; }
+    #clip {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: transparent;
+      display: block;
+      pointer-events: none;
+    }
+    #sound {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      z-index: 3;
+      border: 1px solid var(--dim);
+      background: rgba(14, 14, 14, 0.72);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .stamp {
+      position: absolute;
+      top: 28px;
+      z-index: 2;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      padding: 4px 10px;
+      border: 4px solid currentColor;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .stamp-hot { left: 18px; color: var(--accent); transform: rotate(-12deg); }
+    .stamp-not { right: 18px; color: var(--error); transform: rotate(12deg); }
+    #banner {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 6;
+      pointer-events: none;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    #state {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 28px 24px;
+      background: var(--bg);
+    }
+    #state[hidden], #card[hidden], #dock[hidden], #banner[hidden], .progress[hidden] { display: none !important; }
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    #state h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 56px;
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      margin-bottom: 16px;
+    }
+    #state p { color: var(--body); font-size: 13px; line-height: 1.6; max-width: 28em; }
+    #state-action, .text-link {
+      margin-top: 22px;
+      align-self: flex-start;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      padding: 12px 18px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    #dock {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+      background: var(--bg);
+    }
+    #dock.busy { opacity: 0.72; }
+    .vote-row { display: flex; gap: 8px; }
+    .vote {
+      flex: 1;
+      min-height: 52px;
+      border-radius: var(--radius);
+      border: 1px solid var(--dim);
+      background: transparent;
+      color: var(--text);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .vote:active { transform: scale(0.98); }
+    .vote:focus-visible, #sound:focus-visible, .back:focus-visible, #state-action:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .vote-hot { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    .vote-not { color: var(--text); }
+    .vote-bot { color: var(--orange); border-color: var(--orange); }
+    .vote-human { color: var(--accent); border-color: var(--accent); }
+    .hint {
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #card { transition: none; }
+      body::before { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <a class="back" href="../">Study</a>
+      <div class="wordmark"><span class="hot">HOT</span> <span class="or">OR</span> <span class="bot">BOT</span></div>
+      <div id="count" aria-live="polite"></div>
+    </header>
+    <div class="progress" id="progress" hidden></div>
+    <div id="stage">
+      <article id="card" hidden>
+        <video id="clip" playsinline webkit-playsinline muted autoplay loop preload="metadata" poster="" disablepictureinpicture disableremoteplayback></video>
+        <div class="stamp stamp-hot" id="stamp-hot" aria-hidden="true">HOT</div>
+        <div class="stamp stamp-not" id="stamp-not" aria-hidden="true">NOT</div>
+        <button type="button" id="sound">Tap for sound</button>
+      </article>
+      <p id="banner" hidden role="status"></p>
+      <section id="state">
+        <p class="eyebrow" id="state-kicker">Deck</p>
+        <h1 id="state-title">Loading the deck…</h1>
+        <p id="state-body">Pulling the next set of clips.</p>
+        <button type="button" id="state-action" hidden>Try again</button>
+      </section>
+    </div>
+    <div id="dock" hidden>
+      <div class="vote-row">
+        <button type="button" class="vote vote-not" data-vote="not">Not</button>
+        <button type="button" class="vote vote-hot" data-vote="hot">Hot</button>
+      </div>
+      <div class="vote-row">
+        <button type="button" class="vote vote-bot" data-vote="bot">Bot</button>
+        <button type="button" class="vote vote-human" data-vote="human">Human</button>
+      </div>
+      <p class="hint">Swipe left not · right hot · one vote each</p>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+  <script>
+    // Same publishable key as the waitlist in index.html. Never a service-role key.
+    var SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
+    var SUPABASE_ANON_KEY = 'sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
+    // How many clips to request. The server clamps this to 1..50.
+    var DECK_LIMIT = 10;
+    var VOTE_CLOSED = "Voting isn't open yet — sign-in is turned off. You can still watch the deck.";
+
+    var clip = document.getElementById('clip');
+    var card = document.getElementById('card');
+    var dock = document.getElementById('dock');
+    var banner = document.getElementById('banner');
+    var countEl = document.getElementById('count');
+    var progressEl = document.getElementById('progress');
+    var stateEl = document.getElementById('state');
+    var stateKicker = document.getElementById('state-kicker');
+    var stateTitle = document.getElementById('state-title');
+    var stateBody = document.getElementById('state-body');
+    var stateAction = document.getElementById('state-action');
+    var soundBtn = document.getElementById('sound');
+    var stampHot = document.getElementById('stamp-hot');
+    var stampNot = document.getElementById('stamp-not');
+
+    var sb = null;
+    var deck = [];
+    var index = 0;
+    var locked = false;
+    var soundOn = false;
+    var authBlocked = false;
+    var sawAuthBlock = false;
+    var lastAuthAnonDisabled = true;
+    var videoStartedAt = null;
+    var playRequestedAt = 0;
+    var loadGen = 0;
+    var posterCache = [];
+    var drag = null;
+
+    clip.playsInline = true;
+    clip.muted = true;
+    clip.addEventListener('playing', function () {
+      if (videoStartedAt == null) videoStartedAt = performance.now();
+    });
+
+    function safeUrl(value) {
+      if (!value) return '';
+      try {
+        var url = new URL(value);
+        return url.protocol === 'https:' ? url.href : '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function showBanner(text) {
+      banner.textContent = text;
+      banner.hidden = false;
+    }
+
+    function showState(kind, detail) {
+      clip.pause();
+      card.hidden = true;
+      dock.hidden = true;
+      progressEl.hidden = true;
+      banner.hidden = true;
+      stateEl.hidden = false;
+      stateAction.hidden = kind !== 'error';
+      if (kind === 'loading') {
+        stateKicker.textContent = 'Deck';
+        stateTitle.textContent = 'Loading the deck…';
+        stateBody.textContent = 'Pulling the next set of clips.';
+        countEl.textContent = '';
+      } else if (kind === 'empty') {
+        stateKicker.textContent = 'Deck';
+        stateTitle.textContent = "You've seen them all";
+        stateBody.textContent = detail || 'Nothing left to vote on right now.';
+        countEl.textContent = deck.length ? (deck.length + ' / ' + deck.length) : '';
+      } else {
+        stateKicker.textContent = 'Deck';
+        stateTitle.textContent = 'Couldn’t load the deck';
+        stateBody.textContent = detail || 'Check your connection and try again.';
+        countEl.textContent = '';
+      }
+    }
+
+    function renderProgress() {
+      progressEl.hidden = false;
+      progressEl.replaceChildren();
+      deck.forEach(function (_, i) {
+        var bar = document.createElement('span');
+        if (i < index) bar.className = 'done';
+        else if (i === index) bar.className = 'active';
+        progressEl.appendChild(bar);
+      });
+    }
+
+    function updateSound() {
+      soundBtn.textContent = soundOn ? 'Sound on' : 'Tap for sound';
+      soundBtn.setAttribute('aria-label', soundOn ? 'Mute video' : 'Unmute video');
+      clip.muted = !soundOn;
+      if (soundOn) clip.removeAttribute('muted');
+      else clip.setAttribute('muted', '');
+    }
+
+    function dwellMs() {
+      var start = videoStartedAt || playRequestedAt || performance.now();
+      var ms = Math.round(performance.now() - start);
+      if (!isFinite(ms) || ms < 0) return 0;
+      return ms;
+    }
+
+    function preloadPoster(entry) {
+      var href = entry ? safeUrl(entry.poster_url) : '';
+      if (!href) return;
+      var img = new Image();
+      img.decoding = 'async';
+      img.src = href;
+      posterCache.push(img);
+      var link = document.getElementById('next-poster');
+      if (!link) {
+        link = document.createElement('link');
+        link.id = 'next-poster';
+        link.rel = 'preload';
+        link.as = 'image';
+        document.head.appendChild(link);
+      }
+      link.href = href;
+    }
+
+    function playClip(entry) {
+      var src = safeUrl(entry.video_url);
+      var poster = safeUrl(entry.poster_url);
+      videoStartedAt = null;
+      playRequestedAt = performance.now();
+      clip.playsInline = true;
+      clip.setAttribute('playsinline', '');
+      clip.setAttribute('webkit-playsinline', '');
+      clip.autoplay = true;
+      clip.loop = true;
+      clip.preload = 'metadata';
+      clip.poster = poster;
+      card.style.backgroundImage = poster ? 'url("' + poster.replace(/["\\]/g, '') + '")' : 'none';
+      updateSound();
+      if (clip.getAttribute('src') !== src) clip.src = src;
+      var attempt = clip.play();
+      if (attempt && attempt.catch) {
+        attempt.catch(function () {
+          if (!clip.muted) {
+            soundOn = false;
+            updateSound();
+            clip.play().catch(function () {});
+          }
+        });
+      }
+    }
+
+    function resetMotion() {
+      card.classList.remove('dragging');
+      card.style.transition = 'none';
+      card.style.transform = 'none';
+      stampHot.style.opacity = '0';
+      stampNot.style.opacity = '0';
+      void card.offsetWidth;
+      card.style.transition = '';
+    }
+
+    function showCard() {
+      var entry = deck[index];
+      if (!entry) {
+        var note = sawAuthBlock
+          ? 'Your votes were not saved because sign-in is turned off. These clips will still be here when voting opens.'
+          : 'Nothing left to vote on right now.';
+        showState('empty', note);
+        return;
+      }
+      stateEl.hidden = true;
+      card.hidden = false;
+      dock.hidden = false;
+      countEl.textContent = (index + 1) + ' / ' + deck.length;
+      renderProgress();
+      resetMotion();
+      playClip(entry);
+      preloadPoster(deck[index + 1]);
+    }
+
+    function isAnonDisabled(error) {
+      var blob = ((error && (error.code || error.error_code || error.message)) || '') + '';
+      return /anonymous/i.test(blob) || /sign-?ins are disabled/i.test(blob);
+    }
+
+    async function ensureSession() {
+      if (authBlocked) return null;
+      var current = await sb.auth.getSession();
+      if (current && current.data && current.data.session) return current.data.session;
+      var signed = await sb.auth.signInAnonymously();
+      if (signed && signed.data && signed.data.session) return signed.data.session;
+      authBlocked = true;
+      sawAuthBlock = true;
+      lastAuthAnonDisabled = !signed || !signed.error || isAnonDisabled(signed.error);
+      return null;
+    }
+
+    async function saveVote(entry, vote, dwell) {
+      var session = null;
+      try {
+        session = await ensureSession();
+      } catch (err) {
+        authBlocked = true;
+        sawAuthBlock = true;
+        lastAuthAnonDisabled = isAnonDisabled(err);
+        showBanner(lastAuthAnonDisabled ? VOTE_CLOSED : "Voting isn't available right now. You can still watch the deck.");
+        return false;
+      }
+      if (!session) {
+        showBanner(lastAuthAnonDisabled ? VOTE_CLOSED : "Voting isn't available right now. You can still watch the deck.");
+        return false;
+      }
+      var result = await sb.rpc('cast_swipe_vote', {
+        p_video_profile_id: entry.id,
+        p_vote: vote,
+        p_dwell_ms: dwell,
+        p_client: 'web'
+      });
+      if (result.error) {
+        var code = result.error.code || '';
+        var message = result.error.message || '';
+        if (code === '28000' || code === '42501' || /not authenticated|permission denied/i.test(message)) {
+          authBlocked = true;
+          sawAuthBlock = true;
+          showBanner(VOTE_CLOSED);
+          return false;
+        }
+        showBanner("That vote didn't save. You can try again.");
+        throw result.error;
+      }
+      banner.hidden = true;
+      return true;
+    }
+
+    function fly(dir) {
+      return new Promise(function (resolve) {
+        var settled = false;
+        var finish = function () {
+          if (settled) return;
+          settled = true;
+          resolve();
+        };
+        var onEnd = function (ev) {
+          if (ev.propertyName !== 'transform') return;
+          card.removeEventListener('transitionend', onEnd);
+          finish();
+        };
+        card.addEventListener('transitionend', onEnd);
+        var x = 0;
+        var y = 0;
+        var rot = 0;
+        if (dir === 'left') { x = -window.innerWidth; rot = -14; }
+        else if (dir === 'right') { x = window.innerWidth; rot = 14; }
+        else if (dir === 'up') { y = -window.innerHeight; }
+        else { y = window.innerHeight * 0.45; }
+        card.classList.remove('dragging');
+        card.style.transition = 'transform 260ms ease-in';
+        card.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + rot + 'deg)';
+        setTimeout(finish, 420);
+      });
+    }
+
+    function directionFor(vote) {
+      if (vote === 'hot') return 'right';
+      if (vote === 'not') return 'left';
+      if (vote === 'human') return 'up';
+      return 'down';
+    }
+
+    async function cast(vote, dir) {
+      if (locked || !deck[index]) return;
+      var allowed = { hot: 1, not: 1, bot: 1, human: 1 };
+      if (!allowed[vote]) return;
+      locked = true;
+      dock.classList.add('busy');
+      var entry = deck[index];
+      var dwell = dwellMs();
+      var saved = false;
+      try {
+        saved = await saveVote(entry, vote, dwell);
+      } catch (err) {
+        resetMotion();
+        locked = false;
+        dock.classList.remove('busy');
+        return;
+      }
+      if (!saved && !sawAuthBlock) {
+        resetMotion();
+        locked = false;
+        dock.classList.remove('busy');
+        return;
+      }
+      clip.pause();
+      await fly(dir || directionFor(vote));
+      index += 1;
+      locked = false;
+      dock.classList.remove('busy');
+      showCard();
+    }
+
+    function loadDeck() {
+      var gen = ++loadGen;
+      showState('loading');
+      banner.hidden = true;
+      deck = [];
+      index = 0;
+      sb.rpc('get_swipe_deck', { p_limit: DECK_LIMIT }).then(function (result) {
+        if (gen !== loadGen) return;
+        if (result.error) {
+          showState('error');
+          return;
+        }
+        deck = Array.isArray(result.data) ? result.data : [];
+        if (!deck.length) {
+          showState('empty');
+          return;
+        }
+        showCard();
+      }).catch(function () {
+        if (gen === loadGen) showState('error');
+      });
+    }
+
+    soundBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      soundOn = !soundOn;
+      updateSound();
+      if (clip.paused) clip.play().catch(function () {});
+    });
+
+    dock.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-vote]');
+      if (!btn) return;
+      cast(btn.getAttribute('data-vote'));
+    });
+
+    stateAction.addEventListener('click', function () { loadDeck(); });
+
+    card.addEventListener('pointerdown', function (e) {
+      if (locked || e.button > 0) return;
+      if (e.target.closest('button')) return;
+      card.setPointerCapture(e.pointerId);
+      drag = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0 };
+      card.classList.add('dragging');
+    });
+
+    card.addEventListener('pointermove', function (e) {
+      if (!drag || drag.id !== e.pointerId) return;
+      drag.dx = e.clientX - drag.x;
+      drag.dy = e.clientY - drag.y;
+      var rot = Math.max(-12, Math.min(12, drag.dx / 18));
+      card.style.transform = 'translate(' + drag.dx + 'px, ' + (drag.dy * 0.12) + 'px) rotate(' + rot + 'deg)';
+      stampHot.style.opacity = String(Math.max(0, Math.min(1, drag.dx / 90)));
+      stampNot.style.opacity = String(Math.max(0, Math.min(1, -drag.dx / 90)));
+    });
+
+    function endDrag(e) {
+      if (!drag || (e && drag.id !== e.pointerId)) return;
+      var dx = drag.dx;
+      var dy = drag.dy;
+      drag = null;
+      card.classList.remove('dragging');
+      if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
+        soundOn = !soundOn;
+        updateSound();
+        if (clip.paused) clip.play().catch(function () {});
+        resetMotion();
+        return;
+      }
+      if (Math.abs(dx) > 72 && Math.abs(dx) > Math.abs(dy)) {
+        cast(dx > 0 ? 'hot' : 'not', dx > 0 ? 'right' : 'left');
+        return;
+      }
+      resetMotion();
+    }
+
+    card.addEventListener('pointerup', endDrag);
+    card.addEventListener('pointercancel', function () {
+      drag = null;
+      resetMotion();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') cast('hot');
+      else if (e.key === 'ArrowLeft') cast('not');
+      else if (e.key === 'ArrowUp') cast('human');
+      else if (e.key === 'ArrowDown') cast('bot');
+      else if (e.key === 'm' || e.key === 'M') soundBtn.click();
+    });
+
+    document.addEventListener('touchmove', function (e) {
+      if (e.target.closest('a, button')) return;
+      e.preventDefault();
+    }, { passive: false });
+
+    if (!window.supabase || !window.supabase.createClient) {
+      showState('error', 'The page could not reach its connection library. Refresh and try again.');
+    } else {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false
+        }
+      });
+      loadDeck();
+    }
+  </script>
+</body>
+</html>
