@@ -11,6 +11,7 @@
   <meta property="og:url" content="https://iherebycommit.com/hotorbot/">
   <meta property="og:type" content="website">
   <link rel="canonical" href="https://iherebycommit.com/hotorbot/">
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://dqrmyqmpqnlemkwdndsf.supabase.co">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -429,9 +430,11 @@
         link.id = 'next-poster';
         link.rel = 'preload';
         link.as = 'image';
+        link.href = href;
         document.head.appendChild(link);
+      } else if (link.href !== href) {
+        link.href = href;
       }
-      link.href = href;
     }
 
     function playClip(entry) {
