@@ -79,9 +79,36 @@
       width: 100%; height: 100%;
       object-fit: cover;
       z-index: 1;
-      background: #000;
+      background: transparent;
     }
     .profile-visual.landscape video { object-fit: contain; }
+    .poster-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 2;
+      pointer-events: none;
+      background: transparent;
+    }
+    .profile-visual.landscape .poster-img { object-fit: contain; }
+    .profile-visual.is-playing .poster-img,
+    .profile-visual.pending .poster-img,
+    .profile-visual.pending video { visibility: hidden; }
+    .profile-visual.pending { background-color: var(--card); background-image: none; }
+    .play-btn {
+      position: absolute; z-index: 3;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 12px 22px;
+      cursor: pointer;
+    }
     .sound-btn {
       position: absolute; z-index: 2; left: 12px; bottom: 12px;
       border: 1px solid var(--border); background: rgba(18,18,20,0.72);
@@ -176,7 +203,9 @@
     </div>
     <div class="profile-card">
       <div class="profile-visual" id="profile-visual">
-        <video id="profile-video" autoplay loop muted playsinline webkit-playsinline preload="none" poster="" disablepictureinpicture disableremoteplayback></video>
+        <video id="profile-video" loop muted playsinline webkit-playsinline preload="none" disablepictureinpicture disableremoteplayback></video>
+        <img id="poster-img" class="poster-img" alt="" decoding="async">
+        <button type="button" class="play-btn" id="play-btn" hidden>Play</button>
         <button type="button" class="sound-btn" id="sound-btn">Tap for sound</button>
       </div>
       <div class="profile-info">
@@ -272,6 +301,8 @@
 
   var video = document.getElementById('profile-video');
   var visual = document.getElementById('profile-visual');
+  var posterImg = document.getElementById('poster-img');
+  var playBtn = document.getElementById('play-btn');
   var soundBtn = document.getElementById('sound-btn');
   var banner = document.getElementById('banner');
   var grid = document.getElementById('rating-grid');
@@ -288,15 +319,28 @@
   var videoStartedAt = null;
   var playRequestedAt = 0;
   var loadGen = 0;
+  var clipGen = 0;
   var posterCache = [];
 
   video.playsInline = true;
   video.muted = true;
   video.addEventListener('playing', function () {
     if (videoStartedAt == null) videoStartedAt = performance.now();
+    // A video with no decoded frame paints black and covers the poster. Keep the still until playback has a frame.
+    if (video.readyState >= 2 && video.videoWidth > 0) {
+      visual.classList.add('is-playing');
+      showPlayButton(false);
+    }
   });
   video.addEventListener('loadedmetadata', function () {
     if (video.videoWidth && video.videoHeight) applyFit(video.videoWidth, video.videoHeight);
+  });
+  video.addEventListener('error', function () {
+    // Dropping the previous src also reports an error. Only a clip we still mean to play counts.
+    if (!video.getAttribute('src')) return;
+    visual.classList.remove('is-playing');
+    showPlayButton(false);
+    showBanner("This clip didn't load. You can still keep going.");
   });
 
   function safeUrl(value) {
@@ -387,42 +431,96 @@
     visual.classList.toggle('landscape', width > 0 && height > 0 && width > height);
   }
 
+  function showPlayButton(on) {
+    playBtn.hidden = !on;
+  }
+
+  // The <img> sits above the video. WebKit paints an opaque black frame as soon as
+  // playback is requested, which used to cover the poster for the whole first load.
+  function showPoster(url) {
+    visual.classList.remove('is-playing');
+    showPlayButton(false);
+    if (!url) {
+      posterImg.removeAttribute('src');
+      visual.style.backgroundImage = 'none';
+      video.removeAttribute('poster');
+      return;
+    }
+    if (posterImg.getAttribute('src') !== url) posterImg.src = url;
+    video.setAttribute('poster', url);
+    visual.style.backgroundImage = 'url("' + url.replace(/["\\]/g, '') + '")';
+  }
+
+  function startPlayback() {
+    var keepSound = soundOn;
+    video.muted = true;
+    video.setAttribute('muted', '');
+    var attempt = video.play();
+    if (!attempt || !attempt.then) return;
+    attempt.then(function () {
+      showPlayButton(false);
+      if (keepSound) {
+        soundOn = true;
+        video.muted = false;
+        video.removeAttribute('muted');
+      }
+      updateSound();
+    }).catch(function () {
+      video.muted = true;
+      video.setAttribute('muted', '');
+      showPlayButton(true);
+      updateSound();
+    });
+  }
+
+  // Don't attach the mp4 until the still is on screen. Setting src first makes WebKit
+  // drop the poster and paint black for the whole download.
+  function whenPosterReady(url, done) {
+    if (!url) { done(); return; }
+    var finished = false;
+    var finish = function () {
+      if (finished) return;
+      finished = true;
+      posterImg.removeEventListener('load', finish);
+      posterImg.removeEventListener('error', finish);
+      done();
+    };
+    posterImg.addEventListener('load', finish);
+    posterImg.addEventListener('error', finish);
+    if (posterImg.complete && posterImg.getAttribute('src') === url && posterImg.naturalWidth > 0) finish();
+    setTimeout(finish, 1200);
+  }
+
   function playClip(entry) {
     var src = safeUrl(entry.video_url);
     var poster = safeUrl(entry.poster_url);
-    var keepSound = soundOn;
+    var gen = ++clipGen;
     applyFit(entry.width, entry.height);
+    showPoster(poster);
     unloadClip();
-    videoStartedAt = null;
-    playRequestedAt = performance.now();
-    video.playsInline = true;
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.autoplay = true;
-    video.loop = true;
-    video.muted = true;
-    video.setAttribute('muted', '');
-    video.preload = src ? 'auto' : 'none';
-    video.poster = poster;
-    visual.style.backgroundImage = poster ? 'url("' + poster.replace(/["\\]/g, '') + '")' : 'none';
-    soundBtn.textContent = keepSound ? 'Sound on' : 'Tap for sound';
-    if (!src) return;
-    video.src = src;
-    var attempt = video.play();
-    var restore = function () {
-      if (!keepSound || !soundOn) return;
-      video.muted = false;
-      video.removeAttribute('muted');
-    };
-    if (attempt && attempt.then) {
-      attempt.then(restore).catch(function () {
-        soundOn = false;
-        video.muted = true;
-        video.setAttribute('muted', '');
-        soundBtn.textContent = 'Tap for sound';
-        video.play().catch(function () {});
-      });
+    soundBtn.textContent = soundOn ? 'Sound on' : 'Tap for sound';
+    if (!src) {
+      showBanner("This clip didn't load. You can still keep going.");
+      return;
     }
+    whenPosterReady(poster, function () {
+      if (gen !== clipGen) return;
+      visual.classList.remove('pending');
+      videoStartedAt = null;
+      playRequestedAt = performance.now();
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.autoplay = false;
+      video.removeAttribute('autoplay');
+      video.loop = true;
+      video.muted = true;
+      video.setAttribute('muted', '');
+      video.preload = 'auto';
+      if (poster) video.setAttribute('poster', poster);
+      video.src = src;
+      startPlayback();
+    });
   }
 
   function buildRatingButtons() {
@@ -571,6 +669,13 @@
     document.getElementById('rate-counter').textContent = '';
     grid.replaceChildren();
     banner.hidden = true;
+    clipGen += 1;
+    visual.classList.add('pending');
+    visual.classList.remove('is-playing', 'landscape');
+    visual.style.backgroundImage = 'none';
+    posterImg.removeAttribute('src');
+    showPlayButton(false);
+    unloadClip();
     deck = [];
     index = 0;
     ratings = [];
@@ -594,15 +699,26 @@
 
   soundBtn.addEventListener('click', function (e) {
     e.stopPropagation();
+    if (video.paused || !visual.classList.contains('is-playing')) {
+      soundOn = true;
+      startPlayback();
+      return;
+    }
     soundOn = !soundOn;
     updateSound();
-    if (video.paused) video.play().catch(function () {});
+  });
+  playBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    startPlayback();
   });
   visual.addEventListener('click', function (e) {
     if (e.target.closest('button')) return;
+    if (video.paused || !visual.classList.contains('is-playing')) {
+      startPlayback();
+      return;
+    }
     soundOn = !soundOn;
     updateSound();
-    if (video.paused) video.play().catch(function () {});
   });
   grid.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-score]');
