@@ -281,7 +281,7 @@
     <div class="progress" id="progress" hidden></div>
     <div id="stage">
       <article id="card" hidden>
-        <video id="clip" playsinline webkit-playsinline muted autoplay loop preload="metadata" poster="" disablepictureinpicture disableremoteplayback></video>
+        <video id="clip" playsinline webkit-playsinline muted autoplay loop preload="none" poster="" disablepictureinpicture disableremoteplayback></video>
         <div class="stamp stamp-hot" id="stamp-hot" aria-hidden="true">HOT</div>
         <div class="stamp stamp-not" id="stamp-not" aria-hidden="true">NOT</div>
         <button type="button" id="sound">Tap for sound</button>
@@ -366,7 +366,7 @@
     }
 
     function showState(kind, detail) {
-      clip.pause();
+      unloadClip();
       card.hidden = true;
       dock.hidden = true;
       progressEl.hidden = true;
@@ -417,6 +417,16 @@
       return ms;
     }
 
+    // Drop the current mp4 so a large file stops downloading when the card leaves.
+    // Nothing is fetched until playClip assigns the visible card's video_url.
+    function unloadClip() {
+      clip.pause();
+      clip.preload = 'none';
+      clip.removeAttribute('src');
+      clip.load();
+    }
+
+    // Poster only. The next card's video_url is not requested until that card is shown.
     function preloadPoster(entry) {
       var href = entry ? safeUrl(entry.poster_url) : '';
       if (!href) return;
@@ -438,8 +448,11 @@
     }
 
     function playClip(entry) {
+      // URLs come only from this deck row. Paths can change (clips/v2/...) and are not built here.
       var src = safeUrl(entry.video_url);
       var poster = safeUrl(entry.poster_url);
+      var keepSound = soundOn;
+      unloadClip();
       videoStartedAt = null;
       playRequestedAt = performance.now();
       clip.playsInline = true;
@@ -447,19 +460,31 @@
       clip.setAttribute('webkit-playsinline', '');
       clip.autoplay = true;
       clip.loop = true;
-      clip.preload = 'metadata';
+      // Start muted so autoplay still works when a clip has a soundtrack.
+      clip.muted = true;
+      clip.defaultMuted = true;
+      clip.setAttribute('muted', '');
+      clip.preload = src ? 'auto' : 'none';
       clip.poster = poster;
       card.style.backgroundImage = poster ? 'url("' + poster.replace(/["\\]/g, '') + '")' : 'none';
-      updateSound();
-      if (clip.getAttribute('src') !== src) clip.src = src;
+      soundBtn.textContent = keepSound ? 'Sound on' : 'Tap for sound';
+      soundBtn.setAttribute('aria-label', keepSound ? 'Mute video' : 'Unmute video');
+      if (!src) return;
+      clip.src = src;
       var attempt = clip.play();
-      if (attempt && attempt.catch) {
-        attempt.catch(function () {
-          if (!clip.muted) {
-            soundOn = false;
-            updateSound();
-            clip.play().catch(function () {});
-          }
+      var restoreSound = function () {
+        if (!keepSound || !soundOn) return;
+        clip.muted = false;
+        clip.removeAttribute('muted');
+      };
+      if (attempt && attempt.then) {
+        attempt.then(restoreSound).catch(function () {
+          soundOn = false;
+          clip.muted = true;
+          clip.setAttribute('muted', '');
+          soundBtn.textContent = 'Tap for sound';
+          soundBtn.setAttribute('aria-label', 'Unmute video');
+          clip.play().catch(function () {});
         });
       }
     }
@@ -605,7 +630,7 @@
         dock.classList.remove('busy');
         return;
       }
-      clip.pause();
+      unloadClip();
       await fly(dir || directionFor(vote));
       index += 1;
       locked = false;

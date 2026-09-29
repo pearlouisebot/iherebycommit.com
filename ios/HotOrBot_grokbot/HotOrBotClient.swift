@@ -194,8 +194,10 @@ final class HotOrBotClient {
 
 #if os(iOS)
 /// Minimal swipe deck. Present `HotOrBotDeckView()` from any screen.
-/// One player, muted until the viewer taps for sound. Buttons and a
-/// horizontal drag cast a single vote (`hot` / `not` / `bot` / `human`).
+/// One player item at a time, using `video_url` / `poster_url` from the deck
+/// (storage paths may be versioned). Muted until the viewer taps for sound,
+/// including when a clip has audio. Buttons and a horizontal drag cast a
+/// single vote (`hot` / `not` / `bot` / `human`).
 @MainActor
 final class HotOrBotDeckModel: ObservableObject {
     @Published private(set) var cards: [HotOrBotDeckCard] = []
@@ -206,10 +208,10 @@ final class HotOrBotDeckModel: ObservableObject {
 
     enum Phase { case loading, playing, empty, failed }
 
-    let player = AVQueuePlayer()
+    let player = AVPlayer()
     private let api: HotOrBotClient
     private let deckLimit: Int
-    private var looper: AVPlayerLooper?
+    private var endObserver: NSObjectProtocol?
     private var videoStartedAt: Date?
     private var voting = false
     private var sawAuthBlock = false
@@ -244,6 +246,7 @@ final class HotOrBotDeckModel: ObservableObject {
     func toggleSound() {
         soundOn.toggle()
         player.isMuted = !soundOn
+        applyAudioSession()
         if player.timeControlStatus != .playing {
             player.play()
         }
@@ -279,25 +282,52 @@ final class HotOrBotDeckModel: ObservableObject {
 
     private func playCurrent() {
         guard let card = current else { return }
-        looper?.disableLooping()
-        looper = nil
-        player.removeAllItems()
+        // Cancel the previous file before opening the next. Only this card's video_url is loaded.
+        releaseCurrentItem()
         let item = AVPlayerItem(url: card.video_url)
-        player.isMuted = !soundOn
-        looper = AVPlayerLooper(player: player, templateItem: item)
+        player.isMuted = true
+        player.replaceCurrentItem(with: item)
+        endObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: item,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            self.player.seek(to: .zero)
+            self.player.play()
+        }
         videoStartedAt = nil
         player.play()
         videoStartedAt = Date()
+        if soundOn { player.isMuted = false }
+        applyAudioSession()
         preloadNextPoster()
-        try? AVAudioSession.sharedInstance().setCategory(.ambient, options: [.mixWithOthers])
-        try? AVAudioSession.sharedInstance().setActive(true)
+    }
+
+    /// Stops the in-flight mp4. Does not touch any other card's URL.
+    private func releaseCurrentItem() {
+        if let endObserver {
+            NotificationCenter.default.removeObserver(endObserver)
+            self.endObserver = nil
+        }
+        player.pause()
+        player.replaceCurrentItem(with: nil)
     }
 
     private func stop() {
-        looper?.disableLooping()
-        looper = nil
-        player.pause()
-        player.removeAllItems()
+        releaseCurrentItem()
+        posterTask?.cancel()
+        posterTask = nil
+    }
+
+    private func applyAudioSession() {
+        let session = AVAudioSession.sharedInstance()
+        if soundOn {
+            try? session.setCategory(.playback, mode: .moviePlayback)
+        } else {
+            try? session.setCategory(.ambient, mode: .default, options: [.mixWithOthers])
+        }
+        try? session.setActive(true)
     }
 
     private func dwellMs() -> Int {
@@ -305,6 +335,7 @@ final class HotOrBotDeckModel: ObservableObject {
         return max(0, Int(Date().timeIntervalSince(videoStartedAt) * 1000))
     }
 
+    /// Image only. The next card's video is not requested until that card is current.
     private func preloadNextPoster() {
         posterTask?.cancel()
         let next = index + 1

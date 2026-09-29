@@ -6,9 +6,11 @@ The database is already live on the same Supabase project as the waitlist (`dqrm
 
 ## Watch and vote
 
-The page asks for a deck (`get_swipe_deck`). How many to ask for is the `DECK_LIMIT` constant at the top of `hotorbot/index.html`. It defaults to 10. The server only returns clips you have not voted on, and it caps the request between 1 and 50. Clip names are not hardcoded. When the deck comes back empty, the page says you've seen them all.
+The page asks for a deck (`get_swipe_deck`). How many to ask for is the `DECK_LIMIT` constant at the top of `hotorbot/index.html`. It defaults to 10. The server only returns clips you have not voted on, and it caps the request between 1 and 50. When the deck comes back empty, the page says you've seen them all.
 
-The clip on screen plays inline, muted, and looped. Tap the picture (or "Tap for sound") to unmute. Only that clip plays. The next card's poster image is preloaded while you watch. Swipe right or tap Hot. Swipe left or tap Not. Bot and Human are buttons. The page times the watch from when the video starts until the vote, and sends that as `dwell_ms` with `client` set to `web`.
+Play and show only the `video_url` and `poster_url` on each row. Do not build storage paths in the client. Those paths can change (for example `clips/v2/clip-N.mp4` instead of `clips/clip-N.mp4`) when the placeholder clips are replaced with real footage.
+
+The clip on screen plays inline, muted, and looped, even if the file has audio. Tap the picture (or "Tap for sound") to unmute. Only that clip's video is loaded. Leaving the card cancels that download. The next card preloads its poster image and does not fetch its video until it is on screen. Swipe right or tap Hot. Swipe left or tap Not. Bot and Human are buttons. The page times the watch from when the video starts until the vote, and sends that as `dwell_ms` with `client` set to `web`.
 
 Voting needs a signed-in Supabase user. The first vote calls `supabase.auth.signInAnonymously()`. Anonymous sign-ins are off in the dashboard right now (Authentication → Sign In / Providers → Allow anonymous sign-ins). Until that is turned on, the deck still loads and plays. A vote shows: "Voting isn't open yet — sign-in is turned off. You can still watch the deck." The page does not crash, and it does not pretend the vote was saved.
 
@@ -30,7 +32,7 @@ await supabase.rpc('cast_swipe_vote', {
 })
 ```
 
-`get_video_profile_tallies` is signed-in only. The page does not show tallies. Clips live in the public `hotorbot-videos` bucket (`clips/` and `posters/`). The deck RPC returns the full URLs.
+`get_video_profile_tallies` is signed-in only. The page does not show tallies. The deck RPC returns the full video and poster URLs. Use those. The files live in the public `hotorbot-videos` bucket, but the object path is not part of the client contract.
 
 ## Call it from iOS
 
@@ -49,7 +51,7 @@ let row = try await api.castVote(                  // signs in anonymously if ne
 
 `HotOrBotDeckView()` is a small SwiftUI screen with the same votes, muted looping playback, and the same message when anonymous sign-in is off.
 
-Playback on iOS is `AVQueuePlayer` + `AVPlayerLooper`, muted until the viewer taps for sound. Dwell time starts when `play()` is called.
+Playback on iOS is one `AVPlayerItem` at a time, created from `video_url`, muted until the viewer taps for sound (so a soundtrack does not block autoplay). Looping seeks back to the start. The next card preloads `poster_url` only. Dwell time starts when `play()` is called.
 
 ## SQL
 
