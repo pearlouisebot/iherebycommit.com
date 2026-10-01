@@ -1,6 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
 import { isPartneredStatus, normalizeDropdownValue, normalizePartnerLocations, normalizeRelationshipTimeline, normalizeSubmittedFamily, PARTNER_CITIES_TEXT_MAX_LENGTH } from "../_shared/familyPlans.ts";
 import { getServiceKey } from "../_shared/supabaseKey.ts";
+import { sendThankYouEmail } from "../_shared/thankYouEmail_grokbot.ts";
+
+// Supabase Edge Runtime global: keeps a promise running after the response is sent.
+declare const EdgeRuntime: { waitUntil(p: Promise<unknown>): void } | undefined;
 
 // Exact origin allow-list (the site is served from the apex; www redirects there).
 const ALLOWED_ORIGINS = new Set(["https://iherebycommit.com", "https://www.iherebycommit.com"]);
@@ -495,6 +499,16 @@ Deno.serve(async (req: Request) => {
       : Promise.resolve(),
     supabase.from("submission_log").insert({ ip_hash: ipHash }).then(({ error }) => { if (error) console.error("submission_log insert error:", error.message); }),
   ]);
+
+  // ---- Thank-you email (non-blocking; never affects the response) ----
+  // Off unless THANK_YOU_EMAIL_MODE is test_only or live. Once per row via confirmation_email_sent_at.
+  try {
+    const emailTask = sendThankYouEmail(supabase, { id: newRowId, email, first_name: firstName })
+      .then((r) => { if (r.status !== "skipped") console.log("thank-you email:", JSON.stringify(r)); });
+    if (typeof EdgeRuntime !== "undefined" && EdgeRuntime?.waitUntil) EdgeRuntime.waitUntil(emailTask);
+  } catch (e) {
+    console.error("thank-you email schedule error:", e instanceof Error ? e.message : String(e));
+  }
 
   return new Response(
     JSON.stringify({ subject_number: subjectNumber, study_code: studyCode, success: true }),
