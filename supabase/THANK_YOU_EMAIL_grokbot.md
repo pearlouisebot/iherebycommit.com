@@ -1,6 +1,9 @@
 # Thank-you email after application (grokbot)
 
-Status: code written, NOT deployed. Column NOT added. Sending is off by default.
+Status (2026-10-01 ~1:56 PM PT): DEPLOYED as submit-application v46 (byte-identical to this branch; v45 was a
+secrets-only version bump of v44 code). Column added (migration waitlist_confirmation_email_sent_at_grokbot).
+THANK_YOU_EMAIL_MODE=test_only. Rollback = redeploy the v44 snapshot (commit 0798701).
+Verified: test path sent (Resend id 01a0f940-e6cd-7e1c-9ca0-cceb98f67e9f, row stamped); plain example.com skipped.
 
 Files
 - functions/_shared/thankYouEmail_grokbot.ts: copy (subject/text/HTML), recipient rules, Resend send with claim/release
