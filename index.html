@@ -1137,6 +1137,12 @@
       html.vk5 #screen-3 .k4-sl .range-slider-wrap { height: 20px !important; margin-top: 1px !important; }
       html.vk5 #screen-3 #vi-dist .partner-location-anywhere { min-height: 28px; }
       #screen-1 .k5-sel select.field-input { min-height: 46px; padding-top: 10px; padding-bottom: 10px; }
+      /* 393x660: keep the 52px headline. Half-width answers stay one line; EDIT steps aside so the value fits, and the whole box still edits. */
+      #screen-1 .cr-pair { margin-bottom: 8px; }
+      #screen-1 .screen-label { margin-bottom: 8px; }
+      #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-k,
+      #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-v { white-space: nowrap; display: block; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+      #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-edit { display: none; }
     }
     /* MOCKUP_grokbot K5 What Matters Most: set-earlier rows = value (white, like the compact boxes) + EDIT (same .who-cond-edit treatment) */
     #screen-k4m .k4m-row.k4m-early .k4m-v { color: var(--text); }
@@ -2137,7 +2143,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05k7';
+var PAGE_VERSION = '2026-10-05k8';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
