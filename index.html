@@ -1137,6 +1137,12 @@
       html.vk5 #screen-3 .k4-sl .range-slider-wrap { height: 20px !important; margin-top: 1px !important; }
       html.vk5 #screen-3 #vi-dist .partner-location-anywhere { min-height: 28px; }
       #screen-1 .k5-sel select.field-input { min-height: 46px; padding-top: 10px; padding-bottom: 10px; }
+      /* 393x660: keep the 52px headline. Half-width answers stay one line; EDIT steps aside so the value fits, and the whole box still edits. */
+      #screen-1 .cr-pair { margin-bottom: 8px; }
+      #screen-1 .screen-label { margin-bottom: 8px; }
+      #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-k,
+      #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-v { white-space: nowrap; display: block; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+      #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-edit { display: none; }
     }
     /* MOCKUP_grokbot K5 What Matters Most: set-earlier rows = value (white, like the compact boxes) + EDIT (same .who-cond-edit treatment) */
     #screen-k4m .k4m-row.k4m-early .k4m-v { color: var(--text); }
@@ -1171,8 +1177,19 @@
     #who-height.k5-hfocus .field-input { border-color: #c8f135 !important; box-shadow: 0 0 0 3px rgba(200,241,53,0.18); transition: box-shadow .2s, border-color .2s; }
     /* MOCKUP_grokbot K5 (k5gmap9): What You Want half-width pairs (Education min | Income min, Politics | Religion): label over value */
     html.vk5 #screen-3 #ww-ranges .k5-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: var(--bx-g) !important; }
-    /* Kids YES/NO on What You Want (same has_children / wants_children fields as About You). */
-    #screen-3 #k5-kids { margin-top: var(--bx-g); }
+    /* Kids on What You Want: same has_children / wants_children fields. Once both are answered they share one row, like the other collapsed pairs. */
+    #screen-3 #k5-kids { margin-top: var(--bx-g); margin-bottom: 0; }
+    html.vk.vk-al-box #screen-3 #k5-kids > .field-group { padding: 0 !important; margin-bottom: 0 !important; }
+    #screen-3 #k5-kids.cr-both .who-cond-k, #screen-3 #k5-kids.cr-both .who-cond-v { white-space: nowrap; display: block; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+    #screen-3 #k5-kids.cr-both .who-cond-edit { display: none; } /* the whole box edits, so "Want more kids" fits at 10px */
+    @media (min-height: 721px) { #screen-3 #k5-kids { margin-top: 6px; } }
+    @media (max-height: 720px) {
+      html.vk5 #screen-3 #ww-ranges > .k5-pair,
+      html.vk5 #screen-3 #ww-ranges > .k5-pinc,
+      #screen-3 #k5-kids { margin-top: 2px !important; }
+      html.vj #screen-3 .screen-content { padding-bottom: 0; }
+      html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-ranges .ww-age-group.k4-sl { margin-bottom: 2px !important; }
+    }
     html.vk5 #screen-3 #ww-ranges .k5-pair > .k5-pinc { margin-top: 0 !important; min-width: 0; }
     .k5-pair .k5-sel-in .field-label { top: 8px; transform: none; left: 12px; right: 24px; line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .k5-pair .k5-sel-in select.field-input, .k5-pair .k5-sel-in button.k5-eth-btn { height: 50px; min-height: 50px; padding: 21px 24px 0 12px; text-align: left; text-align-last: left; -webkit-text-align-last: left; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1437,8 +1454,9 @@
             <select class="field-input is-default" id="politics" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5PoliticsPick(this)"><option value="">— Select —</option><option value="Left-leaning">Left-leaning</option><option value="Moderate">Moderate</option><option value="Right-leaning">Right-leaning</option><option value="None Stated">None Stated</option></select>
           </div>
         </div>
-        <!-- MOCKUP_grokbot: Has children / Wants children (pre-K5 Intentions & Family). Singles skipped that screen in K5, so the same questions are asked here. Production fields has_children (boolean) and wants_children (yes|no). Couples still answer on Intentions & Family. -->
-        <div class="field-group who-unit" id="who-hk" style="margin-bottom:12px;">
+        <!-- Has children / Wants children (pre-K5 Intentions & Family). Singles answer here. Production fields has_children (boolean) and wants_children (yes|no). Couples still answer on Intentions & Family. Collapsed, they share one row. -->
+        <div class="cr-pair" id="who-kids-row">
+        <div class="field-group who-unit" id="who-hk" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('who-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="who-hk-k">Have kids</span><span class="who-cond-v" id="who-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="btn-who-hk-yes">Do you have kids?</label>
           <div class="toggle-group" data-err-input="has_children" style="margin-bottom:0;">
@@ -1447,7 +1465,7 @@
           </div>
           <div class="field-error" id="err-has_children_wya" data-err="has_children">Please make a selection</div>
         </div>
-        <div class="field-group who-unit" id="who-wk" style="margin-bottom:12px;">
+        <div class="field-group who-unit" id="who-wk" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('who-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="who-wk-k">Want kids</span><span class="who-cond-v" id="who-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" id="who-wk-label" data-wk-label for="btn-who-wk-yes">Do you want kids?</label>
           <div class="toggle-group" data-err-input="wants_children" style="margin-bottom:0;">
@@ -1456,17 +1474,20 @@
           </div>
           <div class="field-error" id="err-wants_children_wya" data-err="wants_children">Please make a selection</div>
         </div>
-        <!-- MOCKUP_grokbot K5: INCOME (own yearly income; optional, "None Stated" first). Production: nullable text column income_range. -->
-        <div class="field-group who-unit" id="who-income" style="margin-bottom:12px;">
+        </div>
+        <!-- INCOME (own yearly income; optional, "None Stated" first). Production: nullable text column income_range. Collapsed, Income | Email share one row. -->
+        <div class="cr-pair" id="who-ie-row">
+        <div class="field-group who-unit" id="who-income" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="income_range">Income</label>
           <div class="k5-sel"><select class="field-input" id="income_range" onchange="state.incomeRange = this.value || null; state.incomeTouched = true; crTap('who-income')"><option value="">None Stated</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
         </div>
-        <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
+        <div class="field-group who-unit" id="who-email" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="crExpand('who-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">Email</label>
           <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
           <div class="field-error" id="err-email">Valid email required</div>
+        </div>
         </div>
       </div>
       <div id="under18-msg">
@@ -1718,9 +1739,10 @@
         </div>
         <!-- MOCKUP_grokbot K5 (k5gmap9): POLITICS | RELIGION (partner; multi-select sheets, Any = exclusive default; same values as What Matters Most).
              Production: nullable text[] partner_politics / partner_religion (null = Any) + readable partner_politics_text / partner_religion_text. -->
-        <!-- Same production questions as About You (has_children, wants_children). Not new columns. Full width so the YES/NO labels match Who You Are. -->
-        <div id="k5-kids">
-          <div class="field-group" id="k5-phk" style="margin-bottom:8px;">
+        <!-- Same production questions as About You (has_children, wants_children). Not new columns. Collapsed, they share one row (Have kids | Want kids), same as Who You Are. -->
+        <div class="cr-pair" id="k5-kids">
+          <div class="field-group who-unit" id="ww-hk" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('ww-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="ww-hk-k">Have kids</span><span class="who-cond-v" id="ww-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Do you have kids?</label>
             <div class="toggle-group" data-err-input="has_children" style="margin-bottom:0;">
               <button type="button" class="toggle-btn" data-hk="yes" onclick="setHasChildren('yes')">YES</button>
@@ -1728,7 +1750,8 @@
             </div>
             <div class="field-error" id="err-has_children_wyw" data-err="has_children">Please make a selection</div>
           </div>
-          <div class="field-group" id="k5-pwk" style="margin-bottom:0;">
+          <div class="field-group who-unit" id="ww-wk" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('ww-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="ww-wk-k">Want kids</span><span class="who-cond-v" id="ww-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" data-wk-label>Do you want kids?</label>
             <div class="toggle-group" data-err-input="wants_children" style="margin-bottom:0;">
               <button type="button" class="toggle-btn" data-wk="yes" onclick="setWantsChildren('yes')">YES</button>
@@ -2112,7 +2135,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05k6';
+var PAGE_VERSION = '2026-10-05k7';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2937,6 +2960,7 @@ function setHasChildren(val) {
   syncFamilyDrip();
   crTap('fam-hk');
   if (typeof CR !== 'undefined' && CR['who-hk']) crTap('who-hk');
+  if (typeof CR !== 'undefined' && CR['ww-hk']) crTap('ww-hk');
 }
 function setKidsTimeline(val) {
   state.kidsTimeline = val || null;
@@ -2953,6 +2977,7 @@ function setWantsChildren(val) {
   syncFamilyDrip();
   crTap('fam-wk');
   if (typeof CR !== 'undefined' && CR['who-wk']) crTap('who-wk');
+  if (typeof CR !== 'undefined' && CR['ww-wk']) crTap('ww-wk');
 }
 function setFertility(val) {
   state.fertilityPreservation = val || null;
@@ -3844,10 +3869,10 @@ function _crDefineAll() {
     },
   });
   crDef('who-race', { partner: 'who-height', focus: 'race', busy: isRacePanelOpen, onExpand: f => { if (f) openRacePanel(); }, value: () => (typeof k5RaceSum === 'function' ? k5RaceSum(state.race) : '') });
-  crDef('who-email', { focus: 'email', value: () => { const e = _crV('email'); return e && isValidEmail(e) ? e : ''; } });
+  crDef('who-email', { focus: 'email', partner: 'who-income', value: () => { const e = _crV('email'); return e && isValidEmail(e) ? e : ''; } });
   // Singles only. Couples keep the Intentions & Family selects (has_children / wants_children are the same state).
-  crDef('who-hk', { applies: () => state.status !== 'partnered', value: () => state.hasChildren === true ? 'Yes' : state.hasChildren === false ? 'No' : '' });
-  crDef('who-wk', { applies: () => state.status !== 'partnered', key: () => state.hasChildren === true ? 'Want more kids' : 'Want kids', value: () => state.wantsChildren === 'yes' ? 'Yes' : state.wantsChildren === 'no' ? 'No' : '' });
+  crDef('who-hk', { applies: () => state.status !== 'partnered', partner: 'who-wk', value: () => state.hasChildren === true ? 'Yes' : state.hasChildren === false ? 'No' : '' });
+  crDef('who-wk', { applies: () => state.status !== 'partnered', partner: 'who-hk', key: () => state.hasChildren === true ? 'Want more kids' : 'Want kids', value: () => state.wantsChildren === 'yes' ? 'Yes' : state.wantsChildren === 'no' ? 'No' : '' });
   // Your Partner
   crDef('pt-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.partnerGender] || '' });
   crDef('pt-name', { focus: 'partner_first_name', value: () => { const f = _crV('partner_first_name'), l = _crV('partner_last_name'); return f && l ? f + ' ' + l : ''; } });
@@ -3875,6 +3900,9 @@ function _crDefineAll() {
   crDef('ww-loc', { busy: _plBusy, noCollapse: true, stepDone: () => true, value: () => '' }); // MOCKUP_grokbot J: never folds; Age Range + Partner Height appear with it
   // Age range + partner height: one set, shown together, never collapsed (no condensed row); defaults are saved untouched.
   crDef('ww-ranges', { stepDone: () => false, value: () => '' });
+  // What You Want repeats the same kids answers. Once both are answered they share one row, like Who You Are.
+  crDef('ww-hk', { applies: () => state.status !== 'partnered', partner: 'ww-wk', value: () => state.hasChildren === true ? 'Yes' : state.hasChildren === false ? 'No' : '' });
+  crDef('ww-wk', { applies: () => state.status !== 'partnered', partner: 'ww-hk', key: () => state.hasChildren === true ? 'Want more kids' : 'Want kids', value: () => state.wantsChildren === 'yes' ? 'Yes' : state.wantsChildren === 'no' ? 'No' : '' });
   // Intentions & Family
   crDef('fam-lf', {
     applies: () => !!_famShow.lf,
@@ -5604,7 +5632,7 @@ window.addEventListener('load', () => {
 </script>
 <script>
 // ---- MOCKUP_grokbot K5 income ----
-crDef('who-income', { focus: 'income_range', value: () => { const s = document.getElementById('income_range'); return s ? s.options[s.selectedIndex].textContent : ''; } });
+crDef('who-income', { focus: 'income_range', partner: 'who-email', value: () => { const s = document.getElementById('income_range'); return s ? s.options[s.selectedIndex].textContent : ''; } });
 function k5IncomePayload() { // production: nullable text columns income_range and partner_income_min
   const a = document.getElementById('income_range'), b = document.getElementById('partner_income_min');
   const e = document.getElementById('partner_education_min');
