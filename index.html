@@ -1171,6 +1171,8 @@
     #who-height.k5-hfocus .field-input { border-color: #c8f135 !important; box-shadow: 0 0 0 3px rgba(200,241,53,0.18); transition: box-shadow .2s, border-color .2s; }
     /* MOCKUP_grokbot K5 (k5gmap9): What You Want half-width pairs (Education min | Income min, Politics | Religion): label over value */
     html.vk5 #screen-3 #ww-ranges .k5-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: var(--bx-g) !important; }
+    /* Kids YES/NO on What You Want (same has_children / wants_children fields as About You). */
+    #screen-3 #k5-kids { margin-top: var(--bx-g); }
     html.vk5 #screen-3 #ww-ranges .k5-pair > .k5-pinc { margin-top: 0 !important; min-width: 0; }
     .k5-pair .k5-sel-in .field-label { top: 8px; transform: none; left: 12px; right: 24px; line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .k5-pair .k5-sel-in select.field-input, .k5-pair .k5-sel-in button.k5-eth-btn { height: 50px; min-height: 50px; padding: 21px 24px 0 12px; text-align: left; text-align-last: left; -webkit-text-align-last: left; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1435,6 +1437,25 @@
             <select class="field-input is-default" id="politics" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5PoliticsPick(this)"><option value="">— Select —</option><option value="Left-leaning">Left-leaning</option><option value="Moderate">Moderate</option><option value="Right-leaning">Right-leaning</option><option value="None Stated">None Stated</option></select>
           </div>
         </div>
+        <!-- MOCKUP_grokbot: Has children / Wants children (pre-K5 Intentions & Family). Singles skipped that screen in K5, so the same questions are asked here. Production fields has_children (boolean) and wants_children (yes|no). Couples still answer on Intentions & Family. -->
+        <div class="field-group who-unit" id="who-hk" style="margin-bottom:12px;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('who-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="who-hk-k">Have kids</span><span class="who-cond-v" id="who-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="btn-who-hk-yes">Do you have kids?</label>
+          <div class="toggle-group" data-err-input="has_children" style="margin-bottom:0;">
+            <button type="button" class="toggle-btn" id="btn-who-hk-yes" data-hk="yes" onclick="setHasChildren('yes')">YES</button>
+            <button type="button" class="toggle-btn" id="btn-who-hk-no" data-hk="no" onclick="setHasChildren('no')">NO</button>
+          </div>
+          <div class="field-error" id="err-has_children_wya" data-err="has_children">Please make a selection</div>
+        </div>
+        <div class="field-group who-unit" id="who-wk" style="margin-bottom:12px;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('who-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="who-wk-k">Want kids</span><span class="who-cond-v" id="who-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" id="who-wk-label" data-wk-label for="btn-who-wk-yes">Do you want kids?</label>
+          <div class="toggle-group" data-err-input="wants_children" style="margin-bottom:0;">
+            <button type="button" class="toggle-btn" id="btn-who-wk-yes" data-wk="yes" onclick="setWantsChildren('yes')">YES</button>
+            <button type="button" class="toggle-btn" id="btn-who-wk-no" data-wk="no" onclick="setWantsChildren('no')">NO</button>
+          </div>
+          <div class="field-error" id="err-wants_children_wya" data-err="wants_children">Please make a selection</div>
+        </div>
         <!-- MOCKUP_grokbot K5: INCOME (own yearly income; optional, "None Stated" first). Production: nullable text column income_range. -->
         <div class="field-group who-unit" id="who-income" style="margin-bottom:12px;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -1697,6 +1718,25 @@
         </div>
         <!-- MOCKUP_grokbot K5 (k5gmap9): POLITICS | RELIGION (partner; multi-select sheets, Any = exclusive default; same values as What Matters Most).
              Production: nullable text[] partner_politics / partner_religion (null = Any) + readable partner_politics_text / partner_religion_text. -->
+        <!-- Same production questions as About You (has_children, wants_children). Not new columns. Full width so the YES/NO labels match Who You Are. -->
+        <div id="k5-kids">
+          <div class="field-group" id="k5-phk" style="margin-bottom:8px;">
+            <label class="field-label">Do you have kids?</label>
+            <div class="toggle-group" data-err-input="has_children" style="margin-bottom:0;">
+              <button type="button" class="toggle-btn" data-hk="yes" onclick="setHasChildren('yes')">YES</button>
+              <button type="button" class="toggle-btn" data-hk="no" onclick="setHasChildren('no')">NO</button>
+            </div>
+            <div class="field-error" id="err-has_children_wyw" data-err="has_children">Please make a selection</div>
+          </div>
+          <div class="field-group" id="k5-pwk" style="margin-bottom:0;">
+            <label class="field-label" data-wk-label>Do you want kids?</label>
+            <div class="toggle-group" data-err-input="wants_children" style="margin-bottom:0;">
+              <button type="button" class="toggle-btn" data-wk="yes" onclick="setWantsChildren('yes')">YES</button>
+              <button type="button" class="toggle-btn" data-wk="no" onclick="setWantsChildren('no')">NO</button>
+            </div>
+            <div class="field-error" id="err-wants_children_wyw" data-err="wants_children">Please make a selection</div>
+          </div>
+        </div>
         <div class="k5-pair" id="k5-pair-pr">
         <div class="field-group k5-pinc" id="k5-ppol" style="margin-bottom:0;">
           <div class="k5-sel k5-sel-in"><label class="field-label" for="partner_politics">Politics</label><button type="button" class="field-input k5-eth-btn" id="partner_politics" aria-haspopup="dialog" aria-label="Politics: partner politics, select all that apply" onclick="k5RaceOpen('pol')"><span id="partner-pol-text">Any</span></button><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
@@ -2072,7 +2112,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05k5';
+var PAGE_VERSION = '2026-10-05k6';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2119,7 +2159,7 @@ function failedFields(screenId) {
   if (!scr) return [];
   var out = [];
   scr.querySelectorAll('.field-error.visible').forEach(function (e) {
-    var f = (e.id || '').replace(/^err-/, '');
+    var f = e.getAttribute('data-err') || (e.id || '').replace(/^err-/, '');
     if (f && out.indexOf(f) === -1) out.push(f);
   });
   return out;
@@ -2516,7 +2556,7 @@ function showScreen(id, direction) {
     try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
   }
 
-  if (id === 1) { _buildHeightSelect(); }
+  if (id === 1) { _buildHeightSelect(); if (typeof syncFamilyDrip === 'function') syncFamilyDrip(); }
   if (id === 2) { _buildHeightSelect('partner_height'); _partnerHeightDefault(); }
   if (id === 5) {
     // Couples: "Family & Intentions", answered for yourself. Singles unchanged.
@@ -2896,6 +2936,7 @@ function setHasChildren(val) {
   hideError('has_children');
   syncFamilyDrip();
   crTap('fam-hk');
+  if (typeof CR !== 'undefined' && CR['who-hk']) crTap('who-hk');
 }
 function setKidsTimeline(val) {
   state.kidsTimeline = val || null;
@@ -2911,6 +2952,7 @@ function setWantsChildren(val) {
   hideError('wants_children');
   syncFamilyDrip();
   crTap('fam-wk');
+  if (typeof CR !== 'undefined' && CR['who-wk']) crTap('who-wk');
 }
 function setFertility(val) {
   state.fertilityPreservation = val || null;
@@ -3082,8 +3124,13 @@ function syncFamilyDrip() {
 
   const tlLabel = document.getElementById('timeline-label');
   if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
+  const wkText = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
   const wkLabel = document.getElementById('wants-children-label');
-  if (wkLabel) wkLabel.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
+  if (wkLabel) wkLabel.textContent = wkText;
+  document.querySelectorAll('[data-wk-label]').forEach(l => { l.textContent = wkText; });
+  document.querySelectorAll('[data-hk]').forEach(b => b.classList.toggle('selected', (b.dataset.hk === 'yes' && state.hasChildren === true) || (b.dataset.hk === 'no' && state.hasChildren === false)));
+  document.querySelectorAll('[data-wk]').forEach(b => b.classList.toggle('selected', !!state.wantsChildren && b.dataset.wk === state.wantsChildren));
+  ['who-hk', 'who-wk'].forEach(id => { const u = document.getElementById(id); if (u) u.style.display = partnered ? 'none' : ''; });
   crRefresh();
 }
 
@@ -3116,17 +3163,20 @@ function validateLinkedInInline() {
 // ============================================================
 // VALIDATION
 // ============================================================
+function _errNodes(field) {
+  return document.querySelectorAll('#err-' + field + ', [data-err="' + field + '"]');
+}
 function showError(field, msg) {
-  const el = document.getElementById('err-' + field);
-  if (el) { if (msg) el.textContent = msg; el.classList.add('visible'); }
+  _errNodes(field).forEach(el => { if (msg) el.textContent = msg; el.classList.add('visible'); });
   const input = document.getElementById(field);
   if (input) input.classList.add('error');
+  document.querySelectorAll('[data-err-input="' + field + '"]').forEach(el => el.classList.add('error'));
 }
 function hideError(field) {
-  const el = document.getElementById('err-' + field);
-  if (el) el.classList.remove('visible');
+  _errNodes(field).forEach(el => el.classList.remove('visible'));
   const input = document.getElementById(field);
   if (input) input.classList.remove('error');
+  document.querySelectorAll('[data-err-input="' + field + '"]').forEach(el => el.classList.remove('error'));
 }
 function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
@@ -3149,6 +3199,11 @@ function validateScreen(screenId) {
     if (!state.gender) { showError('gender', 'Please select one'); ok = false; } else hideError('gender');
     if (!state.wya) { showError('postal_code', 'Please set where you live'); ok = false; } else hideError('postal_code'); // MOCKUP_grokbot WYA
     if (!Array.isArray(state.race) || state.race.length === 0) { showError('race', 'Please make a selection'); ok = false; } else hideError('race');
+    // Singles: Has children / Wants children are asked here (K5 skips Intentions & Family). Same fields as production.
+    if (state.status !== 'partnered') {
+      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
+      if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
+    }
   }
   if (screenId === 3) {
     if (state.status !== 'partnered') {
@@ -3161,6 +3216,8 @@ function validateScreen(screenId) {
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
         showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
       } else { hideError('age_range'); } // an untouched (default) age range is accepted and saved
+      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
+      if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
     }
   }
   if (screenId === 2) {
@@ -3542,7 +3599,7 @@ const _crB = {};
 const CR_STEPS = {
   // Date of birth alone; the zip once the birthday is touched (the Jan 1, 1996 default isn't an answer). Height alone;
   // Race once Height is touched (or Next is pressed); Email once Race is done.
-  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-religion'], ['who-politics'], ['who-income'], ['who-email']],
+  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-religion'], ['who-politics'], ['who-hk'], ['who-wk'], ['who-income'], ['who-email']],
   // Their birthday alone; Their height alone; Their race once height is touched (or Next is pressed) - like Who You Are.
   2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-race'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
   // What You Want (singles): Seeking alone; Partner Location; then Age Range + Partner Height together (never collapsed).
@@ -3788,6 +3845,9 @@ function _crDefineAll() {
   });
   crDef('who-race', { partner: 'who-height', focus: 'race', busy: isRacePanelOpen, onExpand: f => { if (f) openRacePanel(); }, value: () => (typeof k5RaceSum === 'function' ? k5RaceSum(state.race) : '') });
   crDef('who-email', { focus: 'email', value: () => { const e = _crV('email'); return e && isValidEmail(e) ? e : ''; } });
+  // Singles only. Couples keep the Intentions & Family selects (has_children / wants_children are the same state).
+  crDef('who-hk', { applies: () => state.status !== 'partnered', value: () => state.hasChildren === true ? 'Yes' : state.hasChildren === false ? 'No' : '' });
+  crDef('who-wk', { applies: () => state.status !== 'partnered', key: () => state.hasChildren === true ? 'Want more kids' : 'Want kids', value: () => state.wantsChildren === 'yes' ? 'Yes' : state.wantsChildren === 'no' ? 'No' : '' });
   // Your Partner
   crDef('pt-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.partnerGender] || '' });
   crDef('pt-name', { focus: 'partner_first_name', value: () => { const f = _crV('partner_first_name'), l = _crV('partner_last_name'); return f && l ? f + ' ' + l : ''; } });
@@ -5487,6 +5547,8 @@ function _k4Wrap() { // the K / K2 scripts load after this one: wrap their funct
   goNext = async function (id) {
     if (id === 3 && !_k4.inWmm) {
       if (!state.genderSeeking) return _k4GoNext.apply(this, arguments); // Seeking still open: the page's own reveal / error
+      // Has / wants children are required on What You Want. Don't open ranked preferences until they're answered.
+      if (state.hasChildren === null || state.hasChildren === undefined || !state.wantsChildren) return _k4GoNext.apply(this, arguments);
       k4ShowWmm(); return;
     }
     if (id === 1) { getNextScreen = c => (c === 1 && state.status !== 'partnered' ? 3 : _k4GetNext(c)); try { return await _k4GoNext.apply(this, arguments); } finally { getNextScreen = _k4GetNext; } }
@@ -5499,7 +5561,20 @@ function _k4Wrap() { // the K / K2 scripts load after this one: wrap their funct
 }
 window.addEventListener('load', () => {
   _k4Wrap(); _k4Condense();
-  document.getElementById('k4m-next').addEventListener('click', e => { e.preventDefault(); _k4.inWmm = false; showScreen(3, 'forward'); _k4.inWmm = true; _k4GoNext(3).finally(() => { if (state.currentScreen !== 3) _k4.inWmm = false; }); });
+  document.getElementById('k4m-next').addEventListener('click', e => {
+    e.preventDefault();
+    // Stay on What Matters Most while the next screen is saved. Paint What You Want only when that screen still has an error,
+    // so a completed ranking goes straight to Public Self (no intermediate What You Want frame during saveLead).
+    if (!validateScreen(3) || (CR_STEPS[3] && _crFront[3] < CR_STEPS[3].length - 1)) {
+      _k4.inWmm = false;
+      _k4.open = null;
+      showScreen(3, 'forward');
+      _k4GoNext(3);
+      return;
+    }
+    _k4.inWmm = true;
+    _k4GoNext(3).finally(() => { if (state.currentScreen !== 3) _k4.inWmm = false; });
+  });
   document.getElementById('k4m-back').addEventListener('click', e => { e.preventDefault(); k4Back(); });
   document.getElementById('k4m-list').addEventListener('scroll', _k4mFade, { passive: true });
   window.addEventListener('resize', () => { _k4mFade(); _k4Refresh(); });
