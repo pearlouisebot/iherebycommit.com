@@ -1097,12 +1097,19 @@
     .k4m-note { font-size: 13px; line-height: 18px; }
     #screen-k4m .k4m-sub { font-size: 12px; line-height: 17px; }
     @media (max-height: 720px) {
-      .k4m-main { min-height: 44px; padding-top: 3px; padding-bottom: 3px; }
-      .k4m-t { font-size: 19px; line-height: 19px; } .k4m-v { font-size: 13px; line-height: 17px; }
+      /* Intentions, Have kids, and Want kids make 11 rows. The list scrolls inside the screen; Next stays put. */
+      .k4m-main { min-height: 40px; padding-top: 2px; padding-bottom: 2px; }
+      #screen-k4m .k4m-list { gap: 3px; }
+      .k4m-t { font-size: 18px; line-height: 18px; } .k4m-v { font-size: 12px; line-height: 15px; }
       .k4m-n { font-size: 20px; }
       .k4m-chip { min-height: 32px; font-size: 12px; padding: 0 9px; }
       .k4m-chips { padding-left: 12px; }
       #screen-k4m .k4m-sub { font-size: 10px; letter-spacing: -0.03em; line-height: 15px; }
+    }
+    /* Have kids is a ninth row. At 393x852 the list still fits; the screen itself does not scroll. */
+    @media (min-height: 721px) {
+      #screen-k4m .k4m-list { gap: 3px; }
+      #screen-k4m .k4m-main { min-height: 48px; padding-top: 4px; padding-bottom: 4px; }
     }
 
     /* ---- MOCKUP_grokbot K5 income selects ---- */
@@ -1137,8 +1144,12 @@
       html.vk5 #screen-3 .k4-sl .range-slider-wrap { height: 20px !important; margin-top: 1px !important; }
       html.vk5 #screen-3 #vi-dist .partner-location-anywhere { min-height: 28px; }
       #screen-1 .k5-sel select.field-input { min-height: 46px; padding-top: 10px; padding-bottom: 10px; }
-      /* 393x660: keep the 52px headline. Half-width answers stay one line; EDIT steps aside so the value fits, and the whole box still edits. */
+      /* 393x660: keep the 52px headline. Degree adds a row, so collapsed answers are 44px and the headline sits closer to them. Half-width answers stay one line; EDIT steps aside so the value fits, and the whole box still edits. */
+      #screen-1 .who-unit.collapsed > .who-cond { min-height: 44px; padding-top: 4px; padding-bottom: 4px; }
+      #screen-1 .screen-headline { margin-bottom: 10px; }
+      #screen-1 .screen-content { padding-top: 12px; padding-bottom: 8px; }
       #screen-1 .cr-pair { margin-bottom: 8px; }
+      #screen-1 #who-email { margin-top: 0; }
       #screen-1 .screen-label { margin-bottom: 8px; }
       #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-k,
       #screen-1 .cr-pair.cr-both > .who-unit.collapsed .who-cond-v { white-space: nowrap; display: block; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
@@ -1177,6 +1188,8 @@
     #who-height.k5-hfocus .field-input { border-color: #c8f135 !important; box-shadow: 0 0 0 3px rgba(200,241,53,0.18); transition: box-shadow .2s, border-color .2s; }
     /* MOCKUP_grokbot K5 (k5gmap9): What You Want half-width pairs (Education min | Income min, Politics | Religion): label over value */
     html.vk5 #screen-3 #ww-ranges .k5-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: var(--bx-g) !important; }
+    /* Partner Politics | Religion are ranked-list only. The nodes stay so the list can keep their values in sync. */
+    html.vk5 #screen-3 #k5-pair-pr { display: none !important; }
     /* Kids YES/NO on What You Want (same has_children / wants_children fields as About You).
        Once both are answered they share one row, same as Who You Are. Until then each stays full width.
        No side inset: these half boxes match Education | Income, so "WANT MORE KIDS" stays one line. */
@@ -1459,42 +1472,25 @@
             <select class="field-input is-default" id="politics" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5PoliticsPick(this)"><option value="">— Select —</option><option value="Left-leaning">Left-leaning</option><option value="Moderate">Moderate</option><option value="Right-leaning">Right-leaning</option><option value="None Stated">None Stated</option></select>
           </div>
         </div>
-        <!-- MOCKUP_grokbot: Has children / Wants children (pre-K5 Intentions & Family). Singles skipped that screen in K5, so the same questions are asked here. Production fields has_children (boolean) and wants_children (yes|no). Couples still answer on Intentions & Family.
-             Collapsed answers share one row (Have kids | Want kids), same as Religion | Politics. While either is still open, each stays full width. -->
-        <div class="cr-pair" id="who-kids-row">
-        <div class="field-group who-unit" id="who-hk" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('who-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="who-hk-k">Have kids</span><span class="who-cond-v" id="who-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label" for="btn-who-hk-yes">Do you have kids?</label>
-          <div class="toggle-group" data-err-input="has_children" style="margin-bottom:0;">
-            <button type="button" class="toggle-btn" id="btn-who-hk-yes" data-hk="yes" onclick="setHasChildren('yes')">YES</button>
-            <button type="button" class="toggle-btn" id="btn-who-hk-no" data-hk="no" onclick="setHasChildren('no')">NO</button>
-          </div>
-          <div class="field-error" id="err-has_children_wya" data-err="has_children">Please make a selection</div>
-        </div>
-        <div class="field-group who-unit" id="who-wk" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('who-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="who-wk-k">Want kids</span><span class="who-cond-v" id="who-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label" id="who-wk-label" data-wk-label for="btn-who-wk-yes">Do you want kids?</label>
-          <div class="toggle-group" data-err-input="wants_children" style="margin-bottom:0;">
-            <button type="button" class="toggle-btn" id="btn-who-wk-yes" data-wk="yes" onclick="setWantsChildren('yes')">YES</button>
-            <button type="button" class="toggle-btn" id="btn-who-wk-no" data-wk="no" onclick="setWantsChildren('no')">NO</button>
-          </div>
-          <div class="field-error" id="err-wants_children_wya" data-err="wants_children">Please make a selection</div>
-        </div>
-        </div>
-        <!-- MOCKUP_grokbot K5: INCOME (own yearly income; optional, "None Stated" first). Production: nullable text column income_range.
-             Collapsed Income | Email share one row, same as the pairs above. -->
+        <!-- Have kids and Want kids are asked on Intentions & Family, not here. Income | Degree share one row. Email is its own full-width line last. -->
         <div class="cr-pair" id="who-ie-row">
         <div class="field-group who-unit" id="who-income" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="income_range">Income</label>
           <div class="k5-sel"><select class="field-input" id="income_range" onchange="state.incomeRange = this.value || null; state.incomeTouched = true; crTap('who-income')"><option value="">None Stated</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
         </div>
+        <!-- Own degree. Production: nullable text column education (null = None Stated). Same codes as partner_education_min, without the "or higher" meaning. -->
+        <div class="field-group who-unit" id="who-degree" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Degree" onclick="crExpand('who-degree')"><span class="who-cond-txt"><span class="who-cond-k">Degree</span><span class="who-cond-v" id="who-degree-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="education">Degree</label>
+          <div class="k5-sel"><select class="field-input" id="education" onchange="state.education = this.value || null; state.educationTouched = true; crTap('who-degree')"><option value="">None Stated</option><option value="high_school">High school</option><option value="some_college">Some college</option><option value="associates">Associate's</option><option value="bachelors">Bachelor's</option><option value="masters">Master's</option><option value="doctorate">Doctorate</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
+        </div>
+        </div>
         <div class="field-group who-unit" id="who-email" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="crExpand('who-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">Email</label>
           <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
           <div class="field-error" id="err-email">Valid email required</div>
-        </div>
         </div>
       </div>
       <div id="under18-msg">
@@ -1744,31 +1740,8 @@
           <div class="k5-sel k5-sel-in"><label class="field-label" for="partner_income_min">Income <span class="k5-min-l">minimum</span><span class="k5-min-s">min</span></label><select class="field-input" id="partner_income_min" aria-label="Income minimum: partner earns at least" onchange="state.partnerIncomeMin = this.value || null"><option value="">Any</option><option value="25k">$25k+</option><option value="50k">$50k+</option><option value="75k">$75k+</option><option value="100k">$100k+</option><option value="150k">$150k+</option><option value="200k">$200k+</option><option value="300k">$300k+</option><option value="500k">$500k+</option><option value="1m">$1M+</option><option value="2m">$2M+</option><option value="3m">$3M+</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
         </div>
         </div>
-        <!-- MOCKUP_grokbot K5 (k5gmap9): POLITICS | RELIGION (partner; multi-select sheets, Any = exclusive default; same values as What Matters Most).
-             Production: nullable text[] partner_politics / partner_religion (null = Any) + readable partner_politics_text / partner_religion_text. -->
-        <!-- Same production questions as About You (has_children, wants_children). Not new columns.
-             Open questions stay full width; once both are answered they collapse into Have kids | Want kids. -->
-        <div class="cr-pair" id="k5-kids">
-          <div class="field-group who-unit" id="wyw-hk" style="margin-bottom:0;min-width:0;">
-            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('wyw-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="wyw-hk-k">Have kids</span><span class="who-cond-v" id="wyw-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-            <label class="field-label" for="btn-wyw-hk-yes">Do you have kids?</label>
-            <div class="toggle-group" data-err-input="has_children" style="margin-bottom:0;">
-              <button type="button" class="toggle-btn" id="btn-wyw-hk-yes" data-hk="yes" onclick="setHasChildren('yes')">YES</button>
-              <button type="button" class="toggle-btn" id="btn-wyw-hk-no" data-hk="no" onclick="setHasChildren('no')">NO</button>
-            </div>
-            <div class="field-error" id="err-has_children_wyw" data-err="has_children">Please make a selection</div>
-          </div>
-          <div class="field-group who-unit" id="wyw-wk" style="margin-bottom:0;min-width:0;">
-            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('wyw-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="wyw-wk-k">Want kids</span><span class="who-cond-v" id="wyw-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-            <label class="field-label" id="wyw-wk-label" data-wk-label for="btn-wyw-wk-yes">Do you want kids?</label>
-            <div class="toggle-group" data-err-input="wants_children" style="margin-bottom:0;">
-              <button type="button" class="toggle-btn" id="btn-wyw-wk-yes" data-wk="yes" onclick="setWantsChildren('yes')">YES</button>
-              <button type="button" class="toggle-btn" id="btn-wyw-wk-no" data-wk="no" onclick="setWantsChildren('no')">NO</button>
-            </div>
-            <div class="field-error" id="err-wants_children_wyw" data-err="wants_children">Please make a selection</div>
-          </div>
-        </div>
-        <div class="k5-pair" id="k5-pair-pr">
+        <!-- Want kids is asked on Intentions & Family. Partner Politics / Religion stay in the DOM for ranked-list sync, not on this screen. -->
+        <div class="k5-pair" id="k5-pair-pr" hidden>
         <div class="field-group k5-pinc" id="k5-ppol" style="margin-bottom:0;">
           <div class="k5-sel k5-sel-in"><label class="field-label" for="partner_politics">Politics</label><button type="button" class="field-input k5-eth-btn" id="partner_politics" aria-haspopup="dialog" aria-label="Politics: partner politics, select all that apply" onclick="k5RaceOpen('pol')"><span id="partner-pol-text">Any</span></button><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
         </div>
@@ -2143,7 +2116,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05k8';
+var PAGE_VERSION = '2026-10-05k10';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2266,7 +2239,7 @@ let partnerCity = null;
 // ============================================================
 // PATHS
 // ============================================================
-function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,5,3,7,6]; }
+function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,3,5,7,6]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 // Consent records note where each consent was given: current step number + screen name (e.g. apply_step_4_public_self).
 function consentSurfaces() {
@@ -3232,11 +3205,7 @@ function validateScreen(screenId) {
     if (!state.gender) { showError('gender', 'Please select one'); ok = false; } else hideError('gender');
     if (!state.wya) { showError('postal_code', 'Please set where you live'); ok = false; } else hideError('postal_code'); // MOCKUP_grokbot WYA
     if (!Array.isArray(state.race) || state.race.length === 0) { showError('race', 'Please make a selection'); ok = false; } else hideError('race');
-    // Singles: Has children / Wants children are asked here (K5 skips Intentions & Family). Same fields as production.
-    if (state.status !== 'partnered') {
-      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
-      if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
-    }
+    // Have kids and Want kids are asked on Intentions & Family (screen 5), not here.
   }
   if (screenId === 3) {
     if (state.status !== 'partnered') {
@@ -3249,8 +3218,7 @@ function validateScreen(screenId) {
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
         showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
       } else { hideError('age_range'); } // an untouched (default) age range is accepted and saved
-      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
-      if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
+      // Have kids and Want kids are asked on Intentions & Family, after this screen.
     }
   }
   if (screenId === 2) {
@@ -3632,7 +3600,7 @@ const _crB = {};
 const CR_STEPS = {
   // Date of birth alone; the zip once the birthday is touched (the Jan 1, 1996 default isn't an answer). Height alone;
   // Race once Height is touched (or Next is pressed); Email once Race is done.
-  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-religion'], ['who-politics'], ['who-hk'], ['who-wk'], ['who-income'], ['who-email']],
+  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-religion'], ['who-politics'], ['who-income'], ['who-degree'], ['who-email']],
   // Their birthday alone; Their height alone; Their race once height is touched (or Next is pressed) - like Who You Are.
   2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-race'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
   // What You Want (singles): Seeking alone; Partner Location; then Age Range + Partner Height together (never collapsed).
@@ -5438,6 +5406,9 @@ const K4M_DEF = [
   { k: 'education', t: 'Education', edu: true }, /* left: partner_education_min (What You Want EDUCATION MINIMUM); right: tier (k4Prefs.values.edtier) */
   { k: 'ethnicity', t: 'Ethnicity', o: ['Any', 'White', 'Black', 'Asian', 'Hispanic / Latino', 'South Asian', 'MENA', 'Pacific Islander', 'Native American', 'Other'], v: [], multi: true, bind: 'partnerEthnicity' }, /* synced with ETHNICITY on What You Want */
   { k: 'religion', t: 'Religion', o: ['Any', 'Agnostic', 'Atheist', 'Buddhist', 'Catholic', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'Sikh', 'Spiritual', 'Other'], v: [], multi: true } /* same list as Who You Are RELIGION */,
+  { k: 'intentions', t: 'Intentions', o: ['Any', 'Casual', 'Dating', 'Relationship', 'Marriage', 'Life partner'], v: [], multi: true }, /* ranked only. Any is shown as "Any tier". */
+  { k: 'haskids', t: 'Have kids', o: ['Any', 'Yes', 'No'], v: 'Any' }, /* ranked only. Any is shown as "Any tier". */
+  { k: 'wantkids', t: 'Want kids', o: ['Any', 'Yes', 'No', 'Open to either', 'Unsure'], v: 'Any' }, /* ranked only. Any is shown as "Any tier". */
 ];
 const K5_TIERS = ['Any', 'Top 100', 'Top 50', 'Ivy+'];
 const K4M_DIST = [[10, 3], [25, 6], [50, 9], [100, 14], ['Any', 34]]; // miles -> slider stop index (_VK_STOPS)
@@ -5456,14 +5427,20 @@ function _k4mVal(d) { // [text, "set earlier"?]
   return [x, false];
 }
 function _k5EduVals() { const s = document.getElementById('partner_education_min'); return [s && s.value ? s.options[s.selectedIndex].textContent : 'Any', state.k4Prefs.values.edtier || 'Any']; }
+function k4mAnyLabel(txt) {
+  const s = String(txt == null ? '' : txt).trim();
+  if (!s || /^(any|no preference|any distance)$/i.test(s)) return 'Any tier';
+  return String(txt);
+}
 function _k4mChips(d) {
+  const anyLab = t => (t === 'Any' || t === 'No preference') ? 'Any tier' : t;
   const box = document.createElement('div'); box.className = 'k4m-chips'; box.hidden = true;
   if (d.edu) { // two halves: DEGREE (minimum, same options as What You Want, kept in sync) | TIER
     box.classList.add('k5-edu-ed'); const sel = document.getElementById('partner_education_min');
     const half = (lab, opts, on, pick) => { const h = document.createElement('div'); h.className = 'k5-half'; const t = document.createElement('div'); t.className = 'k5-half-k'; t.textContent = lab; h.appendChild(t);
       opts.forEach(([val, txt]) => { const c = document.createElement('button'); c.type = 'button'; c.className = 'k4m-chip' + (on(val) ? ' on' : ''); c.textContent = txt; c.setAttribute('aria-pressed', String(on(val))); c.addEventListener('click', e => { e.preventDefault(); pick(val); k4mRender(); }); h.appendChild(c); }); return h; };
-    box.appendChild(half('Degree', [...sel.options].map(o => [o.value, o.textContent]), v => sel.value === v, v => { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }));
-    box.appendChild(half('Tier', K5_TIERS.map(t => [t, t]), v => (state.k4Prefs.values.edtier || 'Any') === v, v => { state.k4Prefs.values.edtier = v; }));
+    box.appendChild(half('Degree', [...sel.options].map(o => [o.value, anyLab(o.textContent.trim())]), v => sel.value === v, v => { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }));
+    box.appendChild(half('Tier', K5_TIERS.map(t => [t, anyLab(t)]), v => (state.k4Prefs.values.edtier || 'Any') === v, v => { state.k4Prefs.values.edtier = v; }));
     return box; }
   const chip = (txt, on, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'k4m-chip' + (on ? ' on' : '') + (cls ? ' ' + cls : ''); b.textContent = txt; b.setAttribute('aria-pressed', String(!!on)); b.addEventListener('click', e => { e.preventDefault(); fn(); }); return b; };
   if (d.early) { box.classList.add('k5-ctl'); box.dataset.borrow = d.k; return box; } // filled with the What You Want control (k5Borrow)
@@ -5472,15 +5449,15 @@ function _k4mChips(d) {
     box.appendChild(chip('Change on What You Want', false, () => k4Back(), 'k4m-go'));
   } else if (d.k === 'income' || d.k === 'degree') { // minimum chips ("+" = or higher); kept in step with INCOME / EDUCATION MINIMUM on What You Want
     const sel = document.getElementById(d.k === 'income' ? 'partner_income_min' : 'partner_education_min');
-    [...sel.options].forEach(o => box.appendChild(chip(o.textContent, sel.value === o.value, () => { sel.value = o.value; sel.dispatchEvent(new Event('change', { bubbles: true })); k4mRender(); })));
+    [...sel.options].forEach(o => box.appendChild(chip(anyLab(o.textContent.trim()), sel.value === o.value, () => { sel.value = o.value; sel.dispatchEvent(new Event('change', { bubbles: true })); k4mRender(); })));
   } else if (d.k === 'dist') {
     const el = document.getElementById('vi_dist_mi'), cur = el ? +el.value : -1;
-    K4M_DIST.forEach(([mi, idx]) => box.appendChild(chip(mi === 'Any' ? 'Any' : _k4mDistTxt(idx), cur === idx, () => { el.value = idx; el.dispatchEvent(new Event('input', { bubbles: true })); _viDistUpdate(); k4mRender(); })));
+    K4M_DIST.forEach(([mi, idx]) => box.appendChild(chip(mi === 'Any' ? 'Any tier' : _k4mDistTxt(idx), cur === idx, () => { el.value = idx; el.dispatchEvent(new Event('input', { bubbles: true })); _viDistUpdate(); k4mRender(); })));
   } else if (d.multi) { // multi-select: 'Any' (= empty list) clears the rest; picking anything else clears 'Any'
     const cur = () => { const v = d.bind ? state[d.bind] : state.k4Prefs.values[d.k]; return Array.isArray(v) ? v : []; };
-    if (!d.bind && (d.k === 'politics' || d.k === 'religion')) { d.o.forEach(o => box.appendChild(chip(o, o === 'Any' ? (!cur().length || cur().includes('Any')) : cur().includes(o), () => { state.k4Prefs.values[d.k] = k5NxNorm(k5NxToggle(cur().length ? cur() : ['Any'], o)); k5PrefSync(); k4mRender(); }))); return box; } // k5gmap16: No preference not exclusive
-    d.o.forEach(o => box.appendChild(chip(o, o === 'Any' ? !cur().length : cur().includes(o), () => { let a = cur().slice(); if (o === 'Any') a = []; else if (a.includes(o)) a = a.filter(x => x !== o); else a.push(o); if (d.bind) { state[d.bind] = a; if (d.bind === 'partnerEthnicity') k5EthSync(); } else state.k4Prefs.values[d.k] = a; k4mRender(); })));
-  } else d.o.forEach(o => box.appendChild(chip(o, state.k4Prefs.values[d.k] === o, () => { state.k4Prefs.values[d.k] = o; k4mRender(); })));
+    if (!d.bind && (d.k === 'politics' || d.k === 'religion')) { d.o.forEach(o => box.appendChild(chip(anyLab(o), o === 'Any' ? (!cur().length || cur().includes('Any')) : cur().includes(o), () => { state.k4Prefs.values[d.k] = k5NxNorm(k5NxToggle(cur().length ? cur() : ['Any'], o)); k5PrefSync(); k4mRender(); }))); return box; } // open state is labelled Any tier; it can sit with specific picks
+    d.o.forEach(o => box.appendChild(chip(anyLab(o), o === 'Any' ? !cur().length : cur().includes(o), () => { let a = cur().slice(); if (o === 'Any') a = []; else if (a.includes(o)) a = a.filter(x => x !== o); else a.push(o); if (d.bind) { state[d.bind] = a; if (d.bind === 'partnerEthnicity') k5EthSync(); } else state.k4Prefs.values[d.k] = a; k4mRender(); })));
+  } else d.o.forEach(o => box.appendChild(chip(anyLab(o), state.k4Prefs.values[d.k] === o, () => { state.k4Prefs.values[d.k] = o; k4mRender(); })));
   return box;
 }
 function _k4mDistTxt(idx) { const mi = _VK_STOPS[idx], km = typeof _vk2Km === 'function' ? _vk2Km(mi) : Math.round(mi * 1.609); return (typeof _vk2Miles !== 'function' || _vk2Miles()) ? mi + ' mi' : km + ' km'; }
@@ -5495,8 +5472,8 @@ function k4mRender() {
     const m = document.createElement('button'); m.type = 'button'; m.className = 'k4m-main'; m.setAttribute('aria-expanded', String(open));
     m.innerHTML = '<span class="k4m-n"></span><span class="k4m-txt"><span class="k4m-t"></span><span class="k4m-v"></span></span>';
     m.querySelector('.k4m-n').textContent = String(i + 1).padStart(2, '0'); m.querySelector('.k4m-t').textContent = d.t;
-    const v = m.querySelector('.k4m-v'); v.textContent = (txt && !/^(no preference|any distance)$/i.test(txt)) ? txt : 'Any';
-    if (d.edu) { const [l, rr] = _k5EduVals(); v.classList.add('k5-two'); v.innerHTML = '<span></span><span></span>'; v.children[0].textContent = l; v.children[1].textContent = rr; }
+    const v = m.querySelector('.k4m-v'); v.textContent = k4mAnyLabel(txt);
+    if (d.edu) { const [l, rr] = _k5EduVals(); v.classList.add('k5-two'); v.innerHTML = '<span></span><span></span>'; v.children[0].textContent = k4mAnyLabel(l); v.children[1].textContent = k4mAnyLabel(rr); }
     { const ln = document.createElement('span'); ln.className = 'k4m-vl'; v.replaceWith(ln); ln.appendChild(v); } // every row: value only (no EDIT word); tapping the row left of the handle opens it in place; the handle is the only reorder target
     m.addEventListener('click', e => { e.preventDefault(); if (_k4.dragMoved) return; _k4.open = open ? null : k; k4mRender(); if (!open) _k5ShowOpen(k); });
     const h = document.createElement('span'); h.className = 'k4m-h'; h.innerHTML = K4M_HANDLE; h.setAttribute('role', 'button'); h.tabIndex = 0;
@@ -5553,13 +5530,13 @@ function _k4mDragAt(y) {
 }
 function _k4mHeader() {
   const s3 = document.getElementById('screen-3'), p = document.getElementById('screen-k4m');
-  const n = getStepNum(3) + 1, tot = totalSteps();
+  const n = getStepNum(5) + 1, tot = totalSteps();
   try { renderProgress(getPath()[n - 1]); document.getElementById('progress-k4m').innerHTML = document.getElementById('progress-' + getPath()[n - 1]).innerHTML; } catch (e) { document.getElementById('progress-k4m').innerHTML = document.getElementById('progress-3').innerHTML; }
   document.getElementById('badge-k4m').innerHTML = document.getElementById('badge-3').innerHTML;
   document.getElementById('k4m-step').textContent = 'Step ' + n + ' of ' + tot;
   for (const a of ['.screen-label', '.screen-headline', '.screen-content']) { const cs = getComputedStyle(s3.querySelector(a)), t = p.querySelector(a); ['marginBottom', 'fontSize', 'paddingTop', 'paddingBottom'].forEach(k => t.style[k] = cs[k]); }
 }
-const K5_ORDER = { man: ['age', 'dist', 'height', 'ethnicity', 'education', 'income', 'religion', 'politics'], other: ['dist', 'age', 'height', 'ethnicity', 'education', 'income', 'religion', 'politics'] };
+const K5_ORDER = { man: ['age', 'dist', 'height', 'ethnicity', 'education', 'income', 'intentions', 'haskids', 'wantkids', 'religion', 'politics'], other: ['dist', 'age', 'height', 'ethnicity', 'education', 'income', 'intentions', 'haskids', 'wantkids', 'religion', 'politics'] };
 function _k5DefaultOrder() { if (_k4.userOrdered) return; const o = K5_ORDER[state.gender === 'man' ? 'man' : 'other'].filter(k => K4M_DEF.some(d => d.k === k)); state.k4Prefs.order = o.concat(K4M_DEF.map(d => d.k).filter(k => !o.includes(k))); }
 function k4ShowWmm() {
   _k5DefaultOrder(); // MOCKUP_grokbot: Woman / other / unset vs Man defaults, until the user reorders
@@ -5571,26 +5548,32 @@ function k4ShowWmm() {
   while (fs > 28 && hl.scrollWidth > hl.clientWidth + 0.5) { fs -= 1; hl.style.fontSize = fs + 'px'; }
   k4mRender(); document.getElementById('k4m-list').scrollTop = 0; requestAnimationFrame(_k4mFade);
 }
-function k4Back() { // BACK from What Matters Most (or "Change on What You Want"): What You Want again, same sliders
+function k4Back() { // BACK from What Matters Most: Intentions & Family (the screen before the ranked list)
   _k4.inWmm = false; _k4.open = null; document.getElementById('screen-k4m').classList.remove('active', 'slide-in');
-  showScreen(3, 'back'); document.documentElement.classList.add('k4-rv'); requestAnimationFrame(_k4Refresh);
+  showScreen(5, 'back'); document.documentElement.classList.add('k4-rv'); requestAnimationFrame(_k4Refresh);
 }
 // ---------- wiring ----------
 let _k4GoNext, _k4GoBack, _k4Show, _k4GetNext;
 function _k4Wrap() { // the K / K2 scripts load after this one: wrap their functions once the page has loaded
   _k4GoNext = goNext; _k4GoBack = goBack; _k4Show = showScreen; _k4GetNext = getNextScreen;
-  // Mockup flow (singles): Who You Are -> What You Want -> What Matters Most -> (the page's next step). Step numbers follow the page.
+  // Singles: Who You Are -> What You Want -> Intentions & Family -> What Matters Most -> Public Self.
   goNext = async function (id) {
-    if (id === 3 && !_k4.inWmm) {
-      if (!state.genderSeeking) return _k4GoNext.apply(this, arguments); // Seeking still open: the page's own reveal / error
-      // Has / wants children are required on What You Want. Don't open ranked preferences until they're answered.
-      if (state.hasChildren === null || state.hasChildren === undefined || !state.wantsChildren) return _k4GoNext.apply(this, arguments);
+    if (id === 1 && state.status !== 'partnered') { getNextScreen = c => (c === 1 ? 3 : _k4GetNext(c)); try { return await _k4GoNext.apply(this, arguments); } finally { getNextScreen = _k4GetNext; } }
+    if (id === 5 && !_k4.inWmm && state.status !== 'partnered') {
+      if (!validateScreen(5)) return _k4GoNext.apply(this, arguments); // still on Intentions & Family: show its error or the next question
+      clearErrorSummary(5);
+      logEvent('screen_completed', keyOf(document.getElementById('screen-5')));
+      await saveLead();
       k4ShowWmm(); return;
     }
-    if (id === 1) { getNextScreen = c => (c === 1 && state.status !== 'partnered' ? 3 : _k4GetNext(c)); try { return await _k4GoNext.apply(this, arguments); } finally { getNextScreen = _k4GetNext; } }
     return _k4GoNext.apply(this, arguments);
   };
-  goBack = function (id) { if (id === 3 && state.status !== 'partnered') { showScreen(1, 'back'); return; } if (id === 7 && state.status !== 'partnered') { k4ShowWmm(); return; } return _k4GoBack.apply(this, arguments); };
+  goBack = function (id) {
+    if (id === 3 && state.status !== 'partnered') { showScreen(1, 'back'); return; }
+    if (id === 5 && state.status !== 'partnered') { showScreen(3, 'back'); return; }
+    if (id === 7 && state.status !== 'partnered') { k4ShowWmm(); return; }
+    return _k4GoBack.apply(this, arguments);
+  };
   showScreen = function (id) { const r = _k4Show.apply(this, arguments); if (id === 3) { _k4PartnerDefault(); requestAnimationFrame(_k4Refresh); } return r; };
   const tx = _sliderThumbX; // 28px thumb box (16px ball) for the condensed sliders
   _sliderThumbX = function (el, w) { if (!el.closest('.k4-sl')) return tx.apply(this, arguments); const min = +el.min, max = +el.max, v = +el.value; return (v - min) / (max - min) * (w - 28) + 14; };
@@ -5608,8 +5591,15 @@ window.addEventListener('load', () => {
       _k4GoNext(3);
       return;
     }
+    if (!validateScreen(5)) {
+      _k4.inWmm = false;
+      _k4.open = null;
+      showScreen(5, 'forward');
+      _k4GoNext(5);
+      return;
+    }
     _k4.inWmm = true;
-    _k4GoNext(3).finally(() => { if (state.currentScreen !== 3) _k4.inWmm = false; });
+    _k4GoNext(5).finally(() => { if (state.currentScreen !== 3) _k4.inWmm = false; });
   });
   document.getElementById('k4m-back').addEventListener('click', e => { e.preventDefault(); k4Back(); });
   document.getElementById('k4m-list').addEventListener('scroll', _k4mFade, { passive: true });
@@ -5640,17 +5630,24 @@ window.addEventListener('load', () => {
 </script>
 <script>
 // ---- MOCKUP_grokbot K5 income ----
-crDef('who-income', { focus: 'income_range', value: () => { const s = document.getElementById('income_range'); return s ? s.options[s.selectedIndex].textContent : ''; } });
-function k5IncomePayload() { // production: nullable text columns income_range and partner_income_min
+crDef('who-income', { partner: 'who-degree', focus: 'income_range', value: () => { const s = document.getElementById('income_range'); return s ? s.options[s.selectedIndex].textContent : ''; } });
+crDef('who-degree', { partner: 'who-income', focus: 'education', value: () => { const s = document.getElementById('education'); return s ? s.options[s.selectedIndex].textContent : ''; } });
+function k5IncomePayload() { // production: nullable text columns income_range, education, and partner_income_min
   const a = document.getElementById('income_range'), b = document.getElementById('partner_income_min');
   const e = document.getElementById('partner_education_min');
-  return { income_range: a && a.value ? a.value : null, partner_income_min: b && b.value ? b.value : null, partner_education_min: e && e.value ? e.value : null, partner_ethnicity: state.partnerEthnicity && state.partnerEthnicity.length ? state.partnerEthnicity.slice() : null, partner_ethnicity_text: state.partnerEthnicity && state.partnerEthnicity.length ? state.partnerEthnicity.join(', ') : 'Any' }; // production: nullable text partner_education_min, text[] partner_ethnicity (+ text companion)
+  const deg = document.getElementById('education');
+  const pv = state.k4Prefs && state.k4Prefs.values ? state.k4Prefs.values : {};
+  const hk = pv.haskids || 'Any';
+  const wkMap = { 'Yes': 'yes', 'No': 'no', 'Open to either': 'open_either_way', 'Unsure': 'not_sure' };
+  const intents = Array.isArray(pv.intentions) ? pv.intentions.filter(x => x && x !== 'Any') : [];
+  return { income_range: a && a.value ? a.value : null, education: deg && deg.value ? deg.value : null, partner_has_children: hk && hk !== 'Any' ? String(hk).toLowerCase() : null, partner_wants_children: pv.wantkids && pv.wantkids !== 'Any' ? (wkMap[pv.wantkids] || null) : null, partner_intentions: intents.length ? intents.join('; ') : null, partner_income_min: b && b.value ? b.value : null, partner_education_min: e && e.value ? e.value : null, partner_ethnicity: state.partnerEthnicity && state.partnerEthnicity.length ? state.partnerEthnicity.slice() : null, partner_ethnicity_text: state.partnerEthnicity && state.partnerEthnicity.length ? state.partnerEthnicity.join(', ') : 'Any' }; // production: nullable text partner_education_min, text[] partner_ethnicity (+ text companion)
 }
 window.addEventListener('load', () => {
   // Next while INCOME is the open question (untouched = "None Stated" is the answer): fold it and show the next question
   const rn = crRevealNext;
   crRevealNext = function (screen) {
-    if (screen === 1) { const u = document.getElementById('who-income'); if (u && !u.classList.contains('cr-later') && !u.classList.contains('collapsed') && !_crT['who-income'] && crSettle('who-income')) { crSync(); return true; } } // folded = this Next is used up (no error on the question it reveals)
+    if (screen === 1) { // Income and Degree: untouched + Next = None Stated, then the next question. Folding uses up this Next.
+      for (const id of ['who-income', 'who-degree']) { const u = document.getElementById(id); if (u && !u.classList.contains('cr-later') && !u.classList.contains('collapsed') && !_crT[id] && crSettle(id)) { crSync(); return true; } } }
     return rn.apply(this, arguments);
   };
   ['partner_income_min', 'partner_education_min'].forEach(id => { const e = document.getElementById(id); if (e) e.addEventListener('change', () => { if (_k4.inWmm) k4mRender(); }); });
@@ -5701,7 +5698,7 @@ window.addEventListener('load', () => {
 <script>
 // MOCKUP_grokbot K5 (k5gmap15): partner Politics / Religion show 'No preference' where the value is Any (stored value unchanged: [] / null / 'Any')
 window.addEventListener('load', () => {
-  const NP = 'No preference', sw = root => { if (!root) return; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (n.nodeValue.trim() === 'Any') n.nodeValue = NP; };
+  const NP = 'Any tier', sw = root => { if (!root) return; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (n.nodeValue.trim() === 'Any' || n.nodeValue.trim() === 'No preference') n.nodeValue = NP; };
   const s0 = k5PrefSync; k5PrefSync = function () { const r = s0.apply(this, arguments); ['partner-pol-text', 'partner-rel-text'].forEach(id => { const t = document.getElementById(id); if (t && t.textContent === 'Any') { t.textContent = NP; t.parentElement.title = NP; } }); return r; };
   const v0 = _k4mVal; _k4mVal = function (d) { const r = v0.apply(this, arguments); return d && (d.k === 'politics' || d.k === 'religion') && r[0] === 'Any' ? [NP, r[1]] : r; };
   const k0 = k4mRender; k4mRender = function () { const r = k0.apply(this, arguments); sw(document.querySelector('#k4m-list .k4m-row[data-k="politics"]')); sw(document.querySelector('#k4m-list .k4m-row[data-k="religion"]')); return r; };
@@ -5711,8 +5708,8 @@ window.addEventListener('load', () => {
 </script>
 <script>
 // MOCKUP_grokbot K5 (k5gmap16): display "No preference" plus the other picks (What You Want box, What Matters Most row)
-function k5NxLabels(a) { a = Array.isArray(a) ? a : []; return a.length ? a.map(x => x === 'Any' ? 'No preference' : x) : ['No preference']; }
-function k5NxSum(a, max) { const l = k5NxLabels(a), j = l.join(', '); if (l.length === 1 || j.length <= max) return j; return l[0] === 'No preference' ? 'No preference + ' + (l.length === 2 ? l[1] : (l.length - 1) + ' more') : l[0] + ' + ' + (l.length - 1) + ' more'; }
+function k5NxLabels(a) { a = Array.isArray(a) ? a : []; return a.length ? a.map(x => x === 'Any' ? 'Any tier' : x) : ['Any tier']; }
+function k5NxSum(a, max) { const l = k5NxLabels(a), j = l.join(', '); if (l.length === 1 || j.length <= max) return j; return l[0] === 'Any tier' ? 'Any tier + ' + (l.length === 2 ? l[1] : (l.length - 1) + ' more') : l[0] + ' + ' + (l.length - 1) + ' more'; }
 window.addEventListener('load', () => {
   const s0 = k5PrefSync; k5PrefSync = function () { const r = s0.apply(this, arguments);
     [['partner-pol-text', 'politics'], ['partner-rel-text', 'religion']].forEach(([id, k]) => { const t = document.getElementById(id), a = state.k4Prefs.values[k]; if (t) { t.textContent = k5NxSum(a, 18); t.parentElement.title = k5NxLabels(a).join(', '); } }); return r; };
@@ -5727,7 +5724,7 @@ const _k5G = id => { const e = document.getElementById(id); return e && e.closes
 const K5_BORROW = { age: () => _k5G('age_min_label'), height: () => _k5G('height_min_label'), dist: () => document.getElementById('vi-dist'), income: () => document.getElementById('k5-pinc'), degree: () => document.getElementById('k5-pedu') };
 const _k5Home = {}; let _k5Out = null;
 function k5ReturnAll() {
-  Object.keys(_k5Home).forEach(k => { const h = _k5Home[k]; if (h.el && h.mark.parentNode && h.el.previousSibling !== h.mark) h.mark.parentNode.insertBefore(h.el, h.mark.nextSibling); });
+  Object.keys(_k5Home).forEach(k => { const h = _k5Home[k]; if (!h.el) return; h.el.querySelectorAll('option').forEach(o => { if (o.dataset.k4any) { o.textContent = 'Any'; delete o.dataset.k4any; } }); if (h.mark.parentNode && h.el.previousSibling !== h.mark) h.mark.parentNode.insertBefore(h.el, h.mark.nextSibling); });
   _k5Out = null;
 }
 // While a control is out on What Matters Most, slider updates refresh the heads and the open row's value only (a re-render would pull the control away mid-drag)
@@ -5737,6 +5734,7 @@ function k5Borrow() {
   const k = box.dataset.borrow, el = K5_BORROW[k] && K5_BORROW[k](); if (!el) return;
   if (!_k5Home[k]) { const mark = document.createComment('k5-home-' + k); el.parentNode.insertBefore(mark, el); _k5Home[k] = { el, mark }; }
   box.appendChild(el); box.hidden = false; _k5Out = k;
+  el.querySelectorAll('option').forEach(o => { if (o.textContent.trim() === 'Any' && !o.dataset.k4any) { o.dataset.k4any = '1'; o.textContent = 'Any tier'; } });
   requestAnimationFrame(() => { try { if (k === 'age') _updateAgeLabels(); if (k === 'height') _updateHeightLabels(); if (k === 'dist' && typeof _viDistUpdate === 'function') _viDistUpdate(); } catch (e) {} });
 }
 // The What You Want control styles are scoped to #screen-3 / #ww-ranges: copy those rules for a control sitting in a What Matters Most row
@@ -5751,7 +5749,7 @@ function k5Borrow() {
   const st = document.createElement('style'); st.id = 'k5-wmm-ctl-css'; st.textContent = out.join(' '); document.head.appendChild(st);
 })();
 // live value in the row while dragging / picking (no re-render, so the control under the finger stays put)
-function _k5RowLive() { const r = document.querySelector('#k4m-list .k4m-row.open'); if (!r || !r.classList.contains('k4m-early')) return; const d = _k4mDef(r.dataset.k); r.querySelector('.k4m-v').textContent = _k4mVal(d)[0]; }
+function _k5RowLive() { const r = document.querySelector('#k4m-list .k4m-row.open'); if (!r || !r.classList.contains('k4m-early')) return; const d = _k4mDef(r.dataset.k); const v = r.querySelector('.k4m-v'); if (v) v.textContent = k4mAnyLabel(_k4mVal(d)[0]); }
 document.addEventListener('input', e => { if (_k4.inWmm && e.target.closest && e.target.closest('.k5-ctl')) requestAnimationFrame(_k5RowLive); }, true);
 document.addEventListener('pointerup', () => { if (_k4.inWmm) setTimeout(_k5RowLive, 30); }, true);
 // leaving What Matters Most (NEXT / BACK): controls go home first so What You Want validates and shows them as before
