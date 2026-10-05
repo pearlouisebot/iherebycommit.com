@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="cp v-f vi vj vk vk2 vk4 vk5 vk-al-box k4s-boxed">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -718,6 +718,715 @@
     .btn-friend-green { background: #c8f135; color: #0e0e0e; }
     .btn-friend-green:hover { background: #d8ff40; }
     .btn-friend-green:active { transform: scale(0.98); }
+
+    
+    /* s1g: Race picker = Other Cities sheet treatment */
+    .race-sheet .race-opt {
+      display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px;
+      padding: 8px 12px; background: none; border: none; border-bottom: 1px solid #2a2a2a;
+      color: var(--text); font-family: 'Space Mono', monospace; font-size: 14px; text-align: left; cursor: pointer;
+      box-sizing: border-box; border-radius: 0;
+    }
+    .race-sheet .race-opt:active { background: #222; }
+    .race-sheet .race-box {
+      flex: none; width: 22px; height: 22px; border: 1.5px solid var(--dim); border-radius: 2px;
+      box-sizing: border-box; position: relative; background: transparent;
+    }
+    .race-sheet .race-opt.selected .race-box {
+      border-color: var(--accent); background: var(--accent);
+    }
+    .race-sheet .race-opt.selected .race-box::after {
+      content: ''; position: absolute; left: 6px; top: 2px; width: 6px; height: 11px;
+      border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg);
+    }
+    .race-sheet .race-opt-txt { min-width: 0; line-height: 1.3; }
+    .race-sheet .race-done { display: none; } /* foot button is #race-done in .cp-foot */
+    /* selected races as chips under the closed field (Other Cities summary feel) */
+    .race-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .race-chips:empty { display: none; }
+    .race-chip {
+      display: inline-flex; align-items: center; max-width: 100%; padding: 4px 8px;
+      border: 1px solid #333; border-radius: 999px; font-family: 'Space Mono', monospace;
+      font-size: 11px; letter-spacing: 0.04em; color: var(--text); background: #111;
+    }
+
+
+    /* s1g: Email collapsed = full-width row (never half); ellipsis only if truly too long */
+    #who-email.collapsed > .who-cond { grid-column: 1 / -1; width: 100%; }
+    #who-email .who-cond-v { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ==== K5 Partner City | Other Cities + Distance (from k12) ==== */
+    /* s1g: never show legacy Type-a-city inline picker; Other Cities uses cp-sheet */
+    html.vk5 #pc-picker, html.vk5 #partner-location-input, html.vk5 #partner-location-suggestions,
+    html.vk5 #pc-extra-slot, html.vk5 #partner-location-chips, html.vk5 .pc-half-row:not(.vk-row),
+    html.vk5 #vj-cities, html.vk5 #cp-field, html.vk5 .vi-extra { display: none !important; }
+
+    /* MOCKUP_grokbot: Partner city + ADD CITIES as two equal halves; extra-city tags float full width underneath. */
+    .pc-half-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: stretch; }
+    .pc-half { min-width: 0; min-height: 50px; box-sizing: border-box; border: 1px solid var(--dim); border-radius: var(--radius); background: transparent; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .pc-half-primary { display: flex; flex-direction: column; justify-content: center; padding: 7px 12px; }
+    .pc-half-primary:focus-visible, .pc-half-add:focus-visible, .pc-half.active { outline: none; border-color: var(--accent); }
+    #screen-3 label.field-label.pc-half-k { display: block; margin: 0; line-height: 1.4; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pc-half-line { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; min-width: 0; }
+    .pc-half-primary .pc-primary { font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.4; color: var(--text); min-width: 0; flex: 1;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .pc-half-primary.empty .pc-primary { color: var(--muted); }
+    .pc-half-edit { flex-shrink: 0; background: none; border: none; padding: 0; margin: 0 0 1px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--accent); cursor: pointer; line-height: 1.4; }
+    .pc-half-edit[hidden] { display: inline; }
+    .pc-half-add { display: flex; align-items: center; justify-content: center; padding: 7px 10px; color: var(--accent); }
+    .pc-half-add[hidden] { display: flex; }
+    .pc-half-add-txt { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #partner-location-chips:not(:empty) { margin: 6px 0 0; }
+    #pc-extra-slot:has(#pc-picker:not([hidden])) { margin-top: 6px; }
+    #pc-extra .partner-location-anywhere { margin-top: 4px; }
+    .pc-extra { margin-top: 0; }
+    /* ===== MOCKUP_grokbot compact multi-city (F/G/H) ===== */
+    html.cp .pc-half-row, html.cp #pc-primary-slot, html.cp #partner-location-chips, html.cp #pc-extra-slot { display: none !important; }
+    html.cp #pc-extra .partner-location-anywhere { margin-top: 4px; }
+    .cp-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 50px; padding: 7px 12px; box-sizing: border-box; border: 1px solid var(--dim); border-radius: var(--radius); cursor: pointer; min-width: 0; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .cp-field:focus-visible, .cp-field.active { outline: none; border-color: var(--accent); }
+    .cp-txt { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    #screen-3 label.field-label.cp-k { display: block; margin: 0; line-height: 1.4; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cp-sum { display: flex; min-width: 0; font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.4; color: var(--text); white-space: nowrap; }
+    .cp-sum-first { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .cp-sum-more { flex-shrink: 0; color: var(--accent); }
+    .cp-sum.empty { color: var(--muted); }
+    .cp-edit { flex-shrink: 0; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--accent); }
+    /* G: label row + one fixed-height, horizontally scrolling chip strip */
+    .cp-field-g { flex-direction: column; align-items: stretch; gap: 4px; padding: 7px 0 6px 12px; }
+    .cp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-right: 12px; }
+    .cp-strip { display: flex; flex-wrap: nowrap; gap: 6px; height: 32px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-right: 12px; overscroll-behavior-x: contain; }
+    .cp-strip::-webkit-scrollbar { display: none; }
+    .cp-strip .pc-tag { flex-shrink: 0; white-space: nowrap; }
+    .cp-strip .pc-tag-label { overflow-wrap: normal; white-space: nowrap; }
+    .cp-strip .pc-tag.solo { padding-right: 10px; }
+    /* H: one half row */
+    .cp-half-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+    .cp-half-row .cp-field { flex-direction: column; align-items: stretch; justify-content: center; gap: 0; }
+    .cp-line { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; min-width: 0; }
+    .cp-line .cp-sum { flex: 1; }
+    .cp-line .cp-edit { margin-bottom: 1px; }
+    .cp-top-line { align-items: center; }
+    .cp-top-line .cp-k { min-width: 0; }
+    .cp-half-row .cp-sum { overflow: hidden; }
+    #pc-dist-val { display: block; overflow: hidden; text-overflow: ellipsis; }
+    #cp-dist-slot { margin-top: 8px; }
+    #cp-dist-slot[hidden] { display: none; }
+    #cp-dist-slot .ww-dist-group { margin-bottom: 0 !important; }
+    #cp-dist-slot .field-label { display: none; }
+    #cp-dist-slot .range-slider-wrap { margin-top: 22.4px; }
+    @media (max-width: 359px) { .cp-half-row .cp-field { padding: 7px 7px 7px 8px; } .cp-line { gap: 4px; } }
+    /* The picker: an overlay sheet (never pushes the page) with search, selected cities pinned on top, and Done */
+    .cp-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 900; }
+    .cp-backdrop[hidden], .cp-sheet[hidden] { display: none; }
+    .cp-sheet { position: fixed; left: 0; right: 0; bottom: 0; top: 64px; z-index: 901; max-width: 520px; margin: 0 auto; background: #161616; border: 1px solid var(--dim); border-bottom: none; border-radius: 10px 10px 0 0; display: flex; flex-direction: column; box-shadow: 0 -8px 30px rgba(0,0,0,0.5); }
+    .cp-sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 8px 20px; }
+    .cp-sheet-title { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+    .cp-done { min-height: 40px; padding: 0 18px; background: var(--accent); color: var(--bg); border: none; border-radius: var(--radius); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.1em; cursor: pointer; }
+    .cp-search-wrap { padding: 0 16px 8px; }
+    #cp-search { width: 100%; min-height: 44px; padding: 10px 12px; font-size: 16px; box-sizing: border-box; }
+    .cp-hint { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); padding: 0 20px 6px; min-height: 16px; }
+    .cp-list { flex: 1; overflow-y: auto; padding: 0 8px 24px; -webkit-overflow-scrolling: touch; }
+    .cp-sec { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 12px 12px 6px; }
+    .cp-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 12px; background: none; border: none; border-bottom: 1px solid #222; color: var(--text); font-family: 'Space Mono', monospace; font-size: 14px; text-align: left; cursor: pointer; touch-action: manipulation; }
+    .cp-row:active { background: #222; }
+    .cp-box { width: 20px; height: 20px; flex-shrink: 0; border: 1.5px solid #666; border-radius: 3px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; color: var(--bg); }
+    .cp-row[aria-checked="true"] .cp-box { background: var(--accent); border-color: var(--accent); }
+    .cp-row[aria-checked="true"] .cp-box::after { content: '\2713'; font-weight: 700; }
+    .cp-row-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .cp-row-note { flex-shrink: 0; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .cp-row.typed .cp-row-label { color: var(--accent); }
+    @media (max-width: 359px) { .pc-half-primary { padding: 7px 7px 7px 8px; } .pc-half-add { padding: 7px 6px; } .pc-half-line { gap: 4px; } }
+
+    /* ===================================================
+       LANDING PAGE STYLES
+       =================================================== */
+
+    /* Wordmark */
+    .wordmark-wrap { display: inline-block; line-height: 1; }
+    .wordmark-text { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.06em; display: block; }
+    .wm-white { color: #f0ece0; }
+    .wm-green { color: #c8f135; }
+    .wordmark-wrap::after { content: ''; display: block; height: 3px; background: #c8f135; margin-top: 2px; }
+
+    /* Carousel shared */
+    .carousel-outer { position: relative; overflow: hidden; }
+    .carousel-track { position: relative; }
+    .c-slide {
+      position: absolute; top: 0; left: 0; width: 100%;
+      opacity: 0; transition: opacity 0.3s ease;
+      font-family: 'Bebas Neue', sans-serif;
+      line-height: 0.92; color: #f0ece0;
+      pointer-events: none;
+    }
+    .c-slide.active { opacity: 1; pointer-events: auto; }
+    .c-slide .cl-g { color: #c8f135; }
+
+    /* Dots */
+    .c-dots { display: flex; align-items: center; gap: 8px; }
+    .c-dot {
+      width: 6px; height: 6px; border-radius: 3px;
+      background: #444; border: none; cursor: pointer; padding: 0;
+      transition: width 0.25s, background 0.25s;
+      /* 44px tap target */
+      position: relative;
+    }
+    .c-dot::before { content: ''; position: absolute; inset: -19px -10px; }
+    .c-dot.active { width: 24px; background: #c8f135; }
+
+    /* Arrow buttons (desktop) */
+    .c-arrow { width: 44px; height: 44px; border: 1px solid #333; background: transparent; color: #f0ece0; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
+    .c-arrow:hover { border-color: #888; }
+
+    /* ---- PHONE LANDING (< 1024px) ---- */
+    #screen-0 .lp-phone {
+      display: flex; flex-direction: column;
+      padding: 16px 0 0;
+      flex: 1;
+    }
+    .lp-top-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #888;
+      margin-bottom: 16px;
+    }
+    .lp-dot-green { color: #c8f135; }
+    .lp-scientist { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+
+    #screen-0 .lp-phone .wordmark-text { font-size: 22px; }
+    #screen-0 .lp-phone .wordmark-wrap { margin-bottom: 8px; }
+
+    .phone-carousel-wrap { margin-bottom: 12px; }
+    .phone-carousel-wrap .carousel-outer { }
+    .phone-carousel-wrap .c-slide { font-size: clamp(52px, 13vw, 80px); }
+
+    .phone-c-dots { margin-top: 12px; }
+
+    @media (min-width: 640px) and (max-width: 1023px) {
+      #screen-0 .lp-phone .wordmark-text { font-size: 36px; }
+      .phone-carousel-wrap .c-slide { font-size: 88px; }
+      .c-dot.active { width: 32px; }
+    }
+
+    .lp-subhead {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; line-height: 1.7;
+      color: #9a978c;
+      border-left: 2px solid #333;
+      padding-left: 16px;
+      margin-bottom: 16px;
+    }
+    .lp-subhead strong { color: #f0ece0; font-weight: 700; }
+    .lp-subhead sup.fn-ref { color: #c8f135; font-size: 18px; font-weight: 700; cursor: pointer; vertical-align: 0.25em; line-height: 1; padding: 4px 3px; }
+    .lp-subhead sup.fn-ref:hover { text-decoration: underline; }
+
+    .lp-priority { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; margin-bottom: 24px; }
+
+    .lp-bottom-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #888;
+      padding-bottom: 16px;
+    }
+    .lp-bottom-row a { color: #888; }
+    .lp-bottom-row a:hover { color: #f0ece0; }
+
+    /* Sticky apply bar (phone + tablet) */
+    #sticky-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+      background: #0e0e0e; border-top: 1px solid #333;
+      padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      transition: transform 0.2s ease;
+    }
+    #sticky-bar.hidden { transform: translateY(110%); pointer-events: none; }
+    .sticky-btn {
+      min-height: 56px; border: none; cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+      letter-spacing: 0.08em; color: #0e0e0e;
+      transition: opacity 0.15s;
+    }
+    .sticky-btn:active { opacity: 0.85; }
+    .sticky-btn-single { background: #c8f135; }
+    .sticky-btn-couple { background: #FF7A2F; }
+
+    /* Add bottom padding on phone screen-0 to account for sticky bar */
+    #screen-0 .lp-phone { padding-bottom: 24px; }
+
+    /* ---- DESKTOP LANDING (≥ 1024px) ---- */
+    #desktop-overlay {
+      display: none;
+    }
+    @media (min-width: 1024px) {
+      /* Hide sticky bar on desktop */
+      #sticky-bar { display: none !important; }
+
+      /* Show desktop overlay when landing is active */
+      body.landing-active #desktop-overlay {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 200;
+        background: #0e0e0e;
+        min-height: 100vh;
+      }
+
+      /* Hide phone screen-0 on desktop */
+      body.landing-active #app { display: none; }
+
+      /* Show below-fold only when landing active, below overlay */
+      body.landing-active #below-fold { display: block; }
+    }
+
+    /* Desktop overlay layout */
+    .dlo-topbar {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px;
+      font-family: 'Space Mono', monospace; font-size: 11px;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #888;
+      background: #0e0e0e;
+    }
+
+    .dlo-main {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 120px);
+      padding: 40px;
+    }
+
+    .dlo-inner {
+      width: 100%; max-width: 1240px;
+      display: flex; flex-direction: column;
+    }
+
+    .dlo-wordmark { margin-bottom: 10px; }
+    .dlo-wordmark .wordmark-text { font-size: 56px; }
+    .dlo-wordmark .wordmark-wrap::after { height: 4px; margin-top: 3px; }
+
+    /* Desktop carousel */
+    .dlo-carousel-wrap { margin-bottom: 16px; }
+    .dlo-carousel-wrap .c-slide {
+      font-size: clamp(80px, 8.5vw, 124px);
+      line-height: 0.9;
+    }
+
+    /* Carousel nav row (dots left, arrows right) */
+    .dlo-carousel-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 40px;
+    }
+    .dlo-arrows { display: flex; gap: 8px; }
+    .dlo-dots .c-dot.active { width: 32px; }
+
+    /* Content row */
+    .dlo-content-row {
+      display: grid; grid-template-columns: 1fr 340px; gap: 60px; align-items: start;
+    }
+
+    .dlo-subhead {
+      font-family: 'Space Mono', monospace;
+      font-size: 14px; line-height: 1.75;
+      color: #9a978c;
+      border-left: 2px solid #333; padding-left: 16px;
+    }
+    .dlo-subhead strong { color: #f0ece0; font-weight: 700; }
+    .dlo-subhead sup.fn-ref { color: #c8f135; font-size: 18px; font-weight: 700; cursor: pointer; vertical-align: 0.25em; line-height: 1; padding: 4px 3px; }
+    .dlo-subhead sup.fn-ref:hover { text-decoration: underline; }
+
+    .dlo-cta-col { display: flex; flex-direction: column; gap: 0; }
+    .dlo-cta-label { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: #f0ece0; line-height: 1.5; margin-bottom: 16px; }
+    .dlo-apply-single {
+      min-height: 60px; border: none; cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.08em;
+      background: #c8f135; color: #0e0e0e; width: 100%;
+      transition: background 0.15s; margin-bottom: 8px;
+    }
+    .dlo-apply-single:hover { background: #d8ff40; }
+    .dlo-apply-couple {
+      min-height: 60px; border: none; cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.08em;
+      background: #FF7A2F; color: #0e0e0e; width: 100%;
+      transition: opacity 0.15s; margin-bottom: 12px;
+    }
+    .dlo-apply-couple:hover { opacity: 0.88; }
+    /* Couple | Single side by side (Single always on the right, same as the mobile bar). */
+    .dlo-apply-btns { display: flex; gap: 8px; margin-bottom: 12px; }
+    .dlo-apply-btns > button { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+    .dlo-priority { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; }
+
+    .dlo-bottombar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px;
+      font-family: 'Space Mono', monospace; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #888;
+    }
+    .dlo-bottombar a { color: #888; }
+    .dlo-bottombar a:hover { color: #f0ece0; }
+
+    /* Short laptop: shrink carousel */
+    @media (min-width: 1024px) and (max-height: 849px) {
+      .dlo-carousel-wrap .c-slide { font-size: clamp(80px, 7vw, 96px); }
+      .dlo-main { padding: 20px 40px; min-height: calc(100vh - 100px); }
+    }
+
+    /* ===== BELOW FOLD ===== */
+    #below-fold {
+      display: none;
+      background: #0e0e0e;
+    }
+    .bfold-inner {
+      max-width: 920px; margin: 0 auto;
+      padding: 80px 24px;
+      display: flex; flex-direction: column; gap: 64px;
+    }
+
+    /* Pledge card */
+    .pledge-card {
+      border: 1px solid #f0ece0;
+      background: #171715;
+      padding: 28px;
+    }
+    .pledge-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #888; margin-bottom: 16px; }
+    .pledge-headline { font-family: 'Bebas Neue', sans-serif; font-size: 40px; line-height: 1.0; color: #f0ece0; }
+    .pledge-headline-green { font-family: 'Bebas Neue', sans-serif; font-size: 40px; line-height: 1.0; color: #c8f135; margin-bottom: 28px; }
+    .pledge-sig { display: flex; align-items: flex-end; gap: 0; margin-top: 8px; }
+    .pledge-x { font-family: 'Space Mono', monospace; font-size: 16px; color: #888; flex-shrink: 0; margin-right: 8px; line-height: 1; }
+    .pledge-sig-line { flex: 1; height: 1px; background: #888; margin-bottom: 4px; }
+    .pledge-sig-label { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; margin-left: 8px; flex-shrink: 0; line-height: 1; margin-bottom: 0; padding-bottom: 2px; }
+
+    /* Myths */
+    .myths-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #888; margin-bottom: 24px; }
+    .myths-grid { display: flex; flex-direction: column; gap: 16px; }
+    .myth-card { border: 1px solid #333; padding: 20px; position: relative; }
+    .myth-stamp { position: absolute; top: 12px; right: 12px; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: #888; border: 1px solid #555; padding: 2px 5px; transform: rotate(7deg); }
+    .myth-text { font-family: 'Space Mono', monospace; font-size: 12px; color: #aaa; font-weight: 700; text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: #777; margin-bottom: 10px; padding-right: 40px; }
+    .myth-reality { font-family: 'Bebas Neue', sans-serif; font-size: 26px; line-height: 1.05; color: #f0ece0; margin-bottom: 8px; }
+    .myth-oneliner { font-family: 'Space Mono', monospace; font-size: 12px; color: #9a978c; line-height: 1.6; }
+    .myth-reality sup.fn-ref { color: #c8f135; font-size: 18px; font-weight: 700; cursor: pointer; vertical-align: 0.25em; line-height: 1; padding: 4px 3px; }
+    .myth-reality sup.fn-ref:hover { text-decoration: underline; }
+
+    /* Desktop CTA repeat */
+    .bfold-desktop-cta { display: none; }
+
+    /* Footer */
+    .bfold-footer { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; line-height: 1.8; }
+    .bfold-footer ol { padding-left: 20px; margin-bottom: 16px; }
+    .bfold-footer li { margin-bottom: 6px; }
+    .bfold-footer em { font-style: italic; }
+    .bfold-footer .bfold-legal { margin-top: 20px; padding-top: 20px; border-top: 1px solid #222; }
+
+    @media (min-width: 1024px) {
+      .pledge-headline { font-size: 56px; }
+      .pledge-headline-green { font-size: 56px; }
+      .myths-grid { flex-direction: row; }
+      .myth-card { flex: 1; }
+      .bfold-desktop-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+      .bfold-cta-label { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: #f0ece0; max-width: 480px; }
+      .bfold-apply-btns { display: flex; gap: 12px; }
+      .bfold-apply-single { min-height: 56px; padding: 0 32px; border: none; cursor: pointer; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.08em; background: #c8f135; color: #0e0e0e; transition: background 0.15s; }
+      .bfold-apply-single:hover { background: #d8ff40; }
+      .bfold-apply-couple { min-height: 56px; padding: 0 32px; border: none; cursor: pointer; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.08em; background: #FF7A2F; color: #0e0e0e; transition: opacity 0.15s; }
+      .bfold-apply-couple:hover { opacity: 0.88; }
+    }
+
+    /* ===== FOOTNOTE MODAL ===== */
+    #fn-modal {
+      display: none;
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(0,0,0,0.7);
+    }
+    #fn-modal.open { display: flex; align-items: flex-end; justify-content: center; }
+    .fn-modal-sheet {
+      width: 100%; max-height: 85vh; overflow-y: auto;
+      background: #1a1a18; border-top: 2px solid #c8f135;
+      border-radius: 12px 12px 0 0; padding: 28px 24px 40px;
+      position: relative;
+    }
+    .fn-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #888; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px; }
+    .fn-close:hover { color: #f0ece0; }
+    .fn-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #c8f135; margin-bottom: 12px; }
+    .fn-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #f0ece0; line-height: 1.05; margin-bottom: 6px; }
+    .fn-byline { font-family: 'Space Mono', monospace; font-size: 11px; color: #888; margin-bottom: 16px; }
+    .fn-intro { font-family: 'Space Mono', monospace; font-size: 12px; color: #9a978c; line-height: 1.65; margin-bottom: 16px; }
+    .fn-findings { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .fn-finding { display: flex; gap: 12px; }
+    .fn-num { font-family: 'Space Mono', monospace; font-size: 10px; color: #c8f135; flex-shrink: 0; margin-top: 2px; }
+    .fn-finding-text { font-family: 'Space Mono', monospace; font-size: 12px; color: #f0ece0; line-height: 1.65; }
+    .fn-link-btn { font-family: 'Space Mono', monospace; font-size: 12px; color: #c8f135; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0; }
+    .fn-link-btn:hover { color: #d8ff40; }
+
+    @media (min-width: 1024px) {
+      #fn-modal.open { align-items: center; }
+      .fn-modal-sheet { max-width: 560px; border-radius: 8px; border-top: 2px solid #c8f135; }
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      .c-slide { transition: none; }
+    }
+
+    /* ===== LEGAL CONSENT ===== */
+    .legal-consent-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: center;
+      padding: 0 4px 8px;
+    }
+    .legal-consent-text a { color: var(--muted); text-decoration: underline; }
+    .legal-consent-text a:hover { color: var(--text); }
+
+    /* Partner notice + tip box */
+    .partner-notice {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; color: var(--body); line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .partner-tip-box {
+      border: 1px solid var(--dim);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .partner-tip-box .tip-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 8px;
+    }
+    .partner-tip-box .tip-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px; color: var(--body); line-height: 1.6;
+    }
+    #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 6px 0 0; }
+    /* 2026-09-27i: Your Partner's bottom bar now matches every other screen (priority tip hidden). To restore the tip, uncomment these with the markup:
+    #screen-2 .bottom-action .partner-tip-box { margin: 0; padding: 6px 12px; }
+    #screen-2 .screen-content { padding-bottom: 4px; }
+    #screen-2 .bottom-action .partner-tip-box .tip-label { display: inline; margin: 0 6px 0 0; }
+    #screen-2 .bottom-action .partner-tip-box .tip-text { display: inline; font-size: 11px; line-height: 1.5; }
+    #screen-2 .bottom-action .btn-ghost { padding: 8px 12px; }
+    */
+    .screen-subhead { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.6; margin: -12px 0 20px; }
+    #married-before-group .toggle-btn { padding-left: 2px; padding-right: 2px; }
+    /* Confirmation priority text */
+    .confirm-priority {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px; color: var(--body); line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    /* Zip→city lookup display */
+    .zip-city-display {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; color: var(--accent);
+      min-height: 0;
+      letter-spacing: 0.04em;
+    }
+    /* ===== COUPLES FLOW: every onboarding accent uses the couples orange ===== */
+    body.couples-flow { --accent: var(--orange); }
+    body.couples-flow .btn-primary:hover { background: #ff9152; }
+    /* Couples confirmation: "Invite a Friend" button uses the standard singles green (not the couples orange) */
+    .btn-friend-green { background: #c8f135; color: #0e0e0e; }
+    .btn-friend-green:hover { background: #d8ff40; }
+    .btn-friend-green:active { transform: scale(0.98); }
+    /* ===== MOCKUP_grokbot variant I ===== */
+    html.cp.vi #cp-field, html.cp.vi .pc-half-add, html.cp.vi #ww-loc-tags { display: none !important; }
+    html.cp.vi .pc-half-row { display: block !important; }
+    html.cp.vi #pc-primary-slot { display: block !important; }
+    html.cp.vi .pc-half-primary { width: 100%; }
+    html.cp.vi .pc-half-primary .pc-primary { -webkit-line-clamp: 1; }
+    #vi-dist { margin: 12px 0 0 !important; }
+    #screen-3 #vi-dist-label { margin-bottom: 0; }
+    #vi-dist .vi-dist-wrap { margin-top: 0; }
+    html.cp.vi #pc-extra .partner-location-anywhere { margin-top: 0; }
+    .vi-extra { display: flex; align-items: center; gap: 8px; min-height: 32px; cursor: pointer; min-width: 0; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .vi-extra[hidden] { display: none; }
+    #screen-3 .vi-extra-k { margin: 0; flex-shrink: 0; }
+    .vi-extra-sum { flex: 1; min-width: 0; font-size: 12px; }
+    /* Partner Location reopened with EDIT: Age Range + Partner Height step aside again until it folds (no scrolling on small phones) */
+    .cp-row.pinned { cursor: default; }
+    .cp-row.pinned:active { background: none; }
+    /* ===== MOCKUP_grokbot J: city row, distance, relocate checkbox (+ ALSO line) right under it, then the ranges ===== */
+    html.vj #vi-dist { margin: 10px 0 0 !important; }
+    html.vj #pc-extra .partner-location-anywhere { margin-top: 2px; }
+    html.vj .vi-extra { min-height: 28px; margin-top: -4px; }
+    html.vj #screen-3 #ww-loc:not(.collapsed) { margin-bottom: 8px; }
+    /* After Done (relocating ticked, extra cities chosen) the city part folds into one row; distance + ranges stay. */
+    #vj-cities { display: none; }
+    html.vj #ww-loc.vj-folded #vj-cities { display: flex; }
+    html.vj #ww-loc.vj-folded .pc-half-row, html.vj #ww-loc.vj-folded #pc-primary-slot, html.vj #ww-loc.vj-folded #pc-extra { display: none !important; }
+    html.vj #ww-loc.vj-folded #vi-dist { margin-top: 12px !important; }
+    #vj-cities .cp-sum { overflow: hidden; }
+    @media (max-width: 359px) { html.vj #screen-3 .partner-location-anywhere { font-size: 12px; gap: 8px; } } /* keeps the checkbox label on one line at 320 */
+    /* Short screens (e.g. 320x640): same layout, tighter spacing so nothing scrolls. */
+    @media (max-height: 720px) {
+      html.vj #screen-3 .screen-content { padding-top: 12px; padding-bottom: 8px; }
+      html.vj #screen-3 .screen-label { margin-bottom: 4px; }
+      html.vj #screen-3 .screen-headline { font-size: 40px; margin-bottom: 8px; }
+      html.vj #screen-3 .ww-unit.collapsed { margin-bottom: 8px; }
+      html.vj #screen-3 .who-cond, html.vj #screen-3 .pc-half-primary, html.vj #vj-cities { min-height: 44px; padding-top: 4px; padding-bottom: 4px; }
+      html.vj #screen-3 .partner-location-anywhere { min-height: 34px; }
+      html.vj #screen-3 #ww-loc:not(.collapsed) { margin-bottom: 4px; }
+      html.vj .vi-extra { min-height: 22px; margin-top: -6px; }
+      html.vj #vi-dist, html.vj #ww-loc.vj-folded #vi-dist { margin-top: 8px !important; }
+      html.vj #screen-3 .range-slider-wrap, html.vj #screen-3 input[type=range].range-input { height: 36px; }
+      html.vj #screen-3 .field-label { margin-bottom: 6px; }
+      html.vj #screen-3 .field-label + .range-slider-wrap { margin-top: 20px; }
+      html.vj #screen-3 #vi-dist .vi-dist-wrap { margin-top: 0; }
+      html.vj #ww-ranges .ww-age-group { margin-bottom: 4px !important; }
+    }
+    /* ===== MOCKUP_grokbot K ===== */
+    html.vk .pc-half-row:not(.vk-row), html.vk #pc-primary-slot, html.vk #vj-cities, html.vk .vi-extra { display: none !important; }
+    html.vk .vk-row { display: grid !important; }
+    .vk-row.solo { grid-template-columns: minmax(0, 1fr); }
+    .vk-row.solo #vk-other-box { display: none; }
+    .vk-row .cp-sum { overflow: hidden; }
+    .vk-row .cp-sum-first { overflow: hidden; text-overflow: ellipsis; }
+    #vk-zip-box.editing { border-color: var(--accent); }
+    #vk-zip-box.bad { border-color: var(--error, #ff5a5a); }
+    .vk-zip-line { align-items: baseline; }
+    .vk-zip-input { flex: none; width: calc(5ch + 2px); min-width: 0; height: auto; box-sizing: content-box; margin: 0 0 0 -1px; padding: 0 1px; border: none; border-radius: 2px;
+      outline: none; background: transparent; font: inherit; line-height: inherit; letter-spacing: 0; color: inherit; caret-color: var(--accent); pointer-events: none; -webkit-appearance: none; appearance: none; }
+    .vk-zip-input:placeholder-shown { width: calc(5ch + 2px); }
+    #vk-zip-box.editing .vk-zip-input { pointer-events: auto; background: rgba(212, 255, 58, 0.14); }
+    .vk-zip-input::selection { background: var(--accent); color: var(--bg); }
+    .vk-zip-city { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #vk-zip-box.bad .vk-zip-city { color: var(--error, #ff5a5a); }
+    /* 2026-09-28 spacing: the age and height blocks get equal room above and below, all = G, the gap from the age ball's bottom
+       to the PARTNER HEIGHT label as measured before this change (17px at normal heights, 9px on short screens).
+       G = checkbox bottom -> AGE RANGE label = age ball -> PARTNER HEIGHT label = height ball -> end of the block.
+       (checkbox row is 44px with a 20px box -> 12px under the box; slider track box is 44px with a 26px ball -> 9px under the ball.)
+       ?gap=N on the K page overrides G for trying other values. */
+    /* T = ball -> checkbox box: the checkbox is tucked under the distance slider so label + slider + checkbox read as one unit (T < G). */
+    html.vk { --vk-g: 17px; --vk-t: 5px; }
+    html.vk #screen-3 #ww-loc:not(.collapsed) { margin-bottom: calc(var(--vk-g) - 12px) !important; }
+    html.vk #ww-ranges .ww-age-group { margin-bottom: calc(var(--vk-g) - 9px) !important; }
+    html.vk #screen-3 #ww-ranges { margin-bottom: calc(var(--vk-g) - 9px); }
+    @media (max-height: 720px) {
+      html.vk { --vk-g: 9px; --vk-t: 3px; }
+      html.vk #screen-3 #ww-loc:not(.collapsed) { margin-bottom: calc(var(--vk-g) - 7px) !important; }   /* 34px row -> 7px under the box */
+      html.vk #ww-ranges .ww-age-group { margin-bottom: calc(var(--vk-g) - 5px) !important; }           /* 36px track -> 5px under the ball */
+      html.vk #screen-3 #ww-ranges { margin-bottom: calc(var(--vk-g) - 5px); }
+    }
+    #vk-zip-val.muted { color: var(--muted); }
+    /* 2026-09-29: the box -> DISTANCE label gap is pulled up 4px (the label's 15px line box has ~4px of empty leading above the caps),
+       so the visible gap from the Partner city box to the label's text = G, which read as larger than the other gaps next to a flat box edge. */
+    /* Distance block laid out like Age Range / Partner Height: label, readout above the ball, track. Room above the label and
+       from the ball to the checkbox box = G (same as the age / height blocks). */
+    html.vk #screen-3 #vi-dist-label { margin-bottom: 8px; }
+    html.vk.vj #screen-3 #vi-dist .vi-dist-wrap { margin-top: 22.4px; }
+    html.vk.vj #vi-dist, html.vk.vj #ww-loc.vj-folded #vi-dist { margin: calc(var(--vk-g) - 4px) 0 calc(var(--vk-t) - 21px) !important; } /* 9px under the ball + 12px above the checkbox box */
+    @media (max-height: 720px) {
+      html.vk #screen-3 #vi-dist-label { margin-bottom: 6px; }
+      html.vk.vj #screen-3 #vi-dist .vi-dist-wrap { margin-top: 20px; }
+      html.vk.vj #vi-dist, html.vk.vj #ww-loc.vj-folded #vi-dist { margin: calc(var(--vk-g) - 4px) 0 calc(var(--vk-t) - 12px) !important; } /* 5px under the ball + 7px above the box */
+    }
+    .vk-cb-txt { white-space: nowrap; overflow: hidden; text-overflow: clip; min-width: 0; }
+    @media (max-width: 359px) { html.vk #screen-3 .partner-location-anywhere { font-size: 11.5px; gap: 7px; } }
+    #vk-other-sum.empty { color: var(--muted); }
+    html.vk.vk-al-text #screen-3 .range-slider-wrap { margin-left: 13px; margin-right: 13px; } /* 1px border + 12px padding = box text column */
+    @media (max-width: 359px) { html.vk.vk-al-text #vk-row.solo .cp-field { padding-left: 12px; padding-right: 12px; } } /* keep the zip text on the same 13px column at 320 */
+    html.vk #vk-other-sum .cp-sum-more { color: inherit; } /* '+ N more' in the same white as the city names */
+    @media (max-height: 720px) { html.vk #vk-row .cp-field { min-height: 44px; padding-top: 4px; padding-bottom: 4px; } }
+    /* 320: the halves are ~150px, so CHANGE / EDIT step aside (the whole box is the button) and values drop to 11px */
+    @media (max-width: 359px) { html.vk #vk-row:not(.solo) .cp-field { padding-left: 9px; padding-right: 8px; } html.vk #vk-row:not(.solo) .cp-edit { display: none; } html.vk #vk-row:not(.solo) .cp-sum { font-size: 11px; } html.vk #vk-row:not(.solo) { gap: 6px; } }
+    /* ===== MOCKUP_grokbot K2: zip / postcode / city name ===== */
+    html.vk2 #vk-row { position: relative; }
+    html.vk2 .vk-zip-input { width: auto; max-width: 100%; text-overflow: ellipsis; overflow: hidden; }
+    html.vk2 #vk-zip-box.editing .vk-zip-input { flex: 1 1 auto; width: 100% !important; }
+    html.vk2 #vk-zip-box.editing .vk-zip-city { display: none; }
+    html.vk2 .vk-zip-input::placeholder { color: var(--muted); opacity: 1; }
+    .vk2-sug { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 30; display: flex; flex-direction: column; background: #1a1a1a;
+      border: 1px solid var(--dim); border-radius: var(--radius); overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,0.55); }
+    .vk2-sug[hidden] { display: none; }
+    .vk2-opt { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; box-sizing: border-box; border-top: 1px solid var(--dim);
+      font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vk2-opt:first-child { border-top: none; }
+    .vk2-opt.active, .vk2-opt:active { background: #2a2a28; }
+    .vk2-opt .vk2-k { color: var(--accent); flex: none; }
+    .vk2-opt .vk2-sub { color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+    .vk2-opt.vk2-none { color: var(--muted); cursor: default; }
+    @media (max-height: 720px) { .vk2-opt { min-height: 40px; } }
+    html.vk2 #vi-dist-label { display: flex; white-space: nowrap; overflow: hidden; min-width: 0; }
+    html.vk2 #vi-dist-label .vk2-lab-pre, html.vk2 #vi-dist-label .vk2-lab-cbd { flex: none; }
+    html.vk2 #vi-dist-label .vk2-lab-city { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+      /* MOCKUP_grokbot sheet footer: DONE sits exactly where the page's pinned NEXT is; small X close top-right */
+    .cp-x { width: 40px; height: 40px; margin: -4px -8px -4px 0; display: flex; align-items: center; justify-content: center; background: none; border: none; border-radius: var(--radius); color: var(--text); cursor: pointer; touch-action: manipulation; flex-shrink: 0; }
+    .cp-x:hover, .cp-x:focus-visible { background: #222; }
+    .cp-x svg { width: 18px; height: 18px; display: block; }
+    .cp-sheet-head { min-height: 40px; }
+    .cp-foot { flex-shrink: 0; height: 112px; position: relative; }
+    .cp-foot .cp-done-btm { position: absolute; left: 23px; right: 23px; bottom: 49px; width: auto; }
+
+    /* MOCKUP_grokbot K2 ?align=box (see build7_grokbot.py) */
+    html.vk.vk-al-box { --bx-p: 9px; --bx-g: 12px; }          /* 393: box label sits 9px under the box top; boxes are 12px apart */
+    html.vk.vk-al-box #screen-3 #vi-dist, html.vk.vk-al-box #screen-3 #ww-ranges .field-group, html.vk.vk-al-box #screen-3 #pc-extra { padding-left: 13px; padding-right: 13px; box-sizing: border-box; }
+    html.vk.vk-al-box.vj #screen-3 #vi-dist, html.vk.vk-al-box.vj #screen-3 #ww-loc.vj-folded #vi-dist { margin-top: calc(var(--bx-g) + var(--bx-p)) !important; }
+    html.vk.vk-al-box #screen-3 #ww-loc:not(.collapsed) { margin-bottom: calc(var(--bx-g) + var(--bx-p) - 12px) !important; } /* checkbox box + P, then G */
+    html.vk.vk-al-box #screen-3 #ww-ranges .ww-age-group { margin-bottom: calc(var(--bx-g) + var(--bx-p)) !important; }      /* the track box already has P under the ball */
+    html.vk.vk-al-box #screen-3 #ww-ranges { margin-bottom: 0 !important; }
+    @media (max-height: 720px) {
+      html.vk.vk-al-box { --bx-p: 5px; --bx-g: 8px; }        /* 320x640: the boxes are 44px (label 5px under the top) and 8px apart */
+      html.vk.vk-al-box #screen-3 #ww-loc:not(.collapsed) { margin-bottom: calc(var(--bx-g) + var(--bx-p) - 7px) !important; }
+    }
+    @media (max-width: 359px) {
+      html.vk.vk-al-box #vk-row .cp-field { padding-left: 12px !important; padding-right: 12px !important; } /* Partner city text on the same 13px column as Seeking */
+      html.vk.vk-al-box #screen-3 .partner-location-anywhere { font-size: 10.5px; gap: 7px; }
+    }
+    /* ===== MOCKUP_grokbot WYA: location field ===== */
+    /* C: compact row (same height as the other inputs) that opens the map sheet */
+    /* ---- MOCKUP_grokbot K4 (build9_grokbot.py) ---- */
+    /* Condensed sliders (Distance, Age range, Height): always on the page, one line "LABEL ........ value" + thin track + small balls.
+       ?slider=boxed (default): inside a box like Seeking / Partner city (1px border, 4px corners, 12px side padding).
+       ?slider=inline: no border; label, value and track on the 13px box text inset. Same on the first visit and the revisit. */
+    html.vk4 .k4-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; height: 18px; }
+    html.vk4 #screen-3 .k4-head .field-label { margin: 0 !important; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 18px; }
+    html.vk4 .k4-val { font-family: 'Space Mono', monospace; font-size: 13px; line-height: 18px; color: var(--text); white-space: nowrap; flex: none; }
+    html.vk4 #screen-3 .k4-sl .slider-bubble { display: none !important; }
+    html.vk4 #screen-3 .k4-sl .range-slider-wrap { height: 24px !important; margin: 3px 0 0 !important; }
+    html.vk4 #screen-3 .k4-sl input[type=range].range-input { height: 28px !important; }
+    html.vk4 #screen-3 .k4-sl .range-track, html.vk4 #screen-3 .k4-sl .range-fill { height: 2px; border-radius: 1px; }
+    html.vk4 #screen-3 .k4-sl .range-track { background: #333; }
+    /* small 16px ball; the thumb box stays 28px (transparent ring) so it is still easy to grab */
+    html.vk4 #screen-3 .k4-sl input[type=range].range-input::-webkit-slider-thumb { width: 28px; height: 28px; box-shadow: none; background: radial-gradient(circle, var(--accent) 0 7.5px, transparent 8px); }
+    html.vk4 #screen-3 .k4-sl input[type=range].range-input::-moz-range-thumb { width: 28px; height: 28px; box-shadow: none; background: radial-gradient(circle, var(--accent) 0 7.5px, transparent 8px); }
+    html.vk4 #screen-3 .k4-sl .field-error:empty { display: none; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 .k4-sl { border: 1px solid var(--dim); border-radius: var(--radius); padding: 8px 12px 5px !important; box-sizing: border-box; background: none; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #vi-dist.k4-sl, html.vk4.k4s-boxed.vk.vj.vk-al-box.vj #screen-3 #ww-loc.vj-folded #vi-dist.k4-sl { margin-top: var(--bx-g) !important; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-ranges .ww-age-group.k4-sl { margin-bottom: var(--bx-g) !important; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-loc:not(.collapsed) { margin-bottom: var(--k4-cb-g) !important; }
+    html.vk4 { --k4-cb-g: 2px; }
+    html.vk4.vk.vj.vk-al-box #screen-3 #pc-extra { margin-top: var(--k4-cb-t); }
+    html.vk4 { --k4-cb-t: 8px; }
+    html.vk4.k4s-inline.vk.vj.vk-al-box #screen-3 #ww-loc:not(.collapsed) { margin-bottom: var(--k4-cb-gi) !important; }
+    html.vk4 { --k4-cb-gi: 8px; }
+    html.vk4.k4s-inline.vk.vj.vk-al-box #screen-3 #ww-ranges .ww-age-group.k4-sl { margin-bottom: calc(var(--bx-g) + 4px) !important; }
+    html.vk4.k4s-inline.vk.vj.vk-al-box #screen-3 #vi-dist.k4-sl { margin-top: calc(var(--bx-g) + var(--bx-p)) !important; }
+    @media (max-height: 720px) {
+      html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 .k4-sl { padding: 5px 12px 3px !important; }
+      html.vk4 #screen-3 .k4-sl .range-slider-wrap { height: 22px !important; margin-top: 2px !important; }
+      html.vk4 { --k4-cb-g: 0px; --k4-cb-gi: 4px; --k4-cb-t: 5px; }
+      html.vk4.k4s-inline.vk.vj.vk-al-box #screen-3 #ww-ranges .ww-age-group.k4-sl { margin-bottom: calc(var(--bx-g) + 2px) !important; }
+    }
+
+    /* vk5 Distance checkbox */
+/* Partner city + Other cities only once relocating is ticked (or cities are kept after unticking) */
+    html.vk5.vk #screen-3 #vk-row.k5-hide { display: none !important; }
+    html.vk5 #screen-3 #pc-extra { display: none !important; }
+    html.vk5.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-loc:not(.collapsed), html.vk5.vk4.k4s-inline.vk.vj.vk-al-box #screen-3 #ww-loc:not(.collapsed) { margin-bottom: var(--bx-g) !important; }
+    html.vk5.vk4.k4s-inline.vk.vj.vk-al-box #screen-3 #ww-loc:not(.collapsed) { margin-bottom: calc(var(--bx-g) + 4px) !important; }
+    html.vk5.vk4.vk.vj.vk-al-box #screen-3 #ww-loc #vi-dist.k4-sl { margin-bottom: 0 !important; }
+    html.vk5.k5-norow.k4s-boxed.vk.vj.vk-al-box #screen-3 #vi-dist.k4-sl { margin-top: 0 !important; }
+    html.vk5.k5-norow.k4s-inline.vk.vj.vk-al-box #screen-3 #vi-dist.k4-sl { margin-top: var(--bx-p) !important; }
+    /* relocate checkbox inside the Distance box, under the slider, on the box text inset */
+    html.vk5 #screen-3 #vi-dist .partner-location-anywhere { margin: 2px 0 0 !important; min-height: 32px; }
+    html.vk5.k4s-boxed #screen-3 #vi-dist.k4-sl { padding-bottom: 3px !important; }
+    @media (max-height: 720px) { html.vk5 #screen-3 #vi-dist .partner-location-anywhere { min-height: 30px; margin-top: 0 !important; } html.vk5.k4s-boxed #screen-3 #vi-dist.k4-sl { padding-bottom: 2px !important; } }
+    /* relocate checkbox label: grey like the I AM A labels while unticked, bright white once ticked (font and size unchanged) */
+    html.vk5 #screen-3 .partner-location-anywhere, html.vk5 #screen-3 .partner-location-anywhere .vk-cb-txt { color: #888; }
+    html.vk5 #screen-3 .partner-location-anywhere:has(input:checked), html.vk5 #screen-3 .partner-location-anywhere:has(input:checked) .vk-cb-txt { color: #fff; }
+
+    /* s1g: headline stays production 52px; only Distance uses .k4-sl boxing */
+    #screen-3 .screen-headline { font-size: 52px !important; margin-bottom: 24px !important; }
   </style>
 </head>
 <body class="landing-active">
@@ -908,27 +1617,15 @@
             <label class="field-label" for="race">Race</label>
             <button type="button" class="field-input race-select" id="race" aria-haspopup="true" aria-expanded="false" aria-controls="race-panel" onclick="toggleRacePanel()"><span class="race-select-text empty" id="race-select-text">— Select all —</span><span class="race-caret" aria-hidden="true">&#9662;</span></button>
             <div class="field-error" id="err-race">Please make a selection</div>
+            <div class="race-chips" id="race-chips" aria-live="polite"></div>
           </div>
-          <div class="race-panel" id="race-panel" role="group" aria-label="Race (select all that apply)">
-            <button type="button" class="race-opt" id="btn-race-7" data-race="White" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">White</span></button>
-            <button type="button" class="race-opt" id="btn-race-2" data-race="Black" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
-            <button type="button" class="race-opt" id="btn-race-0" data-race="Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
-            <button type="button" class="race-opt" id="btn-race-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
-            <button type="button" class="race-opt" id="btn-race-1" data-race="South Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
-            <button type="button" class="race-opt" id="btn-race-4" data-race="MENA" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
-            <button type="button" class="race-opt" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
-            <button type="button" class="race-opt" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
-            <button type="button" class="race-opt" id="btn-race-8" data-race="Other" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
-            <button type="button" class="race-opt" id="btn-race-9" data-race="Prefer not to say" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Prefer not to say</span></button>
-            <button type="button" class="race-done" id="race-done" onclick="closeRacePanel()">DONE</button>
+      </div>
+          <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="crExpand('who-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <label class="field-label">Email</label>
+            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+            <div class="field-error" id="err-email">Valid email required</div>
           </div>
-        </div>
-        <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="crExpand('who-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label">Email</label>
-          <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-          <div class="field-error" id="err-email">Valid email required</div>
-        </div>
       </div>
       <div id="under18-msg">
         <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
@@ -1081,21 +1778,58 @@
         <div class="who-unit ww-unit" id="ww-loc">
         <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner city" onclick="crExpand('ww-loc')"><span class="who-cond-txt"><span class="who-cond-k" id="ww-loc-k">Partner city</span><span class="who-cond-v" id="ww-loc-v"></span><span class="pc-tags pc-tags-cond" id="ww-loc-tags"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" id="partner-location-field" style="margin-bottom:0;">
-          <label class="field-label" id="partner-location-label" for="partner-location-input">Partner city</label>
-          <div class="pc-primary-row" id="pc-primary-row" hidden><span class="pc-primary" id="pc-primary"></span><button type="button" class="city-add-more pc-change" id="pc-change" aria-label="Change partner city">Change</button></div>
+          <!-- MOCKUP_grokbot J: folded city part (after Done): all partner cities, whole names that fit + "+ N more"; EDIT unfolds it. -->
+          <div class="cp-field" id="vj-cities" role="button" tabindex="0" aria-label="Edit partner cities">
+            <span class="cp-txt"><label class="field-label cp-k" id="vj-cities-k">Partner cities</label><span class="cp-sum" id="vj-cities-sum"></span></span><span class="cp-edit">EDIT</span>
+          </div>
+          <!-- MOCKUP_grokbot K: top row. Left = PARTNER CITY as a zip + city (tap to type another zip; the distance is measured from it).
+               Right = OTHER CITIES (extra cities, independent of the zip); hidden until there are some, so the left box is full width. -->
+          <div class="cp-half-row vk-row solo" id="vk-row">
+            <div class="cp-field" id="vk-zip-box" role="button" tabindex="0" aria-label="Change partner city: zip, postcode or city name">
+              <span class="cp-line cp-top-line"><label class="field-label cp-k" for="vk-zip-input">Partner city</label><span class="cp-edit" id="vk-zip-edit">CHANGE</span></span>
+              <!-- The zip digits are an input styled as the text itself (read-only until CHANGE), so editing happens in place: same line, same box height, city stays beside it. -->
+              <span class="cp-sum vk-zip-line" id="vk-zip-val"><input class="vk-zip-input" id="vk-zip-input" type="text" inputmode="text" maxlength="40" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Zip or city" role="combobox" aria-autocomplete="list" aria-controls="vk2-sug" aria-expanded="false" aria-label="Partner city: zip, postcode or city name" readonly tabindex="-1"><span class="vk-zip-city" id="vk-zip-city"></span></span>
+            </div>
+            <div class="cp-field" id="vk-other-box" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit other cities">
+              <span class="cp-line cp-top-line"><label class="field-label cp-k" id="vk-other-k">Other cities</label><span class="cp-edit">EDIT</span></span>
+              <span class="cp-sum" id="vk-other-sum"></span>
+            </div>
+            <div class="vk2-sug" id="vk2-sug" role="listbox" aria-label="Partner city suggestions" hidden></div>
+          </div>
+          <div class="cp-field cp-opens" id="cp-field" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Choose partner cities">
+            <span class="cp-txt"><label class="field-label cp-k" id="cp-label">Partner cities</label><span class="cp-sum" id="cp-sum"></span></span><span class="cp-edit">EDIT</span>
+          </div>
+          <!-- MOCKUP_grokbot half row (hidden in F/G/H; kept so the live picker code still finds its elements): left = primary Partner city with EDIT (single-select picker), right = ADD CITIES. -->
+          <div class="pc-half-row">
+            <div class="pc-half pc-half-primary" id="pc-primary-row" role="button" tabindex="0" aria-label="Edit partner city">
+              <label class="field-label pc-half-k" id="partner-location-label">Partner city</label>
+              <span class="pc-half-line"><span class="pc-primary" id="pc-primary"></span><button type="button" class="pc-half-edit pc-change" id="pc-change" aria-label="Change partner city">EDIT</button></span>
+            </div>
+            <button type="button" class="pc-half pc-half-add" id="partner-location-add-more" aria-label="Add cities"><span class="pc-half-add-txt">+ Add cities</span></button>
+          </div>
           <div id="pc-primary-slot"></div>
           <div class="field-error" id="err-partner_location"></div>
+          <!-- MOCKUP_grokbot I: distance from the partner city (0-300 mi, default 300); the label is the live readout. -->
+          <div class="field-group vi-dist" id="vi-dist">
+            <label class="field-label" id="vi-dist-label" for="vi_dist_mi">Distance from 78704</label>
+            <div class="range-slider-wrap vi-dist-wrap">
+              <div class="range-track"></div>
+              <div class="range-fill" id="vi-dist-fill" style="left:0"></div>
+              <span id="vk-dist-bubble" class="slider-bubble">30 miles</span>
+              <input type="range" id="vi_dist_mi" class="range-input" min="0" max="34" step="1" value="7" aria-valuetext="30 miles" aria-label="Distance in miles from your partner city">
+            </div>
+          </div>
           <div class="pc-extra" id="pc-extra">
             <div id="partner-location-chips" class="pc-tags"></div>
-            <button type="button" class="city-add-more" id="partner-location-add-more">+ Add city</button>
             <div id="pc-extra-slot"><div id="pc-picker" hidden>
               <input class="field-input" id="partner-location-input" type="text" placeholder="Type a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="partner-location-suggestions" aria-expanded="false">
               <div id="partner-location-suggestions" class="partner-location-suggestions" role="listbox" aria-label="City suggestions" hidden></div>
             </div></div>
             <label class="partner-location-anywhere" for="partner-location-anywhere">
               <input type="checkbox" id="partner-location-anywhere">
-              <span>I'm open to relocating for love</span>
+              <span class="vk-cb-txt">I'm open to dating in other cities</span>
             </label>
+            <div class="vi-extra" id="vi-extra" role="button" tabindex="0" aria-label="Edit relocation cities" hidden><span class="field-label vi-extra-k">Also</span><span class="cp-sum vi-extra-sum" id="vi-extra-sum"></span><span class="cp-edit">EDIT</span></div>
           </div>
         </div>
         </div>
@@ -1477,7 +2211,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-09-27r';
+var PAGE_VERSION = '2026-10-05p1';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -1600,7 +2334,7 @@ let partnerCity = null;
 // ============================================================
 // PATHS
 // ============================================================
-function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,5,3,7,6]; }
+function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,3,5,7,6]; }
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 // Consent records note where each consent was given: current step number + screen name (e.g. apply_step_4_public_self).
 function consentSurfaces() {
@@ -2129,6 +2863,7 @@ async function saveLead() {
     partner_city_primary: partnerCityPrimaryPayload(),
     partner_cities_extra: partnerCitiesExtraPayload(),
     partner_cities_extra_text: partnerCitiesExtraTextPayload(),
+    ...partnerDistancePayload(),
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -2727,6 +3462,7 @@ async function doSubmit() {
     partner_city_primary: partnerCityPrimaryPayload(),
     partner_cities_extra: partnerCitiesExtraPayload(),
     partner_cities_extra_text: partnerCitiesExtraTextPayload(),
+    ...partnerDistancePayload(),
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -2860,22 +3596,43 @@ function _syncRaceButtons() {
     t.textContent = txt; t.title = state.race.length ? txt : '';
     t.classList.toggle('empty', !state.race.length);
   }
+  const chips = document.getElementById('race-chips');
+  if (chips) {
+    chips.innerHTML = '';
+    (state.race || []).forEach(label => {
+      const s = document.createElement('span'); s.className = 'race-chip'; s.textContent = label; chips.appendChild(s);
+    });
+  }
 }
-function isRacePanelOpen() { const p = document.getElementById('race-panel'); return !!p && p.classList.contains('open'); }
+function isRacePanelOpen() { const p = document.getElementById('race-panel'); return !!p && !p.hidden; }
 function openRacePanel() {
   const p = document.getElementById('race-panel'), c = document.getElementById('race');
+  const b = document.getElementById('race-backdrop');
   if (!p) return;
   clearTimeout(_crT['who-height']); clearTimeout(_crT['who-race']);
+  p.hidden = false; if (b) b.hidden = false;
   p.classList.add('open'); if (c) c.setAttribute('aria-expanded', 'true');
-  try { p.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+  _syncRaceButtons();
+  try { if (typeof sheetPinDone === 'function') sheetPinDone('race-panel'); } catch (e) {}
 }
 function closeRacePanel(noCommit) {
   const p = document.getElementById('race-panel'), c = document.getElementById('race');
-  if (!p || !p.classList.contains('open')) return;
+  const b = document.getElementById('race-backdrop');
+  if (!p || p.hidden) return;
+  p.hidden = true; if (b) b.hidden = true;
   p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
   if (!noCommit) crTap('who-race', CR_DELAY); // multi-select
 }
 function toggleRacePanel() { if (isRacePanelOpen()) closeRacePanel(); else openRacePanel(); }
+document.addEventListener('DOMContentLoaded', () => {
+  const xd = document.getElementById('race-done');
+  if (xd) xd.addEventListener('click', e => { e.preventDefault(); closeRacePanel(); });
+  const xx = document.getElementById('race-x');
+  if (xx) xx.addEventListener('click', e => { e.preventDefault(); closeRacePanel(); });
+  const xb = document.getElementById('race-backdrop');
+  if (xb) xb.addEventListener('click', () => closeRacePanel());
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && isRacePanelOpen()) closeRacePanel(); });
+});
 function racePayload() {
   return Array.isArray(state.race) && state.race.length ? state.race.slice() : null;
 }
@@ -3506,6 +4263,11 @@ function partnerCitiesExtraTextPayload() {
   if (state.status === 'partnered' || !partnerLocationReady || !partnerCitiesExtra.length) return null;
   return partnerCitiesExtra.map(p => p.label).join('; ');
 }
+// K5 key partner_distance_mi (miles, integer): the What You Want Distance slider. Singles only, once a partner city is set.
+function partnerDistancePayload() {
+  if (state.status === 'partnered' || !partnerLocationReady || state.partnerDistanceMi == null || isNaN(state.partnerDistanceMi)) return {};
+  return { partner_distance_mi: state.partnerDistanceMi };
+}
 function openToAnywherePayload() {
   if (state.status === 'partnered' || !partnerLocationReady) return null;
   return !!partnerLocationAnywhere;
@@ -4035,11 +4797,13 @@ function initHeightSlider() {
     const seeking = state.genderSeeking;
     let minIn, maxIn;
     if (seeking === 'men') {
-      // Seeking men: her height - 3" to max
-      minIn = Math.max(58, userHeightIn - 3); maxIn = 84;
+      // s1e: woman seeking men -> MIN = own height … 7'0"; other seeking-men combos keep prod (own-3 … max)
+      if (state.gender === 'woman') { minIn = Math.max(58, userHeightIn); maxIn = 84; }
+      else { minIn = Math.max(58, userHeightIn - 3); maxIn = 84; }
     } else if (seeking === 'women') {
-      // Seeking women: min to his height + 3"
-      minIn = 58; maxIn = Math.min(84, userHeightIn + 3);
+      // s1e: man seeking women -> 4'10" … MAX = own+1"; other seeking-women combos keep prod (min … own+3)
+      if (state.gender === 'man') { minIn = 58; maxIn = Math.min(84, userHeightIn + 1); }
+      else { minIn = 58; maxIn = Math.min(84, userHeightIn + 3); }
     } else {
       minIn = 60; maxIn = 78; // fallback
     }
@@ -4267,5 +5031,779 @@ async function _doZipLookup(zip) {
   showError('postal_code', 'ZIP code not found');
 }
 </script>
+
+<!-- s1f: Race picker as cp-sheet (same UI as Other Cities); options/values unchanged from 2026-09-27r -->
+<div class="cp-backdrop" id="race-backdrop" hidden></div>
+<div class="cp-sheet race-sheet" id="race-panel" role="dialog" aria-modal="true" aria-label="Race" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title">Race</span><button type="button" class="cp-x" id="race-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
+  <div class="cp-hint" id="race-hint" style="display:none"></div>
+  <div class="cp-list" id="race-list" role="group" aria-label="Race (select all that apply)">
+<button type="button" class="race-opt" id="btn-race-7" data-race="White" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">White</span></button>
+<button type="button" class="race-opt" id="btn-race-2" data-race="Black" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
+<button type="button" class="race-opt" id="btn-race-0" data-race="Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
+<button type="button" class="race-opt" id="btn-race-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
+<button type="button" class="race-opt" id="btn-race-1" data-race="South Asian" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
+<button type="button" class="race-opt" id="btn-race-4" data-race="MENA" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
+<button type="button" class="race-opt" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
+<button type="button" class="race-opt" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
+<button type="button" class="race-opt" id="btn-race-8" data-race="Other" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
+<button type="button" class="race-opt" id="btn-race-9" data-race="Prefer not to say" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Prefer not to say</span></button>
+  </div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="race-done">DONE</button></div>
+</div>
+
+<div class="cp-backdrop" id="cp-backdrop" hidden></div>
+<div class="cp-sheet" id="cp-sheet" role="dialog" aria-modal="true" aria-label="Partner cities" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title" id="cp-sheet-title">Partner cities</span><button type="button" class="cp-x" id="cp-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
+  <div class="cp-search-wrap"><input class="field-input" id="cp-search" type="text" placeholder="Search or type a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-controls="cp-list"></div>
+  <div class="cp-hint" id="cp-hint"></div>
+  <div class="cp-list" id="cp-list" role="group" aria-label="Cities"></div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="cp-done">DONE</button></div>
+</div>
+
+<script>
+// ===== MOCKUP_grokbot compact multi-city picker (F/G/H) =====
+// Selection = [partnerCityPrimary, ...partnerCitiesExtra] (same data model / payloads as live). The home (zip) city starts checked.
+// Unchecking the primary promotes the next city; the last city can't be unchecked (the list is never empty).
+let _cpTyped = '';
+function _cpSel() { return _plAll(); }
+function _cpIsSel(e) { return _cpSel().some(p => _plSame(p, e)); }
+function _cpHome() { try { return _ownCityEntry(); } catch (e) { return null; } }
+function _cpToggle(entry) {
+  if (!entry || !entry.label) return;
+  const hint = document.getElementById('cp-hint'); if (hint) hint.textContent = '';
+  partnerLocationTouched = true;
+  if (_cpIsSel(entry)) {
+    if (_cpSel().length <= 1) { if (hint) hint.textContent = 'Keep at least one city.'; return; }
+    if (_plSame(partnerCityPrimary, entry)) partnerCityPrimary = partnerCitiesExtra.shift();
+    else partnerCitiesExtra = partnerCitiesExtra.filter(p => !_plSame(p, entry));
+  } else if (!partnerCityPrimary) partnerCityPrimary = entry;
+  else partnerCitiesExtra.push(entry);
+  hideError('partner_location');
+  _renderPartnerLocationChips(); _wwLocChanged();
+}
+function _cpRemoveAt(i) { const e = _cpSel()[i]; if (e) _cpToggle(e); }
+function _cpOpen() {
+  loadPartnerCities();
+  const s = document.getElementById('cp-sheet'), b = document.getElementById('cp-backdrop'), q = document.getElementById('cp-search');
+  s.hidden = false; b.hidden = false; _cpTyped = ''; if (q) q.value = '';
+  document.querySelectorAll('.cp-field.cp-opens').forEach(f => f.classList.add('active'));
+  const h = document.getElementById('cp-hint'); if (h) h.textContent = '';
+  _cpRenderList();
+  const p = _partnerCitiesPromise; if (p && p.then) p.then(_cpRenderList);
+  if (q) setTimeout(() => q.focus(), 30);
+}
+function _cpClose() {
+  const s = document.getElementById('cp-sheet'), b = document.getElementById('cp-backdrop');
+  const q = document.getElementById('cp-search'); if (q) q.blur();
+  s.hidden = true; b.hidden = true;
+  document.querySelectorAll('.cp-field.cp-opens').forEach(f => f.classList.remove('active'));
+  _renderPartnerLocationChips();
+}
+function _cpRow(entry, checked, note, typed) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'cp-row' + (typed ? ' typed' : ''); b.setAttribute('role', 'checkbox'); b.setAttribute('aria-checked', String(!!checked));
+  const bx = document.createElement('span'); bx.className = 'cp-box';
+  const l = document.createElement('span'); l.className = 'cp-row-label'; l.textContent = typed ? 'Add "' + entry.label + '"' : entry.label;
+  b.append(bx, l);
+  if (note) { const n = document.createElement('span'); n.className = 'cp-row-note'; n.textContent = note; b.appendChild(n); }
+  // picking from a search clears the search so the next city can be typed straight away (and it moves up into Selected)
+  b.addEventListener('click', e => { e.preventDefault(); const q = document.getElementById('cp-search'); const clear = !checked && _cpTyped.trim(); _cpToggle(entry); if (clear && q) { q.value = ''; _cpTyped = ''; } _cpRenderList(); });
+  return b;
+}
+function _cpRenderList() {
+  const list = document.getElementById('cp-list'); if (!list) return;
+  const home = _cpHome();
+  const q = _cpTyped.trim();
+  list.replaceChildren();
+  const sel = _cpSel();
+  const title = document.getElementById('cp-sheet-title'); if (title) title.textContent = 'Partner cities (' + sel.length + ')';
+  const sec = t => { const d = document.createElement('div'); d.className = 'cp-sec'; d.textContent = t; list.appendChild(d); };
+  if (sel.length) { sec('Selected (' + sel.length + ')'); sel.forEach(e => list.appendChild(_cpRow(e, true, home && _plSame(home, e) ? 'home' : (e.matched === false ? 'as typed' : '')))); }
+  let rows = [];
+  if (q) {
+    rows = _searchPartnerCities(q, 30).map(c => _plEntryFromCity(c)).filter(e => !_cpIsSel(e)).slice(0, 20);
+    const f = _foldCity(q);
+    const exact = PARTNER_CITIES.some(c => c._label === f || c._names.includes(f)) || sel.some(p => _foldCity(p.label) === f || _foldCity(p.city || '') === f);
+    sec('Results');
+    if (!exact) list.appendChild(_cpRow(_plTypedEntry(q), false, 'as typed', true));
+  } else {
+    rows = PARTNER_CITIES.filter(c => c.country === 'US').slice(0, 30).map(c => _plEntryFromCity(c)).filter(e => !_cpIsSel(e));
+    if (rows.length) sec('Popular');
+  }
+  rows.forEach(e => list.appendChild(_cpRow(e, false, '')));
+}
+// MOCKUP_grokbot (gallery F v2): the closed field shows city names only (no state), joined by " · ", with as many WHOLE
+// names as the field width allows before "+ N more" (measured with the field's own font; refits at any width / on resize).
+function _cpCityName(p) { return String((p && (p.city || p.label)) || '').split(',')[0].trim(); }
+const _cpMeasureCtx = document.createElement('canvas').getContext('2d');
+function _cpTextW(el, t) { const cs = getComputedStyle(el); _cpMeasureCtx.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily; return _cpMeasureCtx.measureText(t).width; }
+function _cpMoreTxt(n) { return '\u00a0+ ' + n + ' more'; }
+function _cpFitNames(el, names, emptyText, refit) {
+  el._cpRefit = refit;
+  el.replaceChildren(); el.classList.toggle('empty', !names.length);
+  const a = document.createElement('span'); a.className = 'cp-sum-first';
+  if (!names.length) { a.textContent = emptyText; el.appendChild(a); el.dataset.fit = '0/0'; return; }
+  const avail = el.clientWidth;
+  let k = names.length;
+  if (avail > 0) {
+    for (; k > 1; k--) {
+      const t = names.slice(0, k).join(' \u00b7 ') + (k < names.length ? _cpMoreTxt(names.length - k) : '');
+      if (_cpTextW(el, t) <= avail - 1) break;
+    }
+  } else k = 1; // hidden (0 wide): refit when it gets a width
+  a.textContent = names.slice(0, k).join(' \u00b7 ');
+  el.appendChild(a);
+  if (k < names.length) { const m = document.createElement('span'); m.className = 'cp-sum-more'; m.textContent = _cpMoreTxt(names.length - k); el.appendChild(m); }
+  el.dataset.fit = k + '/' + names.length;
+  el._cpW = avail;
+  if (!el._cpRO && window.ResizeObserver) {
+    el._cpRO = new ResizeObserver(() => { const w = el.clientWidth; if (w !== el._cpW && el._cpRefit) el._cpRefit(); });
+    el._cpRO.observe(el);
+  }
+}
+function _cpSummaryInto(el) {
+  if (!el) return;
+  const sel = _cpSel();
+  _cpFitNames(el, sel.map(_cpCityName), 'Choose cities', () => _cpSummaryInto(el));
+  el.title = sel.map(p => p.label).join('; ');
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const s = document.getElementById('cp-sum'); if (s) _cpSummaryInto(s); });
+function _cpRender() {
+  _cpSummaryInto(document.getElementById('cp-sum'));
+  const cnt = document.getElementById('cp-count'); if (cnt) cnt.textContent = 'Cities (' + _cpSel().length + ')';
+  const strip = document.getElementById('cp-strip');
+  if (strip) {
+    const sel = _cpSel(); strip.replaceChildren();
+    if (!sel.length) { const e = document.createElement('span'); e.className = 'cp-sum empty'; e.style.alignItems = 'center'; e.textContent = 'Choose cities'; strip.appendChild(e); }
+    sel.forEach((p, i) => {
+      const t = document.createElement('span'); t.className = 'pc-tag' + (sel.length === 1 ? ' solo' : '');
+      const l = document.createElement('span'); l.className = 'pc-tag-label'; l.textContent = p.label; t.appendChild(l);
+      if (sel.length > 1) { const x = document.createElement('button'); x.type = 'button'; x.className = 'pc-tag-x'; x.dataset.idx = String(i); x.setAttribute('aria-label', 'Remove ' + p.label); x.textContent = '\u00d7'; t.appendChild(x); }
+      strip.appendChild(t);
+    });
+  }
+  if (!document.getElementById('cp-sheet').hidden) _cpRenderList();
+}
+function _cpBind() {
+  document.querySelectorAll('.cp-opens').forEach(f => {
+    f.addEventListener('click', e => { if (e.target.closest('.pc-tag-x')) return; e.preventDefault(); _cpOpen(); });
+    f.addEventListener('keydown', e => { if (e.target === f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); _cpOpen(); } });
+  });
+  const strip = document.getElementById('cp-strip');
+  if (strip) strip.addEventListener('click', e => { const x = e.target.closest('.pc-tag-x'); if (!x) return; e.preventDefault(); e.stopPropagation(); _cpRemoveAt(Number(x.dataset.idx)); });
+  document.getElementById('cp-done').addEventListener('click', e => { e.preventDefault(); _cpClose(); });
+  document.getElementById('cp-backdrop').addEventListener('click', _cpClose);
+  const q = document.getElementById('cp-search');
+  q.addEventListener('input', () => { _cpTyped = q.value; loadPartnerCities(); _cpRenderList(); });
+  q.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); const r = document.querySelector('#cp-list .cp-sec ~ .cp-row[aria-checked="false"]'); if (_cpTyped.trim() && r) r.click(); }
+    else if (e.key === 'Escape') { e.preventDefault(); _cpClose(); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('cp-sheet').hidden) _cpClose(); });
+  _cpRender();
+}
+document.addEventListener('DOMContentLoaded', _cpBind);
+</script>
+<!-- MOCKUP_grokbot city picker sheet -->
+<div class="cp-backdrop" id="cp-backdrop" hidden></div>
+<div class="cp-sheet" id="cp-sheet" role="dialog" aria-modal="true" aria-label="Partner cities" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title" id="cp-sheet-title">Partner cities</span><button type="button" class="cp-x" id="cp-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
+  <div class="cp-search-wrap"><input class="field-input" id="cp-search" type="text" placeholder="Search or type a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-controls="cp-list"></div>
+  <div class="cp-hint" id="cp-hint"></div>
+  <div class="cp-list" id="cp-list" role="group" aria-label="Cities"></div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="cp-done">DONE</button></div>
+</div>
+<script>
+// MOCKUP_grokbot: pin a sheet's DONE to the exact box of the page's pinned NEXT (same x, y, width, height),
+// and reserve that space at the bottom of the sheet so the sheet's content (list / map) ends 8px above it.
+function sheetPinDone(sheetId) {
+  const s = document.getElementById(sheetId); if (!s || s.hidden) return;
+  const f = s.querySelector('.cp-foot'), b = f && f.querySelector('.cp-done-btm'); if (!b) return;
+  const n = [...document.querySelectorAll('.screen.active .bottom-action .btn-primary')].find(e => e.offsetParent && e.getBoundingClientRect().height > 0);
+  if (!n) { b.removeAttribute('style'); f.removeAttribute('style'); return; }
+  const r = n.getBoundingClientRect(), sb = s.getBoundingClientRect().bottom;
+  b.style.cssText = 'position:fixed;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;right:auto;bottom:auto;margin:0;z-index:2';
+  f.style.height = Math.max(0, Math.round(sb - r.top + 8)) + 'px';
+}
+window.addEventListener('resize', () => document.querySelectorAll('.cp-sheet').forEach(s => { if (!s.hidden) sheetPinDone(s.id); }));
+
+(function () {
+  // X keeps the picks and closes, exactly like tapping the backdrop (same handlers run).
+  document.getElementById('cp-x').addEventListener('click', e => { e.preventDefault(); document.getElementById('cp-backdrop').click(); });
+  const _o = _cpOpen; window._cpOpen = _cpOpen = function () { const r = _o.apply(this, arguments); sheetPinDone('cp-sheet'); return r; };
+})();
+</script>
+<!-- MOCKUP_grokbot WYA: location field logic (options A / B / C) -->
+<script>
+// MOCKUP_grokbot: pin a sheet's DONE to the exact box of the page's pinned NEXT (same x, y, width, height),
+// and reserve that space at the bottom of the sheet so the sheet's content (list / map) ends 8px above it.
+function sheetPinDone(sheetId) {
+  const s = document.getElementById(sheetId); if (!s || s.hidden) return;
+  const f = s.querySelector('.cp-foot'), b = f && f.querySelector('.cp-done-btm'); if (!b) return;
+  const n = [...document.querySelectorAll('.screen.active .bottom-action .btn-primary')].find(e => e.offsetParent && e.getBoundingClientRect().height > 0);
+  if (!n) { b.removeAttribute('style'); f.removeAttribute('style'); return; }
+  const r = n.getBoundingClientRect(), sb = s.getBoundingClientRect().bottom;
+  b.style.cssText = 'position:fixed;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;right:auto;bottom:auto;margin:0;z-index:2';
+  f.style.height = Math.max(0, Math.round(sb - r.top + 8)) + 'px';
+}
+window.addEventListener('resize', () => document.querySelectorAll('.cp-sheet').forEach(s => { if (!s.hidden) sheetPinDone(s.id); }));
+
+// Stored per applicant (see wyaPayload): lat / lng rounded to 2 decimals (~1.1 km north-south, less east-west) for privacy,
+// the browser's geolocation accuracy (m, GPS only), the source ('gps' | 'pin' | 'zip' | 'city'), the readable label and country.
+// A = inline map; B = zip / city box; C = compact row that opens the map in an overlay sheet (styled like the city picklist).
+const _wyaH = document.documentElement.classList;
+const WYA_OPT = _wyaH.contains('wya-c') ? 'C' : _wyaH.contains('wya-b') ? 'B' : 'A';
+let _wyaMap = null, _wyaPin = null, _wyaSeq = 0, _wyaPend = null;
+const _wyaR2 = x => Math.round(x * 100) / 100;
+const _WYA_CC = { GB: 'UK', US: 'US', AE: 'UAE' };
+const _wyaId = { A: { city: 'wya-city-a', gps: 'wya-gps-a', map: 'wya-map' }, B: { city: 'wya-city-b', gps: 'wya-gps-b' }, C: { city: 'wya-city-c', gps: 'wya-gps-c', map: 'wya-map-c' } }[WYA_OPT];
+</script>
+
+<!-- MOCKUP_grokbot variant I behaviour -->
+<script>
+// Flow: Seeking (Men / Women / Both, none preselected) -> folds -> Partner Location: "Partner city" row (the zip's city; tap for the
+// existing single-city search), distance slider "78704 + N miles" (0-300, default 300), "I'm open to relocating for love".
+// Ticking relocating opens the F picklist with the partner city checked + pinned; Done folds the question into one row
+// "City: Austin + N miles, +3 more" (EDIT reopens it). Not ticking: Next folds it (Next = done for this question; it does
+// not leave the screen). Unticking relocating clears the extra cities. Age Range + Partner Height appear once it has folded.
+let _viDone = false;
+function _viName(p) { return p ? String(p.city || p.label || '').split(',')[0].trim() : ''; }
+function _viMi() { const el = document.getElementById('vi_dist_mi'); return el ? parseInt(el.value, 10) : 300; }
+function _viLocSummary() {
+  if (!_viDone || !partnerCityPrimary) return '';
+  const n = partnerCitiesExtra.length;
+  return _viName(partnerCityPrimary) + ' + ' + _viMi() + ' miles' + (n ? ', +' + n + ' more' : '');
+}
+function _viOrigin() { // distance is from the zip while the partner city is the home city, else from the chosen city
+  const home = _cpHome(), zip = _crV('postal_code');
+  return (home && partnerCityPrimary && _plSame(home, partnerCityPrimary) && zip) ? zip : (_viName(partnerCityPrimary) || 'Distance');
+}
+function _viDistUpdate() {
+  const el = document.getElementById('vi_dist_mi'), lab = document.getElementById('vi-dist-label'), fill = document.getElementById('vi-dist-fill');
+  if (!el || !lab) return;
+  const v = parseInt(el.value, 10); state.partnerDistanceMi = v;
+  lab.textContent = _viOrigin() + ' + ' + v + ' miles';
+  const w = el.getBoundingClientRect().width, pct = (v - el.min) / (el.max - el.min);
+  if (fill) { fill.style.left = '0'; fill.style.width = w ? (pct * (w - SLIDER_THUMB_W) + SLIDER_THUMB_W / 2) + 'px' : (pct * 100) + '%'; }
+}
+function _viExtraRender() {
+  const box = document.getElementById('vi-extra'), sum = document.getElementById('vi-extra-sum');
+  if (!box || !sum) return;
+  box.hidden = !partnerLocationAnywhere;
+  if (box.hidden) return;
+  const fit = () => _cpFitNames(sum, partnerCitiesExtra.map(_cpCityName), 'Choose cities', fit);
+  fit();
+  sum.title = partnerCitiesExtra.map(p => p.label).join('; ');
+}
+function _viFinish() {
+  if (!partnerCityPrimary) return false;
+  if (_plOpen) _closePartnerLocationAdder();
+  const a = document.activeElement; if (a && a.blur) a.blur();
+  _viDone = true;
+  if (!crCollapse('ww-loc')) { _viDone = false; return false; }
+  crSync();
+  return true;
+}
+// Partner city stays checked and pinned in the picklist (change it with the Partner city row instead).
+const _viToggleF = _cpToggle;
+_cpToggle = function (entry) {
+  if (entry && partnerCityPrimary && _plSame(entry, partnerCityPrimary)) {
+    const h = document.getElementById('cp-hint'); if (h) h.textContent = _viName(partnerCityPrimary) + ' is your partner city, so it stays checked.';
+    return;
+  }
+  return _viToggleF(entry);
+};
+const _viListF = _cpRenderList;
+_cpRenderList = function () {
+  _viListF();
+  const t = document.getElementById('cp-sheet-title'); if (t) t.textContent = 'Open to relocating: cities (' + _cpSel().length + ')';
+  const first = document.querySelector('#cp-list .cp-row[aria-checked="true"]');
+  if (first && partnerCityPrimary) {
+    first.classList.add('pinned'); first.setAttribute('aria-disabled', 'true');
+    let n = first.querySelector('.cp-row-note'); if (!n) { n = document.createElement('span'); n.className = 'cp-row-note'; first.appendChild(n); }
+    n.textContent = 'partner city';
+  }
+};
+const _viRenderF = _renderPartnerLocationChips;
+_renderPartnerLocationChips = function () {
+  _viRenderF();
+  const k = document.getElementById('partner-location-label'); if (k) k.textContent = 'Partner city';
+  const ch = document.getElementById('pc-change'); if (ch) ch.textContent = 'CHANGE';
+  _viExtraRender(); _viDistUpdate();
+};
+const _viGoNextF = goNext;
+goNext = async function (id) {
+  if (id === 3) {
+    const u = document.getElementById('ww-loc');
+    if (u && !u.classList.contains('collapsed') && !_crHidden('ww-loc') && partnerCityPrimary) {
+      _commitPartnerLocationTyped();
+      if (_viFinish()) return; // Next folds Partner Location and shows Age Range + Partner Height (stays on this screen)
+    }
+  }
+  return _viGoNextF(id);
+};
+document.addEventListener('DOMContentLoaded', () => {
+  const s = document.getElementById('vi_dist_mi');
+  s.addEventListener('input', () => { _viDistUpdate(); _wwLocChanged(); });
+  window.addEventListener('resize', () => requestAnimationFrame(_viDistUpdate));
+  const any = document.getElementById('partner-location-anywhere');
+  any.addEventListener('change', () => {
+    partnerLocationAnywhere = !!any.checked;
+    if (any.checked) setTimeout(_cpOpen, 0);
+    // MOCKUP_grokbot K: unticking keeps the other cities (the box stays while it has any)
+  });
+  const ex = document.getElementById('vi-extra');
+  ex.addEventListener('click', e => { e.preventDefault(); _cpOpen(); });
+  ex.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _cpOpen(); } });
+  document.getElementById('cp-done').addEventListener('click', () => { if (partnerLocationAnywhere) setTimeout(_viFinish, 0); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { _viDistUpdate(); _viExtraRender(); });
+});
+</script>
+<!-- MOCKUP_grokbot variant J -->
+<script>
+// J: Seeking -> folds -> Partner city, distance, relocate checkbox, Age Range, Partner Height all at once. Ticking relocating opens
+// the picklist (partner city pinned); Done just closes it and the extra cities show inline under the checkbox as
+// "ALSO ..." under the checkbox; on Done the city part (city row + checkbox + ALSO) folds into one row
+// "PARTNER CITIES (4) / Austin · Houston + 2 more · EDIT" (EDIT unfolds it). Distance + ranges always stay. Next submits the screen.
+goNext = _viGoNextF;                 // no fold-on-Next: Next submits the screen
+function _vjRender() {
+  const sum = document.getElementById('vj-cities-sum'); if (!sum) return;
+  const all = _plAll();
+  const fit = () => _cpFitNames(sum, all.map(_cpCityName), 'Choose cities', fit);
+  fit(); sum.title = all.map(p => p.label).join('; ');
+  const k = document.getElementById('vj-cities-k'); if (k) k.textContent = 'Partner cities (' + all.length + ')';
+  const u = document.getElementById('ww-loc');
+  if (u && u.classList.contains('vj-folded') && !(partnerLocationAnywhere && partnerCitiesExtra.length)) u.classList.remove('vj-folded');
+}
+// Done: the city part folds into one row when relocating is ticked and extra cities were chosen (otherwise it just closes).
+_viFinish = function () {
+  const u = document.getElementById('ww-loc');
+  if (u && partnerLocationAnywhere && partnerCitiesExtra.length) u.classList.add('vj-folded');
+  _renderPartnerLocationChips(); requestAnimationFrame(_vjRender);
+  return false;
+};
+const _vjRenderF = _renderPartnerLocationChips;
+_renderPartnerLocationChips = function () { _vjRenderF(); _vjRender(); };
+document.addEventListener('DOMContentLoaded', () => {
+  const r = document.getElementById('vj-cities');
+  const unfold = e => { e.preventDefault(); document.getElementById('ww-loc').classList.remove('vj-folded'); _renderPartnerLocationChips(); };
+  r.addEventListener('click', unfold);
+  r.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') unfold(e); });
+  // J: closing the list any way (backdrop, Escape) counts as Done, so there's no half-finished state.
+  document.getElementById('cp-backdrop').addEventListener('click', () => setTimeout(_viFinish, 0));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setTimeout(_viFinish, 0); });
+});
+</script>
+<!-- MOCKUP_grokbot variant K -->
+<script>
+// K: Seeking -> folds -> [PARTNER CITY "78704 · Austin" | OTHER CITIES], distance "78704 + N miles", relocate checkbox, ranges.
+// Partner city = a zip (defaults to the applicant's own); tapping it types a new zip, looked up for the city name (zippopotam,
+// same lookup the site already uses), and the distance is measured from it. Other cities = partnerCitiesExtra only (the zip's
+// city is not pinned there). Ticking relocating shows OTHER CITIES + opens the picklist; Done fills it. Unticking keeps the
+// cities (box stays, still editable); with none chosen, unticking hides the box again.
+let _vkZip = '', _vkName = '';
+// Slider side margins (?align=track|text|box; box = K2 only, see build7_grokbot.py): track = track and balls span the box edges (24..W-24, ball never overhangs);
+// text = track and balls inset 13px to line up with the boxes' inner text (SEEKING / PARTNER CITY labels and EDIT / CHANGE).
+const _VK_ALIGN_DEFAULT = 'box'; // K4: box column (condensed sliders sit on the 13px text inset)
+document.documentElement.classList.add('vk-al-' + _VK_ALIGN_DEFAULT);
+function _vkFit(el, names, sep, refit) { // whole names that fit, then "+ N more"
+  el._cpRefit = refit; el.replaceChildren();
+  const a = document.createElement('span'); a.className = 'cp-sum-first'; el.appendChild(a);
+  if (!names.length) { el.dataset.fit = '0/0'; return; }
+  const avail = el.clientWidth; let k = names.length;
+  if (avail > 0) { for (; k > 1; k--) { const t = names.slice(0, k).join(sep) + (k < names.length ? _cpMoreTxt(names.length - k) : ''); if (_cpTextW(el, t) <= avail - 1) break; } } else k = 1;
+  a.textContent = names.slice(0, k).join(sep);
+  if (k < names.length) { const m = document.createElement('span'); m.className = 'cp-sum-more'; m.textContent = _cpMoreTxt(names.length - k); el.appendChild(m); }
+  el.dataset.fit = k + '/' + names.length; el._cpW = avail;
+  if (!el._cpRO && window.ResizeObserver) { el._cpRO = new ResizeObserver(() => { if (el.clientWidth !== el._cpW && el._cpRefit) el._cpRefit(); }); el._cpRO.observe(el); }
+}
+function _vkInit() { // the applicant's own zip + city until they type another one
+  if (_vkZip) return;
+  _vkZip = (document.getElementById('postal_code') || {}).value || '';
+  _vkName = _viName(partnerCityPrimary) || String(state.zipCity || '').split(',')[0];
+}
+function _vkRender() {
+  _vkInit();
+  const v = document.getElementById('vk-zip-val'), inp = document.getElementById('vk-zip-input'), c = document.getElementById('vk-zip-city');
+  const box = document.getElementById('vk-zip-box');
+  if (inp && box && !box.classList.contains('editing')) inp.value = _vkZip;
+  if (c && box && !box.classList.contains('bad')) c.textContent = _vkZip ? '\u00a0\u00b7 ' + _vkName : 'Add a zip code';
+  if (v) v.title = partnerCityPrimary ? partnerCityPrimary.label : '';
+  // OTHER CITIES shows while relocating is ticked or once it has cities (unticking keeps them); otherwise Partner city is full width.
+  const row = document.getElementById('vk-row'), n = partnerCitiesExtra.length;
+  if (row) row.classList.toggle('solo', !(partnerLocationAnywhere || n));
+  const s = document.getElementById('vk-other-sum');
+  if (s) {
+    s.classList.toggle('empty', !n);
+    if (n) { const fit = () => _vkFit(s, partnerCitiesExtra.map(_cpCityName), ', ', fit); fit(); s.title = partnerCitiesExtra.map(p => p.label).join('; '); }
+    else { s._cpRefit = null; s.textContent = 'Add cities'; s.title = ''; }
+  }
+}
+// Distance origin = the partner zip. The old "ALSO" line and J's fold are not used in K.
+_viOrigin = function () { return _vkZip || _viName(partnerCityPrimary) || 'Distance'; };
+// Distance snaps to 35 stops, each an equal share of the track (slider value = stop index; default index 7 = 30 miles).
+const _VK_STOPS = [1, 3, 5, 10, 15, 20, 25, 30].concat(Array.from({ length: 27 }, (_, i) => 40 + i * 10));
+_viMi = function () { const el = document.getElementById('vi_dist_mi'); return el ? _VK_STOPS[Math.max(0, Math.min(_VK_STOPS.length - 1, parseInt(el.value, 10) || 0))] : 30; };
+_viDistUpdate = function () {
+  const el = document.getElementById('vi_dist_mi'), lab = document.getElementById('vi-dist-label'), fill = document.getElementById('vi-dist-fill'), bub = document.getElementById('vk-dist-bubble');
+  if (!el || !lab) return;
+  const mi = _viMi(), txt = mi + (mi === 1 ? ' mile' : ' miles');
+  state.partnerDistanceMi = mi;
+  lab.textContent = 'Distance from ' + _viOrigin();   // question label (I AM A style); the zip follows Partner city
+  el.setAttribute('aria-valuetext', txt);
+  const w = el.offsetWidth, pct = (el.value - el.min) / (el.max - el.min);
+  if (fill) { fill.style.left = '0'; fill.style.width = w ? _sliderThumbX(el, w) + 'px' : (pct * 100) + '%'; }
+  if (bub) { // readout above the ball, placed like the age / height readouts (centred on the thumb, kept inside the track)
+    bub.textContent = txt;
+    if (w) { const bw = bub.getBoundingClientRect().width; bub.style.left = Math.max(0, Math.min(w - bw, _sliderThumbX(el, w) - bw / 2)) + 'px'; }
+  }
+};
+document.addEventListener('DOMContentLoaded', () => { // placed again once the slider gets a width (revealed after Seeking) and on resize
+  const el = document.getElementById('vi_dist_mi');
+  if (el && window.ResizeObserver) new ResizeObserver(() => _viDistUpdate()).observe(el);
+});
+_viExtraRender = function () { const b = document.getElementById('vi-extra'); if (b) b.hidden = true; };
+_viFinish = function () { _renderPartnerLocationChips(); return false; };
+// The picklist edits the other cities only (nothing pinned, can be emptied).
+_cpSel = function () { return partnerCitiesExtra; };
+_cpToggle = function (entry) {
+  if (!entry || !entry.label) return;
+  const h = document.getElementById('cp-hint'); if (h) h.textContent = '';
+  partnerLocationTouched = true;
+  if (partnerCitiesExtra.some(p => _plSame(p, entry))) partnerCitiesExtra = partnerCitiesExtra.filter(p => !_plSame(p, entry));
+  else partnerCitiesExtra.push(entry);
+  _renderPartnerLocationChips(); _wwLocChanged();
+};
+_cpRenderList = function () {
+  _viListF();
+  const t = document.getElementById('cp-sheet-title'); if (t) t.textContent = 'Other cities (' + partnerCitiesExtra.length + ')';
+};
+const _vkRenderF = _renderPartnerLocationChips;
+_renderPartnerLocationChips = function () { _vkRenderF(); _vkRender(); };
+function _vkEdit() {
+  const box = document.getElementById('vk-zip-box'), inp = document.getElementById('vk-zip-input'), v = document.getElementById('vk-zip-val');
+  if (box.classList.contains('editing')) return;
+  box.classList.add('editing'); box.classList.remove('bad'); inp.readOnly = false; inp.tabIndex = 0; inp.value = _vkZip;
+  document.getElementById('vk-zip-edit').textContent = 'DONE';
+  inp.focus(); inp.select(); try { inp.setSelectionRange(0, inp.value.length); } catch (e) {}
+}
+function _vkClose() {
+  const box = document.getElementById('vk-zip-box'), inp = document.getElementById('vk-zip-input'), v = document.getElementById('vk-zip-val');
+  box.classList.remove('editing', 'bad'); inp.readOnly = true; inp.tabIndex = -1; if (document.activeElement === inp) inp.blur();
+  document.getElementById('vk-zip-edit').textContent = 'CHANGE';
+  _vkRender();
+}
+let _vkSeq = 0;
+async function _vkCommit(zip) {
+  if (!/^\d{5}$/.test(zip) || zip === _vkZip) { _vkClose(); return; }
+  const seq = ++_vkSeq, box = document.getElementById('vk-zip-box');
+  try {
+    const r = await fetch('https://api.zippopotam.us/us/' + zip);
+    if (!r.ok) throw new Error('not found');
+    const d = await r.json(), pl = d.places && d.places[0];
+    if (!pl) throw new Error('not found');
+    if (seq !== _vkSeq) return;
+    await Promise.resolve(loadPartnerCities());
+    const raw = pl['place name'] + ', ' + pl['state abbreviation'];
+    const m = _matchOwnCity(raw);
+    const lat = parseFloat(pl.latitude), lng = parseFloat(pl.longitude);
+    partnerCityPrimary = m ? Object.assign(_plEntryFromCity(m), { zip: zip, zip_lat: lat, zip_lng: lng })
+      : { label: raw, city: pl['place name'], region: pl['state abbreviation'], country: 'US', lat: lat, lng: lng, geonames_id: null, typed: false, matched: false, zip: zip };
+    _vkZip = zip; _vkName = m ? m.city : pl['place name']; state.partnerZip = zip;
+    partnerLocationTouched = true;
+    _vkClose(); _renderPartnerLocationChips(); _wwLocChanged();
+  } catch (e) {
+    if (seq !== _vkSeq) return;
+    box.classList.add('bad');
+    const c = document.getElementById('vk-zip-city'); if (c) c.textContent = '\u00a0\u00b7 ZIP not found';
+    const inp = document.getElementById('vk-zip-input'); inp.focus(); inp.select();
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const box = document.getElementById('vk-zip-box'), inp = document.getElementById('vk-zip-input');
+  box.addEventListener('click', e => { if (e.target === inp) return; e.preventDefault(); if (!box.classList.contains('editing')) _vkEdit(); else if (e.target.closest('#vk-zip-edit')) _vk2Enter(); else inp.focus(); });
+  box.addEventListener('keydown', e => { if (e.target === box && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); _vkEdit(); } });
+  inp.addEventListener('input', () => { if (box.classList.contains('bad')) { box.classList.remove('bad'); _vkRender(); } _vk2Suggest(inp.value); if (/^\d{5}$/.test(inp.value.trim())) _vkCommit(inp.value.trim()); });
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); _vk2Enter(); } else if (e.key === 'Escape') { e.preventDefault(); _vkClose(); } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); _vk2Move(e.key === 'ArrowDown' ? 1 : -1); } });
+  inp.addEventListener('blur', () => setTimeout(() => { if (box.classList.contains('editing') && document.activeElement !== inp && !_vk2Busy) _vkClose(); }, 200));
+  _vk2Wire();
+  const ob = document.getElementById('vk-other-box');
+  ob.addEventListener('click', e => { e.preventDefault(); _cpOpen(); });
+  ob.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _cpOpen(); } });
+  // Relocate box: ticking shows OTHER CITIES and opens the picklist (I's handler); unticking keeps any chosen cities.
+});
+</script>
+<!-- MOCKUP_grokbot variant K2 -->
+<script>
+// K2: PARTNER CITY accepts a US zip (5 digits, zippopotam, as in K), a UK or Canadian postcode (zippopotam gb / ca, outward part),
+// or a city name (suggestions from cities_grokbot.json: US + ~280 international cities). Shown as "78704 · Austin" (zip / postcode)
+// or "London, UK" (city). Distance: miles for the US only, km for every other country (same 35 slider stops, km rounded).
+let _vk2Label = '', _vk2Country = 'US', _vk2Opts = [], _vk2Act = 0, _vk2Busy = false;
+const _vk2Inp = () => document.getElementById('vk-zip-input');
+// K seeds the applicant's own zip whenever _vkZip is empty; in K2 an empty zip can mean "a city was chosen", so seed once only.
+let _vk2Seeded = false;
+const _vk2InitK = _vkInit;
+_vkInit = function () { if (_vk2Seeded || _vk2Label) return; _vk2InitK(); if (_vkZip) _vk2Seeded = true; };
+function _vk2Fit() { // not editing: the input is exactly as wide as its text (monospace), so " · Austin" sits right after the digits
+  const inp = _vk2Inp(); if (!inp) return;
+  const box = document.getElementById('vk-zip-box');
+  if (box && box.classList.contains('editing')) { inp.style.width = ''; return; }
+  inp.style.width = 'calc(' + Math.max(1, (inp.value || inp.placeholder).length) + 'ch + 2px)';
+}
+_vkRender = function () {
+  _vkInit();
+  const inp = _vk2Inp(), c = document.getElementById('vk-zip-city'), box = document.getElementById('vk-zip-box'), v = document.getElementById('vk-zip-val');
+  if (inp && box && !box.classList.contains('editing')) { inp.value = _vkZip || _vk2Label; _vk2Fit(); }
+  if (c && box && !box.classList.contains('bad')) c.textContent = _vkZip ? '\u00a0\u00b7 ' + _vkName : (_vk2Label ? '' : 'Add a zip or city');
+  if (v) v.title = partnerCityPrimary ? partnerCityPrimary.label : '';
+  const row = document.getElementById('vk-row'), n = partnerCitiesExtra.length;
+  if (row) row.classList.toggle('solo', !(partnerLocationAnywhere || n));
+  const s = document.getElementById('vk-other-sum');
+  if (s) {
+    s.classList.toggle('empty', !n);
+    if (n) { const fit = () => _vkFit(s, partnerCitiesExtra.map(_cpCityName), ', ', fit); fit(); s.title = partnerCitiesExtra.map(p => p.label).join('; '); }
+    else { s._cpRefit = null; s.textContent = 'Add cities'; s.title = ''; }
+  }
+  _viDistUpdate();
+};
+_vkEdit = function () {
+  const box = document.getElementById('vk-zip-box'), inp = _vk2Inp();
+  if (box.classList.contains('editing')) return;
+  loadPartnerCities();
+  box.classList.add('editing'); box.classList.remove('bad'); inp.readOnly = false; inp.tabIndex = 0; inp.value = _vkZip || _vk2Label; _vk2Fit();
+  document.getElementById('vk-zip-edit').textContent = 'DONE';
+  inp.focus(); inp.select(); try { inp.setSelectionRange(0, inp.value.length); } catch (e) {}
+  _vk2Suggest('');
+};
+_vkClose = function () {
+  const box = document.getElementById('vk-zip-box'), inp = _vk2Inp();
+  box.classList.remove('editing', 'bad'); inp.readOnly = true; inp.tabIndex = -1; if (document.activeElement === inp) inp.blur();
+  document.getElementById('vk-zip-edit').textContent = 'CHANGE';
+  _vk2Hide(); _vkRender();
+};
+// Postcode shapes: US 5 digits; Canada A1A[ 1A1]; UK outward code (+ optional inward), e.g. SW1A 1AA, E1, M1 1AE.
+const _VK2_CA = /^([A-Z]\d[A-Z])\s*(\d[A-Z]\d)?$/i, _VK2_UK = /^([A-Z]{1,2}\d[A-Z\d]?)(\s*\d[A-Z]{2})?$/i;
+function _vk2Postcodes(q) {
+  q = q.trim(); const out = [];
+  if (/^\d{5}$/.test(q)) out.push({ cc: 'us', code: q, show: q, sub: 'US zip' });
+  let m = q.match(_VK2_CA); if (m) out.push({ cc: 'ca', code: m[1].toUpperCase(), show: q.toUpperCase().replace(/\s+/, ' '), sub: 'Canada postcode' });
+  m = q.match(_VK2_UK); if (m) out.push({ cc: 'gb', code: m[1].toUpperCase(), show: q.toUpperCase().replace(/\s+/, ' '), sub: 'UK postcode' });
+  return out;
+}
+function _vk2Suggest(q) {
+  const list = document.getElementById('vk2-sug'), inp = _vk2Inp(); if (!list) return;
+  const t = String(q || '').trim();
+  if (!t) { _vk2Hide(); return; }
+  const max = window.innerHeight <= 720 ? 4 : 5;
+  const pcs = _vk2Postcodes(t);
+  const cities = /[a-z\u00c0-\uffff]/i.test(t) && !pcs.some(p => p.cc !== 'us' && /\d/.test(t)) ? _searchPartnerCities(t, max) : [];
+  _vk2Opts = pcs.map(p => ({ pc: p })).concat(cities.map(c => ({ city: c }))).slice(0, max);
+  if (!PARTNER_CITIES.length) loadPartnerCities().then(() => { if (_vk2Inp().value.trim() === t) _vk2Suggest(t); });
+  list.replaceChildren();
+  if (!_vk2Opts.length) {
+    const d = document.createElement('div'); d.className = 'vk2-opt vk2-none'; d.textContent = /\d/.test(t) ? 'Keep typing: zip or postcode' : 'No match yet: try a bigger city nearby'; list.appendChild(d);
+  }
+  _vk2Opts.forEach((o, i) => {
+    const d = document.createElement('div'); d.className = 'vk2-opt' + (i === 0 ? ' active' : ''); d.setAttribute('role', 'option'); d.dataset.i = i;
+    if (o.pc) { d.innerHTML = '<span class="vk2-k"></span><span class="vk2-sub"></span>'; d.children[0].textContent = o.pc.show; d.children[1].textContent = o.pc.sub; }
+    else d.textContent = o.city.label;
+    list.appendChild(d);
+  });
+  _vk2Act = 0; list.hidden = false; inp.setAttribute('aria-expanded', 'true');
+}
+function _vk2Hide() { const l = document.getElementById('vk2-sug'); if (l) { l.hidden = true; l.replaceChildren(); } _vk2Opts = []; const i = _vk2Inp(); if (i) i.setAttribute('aria-expanded', 'false'); }
+function _vk2Move(d) {
+  if (!_vk2Opts.length) return; _vk2Act = (_vk2Act + d + _vk2Opts.length) % _vk2Opts.length;
+  document.querySelectorAll('#vk2-sug .vk2-opt').forEach((r, i) => r.classList.toggle('active', i === _vk2Act));
+}
+function _vk2Enter() {
+  const t = _vk2Inp().value.trim();
+  if (!t || t === (_vkZip || _vk2Label)) { _vkClose(); return; }
+  if (_vk2Opts.length) { _vk2Pick(_vk2Opts[_vk2Act] || _vk2Opts[0]); return; }
+  _vk2Bad('Not found');
+}
+function _vk2Pick(o) {
+  if (!o) return;
+  if (o.pc) { o.pc.cc === 'us' ? _vkCommit(o.pc.code) : _vk2Postcode(o.pc); return; }
+  _vk2SetCity(o.city);
+}
+function _vk2SetCity(c) {
+  _vkSeq++;
+  partnerCityPrimary = _plEntryFromCity(c);
+  _vkZip = ''; _vkName = c.city; _vk2Label = c.label; _vk2Country = c.country || ''; state.partnerZip = '';
+  partnerLocationTouched = true;
+  _vkClose(); _renderPartnerLocationChips(); _wwLocChanged();
+}
+function _vk2Bad(msg) {
+  const box = document.getElementById('vk-zip-box'); box.classList.add('bad');
+  _vk2Hide();
+  const list = document.getElementById('vk2-sug'); const d = document.createElement('div'); d.className = 'vk2-opt vk2-none'; d.textContent = msg + ': try a zip, postcode or city'; list.appendChild(d); list.hidden = false;
+  const inp = _vk2Inp(); inp.focus(); inp.select();
+}
+function _vk2Km(mi) { const k = mi * 1.609344; return mi <= 3 ? Math.round(k) : k <= 60 ? 5 * Math.round(k / 5) : 10 * Math.round(k / 10); }
+function _vk2Nearest(lat, lng, cc) { // nearest listed city (same country, within 60 km) names a postcode area, e.g. SW1A -> London
+  let best = null, bd = 60;
+  for (const c of PARTNER_CITIES) { if (cc && c.country !== cc) continue; const d = _vk2Dist(lat, lng, c.lat, c.lng); if (d < bd) { bd = d; best = c; } }
+  return best;
+}
+function _vk2Dist(a, b, c, d) { const R = 6371, r = x => x * Math.PI / 180, dl = r(c - a), dg = r(d - b); const h = Math.sin(dl / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dg / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+async function _vk2Postcode(p) {
+  const seq = ++_vkSeq; _vk2Busy = true;
+  try {
+    const r = await fetch('https://api.zippopotam.us/' + p.cc + '/' + encodeURIComponent(p.code));
+    if (!r.ok) throw new Error('not found');
+    const d = await r.json(), pl = d.places && d.places[0]; if (!pl) throw new Error('not found');
+    if (seq !== _vkSeq) return;
+    await Promise.resolve(loadPartnerCities());
+    const lat = parseFloat(pl.latitude), lng = parseFloat(pl.longitude), CC = p.cc.toUpperCase();
+    const near = _vk2Nearest(lat, lng, CC), name = near ? near.city : String(pl['place name']).split(' (')[0];
+    partnerCityPrimary = near ? Object.assign(_plEntryFromCity(near), { zip: p.show, zip_lat: lat, zip_lng: lng })
+      : { label: name + ', ' + (CC === 'GB' ? 'UK' : 'Canada'), city: name, region: pl.state || null, country: CC, lat, lng, geonames_id: null, typed: false, matched: false, zip: p.show };
+    _vkZip = p.show; _vkName = name; _vk2Label = ''; _vk2Country = CC; state.partnerZip = p.show;
+    partnerLocationTouched = true; _vk2Busy = false;
+    _vkClose(); _renderPartnerLocationChips(); _wwLocChanged();
+  } catch (e) { _vk2Busy = false; if (seq === _vkSeq) _vk2Bad('Postcode not found'); }
+}
+// US zips: K's lookup, then remember the country (miles) and clear any city label.
+const _vk2CommitK = _vkCommit;
+_vkCommit = async function (zip) {
+  if (/^\d{5}$/.test(zip) && zip === _vkZip) { _vkClose(); return; }
+  _vk2Busy = true;
+  const before = _vkZip; await _vk2CommitK(zip); _vk2Busy = false;
+  if (_vkZip === zip && before !== zip) { _vk2Label = ''; _vk2Country = 'US'; _vkRender(); }
+  else if (document.getElementById('vk-zip-box').classList.contains('bad')) { _vk2Hide(); const l = document.getElementById('vk2-sug'); const d = document.createElement('div'); d.className = 'vk2-opt vk2-none'; d.textContent = 'Zip not found: try a zip, postcode or city'; l.appendChild(d); l.hidden = false; }
+};
+_viOrigin = function () { return _vkZip || _vkName || _viName(partnerCityPrimary) || 'Distance'; };
+// Label rule: set by zip / postcode -> "Distance from 78704" / "SW1A 1AA"; set by picking a city by name -> "Distance from London CBD".
+// A long city name is cut with an ellipsis and " CBD" always stays visible (letter-spacing is left as in the I AM A labels).
+function _vk2LabCity(lab, name) {
+  const s = (c, t) => { const e = document.createElement('span'); e.className = c; e.textContent = t; return e; };
+  lab.replaceChildren(s('vk2-lab-pre', 'Distance from\u00a0'), s('vk2-lab-city', name), s('vk2-lab-cbd', '\u00a0CBD'));
+  lab.title = 'Distance from ' + name + ' CBD';
+}
+function _vk2Miles() { return !_vk2Country || _vk2Country === 'US'; } // miles only for US zips / US cities; km for every other country (UK and Canada included)
+_viDistUpdate = function () {
+  const el = document.getElementById('vi_dist_mi'), lab = document.getElementById('vi-dist-label'), fill = document.getElementById('vi-dist-fill'), bub = document.getElementById('vk-dist-bubble');
+  if (!el || !lab) return;
+  const mi = _viMi(), km = _vk2Km(mi), miles = _vk2Miles();
+  const txt = miles ? mi + (mi === 1 ? ' mile' : ' miles') : km + ' km';
+  state.partnerDistanceMi = mi; state.partnerDistanceKm = km; state.partnerDistanceUnit = miles ? 'mi' : 'km';
+  _vk2Label ? _vk2LabCity(lab, _vkName) : (lab.textContent = 'Distance from ' + _viOrigin(), lab.title = '');
+  el.setAttribute('aria-valuetext', miles ? txt : km + ' kilometres');
+  const w = el.offsetWidth, pct = (el.value - el.min) / (el.max - el.min);
+  if (fill) { fill.style.left = '0'; fill.style.width = w ? _sliderThumbX(el, w) + 'px' : (pct * 100) + '%'; }
+  if (bub) { bub.textContent = txt; if (w) { const bw = bub.getBoundingClientRect().width; bub.style.left = Math.max(0, Math.min(w - bw, _sliderThumbX(el, w) - bw / 2)) + 'px'; } }
+};
+function _vk2Wire() {
+  const list = document.getElementById('vk2-sug');
+  list.addEventListener('mousedown', e => e.preventDefault()); // keep the keyboard up while tapping a suggestion
+  list.addEventListener('click', e => { const r = e.target.closest('.vk2-opt[data-i]'); if (r) { e.preventDefault(); e.stopPropagation(); _vk2Pick(_vk2Opts[+r.dataset.i]); } });
+}
+</script>
+
+<script>
+// K5: boxed Distance readout only (Age/Height stay production bubbles).
+const _k4 = { inWmm: false, pcSig: null, wyaSig: null };
+function _k4Txt(id) { const e = document.getElementById(id); return e ? e.textContent.trim() : ''; }
+function _k4Vals() {
+  return { dist: _k4Txt('vk-dist-bubble'), age: _k4Txt('age_min_label') + '\u2013' + _k4Txt('age_max_label'), height: _k4Txt('height_min_label') + ' \u2013' + _k4Txt('height_max_label') };
+}
+function k4SyncHeads() {
+  const v = _k4Vals();
+  const e = document.getElementById('k4-v-dist');
+  if (e && e.textContent !== v.dist) e.textContent = v.dist;
+}
+function _k4Condense() {
+  const el = document.getElementById('vi-dist');
+  if (!el || el.classList.contains('k4-sl')) return;
+  const lab = el.querySelector(':scope > .field-label');
+  const head = document.createElement('div'); head.className = 'k4-head';
+  const val = document.createElement('span'); val.className = 'k4-val'; val.id = 'k4-v-dist'; val.setAttribute('aria-hidden', 'true');
+  el.insertBefore(head, el.firstChild);
+  if (lab) head.appendChild(lab);
+  head.appendChild(val);
+  el.classList.add('k4-sl');
+  const mo = new MutationObserver(() => k4SyncHeads());
+  const bub = document.getElementById('vk-dist-bubble');
+  if (bub) mo.observe(bub, { childList: true, characterData: true, subtree: true });
+  k4SyncHeads();
+}
+function _k4Refresh() {
+  ['_viDistUpdate', '_updateRangeFill', '_updateHeightFill', '_placeAllSliderBubbles'].forEach(f => {
+    try { if (typeof window[f] === 'function') window[f](); } catch (e) {}
+  });
+  k4SyncHeads();
+}
+// Partner city defaults from Who You Are zip (production), not Maps.
+async function _k4PartnerDefault() {
+  try {
+    if (typeof _ownCityEntry !== 'function') return;
+    const home = _ownCityEntry();
+    if (!home) return;
+    const zip = (document.getElementById('postal_code') && document.getElementById('postal_code').value || '').trim();
+    const sig = zip + '|' + (home.label || '');
+    if (sig === _k4.pcSig) return;
+    if (!partnerLocationTouched) {
+      partnerCityPrimary = home;
+      if (typeof _vkZip !== 'undefined') {
+        if (zip && /^\d{5}$/.test(zip)) { _vkZip = zip; _vkName = (home.city || home.label || '').split(',')[0].trim(); }
+      }
+      if (typeof _vkRender === 'function') _vkRender();
+      else if (typeof _renderPartnerLocationChips === 'function') _renderPartnerLocationChips();
+    }
+    _k4.pcSig = sig;
+  } catch (e) {}
+}
+function k5Rows() {
+  const row = document.getElementById('vk-row'); if (!row) return;
+  const on = !!(partnerLocationAnywhere || partnerCitiesExtra.length);
+  const sheet = document.getElementById('cp-sheet');
+  const show = on && (row.dataset.k5Shown === '1' || (!window._k5Pending && (!sheet || sheet.hidden)));
+  row.classList.toggle('k5-hide', false);
+  row.classList.toggle('solo', !partnerCitiesExtra.length);
+  if (partnerCitiesExtra.length) row.dataset.k5Shown = '1';
+  const d = document.getElementById('vi-dist'), cb = document.querySelector('#screen-3 .partner-location-anywhere');
+  if (d && cb && cb.parentElement !== d) d.appendChild(cb);
+}
+window.addEventListener('load', () => {
+  _k4Condense();
+  const _show0 = showScreen;
+  showScreen = function (id) {
+    const r = _show0.apply(this, arguments);
+    if (id === 3) { _k4PartnerDefault(); requestAnimationFrame(_k4Refresh); try { k5Rows(); } catch (e) {} }
+    return r;
+  };
+  // thumb sizing for Distance .k4-sl only
+  if (typeof _sliderThumbX === 'function') {
+    const tx = _sliderThumbX;
+    _sliderThumbX = function (el, w) {
+      if (!el.closest || !el.closest('#vi-dist.k4-sl')) return tx.apply(this, arguments);
+      const min = +el.min, max = +el.max, v = +el.value;
+      return (v - min) / (max - min) * (w - 28) + 14;
+    };
+  }
+  try {
+    if (typeof _vkRender === 'function') {
+      const r0 = _vkRender;
+      _vkRender = function () { const r = r0.apply(this, arguments); k5Rows(); return r; };
+    }
+    if (typeof _cpClose === 'function') {
+      const c0 = _cpClose;
+      _cpClose = function () { window._k5Pending = false; const r = c0.apply(this, arguments); k5Rows(); requestAnimationFrame(_k4Refresh); return r; };
+    }
+    const any = document.getElementById('partner-location-anywhere');
+    if (any) {
+      any.addEventListener('change', () => { window._k5Pending = any.checked; }, true);
+      any.addEventListener('change', () => { partnerLocationAnywhere = !!any.checked; setTimeout(() => { k5Rows(); _k4Refresh(); }, 0); });
+    }
+    const bd = document.getElementById('cp-backdrop');
+    if (bd) bd.addEventListener('click', () => setTimeout(() => { window._k5Pending = false; k5Rows(); _k4Refresh(); }, 0));
+    k5Rows();
+  } catch (e) { console.warn('s1c k5Rows wire', e); }
+  window.addEventListener('resize', () => _k4Refresh());
+});
+</script>
+
 </body>
 </html>
