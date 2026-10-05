@@ -1472,18 +1472,21 @@
             <select class="field-input is-default" id="politics" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5PoliticsPick(this)"><option value="">— Select —</option><option value="Left-leaning">Left-leaning</option><option value="Moderate">Moderate</option><option value="Right-leaning">Right-leaning</option><option value="None Stated">None Stated</option></select>
           </div>
         </div>
-        <!-- Have kids and Want kids are asked on Intentions & Family, not here. Income | Degree share one row. Email is its own full-width line last. -->
+        <!-- Have kids and Want kids are asked on Intentions & Family, not here.
+             Income reveals Degree; Degree (tap or Next) reveals Email. Collapsed Income | Degree share one row.
+             Email is its own full-width line last, never beside Degree. -->
         <div class="cr-pair" id="who-ie-row">
         <div class="field-group who-unit" id="who-income" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="income_range">Income</label>
           <div class="k5-sel"><select class="field-input" id="income_range" onchange="state.incomeRange = this.value || null; state.incomeTouched = true; crTap('who-income')"><option value="">None Stated</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
         </div>
-        <!-- Own degree. Production: nullable text column education (null = None Stated). Same codes as partner_education_min, without the "or higher" meaning. -->
+        <!-- Own degree. Production: nullable text column education (null = None Stated). Same codes as partner_education_min, without the "or higher" meaning.
+             "None Stated" is the default and does not count until the picker is used or Next confirms it. -->
         <div class="field-group who-unit" id="who-degree" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Degree" onclick="crExpand('who-degree')"><span class="who-cond-txt"><span class="who-cond-k">Degree</span><span class="who-cond-v" id="who-degree-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label" for="education">Degree</label>
-          <div class="k5-sel"><select class="field-input" id="education" onchange="state.education = this.value || null; state.educationTouched = true; crTap('who-degree')"><option value="">None Stated</option><option value="high_school">High school</option><option value="some_college">Some college</option><option value="associates">Associate's</option><option value="bachelors">Bachelor's</option><option value="masters">Master's</option><option value="doctorate">Doctorate</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
+          <div class="k5-sel"><select class="field-input is-default" id="education"><option value="">None Stated</option><option value="high_school">High school</option><option value="some_college">Some college</option><option value="associates">Associate's</option><option value="bachelors">Bachelor's</option><option value="masters">Master's</option><option value="doctorate">Doctorate</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
         </div>
         </div>
         <div class="field-group who-unit" id="who-email" style="margin-bottom:0;min-width:0;">
@@ -2116,7 +2119,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05k11';
+var PAGE_VERSION = '2026-10-05k12';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2226,6 +2229,9 @@ const state = {
   // The singles age range and partner height range save their defaults when untouched (never block).
   heightTouched: false,
   birthdateTouched: false,
+  // Who You Are Degree: the "None Stated" option is the default, not an answer, until the user
+  // opens the picker or presses Next. An untouched default must not reveal Email.
+  educationTouched: false,
   // Your Partner: gender (no default), birthday (Jan 1, 1990 default) and height (5'9" default) must be answered/touched.
   partnerGender: null,
   partnerRace: [], // Their race labels in the order picked (YOUR PARTNER, couples)
@@ -2893,6 +2899,7 @@ function _syncDefaultStyles() {
   set('height_cm_input', !(state.heightTouched || state.heightDefault));
   set('partner_birthday', !state.partnerBdayTouched);
   set('partner_height', !state.partnerHeightTouched);
+  set('education', !state.educationTouched); // Degree's "None Stated" stays grey until tapped or confirmed
 }
 function _touchHeight() {
   const inUs = state.locationMode === 'zip';
@@ -5637,7 +5644,16 @@ window.addEventListener('load', () => {
 <script>
 // ---- MOCKUP_grokbot K5 income ----
 crDef('who-income', { partner: 'who-degree', focus: 'income_range', value: () => { const s = document.getElementById('income_range'); return s ? s.options[s.selectedIndex].textContent : ''; } });
-crDef('who-degree', { partner: 'who-income', focus: 'education', value: () => { const s = document.getElementById('education'); return s ? s.options[s.selectedIndex].textContent : ''; } });
+// The select shows "None Stated" before anyone touches it. That default is not an answer, so settling Income
+// (which also tries to fold its pair partner) must not fold Degree or reveal Email.
+crDef('who-degree', { partner: 'who-income', focus: 'education', value: () => { if (!state.educationTouched) return ''; const s = document.getElementById('education'); return s && s.selectedIndex >= 0 ? s.options[s.selectedIndex].textContent : ''; } });
+function k5DegreeTouch() {
+  const el = document.getElementById('education');
+  state.education = el && el.value ? el.value : null;
+  state.educationTouched = true;
+  if (typeof _syncDefaultStyles === 'function') _syncDefaultStyles();
+  crTap('who-degree');
+}
 function k5IncomePayload() { // production: nullable text columns income_range, education, and partner_income_min
   const a = document.getElementById('income_range'), b = document.getElementById('partner_income_min');
   const e = document.getElementById('partner_education_min');
@@ -5649,11 +5665,21 @@ function k5IncomePayload() { // production: nullable text columns income_range, 
   return { income_range: a && a.value ? a.value : null, education: deg && deg.value ? deg.value : null, partner_has_children: hk && hk !== 'Any' ? String(hk).toLowerCase() : null, partner_wants_children: pv.wantkids && pv.wantkids !== 'Any' ? (wkMap[pv.wantkids] || null) : null, partner_intentions: intents.length ? intents.join('; ') : null, partner_income_min: b && b.value ? b.value : null, partner_education_min: e && e.value ? e.value : null, partner_ethnicity: state.partnerEthnicity && state.partnerEthnicity.length ? state.partnerEthnicity.slice() : null, partner_ethnicity_text: state.partnerEthnicity && state.partnerEthnicity.length ? state.partnerEthnicity.join(', ') : 'Any' }; // production: nullable text partner_education_min, text[] partner_ethnicity (+ text companion)
 }
 window.addEventListener('load', () => {
-  // Next while INCOME is the open question (untouched = "None Stated" is the answer): fold it and show the next question
+  // Same as birthday / height: a change counts, and so does opening the picker and closing it on the shown value
+  // (a native select fires no change when the choice stays "None Stated"). Tabbing through does not count.
+  _bindDefaultPicker('education', k5DegreeTouch);
+  // Next while INCOME or DEGREE is the open question: untouched = "None Stated" is confirmed, then the next
+  // question. Degree's default does not count until this confirm (or a tap), so Email stays hidden. One Next, one reveal.
   const rn = crRevealNext;
   crRevealNext = function (screen) {
-    if (screen === 1) { // Income and Degree: untouched + Next = None Stated, then the next question. Folding uses up this Next.
-      for (const id of ['who-income', 'who-degree']) { const u = document.getElementById(id); if (u && !u.classList.contains('cr-later') && !u.classList.contains('collapsed') && !_crT[id] && crSettle(id)) { crSync(); return true; } } }
+    if (screen === 1) {
+      for (const id of ['who-income', 'who-degree']) {
+        const u = document.getElementById(id);
+        if (!(u && !u.classList.contains('cr-later') && !u.classList.contains('collapsed') && !_crT[id])) continue;
+        if (id === 'who-degree' && !state.educationTouched) { state.educationTouched = true; if (typeof _syncDefaultStyles === 'function') _syncDefaultStyles(); }
+        if (crSettle(id)) { crSync(); return true; }
+      }
+    }
     return rn.apply(this, arguments);
   };
   ['partner_income_min', 'partner_education_min'].forEach(id => { const e = document.getElementById(id); if (e) e.addEventListener('change', () => { if (_k4.inWmm) k4mRender(); }); });
