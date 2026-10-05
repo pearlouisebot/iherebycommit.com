@@ -2116,7 +2116,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05k10';
+var PAGE_VERSION = '2026-10-05k11';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -5406,9 +5406,9 @@ const K4M_DEF = [
   { k: 'education', t: 'Education', edu: true }, /* left: partner_education_min (What You Want EDUCATION MINIMUM); right: tier (k4Prefs.values.edtier) */
   { k: 'ethnicity', t: 'Ethnicity', o: ['Any', 'White', 'Black', 'Asian', 'Hispanic / Latino', 'South Asian', 'MENA', 'Pacific Islander', 'Native American', 'Other'], v: [], multi: true, bind: 'partnerEthnicity' }, /* synced with ETHNICITY on What You Want */
   { k: 'religion', t: 'Religion', o: ['Any', 'Agnostic', 'Atheist', 'Buddhist', 'Catholic', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'Sikh', 'Spiritual', 'Other'], v: [], multi: true } /* same list as Who You Are RELIGION */,
-  { k: 'intentions', t: 'Intentions', o: ['Any', 'Casual', 'Dating', 'Relationship', 'Marriage', 'Life partner'], v: [], multi: true }, /* ranked only. Any is shown as "Any tier". */
-  { k: 'haskids', t: 'Have kids', o: ['Any', 'Yes', 'No'], v: 'Any' }, /* ranked only. Any is shown as "Any tier". */
-  { k: 'wantkids', t: 'Want kids', o: ['Any', 'Yes', 'No', 'Open to either', 'Unsure'], v: 'Any' }, /* ranked only. Any is shown as "Any tier". */
+  { k: 'intentions', t: 'Intentions', o: ['Any', 'Casual', 'Dating', 'Relationship', 'Marriage', 'Life partner'], v: [], multi: true }, /* ranked only. The open default is shown as "Any". */
+  { k: 'haskids', t: 'Have kids', o: ['Any', 'Yes', 'No'], v: 'Any' }, /* ranked only. The open default is shown as "Any". */
+  { k: 'wantkids', t: 'Want kids', o: ['Any', 'Yes', 'No', 'Open to either', 'Unsure'], v: 'Any' }, /* ranked only. The open default is shown as "Any". */
 ];
 const K5_TIERS = ['Any', 'Top 100', 'Top 50', 'Ivy+'];
 const K4M_DIST = [[10, 3], [25, 6], [50, 9], [100, 14], ['Any', 34]]; // miles -> slider stop index (_VK_STOPS)
@@ -5429,18 +5429,24 @@ function _k4mVal(d) { // [text, "set earlier"?]
 function _k5EduVals() { const s = document.getElementById('partner_education_min'); return [s && s.value ? s.options[s.selectedIndex].textContent : 'Any', state.k4Prefs.values.edtier || 'Any']; }
 function k4mAnyLabel(txt) {
   const s = String(txt == null ? '' : txt).trim();
-  if (!s || /^(any|no preference|any distance)$/i.test(s)) return 'Any tier';
+  if (!s || /^(any|no preference|any distance)$/i.test(s)) return 'Any';
+  return String(txt);
+}
+function k4mTierLabel(txt) { // Education's right-hand tier: the open default reads "Any tier"
+  const s = String(txt == null ? '' : txt).trim();
+  if (!s || /^(any|no preference)$/i.test(s)) return 'Any tier';
   return String(txt);
 }
 function _k4mChips(d) {
-  const anyLab = t => (t === 'Any' || t === 'No preference') ? 'Any tier' : t;
+  const anyLab = t => (t === 'Any' || t === 'No preference') ? 'Any' : t;
+  const tierLab = t => (t === 'Any' || t === 'No preference') ? 'Any tier' : t;
   const box = document.createElement('div'); box.className = 'k4m-chips'; box.hidden = true;
   if (d.edu) { // two halves: DEGREE (minimum, same options as What You Want, kept in sync) | TIER
     box.classList.add('k5-edu-ed'); const sel = document.getElementById('partner_education_min');
     const half = (lab, opts, on, pick) => { const h = document.createElement('div'); h.className = 'k5-half'; const t = document.createElement('div'); t.className = 'k5-half-k'; t.textContent = lab; h.appendChild(t);
       opts.forEach(([val, txt]) => { const c = document.createElement('button'); c.type = 'button'; c.className = 'k4m-chip' + (on(val) ? ' on' : ''); c.textContent = txt; c.setAttribute('aria-pressed', String(on(val))); c.addEventListener('click', e => { e.preventDefault(); pick(val); k4mRender(); }); h.appendChild(c); }); return h; };
     box.appendChild(half('Degree', [...sel.options].map(o => [o.value, anyLab(o.textContent.trim())]), v => sel.value === v, v => { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); }));
-    box.appendChild(half('Tier', K5_TIERS.map(t => [t, anyLab(t)]), v => (state.k4Prefs.values.edtier || 'Any') === v, v => { state.k4Prefs.values.edtier = v; }));
+    box.appendChild(half('Tier', K5_TIERS.map(t => [t, tierLab(t)]), v => (state.k4Prefs.values.edtier || 'Any') === v, v => { state.k4Prefs.values.edtier = v; }));
     return box; }
   const chip = (txt, on, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'k4m-chip' + (on ? ' on' : '') + (cls ? ' ' + cls : ''); b.textContent = txt; b.setAttribute('aria-pressed', String(!!on)); b.addEventListener('click', e => { e.preventDefault(); fn(); }); return b; };
   if (d.early) { box.classList.add('k5-ctl'); box.dataset.borrow = d.k; return box; } // filled with the What You Want control (k5Borrow)
@@ -5452,10 +5458,10 @@ function _k4mChips(d) {
     [...sel.options].forEach(o => box.appendChild(chip(anyLab(o.textContent.trim()), sel.value === o.value, () => { sel.value = o.value; sel.dispatchEvent(new Event('change', { bubbles: true })); k4mRender(); })));
   } else if (d.k === 'dist') {
     const el = document.getElementById('vi_dist_mi'), cur = el ? +el.value : -1;
-    K4M_DIST.forEach(([mi, idx]) => box.appendChild(chip(mi === 'Any' ? 'Any tier' : _k4mDistTxt(idx), cur === idx, () => { el.value = idx; el.dispatchEvent(new Event('input', { bubbles: true })); _viDistUpdate(); k4mRender(); })));
+    K4M_DIST.forEach(([mi, idx]) => box.appendChild(chip(mi === 'Any' ? 'Any' : _k4mDistTxt(idx), cur === idx, () => { el.value = idx; el.dispatchEvent(new Event('input', { bubbles: true })); _viDistUpdate(); k4mRender(); })));
   } else if (d.multi) { // multi-select: 'Any' (= empty list) clears the rest; picking anything else clears 'Any'
     const cur = () => { const v = d.bind ? state[d.bind] : state.k4Prefs.values[d.k]; return Array.isArray(v) ? v : []; };
-    if (!d.bind && (d.k === 'politics' || d.k === 'religion')) { d.o.forEach(o => box.appendChild(chip(anyLab(o), o === 'Any' ? (!cur().length || cur().includes('Any')) : cur().includes(o), () => { state.k4Prefs.values[d.k] = k5NxNorm(k5NxToggle(cur().length ? cur() : ['Any'], o)); k5PrefSync(); k4mRender(); }))); return box; } // open state is labelled Any tier; it can sit with specific picks
+    if (!d.bind && (d.k === 'politics' || d.k === 'religion')) { d.o.forEach(o => box.appendChild(chip(anyLab(o), o === 'Any' ? (!cur().length || cur().includes('Any')) : cur().includes(o), () => { state.k4Prefs.values[d.k] = k5NxNorm(k5NxToggle(cur().length ? cur() : ['Any'], o)); k5PrefSync(); k4mRender(); }))); return box; } // open default is labelled Any; it can sit with specific picks
     d.o.forEach(o => box.appendChild(chip(anyLab(o), o === 'Any' ? !cur().length : cur().includes(o), () => { let a = cur().slice(); if (o === 'Any') a = []; else if (a.includes(o)) a = a.filter(x => x !== o); else a.push(o); if (d.bind) { state[d.bind] = a; if (d.bind === 'partnerEthnicity') k5EthSync(); } else state.k4Prefs.values[d.k] = a; k4mRender(); })));
   } else d.o.forEach(o => box.appendChild(chip(anyLab(o), state.k4Prefs.values[d.k] === o, () => { state.k4Prefs.values[d.k] = o; k4mRender(); })));
   return box;
@@ -5473,7 +5479,7 @@ function k4mRender() {
     m.innerHTML = '<span class="k4m-n"></span><span class="k4m-txt"><span class="k4m-t"></span><span class="k4m-v"></span></span>';
     m.querySelector('.k4m-n').textContent = String(i + 1).padStart(2, '0'); m.querySelector('.k4m-t').textContent = d.t;
     const v = m.querySelector('.k4m-v'); v.textContent = k4mAnyLabel(txt);
-    if (d.edu) { const [l, rr] = _k5EduVals(); v.classList.add('k5-two'); v.innerHTML = '<span></span><span></span>'; v.children[0].textContent = k4mAnyLabel(l); v.children[1].textContent = k4mAnyLabel(rr); }
+    if (d.edu) { const [l, rr] = _k5EduVals(); v.classList.add('k5-two'); v.innerHTML = '<span></span><span></span>'; v.children[0].textContent = k4mAnyLabel(l); v.children[1].textContent = k4mTierLabel(rr); }
     { const ln = document.createElement('span'); ln.className = 'k4m-vl'; v.replaceWith(ln); ln.appendChild(v); } // every row: value only (no EDIT word); tapping the row left of the handle opens it in place; the handle is the only reorder target
     m.addEventListener('click', e => { e.preventDefault(); if (_k4.dragMoved) return; _k4.open = open ? null : k; k4mRender(); if (!open) _k5ShowOpen(k); });
     const h = document.createElement('span'); h.className = 'k4m-h'; h.innerHTML = K4M_HANDLE; h.setAttribute('role', 'button'); h.tabIndex = 0;
@@ -5696,9 +5702,9 @@ window.addEventListener('load', () => {
 });
 </script>
 <script>
-// MOCKUP_grokbot K5 (k5gmap15): partner Politics / Religion show 'No preference' where the value is Any (stored value unchanged: [] / null / 'Any')
+// MOCKUP_grokbot K5 (k5gmap15): partner Politics / Religion show 'Any' for the open default (stored value unchanged: [] / null / 'Any')
 window.addEventListener('load', () => {
-  const NP = 'Any tier', sw = root => { if (!root) return; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (n.nodeValue.trim() === 'Any' || n.nodeValue.trim() === 'No preference') n.nodeValue = NP; };
+  const NP = 'Any', sw = root => { if (!root) return; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (n.nodeValue.trim() === 'No preference') n.nodeValue = NP; };
   const s0 = k5PrefSync; k5PrefSync = function () { const r = s0.apply(this, arguments); ['partner-pol-text', 'partner-rel-text'].forEach(id => { const t = document.getElementById(id); if (t && t.textContent === 'Any') { t.textContent = NP; t.parentElement.title = NP; } }); return r; };
   const v0 = _k4mVal; _k4mVal = function (d) { const r = v0.apply(this, arguments); return d && (d.k === 'politics' || d.k === 'religion') && r[0] === 'Any' ? [NP, r[1]] : r; };
   const k0 = k4mRender; k4mRender = function () { const r = k0.apply(this, arguments); sw(document.querySelector('#k4m-list .k4m-row[data-k="politics"]')); sw(document.querySelector('#k4m-list .k4m-row[data-k="religion"]')); return r; };
@@ -5707,9 +5713,9 @@ window.addEventListener('load', () => {
 });
 </script>
 <script>
-// MOCKUP_grokbot K5 (k5gmap16): display "No preference" plus the other picks (What You Want box, What Matters Most row)
-function k5NxLabels(a) { a = Array.isArray(a) ? a : []; return a.length ? a.map(x => x === 'Any' ? 'Any tier' : x) : ['Any tier']; }
-function k5NxSum(a, max) { const l = k5NxLabels(a), j = l.join(', '); if (l.length === 1 || j.length <= max) return j; return l[0] === 'Any tier' ? 'Any tier + ' + (l.length === 2 ? l[1] : (l.length - 1) + ' more') : l[0] + ' + ' + (l.length - 1) + ' more'; }
+// MOCKUP_grokbot K5 (k5gmap16): display "Any" plus the other picks (What You Want box, What Matters Most row)
+function k5NxLabels(a) { a = Array.isArray(a) ? a : []; return a.length ? a.slice() : ['Any']; }
+function k5NxSum(a, max) { const l = k5NxLabels(a), j = l.join(', '); if (l.length === 1 || j.length <= max) return j; return l[0] === 'Any' ? 'Any + ' + (l.length === 2 ? l[1] : (l.length - 1) + ' more') : l[0] + ' + ' + (l.length - 1) + ' more'; }
 window.addEventListener('load', () => {
   const s0 = k5PrefSync; k5PrefSync = function () { const r = s0.apply(this, arguments);
     [['partner-pol-text', 'politics'], ['partner-rel-text', 'religion']].forEach(([id, k]) => { const t = document.getElementById(id), a = state.k4Prefs.values[k]; if (t) { t.textContent = k5NxSum(a, 18); t.parentElement.title = k5NxLabels(a).join(', '); } }); return r; };
@@ -5724,7 +5730,7 @@ const _k5G = id => { const e = document.getElementById(id); return e && e.closes
 const K5_BORROW = { age: () => _k5G('age_min_label'), height: () => _k5G('height_min_label'), dist: () => document.getElementById('vi-dist'), income: () => document.getElementById('k5-pinc'), degree: () => document.getElementById('k5-pedu') };
 const _k5Home = {}; let _k5Out = null;
 function k5ReturnAll() {
-  Object.keys(_k5Home).forEach(k => { const h = _k5Home[k]; if (!h.el) return; h.el.querySelectorAll('option').forEach(o => { if (o.dataset.k4any) { o.textContent = 'Any'; delete o.dataset.k4any; } }); if (h.mark.parentNode && h.el.previousSibling !== h.mark) h.mark.parentNode.insertBefore(h.el, h.mark.nextSibling); });
+  Object.keys(_k5Home).forEach(k => { const h = _k5Home[k]; if (h.el && h.mark.parentNode && h.el.previousSibling !== h.mark) h.mark.parentNode.insertBefore(h.el, h.mark.nextSibling); });
   _k5Out = null;
 }
 // While a control is out on What Matters Most, slider updates refresh the heads and the open row's value only (a re-render would pull the control away mid-drag)
@@ -5734,7 +5740,6 @@ function k5Borrow() {
   const k = box.dataset.borrow, el = K5_BORROW[k] && K5_BORROW[k](); if (!el) return;
   if (!_k5Home[k]) { const mark = document.createComment('k5-home-' + k); el.parentNode.insertBefore(mark, el); _k5Home[k] = { el, mark }; }
   box.appendChild(el); box.hidden = false; _k5Out = k;
-  el.querySelectorAll('option').forEach(o => { if (o.textContent.trim() === 'Any' && !o.dataset.k4any) { o.dataset.k4any = '1'; o.textContent = 'Any tier'; } });
   requestAnimationFrame(() => { try { if (k === 'age') _updateAgeLabels(); if (k === 'height') _updateHeightLabels(); if (k === 'dist' && typeof _viDistUpdate === 'function') _viDistUpdate(); } catch (e) {} });
 }
 // The What You Want control styles are scoped to #screen-3 / #ww-ranges: copy those rules for a control sitting in a What Matters Most row
@@ -5769,9 +5774,9 @@ document.addEventListener('click', e => { if (e.target.closest && (e.target.clos
 const K5_RACES = ['White', 'Black', 'Asian', 'Hispanic / Latino', 'South Asian', 'MENA', 'Pacific Islander', 'Native American', 'Other', 'None Stated'];
 const _rc = { mode: null, draft: [] };
 const K5_ETH = ['Any'].concat(K5_RACES.filter(r => r !== 'None Stated'));
-// MOCKUP_grokbot K5 (k5gmap9): Politics = the What Matters Most options; Religion = the Who You Are list (without its None Stated opt-out) plus Any (shown as No preference, k5gmap15)
+// MOCKUP_grokbot K5 (k5gmap9): Politics = the What Matters Most options; Religion = the Who You Are list (without its None Stated opt-out) plus Any (shown as Any)
 const K5_PREFM = m => m === 'eth' || m === 'pol' || m === 'rel';
-// MOCKUP_grokbot K5 (k5gmap16): partner Politics / Religion: No preference ('Any') can be ticked together with specific options
+// MOCKUP_grokbot K5 (k5gmap16): partner Politics / Religion: Any can be ticked together with specific options
 const K5_NX = m => m === 'pol' || m === 'rel';
 function k5NxToggle(a, o) { a = (Array.isArray(a) ? a : []).slice(); a = a.includes(o) ? a.filter(x => x !== o) : a.concat(o); if (!a.length) a = ['Any']; return a.includes('Any') ? ['Any'].concat(a.filter(x => x !== 'Any')) : a; }
 function k5NxNorm(a) { a = (Array.isArray(a) ? a : []).slice(); return !a.length || (a.length === 1 && a[0] === 'Any') ? [] : (a.includes('Any') ? ['Any'].concat(a.filter(x => x !== 'Any')) : a); }
@@ -5798,7 +5803,7 @@ function _rcRender() {
     l.appendChild(b); });
 }
 function k5RaceOpen(mode) {
-  _rc.mode = mode; const cur = mode === 'pol' ? state.k4Prefs.values.politics : mode === 'rel' ? state.k4Prefs.values.religion : mode === 'eth' ? state.partnerEthnicity : mode === 'partner' ? state.partnerRace : state.race; _rc.draft = Array.isArray(cur) ? cur.slice() : []; if (K5_NX(mode) && !_rc.draft.length) _rc.draft = ['Any']; // k5gmap16: No preference shown ticked
+  _rc.mode = mode; const cur = mode === 'pol' ? state.k4Prefs.values.politics : mode === 'rel' ? state.k4Prefs.values.religion : mode === 'eth' ? state.partnerEthnicity : mode === 'partner' ? state.partnerRace : state.race; _rc.draft = Array.isArray(cur) ? cur.slice() : []; if (K5_NX(mode) && !_rc.draft.length) _rc.draft = ['Any']; // k5gmap16: Any shown ticked
   document.getElementById('rc-title').textContent = (mode === 'pol' ? 'Politics' : mode === 'rel' ? 'Religion' : mode === 'eth' ? 'Ethnicity' : mode === 'partner' ? 'Their race' : 'Race') + ' · select all that apply';
   { const u = mode === 'own' ? 'who-race' : 'pt-race'; clearTimeout(_crT[u]); _crT[u] = null; }
   _rcRender(); document.getElementById('rc-backdrop').hidden = false; document.getElementById('rc-sheet').hidden = false;
