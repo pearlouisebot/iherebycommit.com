@@ -184,8 +184,6 @@
     .form-error-summary.visible { display: block; }
     /* Intentions & Family: the question being answered gets the larger label; answered ones are smaller. */
     /* What You Want (singles): same pattern - the open question's label is prominent, answered ones are condensed rows. */
-    #screen-3 .ww-unit { margin-bottom: 20px; }
-    #screen-3 .ww-unit.collapsed { margin-bottom: 12px; }
     .field-valid { font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
     .field-valid.visible { display: block; }
 
@@ -691,7 +689,6 @@
     #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 6px 0 0; }
     /* 2026-09-27i: Your Partner's bottom bar now matches every other screen (priority tip hidden). To restore the tip, uncomment these with the markup:
     #screen-2 .bottom-action .partner-tip-box { margin: 0; padding: 6px 12px; }
-    #screen-2 .screen-content { padding-bottom: 4px; }
     #screen-2 .bottom-action .partner-tip-box .tip-label { display: inline; margin: 0 6px 0 0; }
     #screen-2 .bottom-action .partner-tip-box .tip-text { display: inline; font-size: 11px; line-height: 1.5; }
     #screen-2 .bottom-action .btn-ghost { padding: 8px 12px; }
@@ -1201,7 +1198,6 @@
     #screen-2 .partner-notice { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 6px 0 0; }
     /* 2026-09-27i: Your Partner's bottom bar now matches every other screen (priority tip hidden). To restore the tip, uncomment these with the markup:
     #screen-2 .bottom-action .partner-tip-box { margin: 0; padding: 6px 12px; }
-    #screen-2 .screen-content { padding-bottom: 4px; }
     #screen-2 .bottom-action .partner-tip-box .tip-label { display: inline; margin: 0 6px 0 0; }
     #screen-2 .bottom-action .partner-tip-box .tip-text { display: inline; font-size: 11px; line-height: 1.5; }
     #screen-2 .bottom-action .btn-ghost { padding: 8px 12px; }
@@ -1259,10 +1255,6 @@
     @media (max-width: 359px) { html.vj #screen-3 .partner-location-anywhere { font-size: 12px; gap: 8px; } } /* keeps the checkbox label on one line at 320 */
     /* Short screens (e.g. 320x640): same layout, tighter spacing so nothing scrolls. */
     @media (max-height: 720px) {
-      html.vj #screen-3 .screen-content { padding-top: 12px; padding-bottom: 8px; }
-      html.vj #screen-3 .screen-label { margin-bottom: 4px; }
-      html.vj #screen-3 .screen-headline { font-size: 40px; margin-bottom: 8px; }
-      html.vj #screen-3 .ww-unit.collapsed { margin-bottom: 8px; }
       html.vj #screen-3 .who-cond, html.vj #screen-3 .pc-half-primary, html.vj #vj-cities { min-height: 44px; padding-top: 4px; padding-bottom: 4px; }
       html.vj #screen-3 .partner-location-anywhere { min-height: 34px; }
       html.vj #screen-3 #ww-loc:not(.collapsed) { margin-bottom: 4px; }
@@ -1493,8 +1485,34 @@
     html.vk5 #screen-3 .partner-location-anywhere, html.vk5 #screen-3 .partner-location-anywhere .vk-cb-txt { color: #888; }
     html.vk5 #screen-3 .partner-location-anywhere:has(input:checked), html.vk5 #screen-3 .partner-location-anywhere:has(input:checked) .vk-cb-txt { color: #fff; }
 
-    /* s1g: headline stays production 52px; only Distance uses .k4-sl boxing */
-    #screen-3 .screen-headline { font-size: 52px !important; margin-bottom: 24px !important; }
+    /* K5 Religion / Income / Degree selects (k12 @74e0c9f) */
+    .k5-sel { position: relative; }
+    .k5-sel select.field-input { padding-right: 34px; cursor: pointer; font-size: 14px; }
+    .k5-caret { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--muted); pointer-events: none; }
+    /* p4: paired I AM A | NAME row - long answers ellipsize on one line */
+    #who-gn-row.cr-both .who-cond-txt { min-width: 0; }
+    #who-gn-row.cr-both .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+    /* p4: collapsed Location never wraps (e.g. "San Francisco, CA"); one line + ellipsis like every other collapsed input */
+    #who-dl-row .who-unit.collapsed .who-cond-txt { min-width: 0; }
+    #who-dl-row .who-unit.collapsed .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+    /* p4: paired RELIGION | INCOME - one line + ellipsis, same height as other collapsed inputs */
+    #who-rd-row .who-unit.collapsed .who-cond-txt, #who-ip-row .who-unit.collapsed .who-cond-txt { min-width: 0; }
+    #who-rd-row .who-unit.collapsed .who-cond-v, #who-ip-row .who-unit.collapsed .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+    /* ==== p4 UNIVERSAL SPACING: the same values on every form screen (Who You Are, Your Partner, What You Want,
+       Your Relationship, Intentions & Family, Text Me, Public Self). Change them here only. ==== */
+    :root { --u-top: 16px; --u-label: 12px; --u-head: 16px; --u-row: 10px; --u-gut: 10px; --u-bot: 0px; --u-next-top: 8px; --u-lab-fs: 10px; --u-val-fs: 13px; }
+    .screen:not(#screen-0):not(#screen-8) > .screen-content { padding-top: var(--u-top) !important; padding-bottom: var(--u-bot) !important; }
+    .screen-content > .screen-label { margin-bottom: var(--u-label) !important; }
+    .screen-content > .screen-headline { font-size: 52px !important; margin-bottom: var(--u-head) !important; }
+    .screen-content .who-unit { margin-bottom: var(--u-row) !important; }
+    .screen-content .cr-pair { gap: var(--u-row) var(--u-gut) !important; margin-bottom: var(--u-row) !important; }
+    .screen-content .cr-pair > .who-unit { margin-bottom: 0 !important; }
+    .field-group { margin-bottom: var(--u-row); }
+    .field-label, .who-cond-k { font-size: var(--u-lab-fs); }
+    .who-cond-v { font-size: var(--u-val-fs); }
+    /* nothing extra under the last field: the Next bar's own top padding is the only gap */
+    .screen-content > :last-child, #screen1-fields > :last-child { margin-bottom: 0 !important; }
+    .bottom-action { padding-top: var(--u-next-top); }
   </style>
 </head>
 <body class="landing-active">
@@ -1619,7 +1637,8 @@
       <div class="screen-label">Step 1 of <span class="step-total"></span></div>
       <div class="screen-headline">WHO YOU <span class="accent">ARE</span></div>
       <div id="screen1-fields">
-        <div class="field-group who-unit" id="who-gender" style="margin-bottom:12px;">
+        <div class="cr-pair" id="who-gn-row"><!-- K5 who-gn-row: I am a | Name side by side once both are answered; Name stays full width while typed -->
+        <div class="field-group who-unit" id="who-gender" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit I am a" onclick="crExpand('who-gender')"><span class="who-cond-txt"><span class="who-cond-k">I am a</span><span class="who-cond-v" id="who-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">I AM A</label>
           <div class="toggle-group" style="margin-bottom:0;">
@@ -1629,7 +1648,7 @@
           </div>
           <div class="field-error" id="err-gender">Please select one</div>
         </div>
-        <div class="who-unit" id="who-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="who-unit" id="who-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Name" onclick="crExpand('who-name')"><span class="who-cond-txt"><span class="who-cond-k">Name</span><span class="who-cond-v" id="who-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">First name</label>
@@ -1641,6 +1660,7 @@
             <input class="field-input" id="last_name" type="text" placeholder="Last name" autocomplete="family-name">
             <div class="field-error" id="err-last_name">Required</div>
           </div>
+        </div>
         </div>
         <div class="cr-pair" id="who-dl-row">
           <div class="field-group who-unit" id="who-dob" style="margin-bottom:0;min-width:0;">
@@ -1709,6 +1729,34 @@
             <div class="race-chips" id="race-chips" aria-live="polite"></div>
           </div>
       </div>
+          <div class="cr-pair" id="who-rd-row"><!-- RELIGION | DEGREE side by side once both are answered -->
+          <!-- K5 (k12 @74e0c9f): own RELIGION. Production: nullable text column religion; "None Stated" is stored as null. -->
+          <div class="field-group who-unit" id="who-religion" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Religion" onclick="crExpand('who-religion')"><span class="who-cond-txt"><span class="who-cond-k">Religion</span><span class="who-cond-v" id="who-religion-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <label class="field-label" for="religion">Religion</label>
+            <select class="field-input is-default" id="religion" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5ReligionPick(this)"><option value="">— Select —</option><option value="Agnostic">Agnostic</option><option value="Atheist">Atheist</option><option value="Buddhist">Buddhist</option><option value="Catholic">Catholic</option><option value="Christian">Christian</option><option value="Hindu">Hindu</option><option value="Jewish">Jewish</option><option value="Muslim">Muslim</option><option value="Sikh">Sikh</option><option value="Spiritual">Spiritual</option><option value="Other">Other</option><option value="None Stated">None Stated</option></select>
+          </div>
+          <!-- K5: own DEGREE. Production: nullable text column education (null = None Stated). -->
+          <div class="field-group who-unit" id="who-degree" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Degree" onclick="crExpand('who-degree')"><span class="who-cond-txt"><span class="who-cond-k">Degree</span><span class="who-cond-v" id="who-degree-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <label class="field-label" for="education">Degree</label>
+            <div class="k5-sel"><select class="field-input is-default" id="education"><option value="">None Stated</option><option value="high_school">High School/GED</option><option value="some_college">Some college</option><option value="associates">Associate's</option><option value="bachelors">Bachelor's</option><option value="masters">Master's</option><option value="doctorate">Doctorate</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
+          </div>
+          </div>
+          <div class="cr-pair" id="who-ip-row"><!-- INCOME | POLITICS side by side once both are answered -->
+          <!-- K5: own INCOME. Production: nullable text column income_range (null = None Stated). -->
+          <div class="field-group who-unit" id="who-income" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <label class="field-label" for="income_range">Income</label>
+            <div class="k5-sel"><select class="field-input" id="income_range" onchange="state.incomeRange = this.value || null; state.incomeTouched = true; crTap('who-income')"><option value="">None Stated</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
+          </div>
+          <!-- K5 (k12 who-politics) own POLITICS: K5 values Left-leaning / Moderate / Right-leaning / None Stated + Left and Right. Production: politics text, null for None Stated. -->
+          <div class="field-group who-unit" id="who-politics" style="margin-bottom:0;min-width:0;">
+            <div class="who-cond" role="button" tabindex="0" aria-label="Edit Politics" onclick="crExpand('who-politics')"><span class="who-cond-txt"><span class="who-cond-k">Politics</span><span class="who-cond-v" id="who-politics-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+            <label class="field-label" for="politics">Politics</label>
+            <select class="field-input is-default" id="politics" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5PoliticsPick(this)"><option value="">— Select —</option><option value="Left">Left</option><option value="Left-leaning">Left-leaning</option><option value="Moderate">Moderate</option><option value="Right-leaning">Right-leaning</option><option value="Right">Right</option><option value="Apolitical">Apolitical</option><option value="None Stated">None Stated</option></select>
+          </div>
+          </div>
           <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="crExpand('who-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Email</label>
@@ -2300,7 +2348,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05p3';
+var PAGE_VERSION = '2026-10-05p4';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2387,6 +2435,7 @@ const state = {
   numChildren: null, // couples: "How many kids do you have?" (1-4, 5+), only when they have kids
   lookingFor: [],
   race: [], // Race labels in the order picked (WHO YOU ARE)
+  religion: null, incomeRange: null, incomeTouched: false, education: null, educationTouched: false, politics: null, // K5 own Religion / Income / Degree
   relationshipTimeline: null,
   turnstileToken: null,
   submitting: false,
@@ -2960,6 +3009,7 @@ async function saveLead() {
     partner_cities_extra_text: partnerCitiesExtraTextPayload(),
     ...partnerDistancePayload(),
     ...wyaPayload(),
+    ...k5WhoExtraPayload(),
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -3081,6 +3131,7 @@ function _syncDefaultStyles() {
   set('height_cm_input', !state.heightTouched);
   set('partner_birthday', !state.partnerBdayTouched);
   set('partner_height', !state.partnerHeightTouched);
+  set('education', !state.educationTouched); // K5: Degree's "None Stated" stays grey until tapped
 }
 function _touchHeight() {
   const inUs = state.locationMode === 'zip';
@@ -3554,6 +3605,7 @@ async function doSubmit() {
     partner_cities_extra_text: partnerCitiesExtraTextPayload(),
     ...partnerDistancePayload(),
     ...wyaPayload(),
+    ...k5WhoExtraPayload(),
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -3794,7 +3846,7 @@ const _crB = {};
 const CR_STEPS = {
   // Date of birth alone; the zip once the birthday is touched (the Jan 1, 1996 default isn't an answer). Height alone;
   // Race once Height is touched (or Next is pressed); Email once Race is done.
-  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-email']],
+  1: [['who-gender'], ['who-name'], ['who-dob'], ['who-loc'], ['who-height'], ['who-race'], ['who-religion'], ['who-degree'], ['who-income'], ['who-politics'], ['who-email']],
   // Their birthday alone; Their height alone; Their race once height is touched (or Next is pressed) - like Who You Are.
   2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-race'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
   // What You Want (singles): Seeking alone; Partner Location; then Age Range + Partner Height together (never collapsed).
@@ -6187,6 +6239,29 @@ window.addEventListener('load', () => {
   window.addEventListener('load', tip);
 
 })();
+</script>
+<script>
+// K5 (k12 @74e0c9f): own RELIGION / INCOME / DEGREE on Who You Are. Optional; untouched = None Stated (null).
+// One at a time: Race -> Religion -> Degree -> Income -> Politics -> Email. Each appears once the previous is answered (collapsed) or skipped with Next ("—"), so Email appears right after Degree and never gets stuck.
+crDef('who-religion', { optional: true, focus: 'religion', value: () => { const s = document.getElementById('religion'); return s && s.value ? s.value : ''; } });
+function k5ReligionPick(el) { state.religion = el.value || null; el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-religion'); }
+crDef('who-income', { optional: true, focus: 'income_range', value: () => { if (!state.incomeTouched) return ''; const s = document.getElementById('income_range'); return s ? s.options[s.selectedIndex].textContent : ''; } });
+crDef('who-degree', { optional: true, focus: 'education', value: () => { if (!state.educationTouched) return ''; const s = document.getElementById('education'); return s && s.selectedIndex >= 0 ? s.options[s.selectedIndex].textContent : ''; } });
+function k5DegreeTouch() {
+  const el = document.getElementById('education');
+  state.education = el && el.value ? el.value : null;
+  state.educationTouched = true;
+  if (typeof _syncDefaultStyles === 'function') _syncDefaultStyles();
+  crTap('who-degree');
+}
+// Production columns (already allowed in save-lead / submit-application): religion, income_range, education (all nullable text).
+function k5WhoExtraPayload() {
+  const r = document.getElementById('religion'), a = document.getElementById('income_range'), d = document.getElementById('education');
+  return { religion: r && r.value && r.value !== 'None Stated' ? r.value : null, income_range: a && a.value ? a.value : null, education: d && d.value ? d.value : null, politics: (function () { const p = document.getElementById('politics'); return p && p.value && p.value !== 'None Stated' ? p.value : null; })() };
+}
+crDef('who-politics', { optional: true, focus: 'politics', value: () => { const s = document.getElementById('politics'); return s && s.value ? s.value : ''; } });
+function k5PoliticsPick(el) { state.politics = el.value || null; el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-politics'); }
+window.addEventListener('load', () => { _bindDefaultPicker('education', k5DegreeTouch); _syncDefaultStyles(); });
 </script>
 </body>
 </html>
