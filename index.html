@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
+<html lang="en" class="s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -1511,6 +1511,16 @@
     html.vk4 #screen-3 #ww-ranges .k4-sl .field-error:not(:empty) { margin-top: 2px; }
     /* s3j: every box on What You Want is the same shared --u-row apart (Seeking, Partner city, Distance, Age, Height) */
     html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-loc #partner-location-field #vi-dist.k4-sl { margin-top: var(--u-row) !important; }
+    /* s3t: Distance comes straight after Seeking; Partner city + Other cities sit under the Distance box and show only once
+       "I'm open to dating in other cities" is ticked (or when there is no home city to default to) */
+    html.s3t.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-loc #partner-location-field #vi-dist.k4-sl { margin-top: 0 !important; }
+    html.s3t.vk5.vk #screen-3 #ww-loc #vk-row { margin: var(--u-row) 0 0 !important; }
+    html.s3t.vk5.vk #screen-3 #ww-loc #vk-row.s3t-off { display: none !important; }
+    @keyframes s3tIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    html.s3t #screen-3 #vk-row.s3t-in { animation: s3tIn .24s ease-out both; }
+    @media (prefers-reduced-motion: reduce) { html.s3t #screen-3 #vk-row.s3t-in { animation: none; } }
+    /* s3t: the location sheet doubles as the Partner city pin map (no search / no Use my location there) */
+    #wya-sheet.s3t-pc .wya-csearch, #wya-sheet.s3t-pc #wya-gps-c { display: none !important; }
     html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #cities-single-section #ww-loc:not(.collapsed) { margin-bottom: var(--u-row) !important; }
     /* s3k: Age / Partner Height rows ease in when revealed; last row has no bottom margin */
     #screen-3 #ww-ranges > #ww-height { margin-bottom: 0 !important; }
@@ -1564,6 +1574,11 @@
     .wya-row-txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }
     .wya-row-k { font-family: 'Space Mono', monospace; font-size: 10px !important; letter-spacing: 1.5px !important; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
     .wya-row-v { line-height: 1.4; }
+
+    /* s3r: a collapsed value is always one line with an ellipsis (same as Name / Location), on every screen and row width. Full text stays in the title tooltip. */
+    .who-cond-txt { flex: 1 1 auto; min-width: 0; overflow: hidden; }
+    .who-cond-v { display: block !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; overflow-wrap: normal !important; -webkit-line-clamp: unset !important; max-width: 100%; }
+    .who-cond-k { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   </style>
 </head>
 <body class="landing-active">
@@ -2398,7 +2413,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05p5';
+var PAGE_VERSION = '2026-10-06p6';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -5892,7 +5907,21 @@ _vkCommit = async function (zip) {
   if (_vkZip === zip && before !== zip) { _vk2Label = ''; _vk2Country = 'US'; _vkRender(); }
   else if (document.getElementById('vk-zip-box').classList.contains('bad')) { _vk2Hide(); const l = document.getElementById('vk2-sug'); const d = document.createElement('div'); d.className = 'vk2-opt vk2-none'; d.textContent = 'Zip not found: try a zip, postcode or city'; l.appendChild(d); l.hidden = false; }
 };
-_viOrigin = function () { const p = partnerCityPrimary; return (_vk2Label && _vk2Label.trim()) || (p && p.label) || _vkName || _vkZip || 'your city'; }; // s3p
+// s3s: how far she'd travel from the partner city. US -> its zip ("Distance from 94102"): the typed zip, else the zip the
+// lookup/geocode returned, else 'City, ST'. International (or no zip) -> the city name only ("Distance from London").
+_viOrigin = function () {
+  const p = partnerCityPrimary || null, z5 = v => (/^\d{5}$/.test(String(v || '').trim()) ? String(v).trim() : '');
+  const cc = String((p && p.country) || (typeof _vk2Country !== 'undefined' && _vk2Country) || (z5(_vkZip) ? 'US' : '') || '').toUpperCase();
+  const us = !cc || cc === 'US';
+  const own = !p || p.own || !partnerLocationTouched;
+  if (us) { // s3t: the zip (typed, looked up or reverse-geocoded from the pin); home zip while Partner city is still the home city
+    const pc = document.getElementById('postal_code');
+    const zip = z5(_vkZip) || z5(p && p.zip) || (own && state.wya && z5(state.wya.zip)) || (own && pc && z5(pc.value)) || '';
+    if (zip) return zip;
+  }
+  // s3t: no zip (or international) -> the city name only, never 'City, ST' / 'City, Country'
+  return _vkName || _viName(p) || (((own && state.wya && state.wya.label) || _vk2Label || (p && p.label) || '').split(',')[0].trim()) || 'your city';
+};
 // Label rule: set by zip / postcode -> "Distance from 78704" / "SW1A 1AA"; set by picking a city by name -> "Distance from London CBD".
 // A long city name is cut with an ellipsis and " CBD" always stays visible (letter-spacing is left as in the I AM A labels).
 function _vk2LabCity(lab, name) {
@@ -6444,6 +6473,136 @@ function s3qHeightPrefLabels() {
 }
 (function () { const f = _syncHeightMode; _syncHeightMode = function () { f.apply(this, arguments); try { _syncPartnerHeightUnit(); s3qHeightPrefLabels(); } catch (e) {} }; })();
 document.addEventListener('DOMContentLoaded', () => { try { s3qHeightPrefLabels(); } catch (e) {} });
+</script>
+
+<script>
+// ==== s3t (production 2026-10-06p6) ====
+// 1) What You Want: Seeking -> Distance (from her own Who You Are location) -> Age -> Height, one at a time as before.
+//    Partner city + Other cities show (under the Distance box) only once "I'm open to dating in other cities" is ticked.
+//    Unticked: partner_city_primary = the home city (as before), no other cities; unticking resets Partner city to home and
+//    clears the other cities so what is saved is what she saw. Ticked: she can set a different Partner city and the Distance
+//    label follows it ("Distance from 94102" / "Distance from Denver"), because the distance is measured from that city.
+// 2) A US city picked by name (own Location sheet or Partner city) drops a draggable pin there; the pin is reverse-geocoded
+//    (on the pick and after every drag / tap) and its zip is used for the label and the zip fields. Google geocoding first,
+//    Nominatim when Google refuses, city name only when neither gives a zip.
+(function () {
+  const $ = id => document.getElementById(id);
+  const z5 = v => (/^\d{5}$/.test(String(v || '').trim()) ? String(v).trim() : '');
+  window.S3T = { pcGeo: 0, wyaGeo: 0, last: null };
+
+  // ---------- 1) Partner city row only after the tick ----------
+  let shown = null;
+  k5Rows = function () {
+    const row = $('vk-row'); if (!row) return;
+    const d = $('vi-dist'), cb = document.querySelector('#screen-3 .partner-location-anywhere');
+    if (d && cb && cb.parentElement !== d) d.appendChild(cb);
+    if (d && d.nextElementSibling !== row) d.after(row); // under the Distance box, right below the checkbox she just ticked
+    const show = !!partnerLocationAnywhere || !partnerCityPrimary;
+    row.classList.toggle('s3t-off', !show);
+    if (show && shown === false) { row.classList.remove('s3t-in'); void row.offsetWidth; row.classList.add('s3t-in'); }
+    shown = show;
+    row.classList.toggle('solo', !(partnerLocationAnywhere || partnerCitiesExtra.length));
+  };
+  function backHome() { // unticked: Partner city = home again (same partner_city_primary as never ticking), no other cities
+    PC.seq++; partnerLocationTouched = false; partnerCitiesExtra = [];
+    const box = $('vk-zip-box'); if (box && box.classList.contains('editing')) _vkClose();
+    if (typeof _vk2Hide === 'function') _vk2Hide();
+    _k4.pcSig = null;
+    Promise.resolve(_k4PartnerDefault()).then(() => {
+      _renderPartnerLocationChips(); _wwLocChanged(); k5Rows(); _k4Refresh();
+    });
+  }
+  window.addEventListener('load', () => {
+    const any = $('partner-location-anywhere');
+    if (any) any.addEventListener('change', () => { partnerLocationAnywhere = !!any.checked; if (!any.checked) backHome(); k5Rows(); requestAnimationFrame(_k4Refresh); });
+    k5Rows();
+  });
+
+  // ---------- 2a) own Location sheet: US city by name -> pin + reverse-geocoded zip ----------
+  const pick0 = _wyaPick;
+  _wyaPick = async function (o) {
+    const r = await pick0.apply(this, arguments);
+    const c = o && o.city;
+    if (c && String(c.country || '').toUpperCase() === 'US' && c.lat != null) {
+      const seq = _wyaSeq; S3T.wyaGeo++;
+      _wyaShow('\uD83D\uDCCD ' + c.label + ' \u00b7 finding the zip\u2026', 'set');
+      let n = null; try { n = await _wyaName(c.lat, c.lng); } catch (e) {}
+      if (seq !== _wyaSeq) return r; // she dragged / tapped / searched again meanwhile: that result wins
+      const zip = n && String(n.cc || '').toUpperCase() === 'US' ? z5(n.zip) : '';
+      S3T.last = { who: 'own', zip, label: c.label };
+      _wyaTake({ lat: c.lat, lng: c.lng, source: 'city', accuracy: null, label: c.label, cc: 'US', country: 'United States', zip: zip || null, hood: n && n.hood || null });
+    }
+    return r;
+  };
+
+  // ---------- 2b) Partner city: US city by name -> the same map sheet, pin at the city, zip from the pin ----------
+  const PC = { on: false, seq: 0 };
+  const sheet = () => $('wya-sheet'), title = () => document.querySelector('#wya-sheet .cp-sheet-title');
+  const FAIL_OWN = 'Map unavailable right now.<br><b>Type your zip or city above.</b>', FAIL_PC = 'Map unavailable right now.<br><b>Tap DONE to keep this city.</b>';
+  function failTxt() { const f = document.querySelector('.wya-cmap .wya-mapfail'); if (f) f.innerHTML = '<span>' + (PC.on ? FAIL_PC : FAIL_OWN) + '</span>'; }
+  window.addEventListener('load', () => { const m = document.querySelector('.wya-cmap'); if (m && window.MutationObserver) new MutationObserver(() => { const f = m.querySelector('.wya-mapfail'); if (f && PC.on && !f.innerHTML.includes('DONE')) failTxt(); }).observe(m, { childList: true }); });
+  function pcShow(txt) { const el = $('wya-city-c'); if (el) { el.textContent = txt; el.title = txt; el.className = 'wya-city set'; } }
+  function pcOpen(c) {
+    const s = sheet(), b = $('wya-backdrop'); if (!s || !b) return;
+    PC.on = true; s.classList.add('s3t-pc'); s.setAttribute('aria-label', 'Partner city'); if (title()) title().textContent = 'Partner city';
+    $('wya-csug') && ($('wya-csug').hidden = true);
+    s.hidden = false; b.hidden = false; if (typeof sheetPinDone === 'function') sheetPinDone('wya-sheet');
+    failTxt();
+    requestAnimationFrame(() => { _wyaMapInit(); if (_wyaMap && _wyaMap.invalidateSize) _wyaMap.invalidateSize(); _wyaPinAt(c.lat, c.lng, 11); });
+  }
+  function pcClose() {
+    const s = sheet(), b = $('wya-backdrop'); if (!s) return;
+    const was = PC.on; PC.on = false;
+    s.hidden = true; if (b) b.hidden = true; s.classList.remove('s3t-pc'); s.setAttribute('aria-label', 'Where you live'); if (title()) title().textContent = 'Location';
+    failTxt();
+    if (was) requestAnimationFrame(_k4Refresh);
+  }
+  async function pcGeo(lat, lng, c) {
+    const seq = ++PC.seq; S3T.pcGeo++;
+    pcShow('\uD83D\uDCCD ' + (c ? c.label + ' \u00b7 ' : '') + 'finding the zip\u2026');
+    let n = null; try { n = await _wyaName(lat, lng); } catch (e) {}
+    if (seq !== PC.seq || !partnerLocationAnywhere && partnerCityPrimary && partnerCityPrimary.own) return; // superseded / unticked meanwhile
+    await Promise.resolve(loadPartnerCities());
+    n = n || {};
+    const cc = String(n.cc || (c && c.country) || '').toUpperCase(), zip = cc === 'US' ? z5(n.zip) : '';
+    let entry, name;
+    if (c) { entry = _plEntryFromCity(c); name = c.city; } // the pick: keep the city she chose, add the pin's zip
+    else if (n.label) { // a drag / tap: the city under the pin
+      const m = _matchOwnCity(n.label); name = m ? m.city : n.label.split(',')[0].trim();
+      entry = m ? _plEntryFromCity(m) : { label: n.label, city: name, region: cc === 'US' ? (n.label.split(',')[1] || '').trim() || null : null, country: cc || null, lat, lng, geonames_id: null, typed: false, matched: false };
+    } else { pcShow('Couldn\u2019t name that spot: drag the pin again'); return; }
+    if (zip) Object.assign(entry, { zip, zip_lat: lat, zip_lng: lng });
+    partnerCityPrimary = entry; partnerLocationTouched = true; _vkSeq++;
+    _vkName = name;
+    if (zip) { _vkZip = zip; _vk2Label = ''; _vk2Country = 'US'; state.partnerZip = zip; }
+    else { _vkZip = ''; _vk2Label = entry.label; _vk2Country = cc || 'US'; state.partnerZip = ''; }
+    S3T.last = { who: 'partner', zip, label: entry.label };
+    pcShow('\uD83D\uDCCD ' + (zip ? zip + ' \u00b7 ' : '') + entry.label);
+    _renderPartnerLocationChips(); _wwLocChanged(); _k4Refresh();
+  }
+  const setCity0 = _vk2SetCity;
+  _vk2SetCity = function (c) {
+    const r = setCity0.apply(this, arguments);
+    if (c && String(c.country || '').toUpperCase() === 'US' && c.lat != null) {
+      if (!(window.K5GM && K5GM.failed)) pcOpen(c); // map already known to be down: no sheet, just the zip lookup
+      pcGeo(c.lat, c.lng, c);
+    } else PC.seq++;
+    return r;
+  };
+  // pin drags / map taps while the sheet is in Partner city mode name the partner city, not her own location
+  const fp0 = _wyaFromPoint;
+  _wyaFromPoint = function (lat, lng) { if (PC.on) return pcGeo(lat, lng, null); return fp0.apply(this, arguments); };
+  const close0 = wyaCloseSheet;
+  wyaCloseSheet = function () { if (PC.on) return pcClose(); return close0.apply(this, arguments); };
+  const open0 = wyaOpenSheet;
+  wyaOpenSheet = function () { if (PC.on) pcClose(); return open0.apply(this, arguments); };
+  window.addEventListener('load', () => {
+    const b = $('wya-backdrop'); if (b) b.addEventListener('click', () => { if (PC.on) pcClose(); });
+    const x = $('wya-x'); if (x) x.addEventListener('click', () => { if (PC.on) pcClose(); });
+  });
+  // any other Partner city change (zip / postcode / non-US city / back to home) cancels a pending pin lookup
+  ['_vkCommit', '_vk2Postcode'].forEach(f => { const g = window[f]; if (typeof g === 'function') window[f] = function () { PC.seq++; return g.apply(this, arguments); }; });
+})();
 </script>
 </body>
 </html>
