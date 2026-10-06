@@ -2300,7 +2300,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05p2';
+var PAGE_VERSION = '2026-10-05p3';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2899,6 +2899,12 @@ function hasRevealedErrors(screenId) {
 async function goNext(screenId) {
   if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
   if (screenId === 3) _commitPartnerLocationTyped(); // typed partner location not yet added
+  // p3: Next tapped while Looking for is still settling (1.2s) only collapses it and reveals the next question,
+  // with no error on that just-revealed question (it used to flag the timeline as unanswered in the same tap).
+  if (screenId === 5 && state.status !== 'partnered' && _lfCollapseTimer && Array.isArray(state.lookingFor) && state.lookingFor.length) {
+    clearTimeout(_lfCollapseTimer); _lfSettle();
+    if (!validateScreen(5)) { _crClearErrors(5); hideUnrevealedErrors(5); _crFirstOpen(5); return; }
+  }
   if (!validateScreen(screenId)) {
     if (document.getElementById('under18-msg')?.classList.contains('visible')) return; // under-18 message replaces the form
     hideUnrevealedErrors(screenId);
