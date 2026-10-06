@@ -5,7 +5,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover"><!-- s3m: maximum-scale=1 stops iOS Safari zooming on focus (14px pickers); iOS still allows pinch zoom -->
   <title>I Hereby Commit</title>
 
   <meta property="og:title" content="I Hereby Commit">
@@ -157,18 +157,13 @@
     .race-select { display: flex; align-items: center; justify-content: space-between; gap: 4px; text-align: left; cursor: pointer; font-size: 14px; padding: 14px 8px 14px 10px; }
     .race-select-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .race-select-text.empty { color: var(--muted); font-size: 12px; letter-spacing: -0.03em; }
-    .race-caret { flex-shrink: 0; font-size: 11px; color: var(--muted); transition: transform 0.15s; }
     .race-select[aria-expanded="true"] { border-color: var(--accent); }
-    .race-select[aria-expanded="true"] .race-caret { transform: rotate(180deg); }
-    .race-panel { grid-column: 1 / -1; display: none; border: 1px solid var(--dim); border-radius: var(--radius); padding: 6px; }
-    .race-panel.open { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 6px; }
     .race-opt { display: flex; align-items: center; gap: 6px; min-width: 0; background: transparent; border: none; color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px; text-align: left; padding: 8px 4px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
-    /* Option labels wrap instead of being cut off ("Hispanic / Latino", "Prefer not to say" at 320-393px). */
+    /* Option labels wrap instead of being cut off ("Hispanic / Latino", "None Stated" at 320-393px). */
     .race-opt-txt { min-width: 0; overflow-wrap: anywhere; line-height: 1.3; }
     .race-box { flex-shrink: 0; width: 16px; height: 16px; border: 1px solid var(--muted); border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; line-height: 1; color: var(--bg); }
     .race-opt.selected .race-box { background: var(--accent); border-color: var(--accent); }
     .race-opt.selected .race-box::after { content: '\2713'; }
-    .race-done { grid-column: 1 / -1; margin-top: 4px; background: transparent; border: 1px solid var(--accent); border-radius: var(--radius); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 10px; cursor: pointer; }
     #screen-5 .choice-grid.error .toggle-btn:not(.selected) { border-color: var(--error); }
     .field-input { width: 100%; background: transparent; border: 1px solid var(--dim); border-radius: var(--radius); color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; padding: 14px 16px; min-height: 54px; box-sizing: border-box; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
     .field-input:focus { border-color: var(--accent); }
@@ -737,7 +732,6 @@
       border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg);
     }
     .race-sheet .race-opt-txt { min-width: 0; line-height: 1.3; }
-    .race-sheet .race-done { display: none; } /* foot button is #race-done in .cp-foot */
     /* selected races as chips under the closed field (Other Cities summary feel) */
     .race-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
     .race-chips:empty { display: none; }
@@ -1487,20 +1481,19 @@
 
     /* K5 Religion / Income / Degree selects (k12 @74e0c9f) */
     .k5-sel { position: relative; }
-    .k5-sel select.field-input { padding-right: 34px; cursor: pointer; font-size: 14px; }
     .k5-caret { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--muted); pointer-events: none; }
-    /* p4: paired I AM A | NAME row - long answers ellipsize on one line */
+    /* s3c: paired I AM A | NAME row - long answers ellipsize on one line */
     #who-gn-row.cr-both .who-cond-txt { min-width: 0; }
     #who-gn-row.cr-both .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
-    /* p4: collapsed Location never wraps (e.g. "San Francisco, CA"); one line + ellipsis like every other collapsed input */
+    /* s3d: collapsed Location never wraps (e.g. "San Francisco, CA"); one line + ellipsis like every other collapsed input */
     #who-dl-row .who-unit.collapsed .who-cond-txt { min-width: 0; }
     #who-dl-row .who-unit.collapsed .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
-    /* p4: paired RELIGION | INCOME - one line + ellipsis, same height as other collapsed inputs */
+    /* s3e: paired RELIGION | INCOME - one line + ellipsis, same height as other collapsed inputs */
     #who-rd-row .who-unit.collapsed .who-cond-txt, #who-ip-row .who-unit.collapsed .who-cond-txt { min-width: 0; }
     #who-rd-row .who-unit.collapsed .who-cond-v, #who-ip-row .who-unit.collapsed .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
-    /* ==== p4 UNIVERSAL SPACING: the same values on every form screen (Who You Are, Your Partner, What You Want,
+    /* ==== s3g UNIVERSAL SPACING: the same values on every form screen (Who You Are, Your Partner, What You Want,
        Your Relationship, Intentions & Family, Text Me, Public Self). Change them here only. ==== */
-    :root { --u-top: 16px; --u-label: 12px; --u-head: 16px; --u-row: 10px; --u-gut: 10px; --u-bot: 0px; --u-next-top: 8px; --u-lab-fs: 10px; --u-val-fs: 13px; }
+    :root { --u-top: 16px; --u-label: 12px; --u-head: 16px; --u-row: 10px; --u-gut: 10px; --u-bot: 0px; --u-next-top: 8px; --u-lab-fs: 10px; --u-val-fs: 13px; --u-pick-fs: 14px; --u-pick-py: 14px; --u-pick-px: 4px; --u-pick-dpx: 10px; --u-pick-h: 54px; }
     .screen:not(#screen-0):not(#screen-8) > .screen-content { padding-top: var(--u-top) !important; padding-bottom: var(--u-bot) !important; }
     .screen-content > .screen-label { margin-bottom: var(--u-label) !important; }
     .screen-content > .screen-headline { font-size: 52px !important; margin-bottom: var(--u-head) !important; }
@@ -1513,6 +1506,64 @@
     /* nothing extra under the last field: the Next bar's own top padding is the only gap */
     .screen-content > :last-child, #screen1-fields > :last-child { margin-bottom: 0 !important; }
     .bottom-action { padding-top: var(--u-next-top); }
+    /* s3j: Age + Height are condensed boxed sliders like Distance (K5). Gap between the slider boxes = shared --u-row. */
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-ranges .ww-age-group.k4-sl { margin-bottom: var(--u-row) !important; }
+    html.vk4 #screen-3 #ww-ranges .k4-sl .field-error:not(:empty) { margin-top: 2px; }
+    /* s3j: every box on What You Want is the same shared --u-row apart (Seeking, Partner city, Distance, Age, Height) */
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-loc #partner-location-field #vi-dist.k4-sl { margin-top: var(--u-row) !important; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #cities-single-section #ww-loc:not(.collapsed) { margin-bottom: var(--u-row) !important; }
+    /* s3k: Age / Partner Height rows ease in when revealed; last row has no bottom margin */
+    #screen-3 #ww-ranges > #ww-height { margin-bottom: 0 !important; }
+    @keyframes wwRowIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    #screen-3 #ww-age:not(.cr-later), #screen-3 #ww-height:not(.cr-later) { animation: wwRowIn .24s ease-out both; }
+    @media (prefers-reduced-motion: reduce) { #screen-3 #ww-age, #screen-3 #ww-height { animation: none !important; } }
+    /* s3l: ONE picker size on every screen. Selects: centred (as Who You Are always had); date pickers: left, 10px inset. Text inputs keep 16px (iOS zooms on focus below 16px). */
+    select.field-input { font-size: var(--u-pick-fs); padding: var(--u-pick-py) var(--u-pick-px); min-height: var(--u-pick-h); text-align: center; text-align-last: center; -webkit-text-align-last: center; cursor: pointer; }
+    input.field-input[data-pick="date"] { font-size: var(--u-pick-fs); padding: var(--u-pick-py) var(--u-pick-dpx); min-height: var(--u-pick-h); }
+    /* s3m: Partner city zip/city input is 13px display text while read-only (it can't take focus then); while editing it is 16px so iOS never zooms on focus. Line height pinned so the box doesn't grow. */
+    #vk-zip-box.editing .vk-zip-input { font-size: 16px; line-height: 18px; height: 18px; }
+
+    /* ===== s3p: consistency audit — one type scale =====
+       Bebas: 52 headlines, 22 main buttons + DONEs, 15 choice buttons.
+       Space Mono: 16 typing, 14 picked values / placeholders / options / suggestions, 13 collapsed values / slider readouts / checkbox text,
+       11 helper / hint / error / legal / subhead, 10 caps 1.5px labels / step / keys / sheet titles / EDIT. 0 letter-spacing on mixed case. */
+    .screen-label, .screen-label * { font-size: 10px !important; letter-spacing: 1.5px !important; }
+    .field-label, .who-cond-k, .cp-sheet-title, .cp-sec, .cp-k, .pc-half-k, .vi-extra-k, .cp-row-note, .pc-half-add-txt { font-size: 10px !important; letter-spacing: 1.5px !important; text-transform: uppercase; }
+    .who-cond-edit, .cp-edit, .wya-row-edit, .pc-half-edit, .wya-gps, #wya-gps-c { font-size: 10px !important; letter-spacing: 1.5px !important; text-transform: uppercase; }
+    .applying-badge, .applying-badge .change-link { font-size: 10px !important; letter-spacing: 1.5px !important; }
+    .field-label .lab-hint { font-size: 11px !important; letter-spacing: 0 !important; text-transform: none; color: var(--muted); font-weight: 400; margin-left: 2px; }
+    .field-input::placeholder, input::placeholder { font-size: 14px; letter-spacing: 0; }
+    .checkbox-label, .vk-cb-txt { font-size: 13px !important; letter-spacing: 0 !important; }
+    .field-error, .field-valid, .partner-notice, .screen-subhead, .legal-consent-text, .legal-consent-text a, .wya-city, #wya-city-c, .wya-cfoot .wya-city, .wya-ctip, .wya-mapfail, .wya-mapfail *, .zip-city-display { font-size: 11px !important; letter-spacing: 0 !important; }
+    .wya-opt, .vk2-opt, .partner-location-suggestions > *, .cp-row, .race-sheet .race-opt { font-size: 14px !important; letter-spacing: 0 !important; }
+    .linkedin-prefix-text { font-size: 14px !important; letter-spacing: 0 !important; }
+    .who-cond-v, .k4-val, .cp-sum { letter-spacing: 0 !important; }
+    /* Race box = the other pickers (same box, centred 14px text, grey '— Select —', no caret) */
+    button.field-input.race-select { font-size: var(--u-pick-fs); padding: var(--u-pick-py) var(--u-pick-px); min-height: var(--u-pick-h); justify-content: center; text-align: center; }
+    .race-select-text, .race-select-text.empty { font-size: var(--u-pick-fs) !important; letter-spacing: 0 !important; }
+    .race-select-text.empty { color: var(--muted); }
+    .wya-row-v, .wya-row-v.empty { font-size: 14px !important; letter-spacing: 0 !important; }
+    /* every empty select is grey (backup for the is-default class); the open list keeps normal option colours */
+    select.field-input:has(> option[value=""]:checked) { color: var(--muted); }
+    select.field-input option { color: var(--text); background: var(--bg, #0e0e0e); }
+    /* Your Partner Gender | Name row (same as Who You Are) */
+    #pt-gn-row.cr-both .who-cond-txt { min-width: 0; }
+    #pt-gn-row.cr-both .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+    /* one reveal fade on every one-at-a-time screen (Who You Are, Your Partner, What You Want, Your Relationship, Intentions & Family) */
+    #screen-1 .who-unit:not(.cr-later), #screen-2 .who-unit:not(.cr-later), #screen-3 .ww-unit:not(.cr-later), #screen-4 .who-unit:not(.cr-later), #screen-5 .who-unit:not(.cr-later) { animation: wwRowIn .24s ease-out both; }
+    /* EDIT sits in the same place everywhere: right edge, vertically centred (What You Want city boxes too) */
+    .cp-half-row .cp-field { position: relative; padding-right: 56px; }
+    .field-input.wya-rowbox { padding-right: 12px; }
+    .cp-half-row .cp-field .cp-top-line .cp-edit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); margin: 0; }
+    /* the distance label shows the whole city ('Distance from Austin, TX'), cut with an ellipsis if long */
+    #vi-dist-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* s3q: Location (map picker) row looks like the other rows: LOCATION key inside the box, 14px grey 'Tap to set on map', EDIT right */
+    html.wya-c #who-loc .wya-labrow { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
+    .field-input.wya-rowbox { padding: 7px 12px; min-height: 50px; box-sizing: border-box; }
+    .wya-row-txt { display: flex; flex-direction: column; min-width: 0; text-align: left; }
+    .wya-row-k { font-family: 'Space Mono', monospace; font-size: 10px !important; letter-spacing: 1.5px !important; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
+    .wya-row-v { line-height: 1.4; }
   </style>
 </head>
 <body class="landing-active">
@@ -1639,14 +1690,14 @@
       <div id="screen1-fields">
         <div class="cr-pair" id="who-gn-row"><!-- K5 who-gn-row: I am a | Name side by side once both are answered; Name stays full width while typed -->
         <div class="field-group who-unit" id="who-gender" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit I am a" onclick="crExpand('who-gender')"><span class="who-cond-txt"><span class="who-cond-k">I am a</span><span class="who-cond-v" id="who-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label">I AM A</label>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Gender" onclick="crExpand('who-gender')"><span class="who-cond-txt"><span class="who-cond-k">Gender</span><span class="who-cond-v" id="who-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label">Gender</label>
           <div class="toggle-group" style="margin-bottom:0;">
             <button class="toggle-btn" id="btn-gender-man" onclick="setGender('man')">MAN</button>
             <button class="toggle-btn" id="btn-gender-woman" onclick="setGender('woman')">WOMAN</button>
             <button class="toggle-btn" id="btn-gender-nonbinary" onclick="setGender('non-binary')">NON-BINARY</button>
           </div>
-          <div class="field-error" id="err-gender">Please select one</div>
+          <div class="field-error" id="err-gender">Required</div>
         </div>
         <div class="who-unit" id="who-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Name" onclick="crExpand('who-name')"><span class="who-cond-txt"><span class="who-cond-k">Name</span><span class="who-cond-v" id="who-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -1666,14 +1717,14 @@
           <div class="field-group who-unit" id="who-dob" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Date of birth" onclick="crExpand('who-dob')"><span class="who-cond-txt"><span class="who-cond-k">Date of birth</span><span class="who-cond-v" id="who-dob-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Date of birth</label>
-            <input class="field-input is-default" id="birthdate" type="date" autocomplete="bday" style="font-size:14px;padding:14px 10px;" value="1996-01-01">
+            <input class="field-input is-default" id="birthdate" type="date" autocomplete="bday" data-pick="date" value="1996-01-01">
             <div class="field-error" id="err-birthdate">Required</div>
           </div>
           <div class="field-group who-unit" id="who-loc" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Location" onclick="crExpand('who-loc')"><span class="who-cond-txt"><span class="who-cond-k">Location</span><span class="who-cond-v" id="who-loc-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <!-- MOCKUP_grokbot WYA: new location field. A = map pin (Use my location / drag / tap); B = zip or city box + "Use my location" link.
                  The old zip / international inputs stay in the page (hidden) so validation, height units and the payload keep working. -->
-            <div class="wya-labrow"><label class="field-label" id="wya-label" for="wya-q">Where you live</label><button type="button" class="wya-gps wya-opt-a" id="wya-gps-a" onclick="wyaLocate()"><span class="wya-gps-ic" aria-hidden="true"></span>USE MY LOCATION</button></div>
+            <div class="wya-labrow"><label class="field-label" id="wya-label" for="wya-q">Location</label><button type="button" class="wya-gps wya-opt-a" id="wya-gps-a" onclick="wyaLocate()"><span class="wya-gps-ic" aria-hidden="true"></span>USE MY LOCATION</button></div>
             <div class="wya-opt-a">
               <div class="wya-map-wrap">
                 <div id="wya-map" role="application" aria-label="Map: tap or drag the pin to where you live"></div>
@@ -1688,7 +1739,7 @@
               <div class="wya-under"><span class="wya-city" id="wya-city-b"></span><button type="button" class="wya-link" id="wya-gps-b" onclick="wyaLocate()">Use my location</button></div>
             </div>
             <div class="wya-opt-c">
-              <button type="button" class="field-input wya-rowbox" id="wya-row" aria-haspopup="dialog"><span class="wya-row-v empty" id="wya-row-v">Tap to set on map</span><span class="wya-row-edit" id="wya-row-edit">SET</span></button>
+              <button type="button" class="field-input wya-rowbox" id="wya-row" aria-haspopup="dialog" aria-label="Location: tap to set on map"><span class="wya-row-txt"><span class="wya-row-k">Location</span><span class="wya-row-v empty" id="wya-row-v">Tap to set on map</span></span><span class="wya-row-edit" id="wya-row-edit">EDIT</span></button>
             </div>
             <div class="wya-legacy" hidden>
             <label class="field-label" id="location-label">US Zip Code</label>
@@ -1699,7 +1750,7 @@
               <input class="field-input" id="intl_city_input" type="text" placeholder="e.g. London, Dubai, Toronto…" autocomplete="off" oninput="onIntlCityInput()" onfocus="onIntlCityInput()">
             </div>
             </div>
-            <div class="field-error" id="err-postal_code">Zip code required</div>
+            <div class="field-error" id="err-postal_code">Required</div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; min-height:18px;">
               <span id="zip-city-display" class="zip-city-display" style="display:none;"></span>
               <span id="location-city-confirmed" style="display:none; font-size:11px; color:var(--accent); font-family:'Space Mono',monospace; letter-spacing:0.04em;"></span>
@@ -1712,20 +1763,20 @@
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Height" onclick="crExpand('who-height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="who-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Height</label>
             <div id="height-us-wrap">
-              <select class="field-input is-default" id="height_ftin" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onHeightFtInChange()">
+              <select class="field-input is-default" id="height_ftin" onchange="onHeightFtInChange()">
                 <option value="">— Select —</option>
               </select>
             </div>
             <div id="height-cm-wrap" style="display:none;">
               <input class="field-input is-default" id="height_cm_input" type="number" inputmode="numeric" placeholder="cm" min="120" max="220" style="font-size:16px;padding:14px 8px;" onfocus="_cmFocus(this)" onblur="_cmBlur(this)" oninput="onHeightCmChange()">
             </div>
-            <div class="field-error" id="err-height">Please confirm your height</div>
+            <div class="field-error" id="err-height">Required</div>
           </div>
           <div class="field-group who-unit" id="who-race" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Race" onclick="crExpand('who-race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="who-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-            <label class="field-label" for="race">Race</label>
-            <button type="button" class="field-input race-select" id="race" aria-haspopup="true" aria-expanded="false" aria-controls="race-panel" onclick="toggleRacePanel()"><span class="race-select-text empty" id="race-select-text">— Select all —</span><span class="race-caret" aria-hidden="true">&#9662;</span></button>
-            <div class="field-error" id="err-race">Please make a selection</div>
+            <label class="field-label" for="race">Race <span class="lab-hint">(select all)</span></label>
+            <button type="button" class="field-input race-select" id="race" aria-haspopup="true" aria-expanded="false" aria-controls="race-panel" onclick="toggleRacePanel()"><span class="race-select-text empty" id="race-select-text">— Select —</span></button>
+            <div class="field-error" id="err-race">Required</div>
             <div class="race-chips" id="race-chips" aria-live="polite"></div>
           </div>
       </div>
@@ -1734,13 +1785,13 @@
           <div class="field-group who-unit" id="who-religion" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Religion" onclick="crExpand('who-religion')"><span class="who-cond-txt"><span class="who-cond-k">Religion</span><span class="who-cond-v" id="who-religion-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="religion">Religion</label>
-            <select class="field-input is-default" id="religion" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5ReligionPick(this)"><option value="">— Select —</option><option value="Agnostic">Agnostic</option><option value="Atheist">Atheist</option><option value="Buddhist">Buddhist</option><option value="Catholic">Catholic</option><option value="Christian">Christian</option><option value="Hindu">Hindu</option><option value="Jewish">Jewish</option><option value="Muslim">Muslim</option><option value="Sikh">Sikh</option><option value="Spiritual">Spiritual</option><option value="Other">Other</option><option value="None Stated">None Stated</option></select>
+            <select class="field-input is-default" id="religion" onchange="k5ReligionPick(this)"><option value="">— Select —</option><option value="Agnostic">Agnostic</option><option value="Atheist">Atheist</option><option value="Buddhist">Buddhist</option><option value="Catholic">Catholic</option><option value="Christian">Christian</option><option value="Hindu">Hindu</option><option value="Jewish">Jewish</option><option value="Muslim">Muslim</option><option value="Sikh">Sikh</option><option value="Spiritual">Spiritual</option><option value="Other">Other</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-religion">Required</div>
           </div>
           <!-- K5: own DEGREE. Production: nullable text column education (null = None Stated). -->
           <div class="field-group who-unit" id="who-degree" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Degree" onclick="crExpand('who-degree')"><span class="who-cond-txt"><span class="who-cond-k">Degree</span><span class="who-cond-v" id="who-degree-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="education">Degree</label>
-            <div class="k5-sel"><select class="field-input is-default" id="education"><option value="">None Stated</option><option value="high_school">High School/GED</option><option value="some_college">Some college</option><option value="associates">Associate's</option><option value="bachelors">Bachelor's</option><option value="masters">Master's</option><option value="doctorate">Doctorate</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
+            <select class="field-input is-default" id="education" onchange="k5DegreePick(this)"><option value="">— Select —</option><option value="high_school">High School/GED</option><option value="some_college">Some college</option><option value="associates">Associate's</option><option value="bachelors">Bachelor's</option><option value="masters">Master's</option><option value="doctorate">Doctorate</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-education">Required</div>
           </div>
           </div>
           <div class="cr-pair" id="who-ip-row"><!-- INCOME | POLITICS side by side once both are answered -->
@@ -1748,20 +1799,20 @@
           <div class="field-group who-unit" id="who-income" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="income_range">Income</label>
-            <div class="k5-sel"><select class="field-input" id="income_range" onchange="state.incomeRange = this.value || null; state.incomeTouched = true; crTap('who-income')"><option value="">None Stated</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option></select><span class="k5-caret" aria-hidden="true">&#9662;</span></div>
+            <select class="field-input is-default" id="income_range" onchange="k5IncomePick(this)"><option value="">— Select —</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-income_range">Required</div>
           </div>
           <!-- K5 (k12 who-politics) own POLITICS: K5 values Left-leaning / Moderate / Right-leaning / None Stated + Left and Right. Production: politics text, null for None Stated. -->
           <div class="field-group who-unit" id="who-politics" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Politics" onclick="crExpand('who-politics')"><span class="who-cond-txt"><span class="who-cond-k">Politics</span><span class="who-cond-v" id="who-politics-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="politics">Politics</label>
-            <select class="field-input is-default" id="politics" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="k5PoliticsPick(this)"><option value="">— Select —</option><option value="Left">Left</option><option value="Left-leaning">Left-leaning</option><option value="Moderate">Moderate</option><option value="Right-leaning">Right-leaning</option><option value="Right">Right</option><option value="Apolitical">Apolitical</option><option value="None Stated">None Stated</option></select>
+            <select class="field-input is-default" id="politics" onchange="k5PoliticsPick(this)"><option value="">— Select —</option><option value="Left">Left</option><option value="Left-leaning">Left-leaning</option><option value="Moderate">Moderate</option><option value="Right-leaning">Right-leaning</option><option value="Right">Right</option><option value="Apolitical">Apolitical</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-politics">Required</div>
           </div>
           </div>
           <div class="field-group who-unit" id="who-email" style="margin-bottom:12px;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Email" onclick="crExpand('who-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="who-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label">Email</label>
-            <input class="field-input" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-            <div class="field-error" id="err-email">Valid email required</div>
+            <input class="field-input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
+            <div class="field-error" id="err-email">Required</div>
           </div>
       </div>
       <div id="under18-msg">
@@ -1783,93 +1834,87 @@
     <div class="screen-content">
       <div class="screen-label">Step <span id="partner-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">YOUR <span class="accent">PARTNER</span></div>
-      <div class="field-group who-unit" id="pt-gender" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner is a" onclick="crExpand('pt-gender')"><span class="who-cond-txt"><span class="who-cond-k">Partner is a</span><span class="who-cond-v" id="pt-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-        <label class="field-label">My partner is a</label>
+      <div class="cr-pair" id="pt-gn-row"><!-- s3p: Gender | Name side by side once both are answered (same as Who You Are) -->
+      <div class="field-group who-unit" id="pt-gender" style="margin-bottom:0;min-width:0;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner gender" onclick="crExpand('pt-gender')"><span class="who-cond-txt"><span class="who-cond-k">Gender</span><span class="who-cond-v" id="pt-gender-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <label class="field-label">Gender</label>
         <div class="toggle-group" style="margin-bottom:0;">
           <button class="toggle-btn" id="btn-pgender-man" onclick="setPartnerGender('man')">MAN</button>
           <button class="toggle-btn" id="btn-pgender-woman" onclick="setPartnerGender('woman')">WOMAN</button>
           <button class="toggle-btn" id="btn-pgender-nonbinary" onclick="setPartnerGender('non-binary')">NON-BINARY</button>
         </div>
-        <div class="field-error" id="err-partner_gender">Please select one</div>
+        <div class="field-error" id="err-partner_gender">Required</div>
       </div>
-      <div class="who-unit" id="pt-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner" onclick="crExpand('pt-name')"><span class="who-cond-txt"><span class="who-cond-k">Partner</span><span class="who-cond-v" id="pt-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+      <div class="who-unit" id="pt-name" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0;min-width:0;">
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner name" onclick="crExpand('pt-name')"><span class="who-cond-txt"><span class="who-cond-k">Name</span><span class="who-cond-v" id="pt-name-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" style="margin-bottom:0;min-width:0;">
-          <label class="field-label" for="partner_first_name">Their first name</label>
+          <label class="field-label" for="partner_first_name">First name</label>
           <input class="field-input" id="partner_first_name" type="text" placeholder="First name" autocomplete="off">
           <div class="field-error" id="err-partner_first_name">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0;min-width:0;">
-          <label class="field-label" for="partner_last_name">Their last name</label>
+          <label class="field-label" for="partner_last_name">Last name</label>
           <input class="field-input" id="partner_last_name" type="text" placeholder="Last name" autocomplete="off">
+          <div class="field-error" id="err-partner_last_name">Required</div>
         </div>
       </div>
+      </div>
       <div class="field-group who-unit" id="pt-bday" style="margin-bottom:12px;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their birthday" onclick="crExpand('pt-bday')"><span class="who-cond-txt"><span class="who-cond-k">Their birthday</span><span class="who-cond-v" id="pt-bday-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label" for="partner_birthday">Their birthday</label>
-          <input class="field-input is-default" id="partner_birthday" type="date" value="1990-01-01" style="font-size:14px;padding:14px 10px;">
-          <div class="field-error" id="err-partner_birthday">Please confirm their birthday</div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner birthday" onclick="crExpand('pt-bday')"><span class="who-cond-txt"><span class="who-cond-k">Birthday</span><span class="who-cond-v" id="pt-bday-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_birthday">Birthday</label>
+          <input class="field-input is-default" id="partner_birthday" type="date" value="1990-01-01" data-pick="date">
+          <div class="field-error" id="err-partner_birthday">Required</div>
       </div>
       <div class="cr-pair" id="pt-row-hr">
         <div class="field-group who-unit" id="pt-height" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their height" onclick="crExpand('pt-height')"><span class="who-cond-txt"><span class="who-cond-k">Their height</span><span class="who-cond-v" id="pt-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label" for="partner_height">Their height</label>
-          <select class="field-input is-default" id="partner_height" style="font-size:14px;padding:14px 4px;text-align:center;text-align-last:center;-webkit-text-align-last:center;" onchange="onPartnerHeightChange()">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner height" onclick="crExpand('pt-height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="pt-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_height">Height</label>
+          <select class="field-input is-default" id="partner_height" onchange="onPartnerHeightChange()">
             <option value="">— Select —</option>
           </select>
-          <div class="field-error" id="err-partner_height">Please confirm their height</div>
+          <div class="field-error" id="err-partner_height">Required</div>
         </div>
         <div class="field-group who-unit" id="pt-race" style="margin-bottom:0;min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their race" onclick="crExpand('pt-race')"><span class="who-cond-txt"><span class="who-cond-k">Their race</span><span class="who-cond-v" id="pt-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label" for="partner_race">Their race</label>
-          <button type="button" class="field-input race-select" id="partner_race" aria-haspopup="true" aria-expanded="false" aria-controls="partner-race-panel" onclick="togglePartnerRacePanel()"><span class="race-select-text empty" id="partner-race-select-text">— Select all —</span><span class="race-caret" aria-hidden="true">&#9662;</span></button>
-          <div class="field-error" id="err-partner_race">Please make a selection</div>
-        </div>
-        <div class="race-panel" id="partner-race-panel" role="group" aria-label="Their race (select all that apply)">
-          <button type="button" class="race-opt" id="btn-prace-7" data-race="White" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">White</span></button>
-          <button type="button" class="race-opt" id="btn-prace-2" data-race="Black" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
-          <button type="button" class="race-opt" id="btn-prace-0" data-race="Asian" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
-          <button type="button" class="race-opt" id="btn-prace-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
-          <button type="button" class="race-opt" id="btn-prace-1" data-race="South Asian" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
-          <button type="button" class="race-opt" id="btn-prace-4" data-race="MENA" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
-          <button type="button" class="race-opt" id="btn-prace-6" data-race="Pacific Islander" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
-          <button type="button" class="race-opt" id="btn-prace-5" data-race="Native American" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
-          <button type="button" class="race-opt" id="btn-prace-8" data-race="Other" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
-          <button type="button" class="race-opt" id="btn-prace-9" data-race="Prefer not to say" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Prefer not to say</span></button>
-          <button type="button" class="race-done" id="partner-race-done" onclick="closePartnerRacePanel()">DONE</button>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner race" onclick="crExpand('pt-race')"><span class="who-cond-txt"><span class="who-cond-k">Race</span><span class="who-cond-v" id="pt-race-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_race">Race <span class="lab-hint">(select all)</span></label>
+          <button type="button" class="field-input race-select" id="partner_race" aria-haspopup="true" aria-expanded="false" aria-controls="partner-race-panel" onclick="togglePartnerRacePanel()"><span class="race-select-text empty" id="partner-race-select-text">— Select —</span></button>
+          <div class="field-error" id="err-partner_race">Required</div>
+          <div class="race-chips" id="partner-race-chips" aria-live="polite"></div>
         </div>
       </div>
       <div class="field-group who-unit" id="pt-email" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their email" onclick="crExpand('pt-email')"><span class="who-cond-txt"><span class="who-cond-k">Their email</span><span class="who-cond-v" id="pt-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-        <label class="field-label" for="partner_email">Their email</label>
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner email" onclick="crExpand('pt-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="pt-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <label class="field-label" for="partner_email">Email</label>
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
-        <div class="field-error" id="err-partner_email">Valid email required</div>
+        <div class="field-error" id="err-partner_email">Required</div>
         <p class="partner-notice">We'll link your accounts this way</p>
       </div>
       <div class="cr-pair cr-stack" id="pt-row-lc">
         <div class="field-group who-unit" id="pt-live" style="margin-bottom:0;min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Live together" onclick="crExpand('pt-live')"><span class="who-cond-txt"><span class="who-cond-k">Live together</span><span class="who-cond-v" id="pt-live-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label">Do you live together?</label>
+          <label class="field-label">Live together</label>
           <div class="toggle-group" style="margin-bottom:0;">
             <button class="toggle-btn" id="btn-lives-yes" onclick="setLivesWithPartner('yes', true)">YES</button>
             <button class="toggle-btn" id="btn-lives-no" onclick="setLivesWithPartner('no', true)">NO</button>
             <button class="toggle-btn" id="btn-lives-parttime" onclick="setLivesWithPartner('part_time', true)">PART-TIME</button>
           </div>
+          <div class="field-error" id="err-lives_with_partner">Required</div>
         </div>
         <div class="field-group who-unit" id="pt-moved" style="margin-bottom:0;min-width:0;display:none;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Moved in date" onclick="crExpand('pt-moved')"><span class="who-cond-txt"><span class="who-cond-k">Moved in date</span><span class="who-cond-v" id="pt-moved-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label" for="moved_in_date">When did you move in together?</label>
-          <input class="field-input" id="moved_in_date" type="date" style="font-size:14px;padding:14px 10px;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Moved in" onclick="crExpand('pt-moved')"><span class="who-cond-txt"><span class="who-cond-k">Moved in</span><span class="who-cond-v" id="pt-moved-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="moved_in_date">Moved in</label>
+          <input class="field-input" id="moved_in_date" type="date" data-pick="date">
+          <div class="field-error" id="err-moved_in_date">Required</div>
         </div>
         <div class="field-group who-unit" id="pt-city" style="margin-bottom:0;min-width:0;display:none;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Lives in" onclick="crExpand('pt-city')"><span class="who-cond-txt"><span class="who-cond-k">Lives in</span><span class="who-cond-v" id="pt-city-v"></span></span><span class="who-cond-edit">EDIT</span></div>
-          <label class="field-label" for="partner_city_input">Where does your partner live?</label>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Their city" onclick="crExpand('pt-city')"><span class="who-cond-txt"><span class="who-cond-k">Their city</span><span class="who-cond-v" id="pt-city-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_city_input">Their city</label>
           <div id="partner-city-chips" class="partner-location-chips"></div>
           <div class="city-add-row" id="partner-city-add-row">
-            <input class="field-input city-add-input" id="partner_city_input" type="text" placeholder="Type a city and press Enter" autocomplete="off" enterkeyhint="done">
+            <input class="field-input city-add-input" id="partner_city_input" type="text" placeholder="Zip or city" autocomplete="off" enterkeyhint="done">
             <button type="button" class="city-add-btn" id="partner-city-add-btn">Add</button>
           </div>
+          <div class="field-error" id="err-partner_city">Required</div>
         </div>
       </div>
     </div>
@@ -1905,7 +1950,7 @@
             <button class="toggle-btn" id="btn-seek-women" onclick="setGenderSeeking('women'); crTap('ww-seek')">WOMEN</button>
             <button class="toggle-btn" id="btn-seek-both" onclick="setGenderSeeking('both'); crTap('ww-seek')">BOTH</button>
           </div>
-          <div class="field-error" id="err-gender_seeking"></div>
+          <div class="field-error" id="err-gender_seeking">Required</div>
         </div>
         </div>
         <!-- PARTNER LOCATION (2026-09-27q: stays open, never auto-collapses; relocate checkbox relabelled, still saves open_to_anywhere) (2026-09-27p): "Partner city" is one primary city (defaults to the zip's city; "Change" swaps it with a
@@ -1923,7 +1968,7 @@
                Right = OTHER CITIES (extra cities, independent of the zip); hidden until there are some, so the left box is full width. -->
           <div class="cp-half-row vk-row solo" id="vk-row">
             <div class="cp-field" id="vk-zip-box" role="button" tabindex="0" aria-label="Change partner city: zip, postcode or city name">
-              <span class="cp-line cp-top-line"><label class="field-label cp-k" for="vk-zip-input">Partner city</label><span class="cp-edit" id="vk-zip-edit">CHANGE</span></span>
+              <span class="cp-line cp-top-line"><label class="field-label cp-k" for="vk-zip-input">Partner city</label><span class="cp-edit" id="vk-zip-edit">EDIT</span></span>
               <!-- The zip digits are an input styled as the text itself (read-only until CHANGE), so editing happens in place: same line, same box height, city stays beside it. -->
               <span class="cp-sum vk-zip-line" id="vk-zip-val"><input class="vk-zip-input" id="vk-zip-input" type="text" inputmode="text" maxlength="40" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Zip or city" role="combobox" aria-autocomplete="list" aria-controls="vk2-sug" aria-expanded="false" aria-label="Partner city: zip, postcode or city name" readonly tabindex="-1"><span class="vk-zip-city" id="vk-zip-city"></span></span>
             </div>
@@ -1945,7 +1990,7 @@
             <button type="button" class="pc-half pc-half-add" id="partner-location-add-more" aria-label="Add cities"><span class="pc-half-add-txt">+ Add cities</span></button>
           </div>
           <div id="pc-primary-slot"></div>
-          <div class="field-error" id="err-partner_location"></div>
+          <div class="field-error" id="err-partner_location">Required</div>
           <!-- MOCKUP_grokbot I: distance from the partner city (0-300 mi, default 300); the label is the live readout. -->
           <div class="field-group vi-dist" id="vi-dist">
             <label class="field-label" id="vi-dist-label" for="vi_dist_mi">Distance from 78704</label>
@@ -1959,7 +2004,7 @@
           <div class="pc-extra" id="pc-extra">
             <div id="partner-location-chips" class="pc-tags"></div>
             <div id="pc-extra-slot"><div id="pc-picker" hidden>
-              <input class="field-input" id="partner-location-input" type="text" placeholder="Type a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="partner-location-suggestions" aria-expanded="false">
+              <input class="field-input" id="partner-location-input" type="text" placeholder="Zip or city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="partner-location-suggestions" aria-expanded="false">
               <div id="partner-location-suggestions" class="partner-location-suggestions" role="listbox" aria-label="City suggestions" hidden></div>
             </div></div>
             <label class="partner-location-anywhere" for="partner-location-anywhere">
@@ -1971,10 +2016,10 @@
         </div>
         </div>
         <!-- AGE RANGE + PARTNER HEIGHT: shown together and never collapsed (untouched defaults are saved). -->
-        <div class="who-unit ww-unit" id="ww-ranges">
+        <div id="ww-ranges"><!-- s3k: Age and Partner Height are separate one-at-a-time steps -->
         <!-- AGE RANGE SLIDER -->
-        <div class="field-group ww-age-group" style="margin-bottom:8px;">
-          <label class="field-label">Age Range</label>
+        <div class="field-group ww-age-group who-unit ww-unit" id="ww-age" style="margin-bottom:8px;">
+          <label class="field-label">Age</label>
           <div class="range-slider-wrap">
             <div class="range-track"></div>
             <div class="range-fill" id="range-fill"></div>
@@ -1983,16 +2028,16 @@
             <input type="range" id="age_min" class="range-input" min="21" max="80" step="1" value="28" onpointerdown="touchAgeRange()" onkeydown="touchAgeRange()" oninput="onAgeRangeInput(this,'min')">
             <input type="range" id="age_max" class="range-input" min="21" max="80" step="1" value="38" onpointerdown="touchAgeRange()" onkeydown="touchAgeRange()" oninput="onAgeRangeInput(this,'max')">
           </div>
-          <div class="field-error" id="err-age_range"></div>
+          <div class="field-error" id="err-age_range">Required</div>
         </div>
         <!-- HEIGHT PREFERENCE SLIDER -->
-        <div class="field-group" style="margin-bottom:0;">
-          <label class="field-label">Partner Height</label>
+        <div class="field-group ww-height-group who-unit ww-unit" id="ww-height" style="margin-bottom:0;">
+          <label class="field-label">Height</label>
           <div class="range-slider-wrap">
             <div class="range-track"></div>
             <div class="range-fill" id="height-range-fill"></div>
-            <span id="height_min_label" class="slider-bubble">5'0"</span>
-            <span id="height_max_label" class="slider-bubble">6'6"</span>
+            <span id="height_min_label" class="slider-bubble">5’0”</span>
+            <span id="height_max_label" class="slider-bubble">6’6”</span>
             <input type="range" id="height_min_in" class="range-input" min="58" max="84" step="1" value="60" onpointerdown="touchHeightPref()" onkeydown="touchHeightPref()" oninput="onHeightRangeInput(this,'min')">
             <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" onpointerdown="touchHeightPref()" onkeydown="touchHeightPref()" oninput="onHeightRangeInput(this,'max')">
           </div>
@@ -2025,42 +2070,46 @@
             <option value="married">Married</option>
             <option value="domestic_partnership">Domestic partnership</option>
           </select>
-          <div class="field-error" id="err-relationship_stage">Please select a stage</div>
+          <div class="field-error" id="err-relationship_stage">Required</div>
         </div>
       </div>
       <div class="who-unit" id="rel-first" style="margin-bottom:12px;">
         <div class="who-cond" role="button" tabindex="0" aria-label="Edit First date" onclick="crExpand('rel-first')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-first-k">First date</span><span class="who-cond-v" id="rel-first-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" style="margin-bottom:0;">
           <label class="field-label" for="first_date">First date</label>
-          <input class="field-input" id="first_date" type="date" style="font-size:14px;padding:14px 10px;">
+          <input class="field-input" id="first_date" type="date" data-pick="date">
+            <div class="field-error" id="err-first_date">Required</div>
         </div>
       </div>
       <div class="cr-pair" id="rel-dates-row">
         <div class="who-unit" id="rel-eng" style="min-width:0;display:none;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Engagement date" onclick="crExpand('rel-eng')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-eng-k">Engagement date</span><span class="who-cond-v" id="rel-eng-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Engagement date" onclick="crExpand('rel-eng')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-eng-k">Engaged</span><span class="who-cond-v" id="rel-eng-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="engagement-date-field" style="min-width:0;margin-bottom:0;">
             <label class="field-label" for="engagement_date">Engagement date</label>
-            <input class="field-input" id="engagement_date" type="date" style="font-size:14px;padding:14px 10px;">
+            <input class="field-input" id="engagement_date" type="date" data-pick="date">
+            <div class="field-error" id="err-engagement_date">Required</div>
           </div>
         </div>
         <div class="who-unit" id="rel-wed" style="min-width:0;display:none;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Wedding date" onclick="crExpand('rel-wed')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-wed-k">Wedding date</span><span class="who-cond-v" id="rel-wed-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Wedding date" onclick="crExpand('rel-wed')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-wed-k">Wedding</span><span class="who-cond-v" id="rel-wed-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="wedding-date-field" style="min-width:0;margin-bottom:0;">
             <label class="field-label" for="wedding_date">Wedding date</label>
-            <input class="field-input" id="wedding_date" type="date" style="font-size:14px;padding:14px 10px;">
+            <input class="field-input" id="wedding_date" type="date" data-pick="date">
+            <div class="field-error" id="err-wedding_date">Required</div>
           </div>
         </div>
       </div>
       <div class="who-unit" id="rel-mb" style="margin-bottom:12px;">
         <div class="who-cond" role="button" tabindex="0" aria-label="Edit Married before" onclick="crExpand('rel-mb')"><span class="who-cond-txt"><span class="who-cond-k" id="rel-mb-k">Married before</span><span class="who-cond-v" id="rel-mb-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" id="married-before-group" style="margin-bottom:0;">
-          <label class="field-label">Have either of you been married before?</label>
+          <label class="field-label">Married before</label>
           <div class="toggle-group" style="margin-bottom:0;">
             <button class="toggle-btn" id="btn-mb-neither" onclick="setMarriedBefore('neither')">NEITHER</button>
             <button class="toggle-btn" id="btn-mb-me" onclick="setMarriedBefore('me')">ME</button>
             <button class="toggle-btn" id="btn-mb-partner" onclick="setMarriedBefore('partner')">MY PARTNER</button>
             <button class="toggle-btn" id="btn-mb-both" onclick="setMarriedBefore('both')">BOTH</button>
           </div>
+          <div class="field-error" id="err-married_before">Required</div>
         </div>
       </div>
     </div>
@@ -2083,7 +2132,7 @@
       <div class="who-unit fam-unit" id="fam-lf" style="margin-bottom:12px;">
         <div class="who-cond" role="button" tabindex="0" aria-label="Edit Looking for" onclick="crExpand('fam-lf')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-lf-k">Looking for</span><span class="who-cond-v" id="fam-lf-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" id="looking-for-group" style="margin-bottom:0;">
-          <label class="field-label">Looking for (select all that apply):</label>
+          <label class="field-label">Looking for <span class="lab-hint">(select all)</span></label>
           <div class="choice-grid" id="looking_for" role="group" aria-label="Looking for">
             <button type="button" class="toggle-btn" id="btn-looking-casual" aria-pressed="false" onclick="toggleLookingFor('casual')">Casual</button>
             <button type="button" class="toggle-btn" id="btn-looking-dating" aria-pressed="false" onclick="toggleLookingFor('dating')">Dating</button>
@@ -2091,15 +2140,15 @@
             <button type="button" class="toggle-btn" id="btn-looking-marriage" aria-pressed="false" onclick="toggleLookingFor('marriage')">Marriage</button>
             <button type="button" class="toggle-btn" id="btn-looking-life_partner" aria-pressed="false" onclick="toggleLookingFor('life_partner')">Life partner</button>
           </div>
-          <div class="field-error" id="err-looking_for">Please make a selection</div>
+          <div class="field-error" id="err-looking_for">Required</div>
         </div>
       </div>
       <!-- Singles: timeline + have kids. Couples: have kids + how many. -->
       <div class="cr-pair cr-stack" id="fam-row-kids">
         <div class="who-unit fam-unit" id="fam-tl" style="min-width:0;">
-          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner timing" onclick="crExpand('fam-tl')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-tl-k">Partner timing</span><span class="who-cond-v" id="fam-tl-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner timing" onclick="crExpand('fam-tl')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-tl-k">Timeline</span><span class="who-cond-v" id="fam-tl-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="relationship-timeline-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" id="timeline-label" for="relationship_timeline">Ideal timeline for a relationship?</label>
+            <label class="field-label" id="timeline-label" for="relationship_timeline">Partner timing</label>
             <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
@@ -2108,25 +2157,25 @@
               <option value="12_months">Next 12 months</option>
               <option value="no_timeline">No timeline</option>
             </select>
-            <div class="field-error" id="err-relationship_timeline">Please make a selection</div>
+            <div class="field-error" id="err-relationship_timeline">Required</div>
           </div>
         </div>
         <div class="who-unit fam-unit" id="fam-hk" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('fam-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-hk-k">Have kids</span><span class="who-cond-v" id="fam-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="has-children-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" for="has_children_select">Do you have kids?</label>
+            <label class="field-label" for="has_children_select">Have kids</label>
             <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
-            <div class="field-error" id="err-has_children">Please make a selection</div>
+            <div class="field-error" id="err-has_children">Required</div>
           </div>
         </div>
         <div class="who-unit fam-unit" id="fam-nk" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit How many" onclick="crExpand('fam-nk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-nk-k">How many</span><span class="who-cond-v" id="fam-nk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" for="num_children_select">How many kids do you have?</label>
+            <label class="field-label" for="num_children_select">How many</label>
             <select class="field-input" id="num_children_select" onchange="setNumChildren(this.value)">
               <option value="">— Select —</option>
               <option value="1">1</option>
@@ -2135,6 +2184,7 @@
               <option value="4">4</option>
               <option value="5+">5+</option>
             </select>
+            <div class="field-error" id="err-num_children">Required</div>
           </div>
         </div>
       </div>
@@ -2142,7 +2192,7 @@
         <div class="who-unit fam-unit" id="fam-wk" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('fam-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-wk-k">Want kids</span><span class="who-cond-v" id="fam-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="wants-children-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" id="wants-children-label" for="wants_children_select">Do you want kids?</label>
+            <label class="field-label" id="wants-children-label" for="wants_children_select">Want kids</label>
             <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
@@ -2150,37 +2200,37 @@
               <option value="open_either_way">Open to either</option>
               <option value="not_sure">Unsure</option>
             </select>
-            <div class="field-error" id="err-wants_children">Please make a selection</div>
+            <div class="field-error" id="err-wants_children">Required</div>
           </div>
         </div>
         <div class="who-unit fam-unit" id="fam-kt" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Kids timing" onclick="crExpand('fam-kt')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-kt-k">Kids timing</span><span class="who-cond-v" id="fam-kt-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" for="kids_timeline_select">Ideal timeline for kids?</label>
+            <label class="field-label" for="kids_timeline_select">Kids timing</label>
             <select class="field-input" id="kids_timeline_select" onchange="setKidsTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
               <option value="1_2_years">2 years</option>
-              <option value="3_4_years">3-4 years</option>
-              <option value="5_10_years">5-10 years</option>
+              <option value="3_4_years">3–4 years</option>
+              <option value="5_10_years">5–10 years</option>
               <option value="10_plus_years">10+ years</option>
               <option value="no_timeline">No timeline</option>
             </select>
-            <div class="field-error" id="err-kids_timeline">Please make a selection</div>
+            <div class="field-error" id="err-kids_timeline">Required</div>
           </div>
         </div>
       </div>
         <div class="who-unit fam-unit" id="fam-fert" style="margin-bottom:12px;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Fertility preservation" onclick="crExpand('fam-fert')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-fert-k">Fertility preservation</span><span class="who-cond-v" id="fam-fert-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="fertility-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" for="fertility_select">Did you invest in fertility preservation?</label>
+            <label class="field-label" for="fertility_select">Fertility preservation</label>
             <select class="field-input" id="fertility_select" onchange="setFertility(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
               <option value="considering">Considering</option>
             </select>
-            <div class="field-error" id="err-fertility">Please make a selection</div>
+            <div class="field-error" id="err-fertility">Required</div>
           </div>
         </div>
     </div>
@@ -2198,9 +2248,9 @@
       <div class="screen-label">Step <span id="contact-step-num"></span> of <span class="step-total"></span></div>
       <div class="screen-headline">WE'LL TEXT YOU<br>WHEN WE'RE <span class="accent">LIVE</span></div>
       <div class="field-group">
-        <label class="field-label">Phone number</label>
+        <label class="field-label">Phone</label>
         <input class="field-input" id="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" oninput="onPhoneInput()">
-        <div class="field-error" id="err-phone">Please enter your phone number so we can text you when it's live</div>
+        <div class="field-error" id="err-phone">Required</div>
       </div>
       <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
         <input type="checkbox" id="sms_consent" disabled>
@@ -2227,7 +2277,7 @@
           <span class="linkedin-prefix-text">linkedin.com/in/</span>
           <input class="linkedin-username-input" id="linkedin_username" type="text" placeholder="yourname" autocomplete="off" oninput="validateLinkedInInline()">
         </div>
-        <div class="field-error" id="err-linkedin_username">LinkedIn username required</div>
+        <div class="field-error" id="err-linkedin_username">Required</div>
         <div class="field-valid" id="ok-linkedin_username">✓ Looks good</div>
       </div>
       <div class="field-group">
@@ -2255,7 +2305,7 @@
     <div class="screen-content" style="padding-top:48px;">
       <div class="screen-label">APPLICATION RECEIVED</div>
       <div class="subject-number" id="confirm-subject-num">#00001</div>
-      <div class="subject-label">YOUR SUBJECT NUMBER</div>
+      <div class="subject-label">APPLICATION NUMBER</div>
       <p class="confirm-priority">Applications are reviewed in the order they're received. The earlier you applied, the higher your priority for Cohort 01.</p>
       <div class="confirm-text" id="confirm-text"></div>
       <div class="recruit-section" id="recruit-single">
@@ -2348,7 +2398,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-05p4';
+var PAGE_VERSION = '2026-10-05p5';
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2435,7 +2485,7 @@ const state = {
   numChildren: null, // couples: "How many kids do you have?" (1-4, 5+), only when they have kids
   lookingFor: [],
   race: [], // Race labels in the order picked (WHO YOU ARE)
-  religion: null, incomeRange: null, incomeTouched: false, education: null, educationTouched: false, politics: null, // K5 own Religion / Income / Degree
+  religion: null, incomeRange: null, education: null, politics: null, // K5 own Religion / Income / Degree
   relationshipTimeline: null,
   turnstileToken: null,
   submitting: false,
@@ -2464,7 +2514,7 @@ const state = {
   partnerRace: [], // Their race labels in the order picked (YOUR PARTNER, couples)
   partnerBdayTouched: false,
   partnerHeightTouched: false,
-  ageRangeTouched: false,
+  ageRangeTouched: false, wwDistTouched: false, wwAgeShown: false, wwHeightShown: false, // s3k reveal
   heightPrefTouched: false,
 };
 let partnerCity = null;
@@ -2794,7 +2844,7 @@ function showScreen(id, direction) {
   }
 
   if (id === 1) { _buildHeightSelect(); }
-  if (id === 2) { _buildHeightSelect('partner_height'); _partnerHeightDefault(); }
+  if (id === 2) { _buildHeightSelect('partner_height'); _partnerHeightDefault(); _syncPartnerHeightUnit(); }
   if (id === 5) {
     // Couples: "Family & Intentions", answered for yourself. Singles unchanged.
     const couple = state.status === 'partnered';
@@ -2824,7 +2874,7 @@ function renderBadge(screenId) {
   const el = document.getElementById('badge-' + screenId);
   if (!el) return;
   const label = state.status === 'partnered' ? 'Couple' : 'Single';
-  el.innerHTML = `Applying as: <strong>${label}</strong> &nbsp;·&nbsp; <button class="change-link" onclick="changeStatus()">change</button>`;
+  el.innerHTML = `Applying as: <strong>${label}</strong> &nbsp;·&nbsp; <button class="change-link" onclick="changeStatus()">edit</button>`;
 }
 
 function renderProgress(screenId) {
@@ -3010,6 +3060,7 @@ async function saveLead() {
     ...partnerDistancePayload(),
     ...wyaPayload(),
     ...k5WhoExtraPayload(),
+    ...devicePayload(), // s3n: proposed columns (not in the DB yet; the edge functions ignore unknown keys)
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -3026,7 +3077,7 @@ async function saveLead() {
     looking_for: lookingForPayload(),
     relationship_timeline: relationshipTimelinePayload(),
     phone: get('phone'),
-    sms_consent: document.getElementById('sms_consent')?.checked || null,
+    sms_consent: !!document.getElementById('sms_consent')?.checked, // s3p: unchecked = false
     linkedin_username: get('linkedin_username'),
     instagram: get('instagram'),
     x_handle: get('x_handle'),
@@ -3131,7 +3182,6 @@ function _syncDefaultStyles() {
   set('height_cm_input', !state.heightTouched);
   set('partner_birthday', !state.partnerBdayTouched);
   set('partner_height', !state.partnerHeightTouched);
-  set('education', !state.educationTouched); // K5: Degree's "None Stated" stays grey until tapped
 }
 function _touchHeight() {
   const inUs = state.locationMode === 'zip';
@@ -3206,6 +3256,7 @@ function fertilityPayload() { return state.status === 'partnered' ? null : (stat
 function setNumChildren(val) {
   state.numChildren = val || null;
   const el = document.getElementById('num_children_select'); if (el) el.value = val || '';
+  if (val) hideError('num_children');
   syncFamilyDrip();
   crTap('fam-nk');
 }
@@ -3305,8 +3356,8 @@ function syncFamilyDrip() {
   const tlSel = document.getElementById('relationship_timeline');
   if (tlSel) {
     const MARRIAGE_OPTS = [
-      {v:'asap',t:'ASAP'},{v:'6_12_months',t:'6-12 months'},{v:'1_2_years',t:'1-2 years'},
-      {v:'3_5_years',t:'3-5 years'},{v:'5_10_years',t:'5-10 years'},{v:'10_plus_years',t:'10+ years'},
+      {v:'asap',t:'ASAP'},{v:'6_12_months',t:'6–12 months'},{v:'1_2_years',t:'1–2 years'},
+      {v:'3_5_years',t:'3–5 years'},{v:'5_10_years',t:'5–10 years'},{v:'10_plus_years',t:'10+ years'},
       {v:'no_timeline',t:'No timeline'}
     ];
     const DATING_OPTS = [{v:'asap',t:'ASAP'},{v:'3_months',t:'Next 3 months'},{v:'6_months',t:'Next 6 months'},{v:'12_months',t:'Next 12 months'},{v:'no_timeline',t:'No timeline'}];
@@ -3364,9 +3415,9 @@ function syncFamilyDrip() {
   if (hasKidsDone) hideError('has_children');
 
   const tlLabel = document.getElementById('timeline-label');
-  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
+  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Marriage timing' : _datingOnly ? 'Dating timing' : 'Partner timing';
   const wkLabel = document.getElementById('wants-children-label');
-  if (wkLabel) wkLabel.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
+  if (wkLabel) wkLabel.textContent = state.hasChildren === true ? 'Want more kids' : 'Want kids';
   crRefresh();
 }
 
@@ -3391,6 +3442,7 @@ function validateLinkedInInline() {
   const wrap = document.getElementById('linkedin-wrap');
   if (!val) { errEl.classList.remove('visible'); okEl.classList.remove('visible'); wrap.classList.remove('error'); return; }
   const valid = /^[a-zA-Z0-9\-]+$/.test(val);
+  if (!valid) errEl.textContent = 'Invalid';
   errEl.classList.toggle('visible', !valid);
   okEl.classList.toggle('visible', valid);
   wrap.classList.toggle('error', !valid);
@@ -3401,7 +3453,7 @@ function validateLinkedInInline() {
 // ============================================================
 function showError(field, msg) {
   const el = document.getElementById('err-' + field);
-  if (el) { if (msg) el.textContent = msg; el.classList.add('visible'); }
+  if (el) { el.textContent = msg === 'Invalid' ? 'Invalid' : 'Required'; el.classList.add('visible'); } // s3p: every error says Required (Invalid only for a filled, malformed value)
   const input = document.getElementById(field);
   if (input) input.classList.add('error');
 }
@@ -3422,44 +3474,54 @@ function validateScreen(screenId) {
     const em = document.getElementById('email').value.trim();
     if (!fn) { showError('first_name', 'Required'); ok = false; } else hideError('first_name');
     if (!ln) { showError('last_name', 'Required'); ok = false; } else hideError('last_name');
-    if (!bd) { showError('birthdate', 'Please enter your date of birth'); ok = false; }
-    else if (!state.birthdateTouched) { showError('birthdate', 'Please confirm your date of birth'); ok = false; }
+    if (!bd) { showError('birthdate', 'Required'); ok = false; }
+    else if (!state.birthdateTouched) { showError('birthdate', 'Required'); ok = false; }
     else { hideError('birthdate'); if (getAge(bd) < 18) { showUnder18(); return false; } }
     const _hOk = !!heightPayload();
-    if (!_hOk) { showError('height', 'Please confirm your height'); ok = false; } else hideError('height');
+    if (!_hOk) { showError('height', 'Required'); ok = false; } else hideError('height');
     ['height_ftin', 'height_cm_input'].forEach(id => document.getElementById(id)?.classList.toggle('error', !_hOk));
-    if (!em || !isValidEmail(em)) { showError('email', 'Valid email required'); ok = false; } else hideError('email');
-    if (!state.gender) { showError('gender', 'Please select one'); ok = false; } else hideError('gender');
-    if (!state.wya) { showError('postal_code', 'Please set where you live'); ok = false; } else hideError('postal_code'); // K5 WYA
-    if (!Array.isArray(state.race) || state.race.length === 0) { showError('race', 'Please make a selection'); ok = false; } else hideError('race');
+    if (!em || !isValidEmail(em)) { showError('email', em ? 'Invalid' : 'Required'); ok = false; } else hideError('email');
+    if (!state.gender) { showError('gender', 'Required'); ok = false; } else hideError('gender');
+    if (!state.wya) { showError('postal_code', 'Required'); ok = false; } else hideError('postal_code'); // K5 WYA
+    if (!Array.isArray(state.race) || state.race.length === 0) { showError('race', 'Required'); ok = false; } else hideError('race');
+    // s3n: Religion / Degree / Income / Politics required ("None Stated" is an answer, saved as null)
+    ['religion', 'education', 'income_range', 'politics'].forEach(id => { if (!_crV(id)) { showError(id, 'Required'); ok = false; } else hideError(id); });
   }
   if (screenId === 3) {
     if (state.status !== 'partnered') {
-      if (!state.genderSeeking) { showError('gender_seeking', 'Please select one'); ok = false; } else hideError('gender_seeking');
+      if (!state.genderSeeking) { showError('gender_seeking', 'Required'); ok = false; } else hideError('gender_seeking');
       // Partner city is required (2026-09-27p). Normally the zip's city is pre-filled and can only be changed, not removed;
       // with no default (e.g. an unmapped zip) the applicant has to choose one. the relocate checkbox and extra cities don't replace it.
-      if (partnerLocationReady && !partnerCityPrimary) { showError('partner_location', 'Choose a partner city'); ok = false; } else hideError('partner_location');
+      if (partnerLocationReady && !partnerCityPrimary) { showError('partner_location', 'Required'); ok = false; } else hideError('partner_location');
       const minVal = parseInt(document.getElementById('age_min')?.value || '');
       const maxVal = parseInt(document.getElementById('age_max')?.value || '');
       if (isNaN(minVal) || isNaN(maxVal) || minVal < 18 || maxVal < 18 || minVal > maxVal) {
-        showError('age_range', 'Enter a valid age range (min 18)'); ok = false;
+        showError('age_range', 'Invalid'); ok = false;
       } else { hideError('age_range'); } // an untouched (default) age range is accepted and saved
     }
   }
   if (screenId === 2) {
     const pf = document.getElementById('partner_first_name').value.trim();
     const pe = document.getElementById('partner_email').value.trim();
-    if (!state.partnerGender) { showError('partner_gender', 'Please select one'); ok = false; } else hideError('partner_gender');
+    if (!state.partnerGender) { showError('partner_gender', 'Required'); ok = false; } else hideError('partner_gender');
     if (!pf) { showError('partner_first_name', 'Required'); ok = false; } else hideError('partner_first_name');
+    // s3n: last name, live together and their city (if not living together) are required; s3o: move-in date optional
+    if (!_crV('partner_last_name')) { showError('partner_last_name', 'Required'); ok = false; } else hideError('partner_last_name');
+    if (!state.livesWithPartner) { showError('lives_with_partner', 'Required'); ok = false; } else hideError('lives_with_partner');
+    hideError('moved_in_date'); // s3o: move-in date optional (blank saves null)
+    if (state.livesWithPartner === 'no' && !partnerCity) { showError('partner_city', 'Required'); ok = false; } else hideError('partner_city');
     // Defaults (Jan 1, 1990 / 5'9") must be checked: untouched blocks Next.
-    if (!state.partnerBdayTouched) { showError('partner_birthday', 'Please confirm their birthday'); ok = false; } else hideError('partner_birthday');
-    if (!state.partnerHeightTouched || !_crV('partner_height')) { showError('partner_height', 'Please confirm their height'); ok = false; } else hideError('partner_height');
-    if (!Array.isArray(state.partnerRace) || state.partnerRace.length === 0) { showError('partner_race', 'Please make a selection'); ok = false; } else hideError('partner_race');
-    if (!pe || !isValidEmail(pe)) { showError('partner_email', 'Valid email required'); ok = false; } else hideError('partner_email');
+    if (!state.partnerBdayTouched) { showError('partner_birthday', 'Required'); ok = false; } else hideError('partner_birthday');
+    if (!state.partnerHeightTouched || !_crV('partner_height')) { showError('partner_height', 'Required'); ok = false; } else hideError('partner_height');
+    if (!Array.isArray(state.partnerRace) || state.partnerRace.length === 0) { showError('partner_race', 'Required'); ok = false; } else hideError('partner_race');
+    if (!pe || !isValidEmail(pe)) { showError('partner_email', pe ? 'Invalid' : 'Required'); ok = false; } else hideError('partner_email');
   }
   if (screenId === 4) {
     const rs = document.getElementById('relationship_stage').value;
-    if (!rs) { showError('relationship_stage', 'Please select a stage'); ok = false; } else hideError('relationship_stage');
+    if (!rs) { showError('relationship_stage', 'Required'); ok = false; } else hideError('relationship_stage');
+    // s3n/s3o: Married before is required; the dates are optional
+    ['first_date', 'engagement_date', 'wedding_date'].forEach(hideError); // s3o: dates optional again (blank saves null)
+    if (!state.marriedBefore) { showError('married_before', 'Required'); ok = false; } else hideError('married_before');
   }
   if (screenId === 5) {
     // Next tapped while Looking for is still settling (1.2s): settle it now so the follow-ups show.
@@ -3467,36 +3529,39 @@ function validateScreen(screenId) {
       clearTimeout(_lfCollapseTimer); _lfSettle();
     }
     if (state.status !== 'partnered') {
-      if (!Array.isArray(state.lookingFor) || state.lookingFor.length === 0) { showError('looking_for', 'Please make a selection'); ok = false; } else hideError('looking_for');
+      if (!Array.isArray(state.lookingFor) || state.lookingFor.length === 0) { showError('looking_for', 'Required'); ok = false; } else hideError('looking_for');
       if (lookingForNeedsTimeline() && Array.isArray(state.lookingFor) && state.lookingFor.length > 0) {
-        if (!state.relationshipTimeline) { showError('relationship_timeline', 'Please make a selection'); ok = false; } else hideError('relationship_timeline');
+        if (!state.relationshipTimeline) { showError('relationship_timeline', 'Required'); ok = false; } else hideError('relationship_timeline');
       } else hideError('relationship_timeline');
     } else { hideError('looking_for'); hideError('relationship_timeline'); }
     const hkColVisible = !!_famShow.hk;
     if (hkColVisible) {
-      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Please make a selection'); ok = false; } else hideError('has_children');
+      if (state.hasChildren === null || state.hasChildren === undefined) { showError('has_children', 'Required'); ok = false; } else hideError('has_children');
     }
+    // s3l: couples who have kids must say how many ("Want more kids" appears once it's answered).
+    if (_famShow.nk) { if (!state.numChildren) { showError('num_children', 'Required'); ok = false; } else hideError('num_children'); }
+    else hideError('num_children');
     const wkRowVisible = !!_famShow.wk;
     if (wkRowVisible) {
-      if (!state.wantsChildren) { showError('wants_children', 'Please make a selection'); ok = false; } else hideError('wants_children');
+      if (!state.wantsChildren) { showError('wants_children', 'Required'); ok = false; } else hideError('wants_children');
       if (state.wantsChildren === 'yes') {
-        if (!state.kidsTimeline) { showError('kids_timeline', 'Please make a selection'); ok = false; } else hideError('kids_timeline');
-        if (state.status !== 'partnered' && !state.fertilityPreservation) { showError('fertility', 'Please make a selection'); ok = false; } else hideError('fertility');
+        if (!state.kidsTimeline) { showError('kids_timeline', 'Required'); ok = false; } else hideError('kids_timeline');
+        if (state.status !== 'partnered' && !state.fertilityPreservation) { showError('fertility', 'Required'); ok = false; } else hideError('fertility');
       } else { hideError('kids_timeline'); hideError('fertility'); }
     }
   }
   if (screenId === 6) {
     const phone = document.getElementById('phone').value.trim();
     // Phone is required (2026-09-27k). No hint on the label: the error only appears after pressing Submit.
-    if (!phone) { showError('phone', "Please enter your phone number so we can text you when it's live"); ok = false; }
-    else if (!isValidPhone(phone)) { showError('phone', 'Please enter a valid phone number (10 digits)'); ok = false; }
+    if (!phone) { showError('phone', 'Required'); ok = false; }
+    else if (!isValidPhone(phone)) { showError('phone', 'Invalid'); ok = false; }
     else hideError('phone');
   }
   if (screenId === 7) {
     const username = document.getElementById('linkedin_username').value.trim();
     const valid = username && /^[a-zA-Z0-9\-]+$/.test(username);
     const wrap = document.getElementById('linkedin-wrap');
-    if (!valid) { showError('linkedin_username', 'LinkedIn username required'); wrap.classList.add('error'); ok = false; }
+    if (!valid) { showError('linkedin_username', username ? 'Invalid' : 'Required'); wrap.classList.add('error'); ok = false; }
     else { hideError('linkedin_username'); wrap.classList.remove('error'); }
   }
   return ok;
@@ -3606,6 +3671,7 @@ async function doSubmit() {
     ...partnerDistancePayload(),
     ...wyaPayload(),
     ...k5WhoExtraPayload(),
+    ...devicePayload(), // s3n: proposed columns (not in the DB yet; the edge functions ignore unknown keys)
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
     age_max: state.status === 'partnered' ? null : (state.ageMax || null),
     gender_seeking: state.status === 'partnered' ? null : (state.genderSeeking || null),
@@ -3672,7 +3738,7 @@ function showConfirmation(subjectNumber) {
     textEl.textContent = `${who} — you're in the record. When ${pnLabel} applies, they'll be linked to you and share your place in line. You can still participate in the study if your partner chooses not to, but it may not be as fun...`;
     const pb = document.getElementById('share-partner-btn'); if (pb) pb.textContent = `Send ${pnLabel} The Link`;
   } else {
-    textEl.textContent = `${name} — you're subject #${subjectNumber}. You just volunteered to let science study your love life. We respect that enormously.`;
+    textEl.textContent = `${name} — your application number is #${String(subjectNumber).padStart(5, '0')}. You just volunteered to let science study your love life. We respect that enormously.`;
   }
   showScreen(8, 'forward');
 }
@@ -3714,11 +3780,15 @@ function showToast(msg) {
 // ============================================================
 // WHO YOU ARE: race picklist
 // ============================================================
-const RACE_EXCLUSIVE = 'Prefer not to say';
+// s3n: "None Stated" (was "Prefer not to say"; no stored rows used it). Still exclusive; saved as the label ["None Stated"] because race is a required
+// jsonb label list (null would read as unanswered, and submit-application falls back to the partial row's race on null).
+const RACE_EXCLUSIVE = 'None Stated', RACE_LEGACY = 'Prefer not to say';
+const _raceNorm = a => Array.isArray(a) ? a.map(v => v === RACE_LEGACY ? RACE_EXCLUSIVE : v).filter((v, i, s) => s.indexOf(v) === i) : a;
 const _MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function toggleRace(label) {
-  if (!Array.isArray(state.race)) state.race = [];
+  if (label === RACE_LEGACY) label = RACE_EXCLUSIVE;
+  state.race = Array.isArray(state.race) ? _raceNorm(state.race) : [];
   const i = state.race.indexOf(label);
   if (i !== -1) state.race.splice(i, 1);
   else if (label === RACE_EXCLUSIVE) state.race = [label];
@@ -3735,7 +3805,7 @@ function _syncRaceButtons() {
   });
   const t = document.getElementById('race-select-text');
   if (t) {
-    const txt = state.race.length ? state.race.join(', ') : '\u2014 Select all \u2014';
+    const txt = state.race.length ? state.race.join(', ') : '\u2014 Select \u2014';
     t.textContent = txt; t.title = state.race.length ? txt : '';
     t.classList.toggle('empty', !state.race.length);
   }
@@ -3777,10 +3847,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && isRacePanelOpen()) closeRacePanel(); });
 });
 function racePayload() {
-  return Array.isArray(state.race) && state.race.length ? state.race.slice() : null;
+  return Array.isArray(state.race) && state.race.length ? _raceNorm(state.race) : null;
 }
 // YOUR PARTNER: their race (couples). Same options, order, exclusivity and 1.2s commit as own race.
 function togglePartnerRace(label) {
+  if (label === RACE_LEGACY) label = RACE_EXCLUSIVE;
+  if (Array.isArray(state.partnerRace)) state.partnerRace = _raceNorm(state.partnerRace);
   if (!Array.isArray(state.partnerRace)) state.partnerRace = [];
   const i = state.partnerRace.indexOf(label);
   if (i !== -1) state.partnerRace.splice(i, 1);
@@ -3798,28 +3870,38 @@ function _syncPartnerRaceButtons() {
   });
   const t = document.getElementById('partner-race-select-text');
   if (t) {
-    const txt = state.partnerRace.length ? state.partnerRace.join(', ') : '\u2014 Select all \u2014';
+    const txt = state.partnerRace.length ? state.partnerRace.join(', ') : '\u2014 Select \u2014';
     t.textContent = txt; t.title = state.partnerRace.length ? txt : '';
     t.classList.toggle('empty', !state.partnerRace.length);
   }
+  const chips = document.getElementById('partner-race-chips');
+  if (chips) { chips.innerHTML = ''; state.partnerRace.forEach(label => { const s = document.createElement('span'); s.className = 'race-chip'; s.textContent = label; chips.appendChild(s); }); }
 }
-function isPartnerRacePanelOpen() { const p = document.getElementById('partner-race-panel'); return !!p && p.classList.contains('open'); }
+// s3p: bottom sheet, same as own Race (DONE / X / backdrop / Escape close and commit)
+function isPartnerRacePanelOpen() { const p = document.getElementById('partner-race-panel'); return !!p && !p.hidden; }
 function openPartnerRacePanel() {
-  const p = document.getElementById('partner-race-panel'), c = document.getElementById('partner_race');
+  const p = document.getElementById('partner-race-panel'), c = document.getElementById('partner_race'), b = document.getElementById('partner-race-backdrop');
   if (!p) return;
   clearTimeout(_crT['pt-height']); clearTimeout(_crT['pt-race']);
+  p.hidden = false; if (b) b.hidden = false;
   p.classList.add('open'); if (c) c.setAttribute('aria-expanded', 'true');
-  try { p.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+  _syncPartnerRaceButtons();
+  try { if (typeof sheetPinDone === 'function') sheetPinDone('partner-race-panel'); } catch (e) {}
 }
 function closePartnerRacePanel(noCommit) {
-  const p = document.getElementById('partner-race-panel'), c = document.getElementById('partner_race');
-  if (!p || !p.classList.contains('open')) return;
+  const p = document.getElementById('partner-race-panel'), c = document.getElementById('partner_race'), b = document.getElementById('partner-race-backdrop');
+  if (!p || p.hidden) return;
+  p.hidden = true; if (b) b.hidden = true;
   p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
   if (!noCommit) crTap('pt-race', CR_DELAY); // multi-select
 }
+document.addEventListener('DOMContentLoaded', () => {
+  [['partner-race-done', 0], ['partner-race-x', 0]].forEach(([id]) => { const x = document.getElementById(id); if (x) x.addEventListener('click', e => { e.preventDefault(); closePartnerRacePanel(); }); });
+  const xb = document.getElementById('partner-race-backdrop'); if (xb) xb.addEventListener('click', () => closePartnerRacePanel());
+});
 function togglePartnerRacePanel() { if (isPartnerRacePanelOpen()) closePartnerRacePanel(); else openPartnerRacePanel(); }
 function partnerRacePayload() {
-  return state.status === 'partnered' && Array.isArray(state.partnerRace) && state.partnerRace.length ? state.partnerRace.slice() : null;
+  return state.status === 'partnered' && Array.isArray(state.partnerRace) && state.partnerRace.length ? _raceNorm(state.partnerRace) : null;
 }
 
 // ============================================================
@@ -3850,7 +3932,8 @@ const CR_STEPS = {
   // Their birthday alone; Their height alone; Their race once height is touched (or Next is pressed) - like Who You Are.
   2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-race'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
   // What You Want (singles): Seeking alone; Partner Location; then Age Range + Partner Height together (never collapsed).
-  3: [['ww-seek'], ['ww-loc'], ['ww-ranges']],
+  // s3k: ... then Age once Distance (slider or its checkbox) is touched, Partner Height once Age is touched; Next shows the next row (defaults kept).
+  3: [['ww-seek'], ['ww-loc'], ['ww-age'], ['ww-height']],
   4: [['rel-stage'], ['rel-first'], ['rel-eng'], ['rel-wed'], ['rel-mb']],
 };
 const _crFront = { 1: 0, 2: 0, 3: 0, 4: 0 };
@@ -4018,8 +4101,13 @@ function crSync() {
   });
   document.querySelectorAll('#screen-3 .ww-unit').forEach(u => u.classList.toggle('cr-active', !u.classList.contains('collapsed')));
   // The slider value bubbles are positioned from the slider width, which is 0 while the set is hidden: place them on reveal.
-  const rg = _crEl('ww-ranges');
-  if (rg) { const vis = !rg.classList.contains('cr-later') && rg.offsetParent !== null; if (vis && !rg._crShown) requestAnimationFrame(() => { _updateAgeLabels(); _updateHeightLabels(); }); rg._crShown = vis; }
+  [['ww-age', 'wwAgeShown'], ['ww-height', 'wwHeightShown']].forEach(([id, flag]) => {
+    const u = _crEl(id); if (!u) return;
+    if (!u.classList.contains('cr-later')) state[flag] = true;
+    const vis = !u.classList.contains('cr-later') && u.offsetParent !== null;
+    if (vis && !u._crShown) requestAnimationFrame(() => { if (typeof _k4Refresh === 'function') _k4Refresh(); else { _updateRangeFill(); _updateHeightFill(); } });
+    u._crShown = vis;
+  });
   document.querySelectorAll('#screen-5 .fam-unit').forEach(u => {
     const c = CR[u.id]; if (!c) return;
     const open = !u.classList.contains('collapsed');
@@ -4074,8 +4162,8 @@ function _crOnLeave(e) {
 
 function _crDefineAll() {
   // Who You Are
-  crDef('who-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.gender] || '' });
-  crDef('who-name', { focus: 'first_name', value: () => { const f = _crV('first_name'), l = _crV('last_name'); return f && l ? f + ' ' + l : ''; } });
+  crDef('who-gender', { partner: 'who-name', value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.gender] || '' });
+  crDef('who-name', { partner: 'who-gender', focus: 'first_name', value: () => { const f = _crV('first_name'), l = _crV('last_name'); return f && l ? f + ' ' + l : ''; } });
   crDef('who-dob', { focus: 'birthdate', partner: 'who-loc', stepDone: () => !!state.birthdateTouched, value: () => state.birthdateTouched ? _crMdy(_crV('birthdate')) : '' }); // the Jan 1, 1996 default isn't an answer until touched
   crDef('who-loc', {
     partner: 'who-dob', focus: () => state.locationMode === 'zip' ? 'postal_code' : 'intl_city_input',
@@ -4093,15 +4181,15 @@ function _crDefineAll() {
   crDef('who-race', { partner: 'who-height', focus: 'race', busy: isRacePanelOpen, onExpand: f => { if (f) openRacePanel(); }, value: () => Array.isArray(state.race) ? state.race.join(', ') : '' });
   crDef('who-email', { focus: 'email', value: () => { const e = _crV('email'); return e && isValidEmail(e) ? e : ''; } });
   // Your Partner
-  crDef('pt-gender', { value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.partnerGender] || '' });
-  crDef('pt-name', { focus: 'partner_first_name', value: () => { const f = _crV('partner_first_name'), l = _crV('partner_last_name'); return f && l ? f + ' ' + l : ''; } });
+  crDef('pt-gender', { partner: 'pt-name', value: () => ({ man: 'Man', woman: 'Woman', 'non-binary': 'Non-binary' })[state.partnerGender] || '' });
+  crDef('pt-name', { partner: 'pt-gender', focus: 'partner_first_name', value: () => { const f = _crV('partner_first_name'), l = _crV('partner_last_name'); return f && l ? f + ' ' + l : ''; } });
   // Partner birthday / height: defaults (grey) must be touched ("so they have to check it").
   crDef('pt-bday', { focus: 'partner_birthday', stepDone: () => !!state.partnerBdayTouched, value: () => state.partnerBdayTouched ? _crMdy(_crV('partner_birthday')) : '' });
   crDef('pt-height', { focus: 'partner_height', partner: 'pt-race', stepDone: () => !!state.partnerHeightTouched, nextReveals: true, value: () => state.partnerHeightTouched ? _crOpt('partner_height', _crV('partner_height')) : '' });
   crDef('pt-race', { partner: 'pt-height', focus: 'partner_race', busy: isPartnerRacePanelOpen, onExpand: f => { if (f) openPartnerRacePanel(); }, value: () => Array.isArray(state.partnerRace) ? state.partnerRace.join(', ') : '' });
   crDef('pt-email', { focus: 'partner_email', value: () => { const e = _crV('partner_email'); return e && isValidEmail(e) ? e : ''; } });
-  crDef('pt-live', { optional: true, partner: () => state.livesWithPartner === 'no' ? 'pt-city' : (state.livesWithPartner === 'yes' ? 'pt-moved' : null), value: () => ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '' });
-  crDef('pt-city', { optional: true, partner: 'pt-live', focus: 'partner_city_input', applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
+  crDef('pt-live', { partner: () => state.livesWithPartner === 'no' ? 'pt-city' : (state.livesWithPartner === 'yes' ? 'pt-moved' : null), value: () => ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '' });
+  crDef('pt-city', { partner: 'pt-live', focus: 'partner_city_input', applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
   crDef('pt-moved', { optional: true, partner: 'pt-live', focus: 'moved_in_date', applies: () => state.livesWithPartner === 'yes', value: () => state.livesWithPartner === 'yes' ? _crMdy(_crV('moved_in_date')) : '' });
   // Your Relationship
   const stage = () => _crV('relationship_stage');
@@ -4109,16 +4197,18 @@ function _crDefineAll() {
   crDef('rel-first', { focus: 'first_date', optional: true, value: () => _crMdy(_crV('first_date')) });
   crDef('rel-eng', { focus: 'engagement_date', optional: true, partner: 'rel-wed', applies: () => stage() === 'engaged' || stage() === 'married', value: () => _crMdy(_crV('engagement_date')) });
   crDef('rel-wed', { focus: 'wedding_date', optional: true, partner: 'rel-eng', applies: () => stage() === 'married', value: () => _crMdy(_crV('wedding_date')) });
-  crDef('rel-mb', { optional: true, value: () => ({ neither: 'Neither', me: 'Me', partner: 'My partner', both: 'Both' })[state.marriedBefore] || '' });
+  crDef('rel-mb', { value: () => ({ neither: 'Neither', me: 'Me', partner: 'My partner', both: 'Both' })[state.marriedBefore] || '' });
   // What You Want (singles)
   crDef('ww-seek', { value: () => ({ men: 'Men', women: 'Women', both: 'Both' })[state.genderSeeking] || '' });
   // Partner location (2026-09-27q): stays open - it never folds on its own (no 1.2s collapse, not on moving on, not on
   // returning to the screen), so Partner city + Change, "+ Add city" with its tags and the relocate checkbox are always in view.
   // It doesn't hold back Age Range + Partner Height: they appear with it (a missing primary city is caught by Next with
   // "Choose a partner city"). If it ever is collapsed, EDIT reopens it as before.
-  crDef('ww-loc', { busy: _plBusy, noCollapse: true, stepDone: () => true, value: partnerLocationSummary });
+  crDef('ww-loc', { busy: _plBusy, noCollapse: true, stepDone: () => !!(state.wwDistTouched || state.wwAgeShown), value: partnerLocationSummary });
   // Age range + partner height: one set, shown together, never collapsed (no condensed row); defaults are saved untouched.
-  crDef('ww-ranges', { stepDone: () => false, value: () => '' });
+  // s3k: once shown a row stays shown (also on returning to the screen); untouched defaults are saved.
+  crDef('ww-age', { noCollapse: true, stepDone: () => !!(state.ageRangeTouched || state.wwHeightShown), value: () => '' });
+  crDef('ww-height', { noCollapse: true, stepDone: () => false, value: () => '' });
   // Intentions & Family
   crDef('fam-lf', {
     applies: () => !!_famShow.lf,
@@ -4129,7 +4219,7 @@ function _crDefineAll() {
   const lf = () => (Array.isArray(state.lookingFor) ? state.lookingFor : []);
   crDef('fam-tl', {
     focus: 'relationship_timeline', partner: 'fam-hk', applies: () => !!_famShow.tl,
-    key: () => lf().includes('marriage') ? 'Marriage timing' : (lf().length === 1 && lf()[0] === 'dating') ? 'Dating timing' : 'Partner timing',
+    key: () => 'Timeline', // s3p: short half-row key; the open label still says Marriage / Dating / Partner timing
     value: () => _crOpt('relationship_timeline', state.relationshipTimeline),
   });
   crDef('fam-hk', {
@@ -4845,7 +4935,7 @@ function _renderPartnerLocationChips() {
 }
 
 // ---- AGE RANGE SLIDER ----
-function touchAgeRange() { state.ageRangeTouched = true; hideError('age_range'); }
+function touchAgeRange() { const first = !state.ageRangeTouched; state.ageRangeTouched = true; hideError('age_range'); if (first) crSync(); }
 function touchHeightPref() { state.heightPrefTouched = true; }
 function onAgeRangeInput(el, which) {
   touchAgeRange();
@@ -4899,12 +4989,14 @@ function _updateRangeFill() {
   const range = 80 - 21;
   const leftPct = ((parseInt(minEl.value) - 21) / range) * 100;
   const rightPct = ((parseInt(maxEl.value) - 21) / range) * 100;
-  fill.style.left = leftPct + '%';
-  fill.style.width = (rightPct - leftPct) + '%';
+  const w = minEl.offsetWidth;
+  if (w) { const a = _sliderThumbX(minEl, w), b = _sliderThumbX(maxEl, w); fill.style.left = a + 'px'; fill.style.width = Math.max(0, b - a) + 'px'; }
+  else { fill.style.left = leftPct + '%'; fill.style.width = (rightPct - leftPct) + '%'; }
   _updateAgeLabels();
 }
 
-function _fmtHeight(inches) { return Math.floor(inches / 12) + "'" + (inches % 12) + '"'; }
+function _s3qMetric() { return state.locationMode === 'city'; } // s3q: same non-US test as own height (cm box)
+function _fmtHeight(inches) { return _s3qMetric() ? Math.round(inches * 2.54) + ' cm' : Math.floor(inches / 12) + '\u2019' + (inches % 12) + '\u201d'; } // US 5’10”, elsewhere 178 cm
 
 function onHeightRangeInput(el, which) {
   touchHeightPref();
@@ -4925,8 +5017,9 @@ function _updateHeightFill() {
   const range = 84 - 58;
   const leftPct = ((parseInt(minEl.value) - 58) / range) * 100;
   const rightPct = ((parseInt(maxEl.value) - 58) / range) * 100;
-  fill.style.left = leftPct + '%';
-  fill.style.width = (rightPct - leftPct) + '%';
+  const w = minEl.offsetWidth;
+  if (w) { const a = _sliderThumbX(minEl, w), b = _sliderThumbX(maxEl, w); fill.style.left = a + 'px'; fill.style.width = Math.max(0, b - a) + 'px'; }
+  else { fill.style.left = leftPct + '%'; fill.style.width = (rightPct - leftPct) + '%'; }
   _updateHeightLabels();
 }
 
@@ -4982,7 +5075,7 @@ function setDefaultAges() {
 let _zipTimer = null;
 
 function setLivesWithPartner(val, fromTap) {
-  state.livesWithPartner = val || null;
+  state.livesWithPartner = val || null; if (val) hideError('lives_with_partner');
   document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
   document.getElementById('btn-lives-no').classList.toggle('selected', val === 'no');
   document.getElementById('btn-lives-parttime').classList.toggle('selected', val === 'part_time');
@@ -5054,7 +5147,7 @@ function initPartnerCondensed() {
 }
 
 function setMarriedBefore(val) {
-  state.marriedBefore = val || null;
+  state.marriedBefore = val || null; if (val) hideError('married_before');
   ['neither','me','partner','both'].forEach(v => document.getElementById('btn-mb-' + v)?.classList.toggle('selected', v === val));
   if (val) crTap('rel-mb');
 }
@@ -5171,7 +5264,7 @@ async function _doZipLookup(zip) {
   if (display) { display.textContent = ''; display.style.display = 'none'; }
   document.getElementById('location-mode-toggle').style.display = '';
   state.zipCity = null; state.zipLatLong = null; state.locationCountry = null;
-  showError('postal_code', 'ZIP code not found');
+  showError('postal_code', 'Invalid');
 }
 </script>
 
@@ -5190,9 +5283,28 @@ async function _doZipLookup(zip) {
 <button type="button" class="race-opt" id="btn-race-6" data-race="Pacific Islander" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
 <button type="button" class="race-opt" id="btn-race-5" data-race="Native American" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
 <button type="button" class="race-opt" id="btn-race-8" data-race="Other" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
-<button type="button" class="race-opt" id="btn-race-9" data-race="Prefer not to say" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Prefer not to say</span></button>
+<button type="button" class="race-opt" id="btn-race-9" data-race="None Stated" aria-pressed="false" onclick="toggleRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">None Stated</span></button>
   </div>
   <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="race-done">DONE</button></div>
+</div>
+<!-- s3p: couples Their race: same sheet as Race (options / values / None Stated exclusivity unchanged; saves partner_race) -->
+<div class="cp-backdrop" id="partner-race-backdrop" hidden></div>
+<div class="cp-sheet race-sheet" id="partner-race-panel" role="dialog" aria-modal="true" aria-label="Their race" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title">Race</span><button type="button" class="cp-x" id="partner-race-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
+  <div class="cp-hint" id="partner-race-hint" style="display:none"></div>
+  <div class="cp-list" id="partner-race-list" role="group" aria-label="Their race (select all that apply)">
+<button type="button" class="race-opt" id="btn-prace-7" data-race="White" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">White</span></button>
+<button type="button" class="race-opt" id="btn-prace-2" data-race="Black" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
+<button type="button" class="race-opt" id="btn-prace-0" data-race="Asian" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
+<button type="button" class="race-opt" id="btn-prace-3" data-race="Hispanic / Latino" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
+<button type="button" class="race-opt" id="btn-prace-1" data-race="South Asian" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
+<button type="button" class="race-opt" id="btn-prace-4" data-race="MENA" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
+<button type="button" class="race-opt" id="btn-prace-6" data-race="Pacific Islander" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
+<button type="button" class="race-opt" id="btn-prace-5" data-race="Native American" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
+<button type="button" class="race-opt" id="btn-prace-8" data-race="Other" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
+<button type="button" class="race-opt" id="btn-prace-9" data-race="None Stated" aria-pressed="false" onclick="togglePartnerRace(this.dataset.race)"><span class="race-box"></span><span class="race-opt-txt">None Stated</span></button>
+  </div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="partner-race-done">DONE</button></div>
 </div>
 
 <div class="cp-backdrop" id="cp-backdrop" hidden></div>
@@ -5260,9 +5372,9 @@ function _cpRenderList() {
   const q = _cpTyped.trim();
   list.replaceChildren();
   const sel = _cpSel();
-  const title = document.getElementById('cp-sheet-title'); if (title) title.textContent = 'Partner cities (' + sel.length + ')';
+  const title = document.getElementById('cp-sheet-title'); if (title) title.textContent = 'Partner cities';
   const sec = t => { const d = document.createElement('div'); d.className = 'cp-sec'; d.textContent = t; list.appendChild(d); };
-  if (sel.length) { sec('Selected (' + sel.length + ')'); sel.forEach(e => list.appendChild(_cpRow(e, true, home && _plSame(home, e) ? 'home' : (e.matched === false ? 'as typed' : '')))); }
+  if (sel.length) { sec('Selected'); sel.forEach(e => list.appendChild(_cpRow(e, true, home && _plSame(home, e) ? 'home' : (e.matched === false ? 'as typed' : '')))); }
   let rows = [];
   if (q) {
     rows = _searchPartnerCities(q, 30).map(c => _plEntryFromCity(c)).filter(e => !_cpIsSel(e)).slice(0, 20);
@@ -5348,35 +5460,7 @@ function _cpBind() {
 }
 document.addEventListener('DOMContentLoaded', _cpBind);
 </script>
-<!-- MOCKUP_grokbot city picker sheet -->
-<div class="cp-backdrop" id="cp-backdrop" hidden></div>
-<div class="cp-sheet" id="cp-sheet" role="dialog" aria-modal="true" aria-label="Partner cities" hidden>
-  <div class="cp-sheet-head"><span class="cp-sheet-title" id="cp-sheet-title">Partner cities</span><button type="button" class="cp-x" id="cp-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
-  <div class="cp-search-wrap"><input class="field-input" id="cp-search" type="text" placeholder="Search or type a city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-controls="cp-list"></div>
-  <div class="cp-hint" id="cp-hint"></div>
-  <div class="cp-list" id="cp-list" role="group" aria-label="Cities"></div>
-  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="cp-done">DONE</button></div>
-</div>
-<script>
-// MOCKUP_grokbot: pin a sheet's DONE to the exact box of the page's pinned NEXT (same x, y, width, height),
-// and reserve that space at the bottom of the sheet so the sheet's content (list / map) ends 8px above it.
-function sheetPinDone(sheetId) {
-  const s = document.getElementById(sheetId); if (!s || s.hidden) return;
-  const f = s.querySelector('.cp-foot'), b = f && f.querySelector('.cp-done-btm'); if (!b) return;
-  const n = [...document.querySelectorAll('.screen.active .bottom-action .btn-primary')].find(e => e.offsetParent && e.getBoundingClientRect().height > 0);
-  if (!n) { b.removeAttribute('style'); f.removeAttribute('style'); return; }
-  const r = n.getBoundingClientRect(), sb = s.getBoundingClientRect().bottom;
-  b.style.cssText = 'position:fixed;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;right:auto;bottom:auto;margin:0;z-index:2';
-  f.style.height = Math.max(0, Math.round(sb - r.top + 8)) + 'px';
-}
-window.addEventListener('resize', () => document.querySelectorAll('.cp-sheet').forEach(s => { if (!s.hidden) sheetPinDone(s.id); }));
-
-(function () {
-  // X keeps the picks and closes, exactly like tapping the backdrop (same handlers run).
-  document.getElementById('cp-x').addEventListener('click', e => { e.preventDefault(); document.getElementById('cp-backdrop').click(); });
-  const _o = _cpOpen; window._cpOpen = _cpOpen = function () { const r = _o.apply(this, arguments); sheetPinDone('cp-sheet'); return r; };
-})();
-</script>
+<!-- s3p: duplicate Partner cities sheet removed (the copy above is the live one) -->
 <!-- MOCKUP_grokbot WYA: location field logic (options A / B / C) -->
 <script>
 // MOCKUP_grokbot: pin a sheet's DONE to the exact box of the page's pinned NEXT (same x, y, width, height),
@@ -5451,7 +5535,7 @@ _cpToggle = function (entry) {
 const _viListF = _cpRenderList;
 _cpRenderList = function () {
   _viListF();
-  const t = document.getElementById('cp-sheet-title'); if (t) t.textContent = 'Open to relocating: cities (' + _cpSel().length + ')';
+  const t = document.getElementById('cp-sheet-title'); if (t) t.textContent = 'Other cities';
   const first = document.querySelector('#cp-list .cp-row[aria-checked="true"]');
   if (first && partnerCityPrimary) {
     first.classList.add('pinned'); first.setAttribute('aria-disabled', 'true');
@@ -5463,7 +5547,7 @@ const _viRenderF = _renderPartnerLocationChips;
 _renderPartnerLocationChips = function () {
   _viRenderF();
   const k = document.getElementById('partner-location-label'); if (k) k.textContent = 'Partner city';
-  const ch = document.getElementById('pc-change'); if (ch) ch.textContent = 'CHANGE';
+  const ch = document.getElementById('pc-change'); if (ch) ch.textContent = 'EDIT';
   _viExtraRender(); _viDistUpdate();
 };
 const _viGoNextF = goNext;
@@ -5506,7 +5590,7 @@ function _vjRender() {
   const all = _plAll();
   const fit = () => _cpFitNames(sum, all.map(_cpCityName), 'Choose cities', fit);
   fit(); sum.title = all.map(p => p.label).join('; ');
-  const k = document.getElementById('vj-cities-k'); if (k) k.textContent = 'Partner cities (' + all.length + ')';
+  const k = document.getElementById('vj-cities-k'); if (k) k.textContent = 'Partner cities';
   const u = document.getElementById('ww-loc');
   if (u && u.classList.contains('vj-folded') && !(partnerLocationAnywhere && partnerCitiesExtra.length)) u.classList.remove('vj-folded');
 }
@@ -5611,7 +5695,7 @@ _cpToggle = function (entry) {
 };
 _cpRenderList = function () {
   _viListF();
-  const t = document.getElementById('cp-sheet-title'); if (t) t.textContent = 'Other cities (' + partnerCitiesExtra.length + ')';
+  const t = document.getElementById('cp-sheet-title'); if (t) t.textContent = 'Other cities';
 };
 const _vkRenderF = _renderPartnerLocationChips;
 _renderPartnerLocationChips = function () { _vkRenderF(); _vkRender(); };
@@ -5625,7 +5709,7 @@ function _vkEdit() {
 function _vkClose() {
   const box = document.getElementById('vk-zip-box'), inp = document.getElementById('vk-zip-input'), v = document.getElementById('vk-zip-val');
   box.classList.remove('editing', 'bad'); inp.readOnly = true; inp.tabIndex = -1; if (document.activeElement === inp) inp.blur();
-  document.getElementById('vk-zip-edit').textContent = 'CHANGE';
+  document.getElementById('vk-zip-edit').textContent = 'EDIT';
   _vkRender();
 }
 let _vkSeq = 0;
@@ -5713,7 +5797,7 @@ _vkEdit = function () {
 _vkClose = function () {
   const box = document.getElementById('vk-zip-box'), inp = _vk2Inp();
   box.classList.remove('editing', 'bad'); inp.readOnly = true; inp.tabIndex = -1; if (document.activeElement === inp) inp.blur();
-  document.getElementById('vk-zip-edit').textContent = 'CHANGE';
+  document.getElementById('vk-zip-edit').textContent = 'EDIT';
   _vk2Hide(); _vkRender();
 };
 // Postcode shapes: US 5 digits; Canada A1A[ 1A1]; UK outward code (+ optional inward), e.g. SW1A 1AA, E1, M1 1AE.
@@ -5808,7 +5892,7 @@ _vkCommit = async function (zip) {
   if (_vkZip === zip && before !== zip) { _vk2Label = ''; _vk2Country = 'US'; _vkRender(); }
   else if (document.getElementById('vk-zip-box').classList.contains('bad')) { _vk2Hide(); const l = document.getElementById('vk2-sug'); const d = document.createElement('div'); d.className = 'vk2-opt vk2-none'; d.textContent = 'Zip not found: try a zip, postcode or city'; l.appendChild(d); l.hidden = false; }
 };
-_viOrigin = function () { return _vkZip || _vkName || _viName(partnerCityPrimary) || 'Distance'; };
+_viOrigin = function () { const p = partnerCityPrimary; return (_vk2Label && _vk2Label.trim()) || (p && p.label) || _vkName || _vkZip || 'your city'; }; // s3p
 // Label rule: set by zip / postcode -> "Distance from 78704" / "SW1A 1AA"; set by picking a city by name -> "Distance from London CBD".
 // A long city name is cut with an ellipsis and " CBD" always stays visible (letter-spacing is left as in the I AM A labels).
 function _vk2LabCity(lab, name) {
@@ -5823,7 +5907,7 @@ _viDistUpdate = function () {
   const mi = _viMi(), km = _vk2Km(mi), miles = _vk2Miles();
   const txt = miles ? mi + (mi === 1 ? ' mile' : ' miles') : km + ' km';
   state.partnerDistanceMi = mi; state.partnerDistanceKm = km; state.partnerDistanceUnit = miles ? 'mi' : 'km';
-  _vk2Label ? _vk2LabCity(lab, _vkName) : (lab.textContent = 'Distance from ' + _viOrigin(), lab.title = '');
+  lab.textContent = 'Distance from ' + _viOrigin(); lab.title = lab.textContent; // s3p: always the city, e.g. 'Distance from Austin, TX'
   el.setAttribute('aria-valuetext', miles ? txt : km + ' kilometres');
   const w = el.offsetWidth, pct = (el.value - el.min) / (el.max - el.min);
   if (fill) { fill.style.left = '0'; fill.style.width = w ? _sliderThumbX(el, w) + 'px' : (pct * 100) + '%'; }
@@ -5837,30 +5921,32 @@ function _vk2Wire() {
 </script>
 
 <script>
-// K5: boxed Distance readout only (Age/Height stay production bubbles).
+// K5 (k12 _k4Condense): Distance, Age and Height are all condensed on-page sliders: LABEL ..... value + thin track, two thumbs for Age/Height.
 const _k4 = { inWmm: false, pcSig: null, wyaSig: null };
 function _k4Txt(id) { const e = document.getElementById(id); return e ? e.textContent.trim() : ''; }
 function _k4Vals() {
-  return { dist: _k4Txt('vk-dist-bubble'), age: _k4Txt('age_min_label') + '\u2013' + _k4Txt('age_max_label'), height: _k4Txt('height_min_label') + ' \u2013' + _k4Txt('height_max_label') };
+  return { dist: _k4Txt('vk-dist-bubble'), age: _k4Txt('age_min_label') + '\u2013' + _k4Txt('age_max_label'), height: (_k4Txt('height_min_label') + '\u2013' + _k4Txt('height_max_label')).replace(/ cm\u2013(\d+) cm$/, '\u2013$1 cm') };
 }
 function k4SyncHeads() {
   const v = _k4Vals();
-  const e = document.getElementById('k4-v-dist');
-  if (e && e.textContent !== v.dist) e.textContent = v.dist;
+  for (const k of ['dist', 'age', 'height']) { const e = document.getElementById('k4-v-' + k); if (e && e.textContent !== v[k]) e.textContent = v[k]; }
 }
+function _k4Groups() { return { dist: document.getElementById('vi-dist'), age: document.querySelector('#ww-ranges .ww-age-group'), height: document.querySelector('#ww-ranges .ww-height-group') }; }
 function _k4Condense() {
-  const el = document.getElementById('vi-dist');
-  if (!el || el.classList.contains('k4-sl')) return;
-  const lab = el.querySelector(':scope > .field-label');
-  const head = document.createElement('div'); head.className = 'k4-head';
-  const val = document.createElement('span'); val.className = 'k4-val'; val.id = 'k4-v-dist'; val.setAttribute('aria-hidden', 'true');
-  el.insertBefore(head, el.firstChild);
-  if (lab) head.appendChild(lab);
-  head.appendChild(val);
-  el.classList.add('k4-sl');
+  const g = _k4Groups();
+  for (const k of ['dist', 'age', 'height']) {
+    const el = g[k]; if (!el || el.classList.contains('k4-sl')) continue;
+    const lab = el.querySelector(':scope > .field-label');
+    const head = document.createElement('div'); head.className = 'k4-head';
+    const val = document.createElement('span'); val.className = 'k4-val'; val.id = 'k4-v-' + k; val.setAttribute('aria-hidden', 'true');
+    el.insertBefore(head, el.firstChild);
+    if (lab) head.appendChild(lab);
+    head.appendChild(val);
+    el.classList.add('k4-sl');
+  }
+  // the hidden bubbles already carry the formatted values (miles / km, ages, 5'8")
   const mo = new MutationObserver(() => k4SyncHeads());
-  const bub = document.getElementById('vk-dist-bubble');
-  if (bub) mo.observe(bub, { childList: true, characterData: true, subtree: true });
+  ['vk-dist-bubble', 'age_min_label', 'age_max_label', 'height_min_label', 'height_max_label'].forEach(id => { const e = document.getElementById(id); if (e) mo.observe(e, { childList: true, characterData: true, subtree: true }); });
   k4SyncHeads();
 }
 function _k4Refresh() {
@@ -5881,7 +5967,11 @@ async function _k4PartnerDefault() {
     if (!partnerLocationTouched) {
       partnerCityPrimary = home;
       if (typeof _vkZip !== 'undefined') {
-        if (zip && /^\d{5}$/.test(zip)) { _vkZip = zip; _vkName = (home.city || home.label || '').split(',')[0].trim(); }
+        const nm = (home.city || home.label || '').split(',')[0].trim();
+        if (zip && /^\d{5}$/.test(zip)) { _vkZip = zip; _vkName = nm; if (typeof _vk2Label !== 'undefined') { _vk2Label = ''; _vk2Country = 'US'; } }
+        else if (typeof _vk2Label !== 'undefined') { // s3k: location picked by city name (no zip): "Austin, TX" like a city picked here
+          _vkZip = ''; _vkName = nm; _vk2Label = home.label || (state.wya && state.wya.label) || nm; _vk2Country = (state.wya && state.wya.cc) || 'US';
+        }
       }
       if (typeof _vkRender === 'function') _vkRender();
       else if (typeof _renderPartnerLocationChips === 'function') _renderPartnerLocationChips();
@@ -5900,7 +5990,12 @@ function k5Rows() {
   const d = document.getElementById('vi-dist'), cb = document.querySelector('#screen-3 .partner-location-anywhere');
   if (d && cb && cb.parentElement !== d) d.appendChild(cb);
 }
+function wwDistTouch() { if (state.wwDistTouched) return; state.wwDistTouched = true; crSync(); }
 window.addEventListener('load', () => {
+  const _ds = document.getElementById('vi_dist_mi');
+  if (_ds) ['pointerdown', 'keydown', 'input', 'change'].forEach(ev => _ds.addEventListener(ev, wwDistTouch));
+  const _dc = document.getElementById('partner-location-anywhere');
+  if (_dc) _dc.addEventListener('change', wwDistTouch);
   _k4Condense();
   const _show0 = showScreen;
   showScreen = function (id) {
@@ -5908,11 +6003,11 @@ window.addEventListener('load', () => {
     if (id === 3) { _k4PartnerDefault(); requestAnimationFrame(_k4Refresh); try { k5Rows(); } catch (e) {} }
     return r;
   };
-  // thumb sizing for Distance .k4-sl only
+  // thumb sizing (28px thumb box) for every .k4-sl slider: Distance, Age, Height
   if (typeof _sliderThumbX === 'function') {
     const tx = _sliderThumbX;
     _sliderThumbX = function (el, w) {
-      if (!el.closest || !el.closest('#vi-dist.k4-sl')) return tx.apply(this, arguments);
+      if (!el.closest || !el.closest('.k4-sl')) return tx.apply(this, arguments);
       const min = +el.min, max = +el.max, v = +el.value;
       return (v - min) / (max - min) * (w - 28) + 14;
     };
@@ -6089,8 +6184,8 @@ async function _wyaPick(o) {
 // ---- C: the compact row + the sheet ----
 function _wyaRow() {
   const v = document.getElementById('wya-row-v'), e = document.getElementById('wya-row-edit'); if (!v) return;
-  if (state.wya) { v.textContent = _wyaTxt(state.wya); v.classList.remove('empty'); e.textContent = 'CHANGE'; }
-  else { v.textContent = 'Tap to set on map'; v.classList.add('empty'); e.textContent = 'SET'; }
+  if (state.wya) { v.textContent = _wyaTxt(state.wya); v.classList.remove('empty'); e.textContent = 'EDIT'; }
+  else { v.textContent = 'Tap to set on map'; v.classList.add('empty'); e.textContent = 'EDIT'; }
 }
 function wyaOpenSheet() {
   loadPartnerCities();
@@ -6149,8 +6244,8 @@ window.addEventListener('load', () => {
 <!-- MOCKUP_grokbot WYA C: map sheet (same look and behaviour as the city picklist sheet: backdrop, title + DONE, search on top) -->
 <div class="cp-backdrop wya-backdrop" id="wya-backdrop" hidden></div>
 <div class="cp-sheet wya-sheet" id="wya-sheet" role="dialog" aria-modal="true" aria-label="Where you live" hidden>
-  <div class="cp-sheet-head"><span class="cp-sheet-title">Where you live</span><button type="button" class="cp-x" id="wya-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
-  <div class="cp-search-wrap wya-csearch"><input class="field-input" id="wya-cq" type="text" placeholder="Zip, postcode or city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-controls="wya-csug" aria-expanded="false"><div class="wya-sug" id="wya-csug" role="listbox" hidden></div></div>
+  <div class="cp-sheet-head"><span class="cp-sheet-title">Location</span><button type="button" class="cp-x" id="wya-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
+  <div class="cp-search-wrap wya-csearch"><input class="field-input" id="wya-cq" type="text" placeholder="Zip or city" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-controls="wya-csug" aria-expanded="false"><div class="wya-sug" id="wya-csug" role="listbox" hidden></div></div>
   <div class="wya-ctools"><button type="button" class="wya-gps" id="wya-gps-c" onclick="wyaLocate()"><span class="wya-gps-ic" aria-hidden="true"></span>USE MY LOCATION</button><span class="wya-ctip">Pinch or use + / − to zoom · tap or drag the pin</span></div>
   <div class="wya-cmap"><div id="wya-map-c" role="application" aria-label="Map: tap or drag the pin to where you live"></div></div>
   <div class="wya-cfoot"><span class="wya-city" id="wya-city-c">Search, use your location, or tap the map</span></div>
@@ -6242,26 +6337,113 @@ window.addEventListener('load', () => {
 </script>
 <script>
 // K5 (k12 @74e0c9f): own RELIGION / INCOME / DEGREE on Who You Are. Optional; untouched = None Stated (null).
-// One at a time: Race -> Religion -> Degree -> Income -> Politics -> Email. Each appears once the previous is answered (collapsed) or skipped with Next ("—"), so Email appears right after Degree and never gets stuck.
-crDef('who-religion', { optional: true, focus: 'religion', value: () => { const s = document.getElementById('religion'); return s && s.value ? s.value : ''; } });
-function k5ReligionPick(el) { state.religion = el.value || null; el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-religion'); }
-crDef('who-income', { optional: true, focus: 'income_range', value: () => { if (!state.incomeTouched) return ''; const s = document.getElementById('income_range'); return s ? s.options[s.selectedIndex].textContent : ''; } });
-crDef('who-degree', { optional: true, focus: 'education', value: () => { if (!state.educationTouched) return ''; const s = document.getElementById('education'); return s && s.selectedIndex >= 0 ? s.options[s.selectedIndex].textContent : ''; } });
-function k5DegreeTouch() {
-  const el = document.getElementById('education');
-  state.education = el && el.value ? el.value : null;
-  state.educationTouched = true;
-  if (typeof _syncDefaultStyles === 'function') _syncDefaultStyles();
-  crTap('who-degree');
-}
+// One at a time: Race -> Religion -> Degree -> Income -> Politics -> Email. s3n: all required (None Stated is an answer; "— Select —" + Next = "Please make a selection"). Each appears once the previous is answered (collapsed) or skipped with Next ("—"), so Email appears right after Degree and never gets stuck.
+crDef('who-religion', { focus: 'religion', value: () => { const s = document.getElementById('religion'); return s && s.value ? s.value : ''; } });
+function k5ReligionPick(el) { if (el.value) hideError('religion'); state.religion = el.value || null; el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-religion'); }
+// s3l: Degree / Income work like Religion / Politics: "— Select —" = unanswered (grey, saves nothing); "None Stated" (last) = answered, saves null.
+const _k5OptTxt = id => { const s = document.getElementById(id); return s && s.value && s.selectedIndex >= 0 ? s.options[s.selectedIndex].textContent : ''; };
+const _k5Val = v => v && v !== 'None Stated' ? v : null;
+crDef('who-income', { focus: 'income_range', value: () => _k5OptTxt('income_range') });
+crDef('who-degree', { focus: 'education', value: () => _k5OptTxt('education') });
+function k5DegreePick(el) { if (el.value) hideError('education'); state.education = _k5Val(el.value); el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-degree'); }
+function k5IncomePick(el) { if (el.value) hideError('income_range'); state.incomeRange = _k5Val(el.value); el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-income'); }
 // Production columns (already allowed in save-lead / submit-application): religion, income_range, education (all nullable text).
 function k5WhoExtraPayload() {
   const r = document.getElementById('religion'), a = document.getElementById('income_range'), d = document.getElementById('education');
-  return { religion: r && r.value && r.value !== 'None Stated' ? r.value : null, income_range: a && a.value ? a.value : null, education: d && d.value ? d.value : null, politics: (function () { const p = document.getElementById('politics'); return p && p.value && p.value !== 'None Stated' ? p.value : null; })() };
+  return { religion: r && r.value && r.value !== 'None Stated' ? r.value : null, income_range: a ? _k5Val(a.value) : null, education: d ? _k5Val(d.value) : null, politics: (function () { const p = document.getElementById('politics'); return p && p.value && p.value !== 'None Stated' ? p.value : null; })() };
 }
-crDef('who-politics', { optional: true, focus: 'politics', value: () => { const s = document.getElementById('politics'); return s && s.value ? s.value : ''; } });
-function k5PoliticsPick(el) { state.politics = el.value || null; el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-politics'); }
-window.addEventListener('load', () => { _bindDefaultPicker('education', k5DegreeTouch); _syncDefaultStyles(); });
+crDef('who-politics', { focus: 'politics', value: () => { const s = document.getElementById('politics'); return s && s.value ? s.value : ''; } });
+function k5PoliticsPick(el) { if (el.value) hideError('politics'); state.politics = el.value || null; el.classList.toggle('is-default', !el.value); crRefresh(); if (el.value) crTap('who-politics'); }
+
+</script>
+
+<script>
+// ==== s3n: the device the applicant registers on. Sent with save-lead and submit-application. ====
+// device_type mobile|tablet|desktop; device_os "iOS 18.6" / "Android 14" / "macOS 15.1" / "Windows 11"; device_browser "Safari 18.6" /
+// "Chrome 141" / "Instagram (in-app)"; device_model "iPhone" / "iPad" / "Pixel 8" when knowable; screen_w / screen_h CSS px; user_agent raw.
+// navigator.userAgentData (Chromium) refines OS version / model / brand; everything else is parsed from the UA string.
+const _dev = (function () {
+  const ua = navigator.userAgent || '', d = { device_type: null, device_os: null, device_browser: null, device_model: null, screen_w: null, screen_h: null, device_pixel_ratio: null, user_agent: ua ? ua.slice(0, 512) : null };
+  try { d.screen_w = Math.round(screen.width) || null; d.screen_h = Math.round(screen.height) || null; d.device_pixel_ratio = window.devicePixelRatio ? Math.round(devicePixelRatio * 100) / 100 : null; } catch (e) {}
+  const ver = (s) => s ? s.replace(/_/g, '.') : '';
+  const safariV = (ua.match(/Version\/(\d+(?:\.\d+)?)/) || [])[1];
+  const iPadDesk = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1; // iPadOS 13+ asks for the desktop site
+  let m;
+  if ((m = ua.match(/(iPhone|iPad|iPod)[^)]*? OS (\d+(?:_\d+){0,2})/))) {
+    // Safari froze the OS number in the UA at 18.x from iOS 26; Version/ carries the real number then.
+    let v = ver(m[2]); if (safariV && parseFloat(safariV) >= 26) v = safariV;
+    d.device_os = (m[1] === 'iPad' ? 'iPadOS ' : 'iOS ') + v; d.device_model = m[1];
+  } else if (iPadDesk) { d.device_os = 'iPadOS' + (safariV ? ' ' + safariV : ''); d.device_model = 'iPad'; }
+  else if ((m = ua.match(/Android (\d+(?:\.\d+)*)/))) {
+    d.device_os = 'Android ' + m[1];
+    const mm = ua.match(/Android [^;)]*;\s*(?:[a-z]{2}[-_][a-z]{2};\s*)?([^;)]+?)(?:\s+Build\/[^;)]*)?\)/i);
+    if (mm && !/^(K|wv|Linux|Mobile|U)$/i.test(mm[1].trim())) d.device_model = mm[1].trim().slice(0, 64);
+  } else if ((m = ua.match(/Windows NT (\d+\.\d+)/))) d.device_os = 'Windows ' + ({ '10.0': '10', '6.3': '8.1', '6.2': '8', '6.1': '7' }[m[1]] || m[1]);
+  else if ((m = ua.match(/Mac OS X (\d+(?:_\d+){0,2})/))) { const v = ver(m[1]); d.device_os = v === '10.15.7' ? 'macOS' : 'macOS ' + v; } // 10.15.7 is the frozen value, not the real one
+  else if (/CrOS/.test(ua)) d.device_os = 'ChromeOS';
+  else if (/Linux/.test(ua)) d.device_os = 'Linux';
+  const b = [[/Instagram/, 'Instagram (in-app)'], [/FBAN|FBAV/, 'Facebook (in-app)'], [/TikTok|musical_ly|BytedanceWebview/, 'TikTok (in-app)'], [/LinkedInApp/, 'LinkedIn (in-app)'],
+    [/EdgiOS\/(\d+)|EdgA\/(\d+)|Edg\/(\d+)/, 'Edge'], [/OPR\/(\d+)|OPiOS\/(\d+)/, 'Opera'], [/SamsungBrowser\/(\d+)/, 'Samsung Internet'], [/GSA\/(\d+)/, 'Google app'],
+    [/CriOS\/(\d+)/, 'Chrome'], [/FxiOS\/(\d+)|Firefox\/(\d+)/, 'Firefox'], [/Chrome\/(\d+)/, 'Chrome'], [/Version\/(\d+(?:\.\d+)?).*Safari/, 'Safari']];
+  for (const [re, name] of b) { const x = ua.match(re); if (x) { const v = x.slice(1).find(Boolean); d.device_browser = name + (v && !/in-app/.test(name) ? ' ' + v : ''); break; } }
+  d.device_type = (/iPad|Tablet/.test(ua) || iPadDesk || (/Android/.test(ua) && !/Mobile/.test(ua))) ? 'tablet' : (/Mobi|iPhone|iPod|Android/.test(ua) ? 'mobile' : 'desktop');
+  const uad = navigator.userAgentData;
+  if (uad && /Chrome\//.test(ua) && !/iPhone|iPad|iPod/.test(ua) && !iPadDesk) { // Chromium only (iOS browsers have no userAgentData)
+    if (uad.mobile && d.device_type === 'desktop') d.device_type = 'mobile';
+    if (uad.getHighEntropyValues) uad.getHighEntropyValues(['platformVersion', 'model', 'fullVersionList']).then(h => {
+      const pv = h.platformVersion || '', p = h.platform || uad.platform || '';
+      if (p === 'Windows' && pv) d.device_os = 'Windows ' + (parseInt(pv, 10) >= 13 ? '11' : '10');
+      else if (p === 'macOS' && pv) d.device_os = 'macOS ' + pv.split('.').slice(0, 2).join('.');
+      else if (p === 'Android' && pv) d.device_os = 'Android ' + pv;
+      else if (p === 'Chrome OS' || p === 'ChromeOS') d.device_os = 'ChromeOS' + (pv ? ' ' + pv : '');
+      if (h.model) d.device_model = String(h.model).slice(0, 64);
+      const brands = (h.fullVersionList || []).filter(x => !/Not.?A.?Brand|Chromium/i.test(x.brand));
+      if (brands.length && !/in-app/.test(d.device_browser || '')) { const x = brands[0], n = { 'Google Chrome': 'Chrome', 'Microsoft Edge': 'Edge' }[x.brand] || x.brand; d.device_browser = n + ' ' + String(x.version).split('.')[0]; }
+    }).catch(() => {});
+  }
+  return d;
+})();
+function devicePayload() { return Object.assign({}, _dev); }
+</script>
+<script>
+// s3n: clear a required-field error once it has an answer
+window.addEventListener('load', () => {
+  ['partner_last_name', 'moved_in_date', 'first_date', 'engagement_date', 'wedding_date'].forEach(id => { const el = document.getElementById(id); if (el) ['input', 'change'].forEach(ev => el.addEventListener(ev, () => { if (el.value) hideError(id); })); });
+  const chips = document.getElementById('partner-city-chips');
+  if (chips && window.MutationObserver) new MutationObserver(() => { if (partnerCity) hideError('partner_city'); }).observe(chips, { childList: true, subtree: true });
+});
+</script>
+
+<script>
+// s3p: every empty select is grey (placeholder colour), on every screen. Untouched defaults (heights) keep their own rule.
+const _S3P_DEF = ['height_ftin', 'partner_height'];
+function s3pSelectGrey(el) {
+  const list = el ? [el] : document.querySelectorAll('select.field-input');
+  list.forEach(s => { if (!s || s.tagName !== 'SELECT' || _S3P_DEF.includes(s.id)) return; s.classList.toggle('is-default', !s.value); });
+}
+document.addEventListener('change', e => { if (e.target && e.target.tagName === 'SELECT') s3pSelectGrey(e.target); }, true);
+document.addEventListener('DOMContentLoaded', () => s3pSelectGrey());
+(function () { const f = _syncDefaultStyles; _syncDefaultStyles = function () { f.apply(this, arguments); s3pSelectGrey(); }; })();
+// s3p: Your Partner height options read in the location's unit: 5’9” (US) or 175 cm (elsewhere). Values stay cm.
+function _syncPartnerHeightUnit() {
+  const sel = document.getElementById('partner_height'); if (!sel) return;
+  const us = !_s3qMetric();
+  Array.from(sel.options).forEach(o => {
+    if (!o.value) return;
+    const cm = parseInt(o.value, 10), tin = Math.round(cm / 2.54), low = tin <= 58 ? ' or under' : '';
+    o.textContent = us ? Math.floor(tin / 12) + '\u2019' + (tin % 12) + '\u201d' + low : cm + ' cm' + low;
+  });
+  try { if (CR['pt-height'] && crIsCollapsed('pt-height')) _crFill('pt-height', crText('pt-height')); } catch (e) {}
+}
+function s3qHeightPrefLabels() {
+  const a = document.getElementById('height_min_in'), b = document.getElementById('height_max_in');
+  const la = document.getElementById('height_min_label'), lb = document.getElementById('height_max_label');
+  if (a && la) la.textContent = _fmtHeight(parseInt(a.value, 10));
+  if (b && lb) lb.textContent = _fmtHeight(parseInt(b.value, 10));
+  try { if (typeof k4SyncHeads === 'function') k4SyncHeads(); } catch (e) {}
+}
+(function () { const f = _syncHeightMode; _syncHeightMode = function () { f.apply(this, arguments); try { _syncPartnerHeightUnit(); s3qHeightPrefLabels(); } catch (e) {} }; })();
+document.addEventListener('DOMContentLoaded', () => { try { s3qHeightPrefLabels(); } catch (e) {} });
 </script>
 </body>
 </html>
