@@ -2983,7 +2983,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-07p2-s3y45'; // prod s3y45: couples Their City auto-collapse (PT_CITY_IDLE_MS 4000, no EDIT box while open); city-name search; clean partner_city; one-press NEXT (background saves); Turnstile fail-safe client. Prior prod: 2026-10-06p8-s3y38.
+var PAGE_VERSION = '2026-10-07p3-s3y45ts'; // p3: corrected Turnstile sitekey (capital O after wsDH, was zero). prod s3y45: couples Their City auto-collapse (PT_CITY_IDLE_MS 4000, no EDIT box while open); city-name search; clean partner_city; one-press NEXT (background saves); Turnstile fail-safe client. Prior prod: 2026-10-06p8-s3y38.
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -4203,7 +4203,7 @@ function resetUnder18() {
 //  - token arrives                          -> sent; the server verifies it with siteverify (invalid -> 403, page shows a retry message)
 //  - script fails / not loaded in 8s / widget errors twice -> sent WITHOUT a token, flagged turnstile_status "unavailable" (never blocks)
 //  - widget loaded fine but no token after 10s + one reset (or 30s once a tap is asked for) -> not sent; retry message shown
-const TS_SITEKEY = '0x4AAAAAAE_wsDH0XiSXmyR9'; // production Turnstile widget (Managed mode; hostnames iherebycommit.com + www)
+const TS_SITEKEY = '0x4AAAAAAE_wsDHOXiSXmyR9'; // production Turnstile widget (Managed mode; hostnames iherebycommit.com + www)
 const TS_LOAD_TIMEOUT_MS = 8000, TS_TOKEN_WAIT_MS = 10000, TS_INTERACTIVE_WAIT_MS = 30000;
 const _ts = window.__ts || (window.__ts = { api: 'loading' });
 _ts.id = null; _ts.err = null; _ts.interactive = false; _ts.waiters = [];
