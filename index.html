@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="s3y38 s3y37 s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
+<html lang="en" class="s3y45 s3y44 s3y43 s3y42 s3y40 s3y38 s3y37 s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
 <head>
   <!-- SANDBOX_grokbot (k5-s3y38-main_income): non-overlapping own income labels; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y37-main_ptloc): couples partner live defaults from own location; Add→EDIT when prefilled; no WMM -->
@@ -57,6 +57,7 @@
        Built from s3i: production 2026-10-05p3 + K5 Religion / Income / Degree on Who You Are + I am a | Name half-row once Name is done.
        Saves faked. Not indexed. -->
   <!-- prod 2026-10-06p8-s3y38: s3y38 WYW shipped (s3y37 couples partner-live prefill + EDIT; s3y38 income labels). Fetch stub, noindex, and sandbox badge removed; real Supabase saves. No WMM. -->
+  <!-- prod 2026-10-07p2-s3y45: sandbox s3y40-s3y45 shipped: couples Their City opens full-width prefilled, auto-collapses after PT_CITY_IDLE_MS 4000 (no EDIT box while open); city-name search ("City, ST") with the bigger cities_grokbot.json; clean partner_city ("City, ST"); one-press NEXT (saves queued in the background); Turnstile fail-safe client (explicit render, waits for the token, flags "unavailable"). Real Supabase + real Turnstile sitekey; no noindex, no badge. -->
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -77,7 +78,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <!-- s3y43 Turnstile: explicit render (see TURNSTILE block). Stubs first: the async script can finish before the page script runs. -->
+  <script>window.__ts = { api: 'loading' }; function _tsApiLoaded() { __ts.api = 'ready'; if (__ts.on) __ts.on(); } function _tsScriptFailed() { __ts.api = 'failed'; if (__ts.on) __ts.on(); }</script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=_tsApiLoaded" async defer onerror="_tsScriptFailed()"></script>
 
   <style>
     /* ===== RESET & BASE ===== */
@@ -326,6 +329,11 @@
     .city-add-row { display: flex; gap: 8px; align-items: stretch; }
     .city-add-row[hidden] { display: none; }
     .city-add-input { flex: 1; min-width: 0; min-height: 44px; }
+    /* s3y42: couples Their City open = one full-width input like other expanded inputs; EDIT only on the collapsed card */
+    #pt-city #partner-city-add-btn { display: none !important; }
+    #pt-city #partner-city-add-row { display: block; }
+    #pt-city #partner_city_input { width: 100%; box-sizing: border-box; min-height: 0; }
+    #pt-city #partner-city-chips:empty { display: none; }
     .city-add-btn {
       flex-shrink: 0; min-height: 44px; min-width: 64px; padding: 0 14px;
       border: 1px solid var(--dim); border-radius: var(--radius); background: transparent;
@@ -2819,6 +2827,8 @@
     </div>
     <div class="bottom-action">
       <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+      <div id="cf-turnstile-widget"></div>
+      <div class="field-error" id="err-turnstile" role="alert" aria-live="polite"></div>
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(6)">← BACK</button>
     </div>
@@ -2868,7 +2878,6 @@
         <label class="field-label">TikTok</label>
         <div class="handle-prefix"><span class="at-sign">@</span><input class="field-input" id="tiktok" type="text" placeholder="yourhandle"></div>
       </div>
-      <div id="cf-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAE_wsDH0XiSXmyR9" data-callback="onTurnstileSuccess" data-size="invisible"></div>
     </div>
     <div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(7)">NEXT</button>
@@ -2974,7 +2983,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-06p8-s3y38'; // prod s3y38 WYW (s3y37 partner-live prefill + EDIT; s3y38 non-overlapping income labels; Dist EDIT keeps OTHER CITIES; Age→Height seq; Degree below Height; no WMM). // s3y38: own income labels non-overlapping (values unchanged) // s3y37: couples WHERE DOES YOUR PARTNER LIVE defaults from own Who You Are location; city-add btn EDIT when prefilled (main, no WMM) // deploy-bump-s3y36a // s3y36: Dist EDIT keeps OTHER CITIES condensed below Dist; keep Age→Height + Degree below Height (main, no WMM) // s3y35: HARD-hide Height until Age touched+idle ~1s; never auto with Age (main, no WMM) // deploy-bump-s3y34b // s3y34: Degree+prefs below Height (fix s3y31 order:0); Age then Height one-at-a-time (main, no WMM) // s3y33: after Dist only Age; Height after Age idle ~1s post-touchend (main, no WMM) // s3y32: first-visit Dist move+up (checkbox unchecked) → 1s idle → condense → Age (main, no WMM) // s3y31: Seeking→Dist→OC; Dist EDIT in Dist slot; move+1s or no-move+3s → Age (main, no WMM)
+var PAGE_VERSION = '2026-10-07p2-s3y45'; // prod s3y45: couples Their City auto-collapse (PT_CITY_IDLE_MS 4000, no EDIT box while open); city-name search; clean partner_city; one-press NEXT (background saves); Turnstile fail-safe client. Prior prod: 2026-10-06p8-s3y38.
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -3415,10 +3424,8 @@ function showScreen(id, direction) {
   crSync();
   if (CR_STEPS[id]) crSettleScreen(id);
 
-  // Pre-warm Turnstile when user reaches the social handles step
-  if (id === 7 && window.turnstile && !state.turnstileToken) {
-    try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
-  }
+  // s3y43: Turnstile renders when the Submit screen is shown (the widget sits above SUBMIT; interaction-only).
+  if (id === 6 && typeof _tsRender === 'function') _tsRender();
 
   if (id === 1) { _buildHeightSelect(); }
   if (id === 2) { _buildHeightSelect('partner_height'); _partnerHeightDefault(); _syncPartnerHeightUnit(); }
@@ -3595,7 +3602,7 @@ async function goNext(screenId) {
   if (crRevealNext(screenId)) { _crClearErrors(screenId); _crFirstOpen(screenId); return; }
   clearErrorSummary(screenId);
   logEvent('screen_completed', keyOf(document.getElementById('screen-' + screenId)));
-  await saveLead(); // await so partialLeadId is set before the next NEXT can fire
+  saveLead(); // s3y43: not awaited. saveLead is serialized (see SAVE QUEUE), so the next save still waits for partialLeadId.
   showScreen(getNextScreen(screenId), 'forward');
 }
 
@@ -4190,10 +4197,53 @@ function resetUnder18() {
 // ============================================================
 // SUBMISSION
 // ============================================================
-function onTurnstileSuccess(token) {
-  state.turnstileToken = token;
-  if (state.submitting) doSubmit();
+// ==== TURNSTILE (s3y43, fail-safe) ====
+// The widget renders explicitly on the Submit screen with appearance "interaction-only": most people never see it; it only
+// shows (above SUBMIT) when Cloudflare wants a tap. Submit waits for the token instead of sending an empty one.
+//  - token arrives                          -> sent; the server verifies it with siteverify (invalid -> 403, page shows a retry message)
+//  - script fails / not loaded in 8s / widget errors twice -> sent WITHOUT a token, flagged turnstile_status "unavailable" (never blocks)
+//  - widget loaded fine but no token after 10s + one reset (or 30s once a tap is asked for) -> not sent; retry message shown
+const TS_SITEKEY = '0x4AAAAAAE_wsDH0XiSXmyR9'; // production Turnstile widget (Managed mode; hostnames iherebycommit.com + www)
+const TS_LOAD_TIMEOUT_MS = 8000, TS_TOKEN_WAIT_MS = 10000, TS_INTERACTIVE_WAIT_MS = 30000;
+const _ts = window.__ts || (window.__ts = { api: 'loading' });
+_ts.id = null; _ts.err = null; _ts.interactive = false; _ts.waiters = [];
+function _tsWake() { const w = _ts.waiters; _ts.waiters = []; w.forEach(f => f()); }
+_ts.on = function () { if (_ts.api === 'ready' && state.currentScreen === 6) _tsRender(); _tsWake(); };
+function _tsWait(ms) { return new Promise(res => { const go = () => { clearTimeout(t); res(); }; const t = setTimeout(() => { _ts.waiters = _ts.waiters.filter(f => f !== go); res(); }, Math.max(0, ms)); _ts.waiters.push(go); }); }
+function _tsRender() {
+  if (_ts.api !== 'ready' || _ts.id !== null || !window.turnstile) return;
+  try {
+    _ts.id = window.turnstile.render('#cf-turnstile-widget', {
+      sitekey: TS_SITEKEY, appearance: 'interaction-only', size: 'flexible', 'refresh-expired': 'auto', retry: 'auto',
+      callback: onTurnstileSuccess,
+      'expired-callback': () => { state.turnstileToken = null; },
+      'before-interactive-callback': () => { _ts.interactive = true; _tsWake(); },
+      'error-callback': code => { _ts.err = String(code || 'error'); state.turnstileToken = null; _tsWake(); return true; },
+    });
+  } catch (e) { _ts.err = 'render:' + (e && e.message || e); _tsWake(); }
 }
+function _tsReset() { state.turnstileToken = null; _ts.err = null; _ts.interactive = false; if (_ts.id !== null && window.turnstile) { try { window.turnstile.reset(_ts.id); } catch (e) {} } }
+function onTurnstileSuccess(token) { state.turnstileToken = token; _ts.err = null; _tsMsg(''); _tsWake(); }
+function _tsMsg(t) { const e = document.getElementById('err-turnstile'); if (!e) return; e.textContent = t || ''; e.classList.toggle('visible', !!t); }
+async function _tsGetToken() {
+  if (state.turnstileToken) return { token: state.turnstileToken, status: 'ok' };
+  if (_ts.api === 'loading') { const end = Date.now() + TS_LOAD_TIMEOUT_MS; while (_ts.api === 'loading' && Date.now() < end) await _tsWait(end - Date.now()); }
+  if (_ts.api !== 'ready' || !window.turnstile) return { token: '', status: 'unavailable', reason: _ts.api === 'failed' ? 'script_error' : 'script_timeout' };
+  _tsRender();
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt) _tsReset();
+    let end = Date.now() + TS_TOKEN_WAIT_MS, longWait = false;
+    while (!state.turnstileToken && !_ts.err && Date.now() < end) {
+      if (_ts.interactive && !longWait) { longWait = true; end = Date.now() + TS_INTERACTIVE_WAIT_MS; } // a tap is being asked for: give them time
+      await _tsWait(Math.min(end - Date.now(), 1000));
+    }
+    if (state.turnstileToken) return { token: state.turnstileToken, status: 'ok' };
+    if (_ts.interactive) break; // a tap was asked for and not given: don't reset it away
+  }
+  if (_ts.err) return { token: '', status: 'unavailable', reason: 'widget_error:' + _ts.err };
+  return { token: '', status: 'timeout', reason: _ts.interactive ? 'needs_interaction' : 'token_timeout' };
+}
+function _submitReset(btn) { btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false; }
 
 // Submit is on the phone screen (6): check the phone format here, inline, before anything is sent.
 async function submitForm() {
@@ -4201,24 +4251,23 @@ async function submitForm() {
   if (!validateScreen(6)) { surfaceErrors(6); logValidationFailed(6); return; }
   clearErrorSummary(6);
   state.submitting = true;
+  _tsMsg('');
   const btn = document.getElementById('submit-btn');
   btn.classList.add('btn-loading');
   btn.textContent = 'VERIFYING';
-  if (state.turnstileToken) {
-    await doSubmit();
-  } else {
-    // Explicitly trigger the invisible widget
-    if (window.turnstile) {
-      try { window.turnstile.execute('#cf-turnstile-widget'); } catch(e) {}
-    }
-    // Fallback: proceed after 3s regardless (Turnstile pre-warmed on step entry)
-    setTimeout(() => { if (state.submitting) doSubmit(); }, 3000);
+  const ts = await _tsGetToken();
+  if (ts.status === 'timeout') {
+    _tsMsg(ts.reason === 'needs_interaction' ? 'Please tap the verification box above, then tap Submit again.' : 'We couldn\u2019t finish a quick security check. Please tap Submit again.');
+    _submitReset(btn);
+    return;
   }
+  await doSubmit(ts);
 }
 
-// Single flight: the Turnstile callback and the 3s fallback can both call this; only the first one submits.
+// Single flight: only one submit request at a time.
 let _submitInFlight = false;
-async function doSubmit() {
+async function doSubmit(ts) {
+  ts = ts || { token: state.turnstileToken || '', status: state.turnstileToken ? 'ok' : 'unavailable', reason: 'direct' };
   if (_submitInFlight) return;
   _submitInFlight = true;
   if (!timing.submittedLogged) {
@@ -4277,7 +4326,9 @@ async function doSubmit() {
     height_cm: heightPayload(),
     landing_headline: state.landingHeadline || null,
     partial_lead_id: state.partialLeadId || null,
-    turnstileToken: state.turnstileToken || '',
+    turnstileToken: ts.token || '',
+    turnstile_status: ts.status === 'ok' ? 'ok' : 'unavailable', // s3y43: 'unavailable' = the widget could not load / errored on this device
+    turnstile_reason: ts.reason || null,
     consent_surfaces: consentSurfaces(),
     terms_version: '2026-10-01',
     terms_accepted_at: new Date().toISOString(),
@@ -4288,17 +4339,20 @@ async function doSubmit() {
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
       body: JSON.stringify(body),
     });
-    const data = await resp.json();
+    const data = await resp.json().catch(() => ({}));
     if (resp.status === 200) {
       showConfirmation(data.subject_number);
       setTimeout(saveLead, 0); // flush confirmation screen_shown (save-lead stores events only for converted rows)
     } else {
+      _tsReset(); // a Turnstile token works once: get a fresh one for the next try
+      if (data && typeof data.code === 'string' && data.code.indexOf('turnstile_') === 0) _tsMsg(data.error || 'We couldn\u2019t confirm you\u2019re a person. Please tap Submit again.');
       showToast(data.error || 'Something went wrong. Please try again.');
-      btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false;
+      _submitReset(btn);
     }
   } catch(e) {
+    _tsReset();
     showToast('Network error. Please check your connection and try again.');
-    btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false;
+    _submitReset(btn);
   }
 }
 
@@ -4692,6 +4746,7 @@ function crSync() {
     const open = !u.classList.contains('collapsed');
     u.classList.toggle('cr-active', open && (!crText(u.id) || !!c._editing || (u.id === 'fam-lf' && !!_lfCollapseTimer)));
   });
+  _ptCityHoldTick(); // s3y40
 }
 // Keep condensed text current (e.g. the city arrives after the zip lookup); reopen rows that lost their answer.
 function crRefresh() {
@@ -4768,7 +4823,7 @@ function _crDefineAll() {
   crDef('pt-race', { partner: 'pt-height', focus: 'partner_race', busy: isPartnerRacePanelOpen, onExpand: f => { if (f) openPartnerRacePanel(); }, value: () => Array.isArray(state.partnerRace) ? state.partnerRace.join(', ') : '' });
   crDef('pt-email', { focus: 'partner_email', value: () => { const e = _crV('partner_email'); return e && isValidEmail(e) ? e : ''; } });
   crDef('pt-live', { partner: () => state.livesWithPartner === 'no' ? 'pt-city' : (state.livesWithPartner === 'yes' ? 'pt-moved' : null), value: () => ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '' });
-  crDef('pt-city', { partner: 'pt-live', focus: 'partner_city_input', applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
+  crDef('pt-city', { partner: 'pt-live', focus: 'partner_city_input', busy: () => _ptCityHold, applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
   crDef('pt-moved', { optional: true, partner: 'pt-live', focus: 'moved_in_date', applies: () => state.livesWithPartner === 'yes', value: () => state.livesWithPartner === 'yes' ? _crMdy(_crV('moved_in_date')) : '' });
   // Your Relationship
   const stage = () => _crV('relationship_stage');
@@ -5118,6 +5173,8 @@ function loadPartnerCities() {
       PARTNER_CITIES = (Array.isArray(list) ? list : []).map(c => Object.assign({}, c, {
         _names: [c.city, ...(Array.isArray(c.aliases) ? c.aliases : [])].map(_foldCity).filter(Boolean),
         _label: _foldCity(c.label),
+        // s3y43: what may follow the comma: state code (MA), state / region name (Massachusetts), country code / name
+        _rest: [String(c.label).split(',').slice(1).join(' '), c.region, c.country, c.country === 'US' ? 'usa united states' : '', c.country === 'GB' ? 'uk united kingdom england' : ''].map(_foldCity).filter(Boolean),
       }));
       _attachOwnCityCoords();
       _renderPartnerLocationSuggestions();
@@ -5131,6 +5188,7 @@ function loadPartnerCities() {
 function _searchPartnerCities(q, limit) {
   const fq = _foldCity(q);
   if (!fq) return [];
+  const ci = String(q).indexOf(','), cq = ci > 0 ? _foldCity(String(q).slice(0, ci)) : '', rq = ci > 0 ? _foldCity(String(q).slice(ci + 1)) : '';
   const hits = [];
   for (const c of PARTNER_CITIES) {
     let tier = 9;
@@ -5140,9 +5198,16 @@ function _searchPartnerCities(q, limit) {
       else if ((' ' + n).includes(' ' + fq)) tier = Math.min(tier, 2);
     }
     if (tier > 1 && c._label.startsWith(fq)) tier = 1; // e.g. "portland or", "london uk"
+    if (tier > 1 && cq) { // s3y43: "Cambridge, MA" / "Cambridge, Mass" / "Cambridge, Massachusetts" / "London, UK"
+      let nt = 9;
+      for (const n of c._names) { if (n === cq) { nt = 0; break; } if (n.startsWith(cq)) nt = Math.min(nt, 1); }
+      if (nt <= 1 && (!rq || c._rest.some(k => k === rq || k.startsWith(rq) || (' ' + k).includes(' ' + rq)))) tier = nt;
+    }
     if (tier <= 2) hits.push({ c, tier });
   }
-  hits.sort((a, b) => a.tier - b.tier || (b.c.boost ? 1 : 0) - (a.c.boost ? 1 : 0) || b.c.population - a.c.population);
+  // s3y43: same tier -> hubs first, then the applicant's country counts 5x ("Cambridge" -> Cambridge, MA for US applicants; Birmingham UK still beats Birmingham AL).
+  const pcc = _cityPrefCC(), w = c => (c.country === pcc ? 5 : 1);
+  hits.sort((a, b) => a.tier - b.tier || (b.c.boost ? 1 : 0) - (a.c.boost ? 1 : 0) || b.c.population * w(b.c) - a.c.population * w(a.c));
   return hits.slice(0, limit || 6).map(h => h.c);
 }
 function _plEntryFromCity(c, label) {
@@ -5903,17 +5968,46 @@ let _zipTimer = null;
 // Couples "Where does your partner live?" — default label from Who You Are location.
 function _defaultPartnerCityLabel() {
   try {
-    if (state.wya) {
-      if (typeof _wyaTxt === 'function') return _wyaTxt(state.wya) || null;
-      return state.wya.label || state.wya.zip || null;
-    }
-    if (state.locationMode === 'zip') {
-      const z = (document.getElementById('postal_code')?.value || '').trim();
-      if (z) return z + (state.zipCity ? ' · ' + state.zipCity : '');
-      return (state.zipCity || '').trim() || null;
-    }
+    // s3y43: the clean city label, exactly like the own location ("Cambridge, MA"), never "02139 · Cambridge, MA".
+    if (state.wya) return state.wya.label || null;
+    if (state.locationMode === 'zip') return (state.zipCity || '').trim() || null;
     return (typeof _canonicalOwnCity === 'function' ? _canonicalOwnCity() : null) || null;
   } catch (e) { return null; }
+}
+// s3y40: THEIR CITY appears as an open (full-width) question prefilled with the applicant's own city. Untouched, it
+// collapses to THEIR CITY + EDIT after CR_DELAY (the same 1.2s idle collapse used by the multi-select pickers and
+// OTHER CITIES). Any tap/focus/typing inside it cancels the timer: it then stays open until the user leaves it.
+const PT_CITY_IDLE_MS = 4000; // s3y45: 4500 -> 4000. s3y44: 3000 -> 4500. s3y42: untouched Their City stays open ~3s (counted from fully visible) before it folds
+let _ptCityHold = false, _ptCityHoldT = null, _ptCityIO = null;
+function _ptCityArm() { _ptCityRelease(false); _ptCityHold = true; }
+function _ptCityRelease(settle) {
+  clearTimeout(_ptCityHoldT); _ptCityHoldT = null;
+  if (_ptCityIO) { try { _ptCityIO.disconnect(); } catch (e) {} _ptCityIO = null; }
+  const was = _ptCityHold; _ptCityHold = false;
+  if (!was || !settle) return;
+  const u = document.getElementById('pt-city');
+  if (!u || (u.contains(document.activeElement)) || (partnerCityPicker && partnerCityPicker._editing)) return;
+  if (state.livesWithPartner === 'no' && partnerCity) { crSettle('pt-city'); crSync(); }
+}
+// Start the idle timer only once THEIR CITY is actually on screen (after Live together folds).
+function _ptCityHoldTick() {
+  if (!_ptCityHold || _ptCityHoldT) return;
+  const u = document.getElementById('pt-city');
+  if (!u || state.livesWithPartner !== 'no' || !partnerCity) { if (!partnerCity) _ptCityRelease(false); return; }
+  if (u.classList.contains('collapsed') || u.classList.contains('cr-later') || u.style.display === 'none') return;
+  // s3y42: wait for the reveal animation (wwRowIn .24s) to finish, then for the whole field to be on screen,
+  // and only then start the PT_CITY_IDLE_MS countdown.
+  _ptCityHoldT = setTimeout(() => {
+    if (!_ptCityHold) return;
+    const start = () => { if (_ptCityIO) { try { _ptCityIO.disconnect(); } catch (e) {} _ptCityIO = null; }
+      if (_ptCityHold) _ptCityHoldT = setTimeout(() => _ptCityRelease(true), PT_CITY_IDLE_MS); };
+    const r = u.getBoundingClientRect(), vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    if (r.height > 0 && r.top >= 0 && r.bottom <= vh + 1) { start(); return; }
+    if (!window.IntersectionObserver) { start(); return; }
+    _ptCityIO = new IntersectionObserver(es => { if (es.some(e => e.intersectionRatio >= 0.99)) start(); }, { threshold: [0.99, 1] });
+    _ptCityIO.observe(u);
+    _ptCityHoldT = -1; // waiting on visibility (truthy so the tick doesn't re-arm)
+  }, 260);
 }
 function setLivesWithPartner(val, fromTap) {
   state.livesWithPartner = val || null; if (val) hideError('lives_with_partner');
@@ -5931,6 +6025,9 @@ function setLivesWithPartner(val, fromTap) {
     if (movedUnit) movedUnit.classList.remove('collapsed');
     clearTimeout(_crT['pt-moved']); _crT['pt-moved'] = null;
   }
+  // s3y40: answering No opens THEIR CITY expanded (prefilled); it stays open until CR_DELAY passes untouched.
+  if (val === 'no' && fromTap && cityUnit && !cityUnit.classList.contains('collapsed')) _ptCityArm();
+  else if (val !== 'no') _ptCityRelease(false);
   if (val !== 'no') {
     partnerCity = null;
     const inp = document.getElementById('partner_city_input'); if (inp) inp.value = '';
@@ -5977,6 +6074,7 @@ function resetPartnerScreen() {
   const ph = document.getElementById('partner_height'); if (ph) ph.value = '';
   _partnerHeightDefault();
   partnerCity = null;
+  _ptCityRelease(false); // s3y40
   partnerCityPicker.render();
   crSync();
 }
@@ -5984,6 +6082,10 @@ function initPartnerCondensed() {
   // Partner birthday/height "touched" tracking: see _bindDefaultPicker (initCondensedRows).
   // Partner city: leaving the unit with typed text picks it (nothing typed is ever dropped), then collapses.
   const cu = document.getElementById('pt-city');
+  // s3y40: touching THEIR CITY (tap, focus, typing) cancels the untouched auto-collapse; it settles when they leave it.
+  if (cu) ['pointerdown', 'touchstart', 'focusin', 'input', 'keydown'].forEach(ev => cu.addEventListener(ev, () => {
+    if (_ptCityHold && !cu.classList.contains('collapsed')) _ptCityRelease(false);
+  }, { passive: true }));
   if (cu) cu.addEventListener('focusout', () => {
     setTimeout(() => {
       if (cu.contains(document.activeElement)) return;
@@ -6035,7 +6137,7 @@ function couplePayload() {
     married_before: c ? (state.marriedBefore || null) : null,
     // Hotfix 11. Birthday: the Jan 1, 1990 default is only sent once the user has touched it.
     partner_height: (c && state.partnerHeightTouched) ? (parseInt(g('partner_height'), 10) || null) : null, // 5'9" default only once touched
-    partner_city: (c && live === 'no') ? (partnerCity || null) : null,
+    partner_city: (c && live === 'no') ? (_cleanCityLabel(partnerCity) || null) : null, // s3y43: clean "City, ST"
   };
 }
 
@@ -7178,7 +7280,7 @@ function _wyaSuggest() {
   if (!PARTNER_CITIES.length) loadPartnerCities().then(() => { if (q.value.trim() === t) _wyaSuggest(); });
   _wyaOpts = (hasZip ? [{ zip: t }] : []).concat(cities.map(c => ({ city: c })));
   list.replaceChildren();
-  if (!_wyaOpts.length) { const d = document.createElement('div'); d.className = 'wya-opt none'; d.textContent = 'No match yet: try a bigger city nearby'; list.appendChild(d); }
+  if (!_wyaOpts.length) { const d = document.createElement('div'); d.className = 'wya-opt none'; d.textContent = 'No match yet: try your zip or a bigger city nearby'; list.appendChild(d); }
   _wyaOpts.forEach((o, i) => {
     const d = document.createElement('div'); d.className = 'wya-opt' + (i ? '' : ' active'); d.dataset.i = i; d.setAttribute('role', 'option');
     if (o.zip) { d.innerHTML = '<span class="k"></span><span class="sub">zip / postcode</span>'; d.children[0].textContent = o.zip; } else d.textContent = o.city.label;
@@ -9081,5 +9183,93 @@ _wmmCard = function (k, i, anim) {
 })();
 </script>
 
+<style>
+  /* s3y43: couples THEIR CITY suggestions use the singles partner-city list look (.vk2-sug / .vk2-opt) */
+  #partner-city-add-row { position: relative; }
+</style>
+<script>
+// ==== s3y43 ====
+// Country the city search prefers: the applicant's own (Who You Are), else US.
+function _cityPrefCC() {
+  try { if (state.wya && state.wya.cc) return String(state.wya.cc).toUpperCase(); if (state.locationCountry === 'United States') return 'US'; } catch (e) {}
+  return 'US';
+}
+// "02139 · Cambridge, MA" -> "Cambridge, MA" (only strips a leading zip / postcode that contains a digit).
+function _cleanCityLabel(v) {
+  if (v == null) return v;
+  const t = String(v).trim(), m = t.match(/^(?=[^\u00b7]*\d)[A-Za-z0-9 ]{2,10}\s*\u00b7\s*(.+)$/);
+  return m ? m[1].trim() : t;
+}
+// ---- SAVE QUEUE: saves run one at a time, so NEXT no longer waits for the network (the next save still gets partialLeadId) ----
+(function () {
+  const save0 = saveLead; let chain = Promise.resolve();
+  saveLead = function () { const args = arguments; const run = chain.then(() => save0.apply(null, args)); chain = run.catch(() => {}); return run; };
+})();
+// ---- Couples THEIR CITY: city-name / "City, ST" / zip suggestions; saved as a clean "City, ST" ----
+window.addEventListener('load', function () {
+  const inp = document.getElementById('partner_city_input'), row = document.getElementById('partner-city-add-row');
+  if (!inp || !row || typeof partnerCityPicker === 'undefined') return;
+  const l = document.createElement('div'); l.id = 'pc2-sug'; l.className = 'vk2-sug'; l.setAttribute('role', 'listbox'); l.hidden = true; row.appendChild(l);
+  inp.setAttribute('aria-controls', 'pc2-sug');
+  let opts = [], act = 0, seq = 0;
+  const commitRaw = partnerCityPicker.commit;
+  const commit0 = () => commitRaw.call(partnerCityPicker);
+  function hide() { l.hidden = true; l.replaceChildren(); opts = []; inp.setAttribute('aria-expanded', 'false'); }
+  function suggest() {
+    const t = inp.value.trim();
+    if (!t || t === _cleanCityLabel(partnerCity || '')) { hide(); return; }
+    if (!PARTNER_CITIES.length) loadPartnerCities().then(() => { if (inp.value.trim() === t) suggest(); });
+    const zip = /^\d{5}$/.test(t), cities = /[a-z\u00c0-\uffff]/i.test(t) ? _searchPartnerCities(t, window.innerHeight <= 720 ? 4 : 5) : [];
+    opts = (zip ? [{ zip: t }] : []).concat(cities.map(c => ({ city: c })));
+    l.replaceChildren();
+    if (!opts.length) { const d = document.createElement('div'); d.className = 'vk2-opt vk2-none'; d.textContent = /\d/.test(t) ? 'Keep typing: 5-digit zip' : 'No match yet: try a zip or a bigger city nearby'; l.appendChild(d); }
+    opts.forEach((o, k) => {
+      const d = document.createElement('div'); d.className = 'vk2-opt' + (k ? '' : ' active'); d.dataset.i = k; d.setAttribute('role', 'option');
+      if (o.zip) { d.innerHTML = '<span class="vk2-k"></span><span class="vk2-sub">US zip</span>'; d.children[0].textContent = o.zip; } else d.textContent = o.city.label;
+      l.appendChild(d);
+    });
+    act = 0; l.hidden = false; inp.setAttribute('aria-expanded', 'true');
+  }
+  async function zipLabel(z) {
+    try { const r = await fetch('https://api.zippopotam.us/us/' + z); if (!r.ok) return null; const d = await r.json(), pl = d.places && d.places[0]; return pl ? pl['place name'] + ', ' + pl['state abbreviation'] : null; } catch (e) { return null; }
+  }
+  async function resolveZip(z) { // the zip is held for a moment, then replaced by its "City, ST"
+    const my = ++seq, lab = await zipLabel(z);
+    if (my !== seq || partnerCity !== z) return;
+    if (lab) { partnerCity = lab; inp.value = lab; hideError('partner_city'); }
+    else showError('partner_city', 'Zip not found: try a city name');
+    partnerCityPicker.render(); crRefresh();
+  }
+  function canon(t) { // typed text that names a listed city becomes its label ("cambridge, ma" -> "Cambridge, MA")
+    t = _cleanCityLabel(t); if (!t || !PARTNER_CITIES.length) return t;
+    const f = _foldCity(t), exact = PARTNER_CITIES.find(c => c._label === f); if (exact) return exact.label;
+    if (t.indexOf(',') > 0) { const h = _searchPartnerCities(t, 2); if (h.length === 1) return h[0].label; }
+    return t;
+  }
+  function pick(o) {
+    if (!o) return; hide();
+    inp.value = o.city ? o.city.label : o.zip; commit0();
+    if (o.zip) resolveZip(o.zip);
+  }
+  partnerCityPicker.commit = function () {
+    const t = inp.value.trim(); hide();
+    if (!t) return commitRaw.apply(this, arguments);
+    if (/^\d{5}$/.test(t)) { const r = commitRaw.apply(this, arguments); resolveZip(t); return r; }
+    inp.value = canon(t);
+    return commitRaw.apply(this, arguments);
+  };
+  inp.addEventListener('input', suggest);
+  inp.addEventListener('keydown', e => { // capture: runs before the picker's own Enter handler
+    const open = !l.hidden && opts.length;
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && open) { e.preventDefault(); act = (act + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length; l.querySelectorAll('.vk2-opt').forEach((r, k) => r.classList.toggle('active', k === act)); }
+    else if (e.key === 'Enter' && !e.isComposing && open) { e.preventDefault(); e.stopImmediatePropagation(); pick(opts[act]); }
+    else if (e.key === 'Escape') hide();
+  }, true);
+  inp.addEventListener('blur', () => setTimeout(hide, 180));
+  l.addEventListener('mousedown', e => e.preventDefault());
+  l.addEventListener('click', e => { const r = e.target.closest('.vk2-opt[data-i]'); if (r) pick(opts[+r.dataset.i]); });
+  inp.addEventListener('focus', () => loadPartnerCities(), { once: true }); // the city list loads only when needed
+});
+</script>
 </body>
 </html>
