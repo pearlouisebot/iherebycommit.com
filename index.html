@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
+<html lang="en" class="s3y38 s3y37 s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
 <head>
+  <!-- SANDBOX_grokbot (k5-s3y38-main_income): non-overlapping own income labels; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y37-main_ptloc): couples partner live defaults from own location; Add→EDIT when prefilled; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y36-main_ocedit): Dist EDIT keeps OC condensed below Dist; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y35-main_heighthide): HARD-hide Height until Age touched+idle ~1s; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y34-main_deborder): Degree+prefs below Height; Age→Height one-at-a-time; no WMM -->
@@ -54,7 +56,7 @@
        s3j: s3i + K5 condensed on-page Age / Height range sliders (like Distance).
        Built from s3i: production 2026-10-05p3 + K5 Religion / Income / Degree on Who You Are + I am a | Name half-row once Name is done.
        Saves faked. Not indexed. -->
-  <!-- prod 2026-10-06p7-s3y36: s3y36 WYW shipped. Fetch stub, noindex, and sandbox badge removed; real Supabase saves. Dist EDIT keeps OTHER CITIES; Age→Height seq; Degree below Height; no WMM. -->
+  <!-- prod 2026-10-06p8-s3y38: s3y38 WYW shipped (s3y37 couples partner-live prefill + EDIT; s3y38 income labels). Fetch stub, noindex, and sandbox badge removed; real Supabase saves. No WMM. -->
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -2302,7 +2304,7 @@
           <div class="field-group who-unit" id="who-income" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="income_range">Income</label>
-            <select class="field-input is-default" id="income_range" onchange="k5IncomePick(this)"><option value="">— Select —</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-income_range">Required</div>
+            <select class="field-input is-default" id="income_range" onchange="k5IncomePick(this)"><option value="">— Select —</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–49k</option><option value="50k_75k">$50k–74k</option><option value="75k_100k">$75k–99k</option><option value="100k_150k">$100k–149k</option><option value="150k_200k">$150k–199k</option><option value="200k_300k">$200k–299k</option><option value="300k_500k">$300k–499k</option><option value="500k_1m">$500k–999k</option><option value="1m_2m">$1M–1.99M</option><option value="2m_3m">$2M–2.99M</option><option value="3m_plus">$3M+</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-income_range">Required</div>
           </div>
           <!-- K5 (k12 who-politics) own POLITICS: K5 values Left-leaning / Moderate / Right-leaning / None Stated + Left and Right. Production: politics text, null for None Stated. -->
           <div class="field-group who-unit" id="who-politics" style="margin-bottom:0;min-width:0;">
@@ -2972,7 +2974,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-06p7-s3y36'; // prod s3y36 WYW (Dist EDIT keeps OTHER CITIES; Age→Height seq; Degree below Height; no WMM). // deploy-bump-s3y36a // s3y36: Dist EDIT keeps OTHER CITIES condensed below Dist; keep Age→Height + Degree below Height (main, no WMM) // s3y35: HARD-hide Height until Age touched+idle ~1s; never auto with Age (main, no WMM) // deploy-bump-s3y34b // s3y34: Degree+prefs below Height (fix s3y31 order:0); Age then Height one-at-a-time (main, no WMM) // s3y33: after Dist only Age; Height after Age idle ~1s post-touchend (main, no WMM) // s3y32: first-visit Dist move+up (checkbox unchecked) → 1s idle → condense → Age (main, no WMM) // s3y31: Seeking→Dist→OC; Dist EDIT in Dist slot; move+1s or no-move+3s → Age (main, no WMM)
+var PAGE_VERSION = '2026-10-06p8-s3y38'; // prod s3y38 WYW (s3y37 partner-live prefill + EDIT; s3y38 non-overlapping income labels; Dist EDIT keeps OTHER CITIES; Age→Height seq; Degree below Height; no WMM). // s3y38: own income labels non-overlapping (values unchanged) // s3y37: couples WHERE DOES YOUR PARTNER LIVE defaults from own Who You Are location; city-add btn EDIT when prefilled (main, no WMM) // deploy-bump-s3y36a // s3y36: Dist EDIT keeps OTHER CITIES condensed below Dist; keep Age→Height + Degree below Height (main, no WMM) // s3y35: HARD-hide Height until Age touched+idle ~1s; never auto with Age (main, no WMM) // deploy-bump-s3y34b // s3y34: Degree+prefs below Height (fix s3y31 order:0); Age then Height one-at-a-time (main, no WMM) // s3y33: after Dist only Age; Height after Age idle ~1s post-touchend (main, no WMM) // s3y32: first-visit Dist move+up (checkbox unchecked) → 1s idle → condense → Age (main, no WMM) // s3y31: Seeking→Dist→OC; Dist EDIT in Dist slot; move+1s or no-move+3s → Age (main, no WMM)
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -5193,41 +5195,71 @@ function _ownCityEntry() {
 // ---- CITY CHIP PICKER (shared) ----
 // One component for the singles "Partner Location" (multi: default chip, "+ Add more",
 // typed add) and the couples "Where does your partner live?" (single pick: type a city,
-// Enter/Add turns it into a chip; x removes it and brings the text box back).
+// Enter/Add turns it into a value; when prefilled / has a value the button says EDIT).
 // Free text, no fixed list, no floating overlay.
 function cityChipPicker(cfg) {
   const el = k => (cfg[k] ? document.getElementById(cfg[k]) : null);
-  const p = { open: false, cfg };
+  const p = { open: false, cfg, _editing: false };
   p.full = () => !cfg.multi && cfg.get().length > 0;
+  p.syncBtn = () => {
+    const addBtn = el('addBtn'), input = el('input');
+    const has = !!(cfg.get() && cfg.get().length);
+    if (addBtn) addBtn.textContent = has && !p._editing ? 'EDIT' : 'Add';
+    if (!cfg.multi && input && has && !p._editing && document.activeElement !== input) {
+      const cur = cfg.get()[0] || '';
+      if (input.value !== cur) input.value = cur;
+    }
+  };
   p.syncAdder = () => {
     const row = el('row'), more = el('more');
-    const showRow = cfg.multi ? p.open : !p.full();
-    if (row) row.hidden = !showRow;
-    if (more) more.hidden = cfg.multi ? !!p.open : true;
+    if (cfg.multi) {
+      const showRow = !!p.open;
+      if (row) row.hidden = !showRow;
+      if (more) more.hidden = !!p.open;
+    } else {
+      // Couples single-pick: always keep the zip/city row visible so a prefilled value
+      // shows in the field with EDIT (not a hidden adder + chip-only state).
+      if (row) row.hidden = false;
+      if (more) more.hidden = true;
+    }
+    p.syncBtn();
   };
   p.render = () => {
     const wrap = el('chips');
     if (wrap) {
       wrap.replaceChildren();
-      cfg.get().forEach(city => {
-        const chip = document.createElement('span');
-        chip.className = 'partner-location-chip';
-        const label = document.createElement('span');
-        label.className = 'partner-location-chip-label';
-        label.textContent = city;
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'partner-location-chip-remove';
-        btn.dataset.city = city;
-        btn.setAttribute('aria-label', 'Remove ' + city);
-        btn.textContent = '\u00d7';
-        chip.append(label, btn);
-        wrap.appendChild(chip);
-      });
+      // Multi keeps removable chips. Single-pick shows the value in the input + EDIT/Add.
+      if (cfg.multi) {
+        cfg.get().forEach(city => {
+          const chip = document.createElement('span');
+          chip.className = 'partner-location-chip';
+          const label = document.createElement('span');
+          label.className = 'partner-location-chip-label';
+          label.textContent = city;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'partner-location-chip-remove';
+          btn.dataset.city = city;
+          btn.setAttribute('aria-label', 'Remove ' + city);
+          btn.textContent = '\u00d7';
+          chip.append(label, btn);
+          wrap.appendChild(chip);
+        });
+      }
     }
     p.syncAdder();
   };
   p.openAdder = () => { p.open = true; p.syncAdder(); const i = el('input'); if (i) i.focus(); };
+  p.beginEdit = () => {
+    p._editing = true;
+    p.syncBtn();
+    const input = el('input');
+    if (input) {
+      const cur = (cfg.get()[0] || '');
+      if (!input.value) input.value = cur;
+      try { input.focus({ preventScroll: false }); input.select(); } catch (e) { try { input.focus(); } catch (e2) {} }
+    }
+  };
   p.commit = () => {
     const input = el('input');
     if (!input) return false;
@@ -5237,8 +5269,9 @@ function cityChipPicker(cfg) {
     if (cfg.multi) {
       if (!list.some(c => c.toLowerCase() === city.toLowerCase())) { cfg.set(list.concat([city])); input.value = ''; }
     } else {
-      cfg.set([city]); input.value = '';
-      if (document.activeElement === input) input.blur(); // the text box goes away once a city is picked
+      cfg.set([city]);
+      p._editing = false;
+      if (document.activeElement === input) input.blur();
     }
     p.render();
     if (cfg.onChange) cfg.onChange('commit');
@@ -5247,18 +5280,31 @@ function cityChipPicker(cfg) {
   p.remove = city => {
     if (!city) return;
     cfg.set(cfg.get().filter(c => c.toLowerCase() !== city.toLowerCase()));
+    p._editing = true;
     p.render();
     if (cfg.onChange) cfg.onChange('remove');
-    if (!cfg.multi) { const i = el('input'); if (i) i.focus(); }
+    if (!cfg.multi) { const i = el('input'); if (i) { i.value = ''; i.focus(); } }
   };
   p.bind = () => {
     const more = el('more'), addBtn = el('addBtn'), input = el('input'), chips = el('chips');
     if (more && !more.dataset.bound) { more.dataset.bound = '1'; more.addEventListener('click', e => { e.preventDefault(); p.openAdder(); }); }
-    if (addBtn && !addBtn.dataset.bound) { addBtn.dataset.bound = '1'; addBtn.addEventListener('click', e => { e.preventDefault(); p.commit(); }); }
+    if (addBtn && !addBtn.dataset.bound) {
+      addBtn.dataset.bound = '1';
+      addBtn.addEventListener('click', e => {
+        e.preventDefault();
+        if (!cfg.multi && cfg.get().length && !p._editing && addBtn.textContent === 'EDIT') { p.beginEdit(); return; }
+        p.commit();
+      });
+    }
     if (input && !input.dataset.bound) {
       input.dataset.bound = '1';
       input.addEventListener('keydown', e => { if (e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); e.stopPropagation(); p.commit(); });
-      input.addEventListener('blur', () => { setTimeout(() => { if (document.activeElement !== input && input.value.trim()) p.commit(); }, 150); });
+      input.addEventListener('input', () => { if (!cfg.multi) { p._editing = true; p.syncBtn(); } });
+      input.addEventListener('blur', () => { setTimeout(() => {
+        if (document.activeElement === input) return;
+        if (input.value.trim()) p.commit();
+        else if (!cfg.multi) { p._editing = false; p.syncBtn(); }
+      }, 150); });
     }
     if (chips && !chips.dataset.bound) {
       chips.dataset.bound = '1';
@@ -5854,6 +5900,21 @@ function setDefaultAges() {
 // ============================================================
 let _zipTimer = null;
 
+// Couples "Where does your partner live?" — default label from Who You Are location.
+function _defaultPartnerCityLabel() {
+  try {
+    if (state.wya) {
+      if (typeof _wyaTxt === 'function') return _wyaTxt(state.wya) || null;
+      return state.wya.label || state.wya.zip || null;
+    }
+    if (state.locationMode === 'zip') {
+      const z = (document.getElementById('postal_code')?.value || '').trim();
+      if (z) return z + (state.zipCity ? ' · ' + state.zipCity : '');
+      return (state.zipCity || '').trim() || null;
+    }
+    return (typeof _canonicalOwnCity === 'function' ? _canonicalOwnCity() : null) || null;
+  } catch (e) { return null; }
+}
 function setLivesWithPartner(val, fromTap) {
   state.livesWithPartner = val || null; if (val) hideError('lives_with_partner');
   document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
@@ -5875,6 +5936,12 @@ function setLivesWithPartner(val, fromTap) {
     const inp = document.getElementById('partner_city_input'); if (inp) inp.value = '';
     if (cityUnit) cityUnit.classList.remove('collapsed');
     clearTimeout(_crT['pt-city']); _crT['pt-city'] = null;
+    if (partnerCityPicker) partnerCityPicker._editing = false;
+  } else if (!partnerCity) {
+    // s3y37: prefill from the applicant's own Who You Are location (zip/city already saved).
+    const d = _defaultPartnerCityLabel();
+    if (d) partnerCity = d;
+    if (partnerCityPicker) partnerCityPicker._editing = false;
   }
   partnerCityPicker.render();
   if (fromTap && val) crTap('pt-live');
