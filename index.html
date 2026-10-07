@@ -1,6 +1,62 @@
 <!DOCTYPE html>
-<html lang="en" class="s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
+<html lang="en" class="s3y38 s3y37 s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
 <head>
+  <!-- SANDBOX_grokbot (k5-s3y38-main_income): non-overlapping own income labels; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y37-main_ptloc): couples partner live defaults from own location; Add→EDIT when prefilled; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y36-main_ocedit): Dist EDIT keeps OC condensed below Dist; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y35-main_heighthide): HARD-hide Height until Age touched+idle ~1s; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y34-main_deborder): Degree+prefs below Height; Age→Height one-at-a-time; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y33-main_ageheight): Dist→Age only; Height after Age idle ~1s; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y32-main_distfirst): first-visit Dist move+up → Age; Seeking→Dist→OC; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y31-main_distage): Seeking→Dist→OC; Dist EDIT slot; move+1s / no-move+3s → Age; no WMM -->
+  <!-- SANDBOX_grokbot (k5-s3y30-main_wyw): MAIN sandbox — WYW from s3y29-s2; no WMM (Intentions → Public Self) -->
+  <!-- SANDBOX_grokbot (k5-s3y29-sandbox2_distidlefix): Dist EDIT idle collapse + pad match Age/Height -->
+  <!-- SANDBOX_grokbot (k5-s3y28-sandbox2_distcb): EDIT Dist never shows OC checkbox; cities only via OTHER CITIES -->
+  <!-- SANDBOX_grokbot (k5-s3y27-sandbox2_selectoaat): default Select; one-at-a-time prefs after Degree -->
+  <!-- SANDBOX_grokbot (k5-s3y26-sandbox2_anygrey): default Any grey; condense when field below touched -->
+  <!-- SANDBOX_grokbot (k5-s3y25-sandbox2_pointerup): WYW slider idle/collapse waits for pointerup/touchend -->
+  <!-- SANDBOX_grokbot (k5-s3y24-sandbox2_distgate): Age hidden until Distance idle + condensed -->
+  <!-- SANDBOX_grokbot (k5-s3y23-sandbox2_distidle): Age after Distance idle ~1s -->
+  <!-- SANDBOX_grokbot (k5-s3y22-sandbox2_ahedit): EDIT Age/Height stay open until slider move + 1s idle -->
+  <!-- SANDBOX_grokbot (k5-s3y21-sandbox2_anynone): Eth/Rel/Pol Any first, None Stated last -->
+  <!-- SANDBOX_grokbot (k5-s3y20-sandbox2_ethmulti): Eth/Rel/Pol multi; None stacks; all→Any; defaults Any -->
+  <!-- SANDBOX_grokbot (k5-s3y19-sandbox2_ethlabel): WYW Ethnicities label; default Any -->
+  <!-- SANDBOX_grokbot (k5-s3y18-sandbox2_ahidle): Height after Age idle ~1s; Degree after Height idle ~1s; keep s3y17 AH -->
+  <!-- SANDBOX_grokbot (k5-s3y16-sandbox2_ahdeg): AH full-width until Degree selecting → half-row -->
+  <!-- SANDBOX_grokbot (k5-s3y15-sandbox2_ahfix): AH collapse after both touched; condensed height = Seeking -->
+  <!-- SANDBOX_grokbot (k5-s3y14-sandbox2_ah): Age|Height half-row after set; keep eth multi -->
+  <!-- SANDBOX_grokbot (k5-s3y13-sandbox2_eth): WYW Ethnicity = Race-style multi-select sheet -->
+  <!-- SANDBOX_grokbot (k5-s3y12-sandbox2_fix): WYW vertical gaps = --u-row (flex gap, no margin-collapse) -->
+  <!-- SANDBOX_grokbot (k5-s3y11-sandbox2_fix): deg gutters/gap = Age/Height; reveal on height touch; NEXT pinned.
+       Prior: SANDBOX_grokbot (k5-s3y10-sandbox2_fix): fix NEXT pin (close screen-content) + WYW pref open field pattern -->
+  <!-- SANDBOX_grokbot (k5-s3y9-sandbox2_wmm): s3y8 dense WYW + keep WMM in flow (moved off main sandbox).
+       Prior: SANDBOX_grokbot (k5-s3y8-sandbox2): s3y7 + WYW Degree/Ethnicity/Religion/Politics/Income after Age/Height.
+       s3y7-oc: s3y6 + remove "Not open to other cities" picker row.
+       s3y6-fam: s3y5 + answered pair partners stay collapsed; long-form questions while open.
+       s3y5-wyw: s3y4 + OTHER CITIES (n); EDIT opens the picker directly; "Not open to other cities" row.
+       s3y4-wyw: s3y3 + condense as soon as the other-cities picker is finished (ticked).
+       s3y3-wyw: s3y2 + Age/Height bottom pad; Distance "+ N miles"; OTHER CITIES collapses after picker Done.
+       s3y2-wyw: s3y1 + Distance stays expanded until Age/Next; EDIT reopens first-visit Distance.
+       s3y1-wyw: s3y + WYW gaps = --u-row everywhere; other-cities checkbox collapses into an OTHER CITIES box.
+       s3y-wyw: s3x-left + WYW condensed (Distance from you; Seeking+within-N half-row; no Partner city).
+       s3x-left: s3w + WMM rows: drag handle at the far left, EDIT on the far right.
+       s3w-top5: s3v + What Matters Most ranks a TOP 5 only; the other 6 are THE REST (unranked, drag in / out).
+       s3v-wmm: s3u + Education as degree abbreviations (BA/BS+ · Top 50) and every WMM value fitted without an ellipsis.
+       s3u-wmm: s3t (prod p6) + K5 ranked What Matters Most (K5 single ranked list) after Intentions & Family, singles only.
+       s3t: s3s + Partner city only after the other-cities tick, Distance from home by default, map pin + zip for US city picks.
+       s3s: s3r + Distance label from the partner city zip (US) / city name (intl).
+       s3r: s3q (prod p5) + collapsed values never wrap: one line + ellipsis everywhere.
+       s3q: s3p + every height in cm for non-US users (same detection as own height: state.locationMode) + Location row like the other rows + APPLICATION NUMBER.
+       s3p: s3o + couples Their race on the same Race bottom sheet as Who You Are + consistency-audit fixes (type scale, Required errors, EDIT, heights, labels, pairing, reveal fade, SMS false).
+       s3o: s3n + couples dates optional again (first / engagement / wedding / move-in).
+       s3n: s3m + device capture in payloads + every field required (except Instagram / X / TikTok).
+       s3m: s3l + no iOS focus zoom (viewport maximum-scale=1; editable Partner city input 16px).
+       s3l: s3k + Degree/Income start on Select (None Stated last), couples How many required, one shared picker size.
+       s3k: s3j + What You Want reveals Age then Partner Height one at a time after Distance; Partner city pre-filled from a city-name location.
+       s3j: s3i + K5 condensed on-page Age / Height range sliders (like Distance).
+       Built from s3i: production 2026-10-05p3 + K5 Religion / Income / Degree on Who You Are + I am a | Name half-row once Name is done.
+       Saves faked. Not indexed. -->
+  <!-- prod 2026-10-06p8-s3y38: s3y38 WYW shipped (s3y37 couples partner-live prefill + EDIT; s3y38 income labels). Fetch stub, noindex, and sandbox badge removed; real Supabase saves. No WMM. -->
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -1249,7 +1305,7 @@
     @media (max-width: 359px) { html.vj #screen-3 .partner-location-anywhere { font-size: 12px; gap: 8px; } } /* keeps the checkbox label on one line at 320 */
     /* Short screens (e.g. 320x640): same layout, tighter spacing so nothing scrolls. */
     @media (max-height: 720px) {
-      html.vj #screen-3 .who-cond, html.vj #screen-3 .pc-half-primary, html.vj #vj-cities { min-height: 44px; padding-top: 4px; padding-bottom: 4px; }
+      html.vj #screen-3 .who-cond, html.vj #screen-3 .pc-half-primary, html.vj #vj-cities { min-height: var(--u-cond-h); padding-top: var(--u-cond-py); padding-bottom: var(--u-cond-py); }
       html.vj #screen-3 .partner-location-anywhere { min-height: 34px; }
       html.vj #screen-3 #ww-loc:not(.collapsed) { margin-bottom: 4px; }
       html.vj .vi-extra { min-height: 22px; margin-top: -6px; }
@@ -1493,7 +1549,7 @@
     #who-rd-row .who-unit.collapsed .who-cond-v, #who-ip-row .who-unit.collapsed .who-cond-v { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
     /* ==== s3g UNIVERSAL SPACING: the same values on every form screen (Who You Are, Your Partner, What You Want,
        Your Relationship, Intentions & Family, Text Me, Public Self). Change them here only. ==== */
-    :root { --u-top: 16px; --u-label: 12px; --u-head: 16px; --u-row: 10px; --u-gut: 10px; --u-bot: 0px; --u-next-top: 8px; --u-lab-fs: 10px; --u-val-fs: 13px; --u-pick-fs: 14px; --u-pick-py: 14px; --u-pick-px: 4px; --u-pick-dpx: 10px; --u-pick-h: 54px; }
+    :root { --u-top: 16px; --u-label: 12px; --u-head: 16px; --u-row: 10px; --u-gut: 10px; --u-bot: 0px; --u-next-top: 8px; --u-lab-fs: 10px; --u-val-fs: 13px; --u-pick-fs: 14px; --u-pick-py: 14px; --u-pick-px: 4px; --u-pick-dpx: 10px; --u-pick-h: 54px; --u-cond-h: 50px; --u-cond-py: 7px; }
     .screen:not(#screen-0):not(#screen-8) > .screen-content { padding-top: var(--u-top) !important; padding-bottom: var(--u-bot) !important; }
     .screen-content > .screen-label { margin-bottom: var(--u-label) !important; }
     .screen-content > .screen-headline { font-size: 52px !important; margin-bottom: var(--u-head) !important; }
@@ -1519,14 +1575,448 @@
     @keyframes s3tIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
     html.s3t #screen-3 #vk-row.s3t-in { animation: s3tIn .24s ease-out both; }
     @media (prefers-reduced-motion: reduce) { html.s3t #screen-3 #vk-row.s3t-in { animation: none; } }
+    /* s3u: What Matters Most. Base = B two columns (left 01-06, right 07-11, ranks run down the left column first); A overrides below */
+    #screen-9 .screen-content { overflow: hidden; }
+    #screen-9 .screen-headline { white-space: nowrap; letter-spacing: 0; } /* 52px fits 342px with 0 tracking */
+    .wmm-h { display: none; }
+    /* A (wmm-1col): K5 single ranked list, one 30px line per row so all 11 fit 390x664: 01  KEY  value ... EDIT  = */
+    html.wmm-1col #screen-9 .wmm-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; row-gap: 4px; }
+    html.wmm-1col .wmm-card { min-height: 30px; height: 30px; padding: 0 0 0 10px; gap: 10px; }
+    html.wmm-1col .wmm-n { font-size: 18px; width: 18px; padding-top: 1px; }
+    html.wmm-1col .wmm-txt { flex-direction: row; align-items: baseline; gap: 10px; }
+    html.wmm-1col .wmm-top { display: contents; }
+    html.wmm-1col .wmm-k { order: 1; flex: 0 0 92px; }
+    html.wmm-1col .wmm-v { order: 2; flex: 1 1 auto; min-width: 0; }
+    html.wmm-1col .wmm-edit { order: 3; }
+    html.wmm-1col .wmm-h { display: flex; flex: none; align-items: center; justify-content: center; width: 34px; align-self: stretch; color: var(--muted); }
+    html.wmm-1col .wmm-h svg { width: 14px; height: 10px; display: block; }
+    #screen-9 .wmm-sub { font-family: 'Space Mono', monospace; font-size: 11px; line-height: 16px; letter-spacing: 0; color: var(--muted); margin: calc(6px - var(--u-head)) 0 var(--u-row); }
+    #screen-9 .wmm-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: repeat(6, auto); grid-auto-flow: column; column-gap: var(--u-gut); row-gap: var(--u-row); }
+    .wmm-card { display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 50px; padding: 7px 10px; box-sizing: border-box; border: 1px solid var(--dim); border-radius: var(--radius); background: transparent; color: var(--text); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; position: relative; }
+    .wmm-card:focus-visible { outline: none; border-color: var(--accent); }
+    .wmm-n { flex: none; width: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; line-height: 1; letter-spacing: 0.02em; color: var(--accent); padding-top: 2px; }
+    .wmm-txt { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+    .wmm-top { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; min-width: 0; }
+    .wmm-k { min-width: 0; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wmm-edit { flex: none; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--accent); line-height: 1.4; }
+    .wmm-v { font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 0; line-height: 1.4; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wmm-v.wmm-any { color: var(--muted); }
+    .wmm-card.dragging { border-color: var(--accent); background: #1b1b19; box-shadow: 0 8px 22px rgba(0,0,0,0.55); z-index: 3; cursor: grabbing; transform: scale(1.02); }
+    .wmm-card.wmm-in { animation: wwRowIn .24s ease-out both; animation-delay: calc(var(--i, 0) * 18ms); }
+    @media (prefers-reduced-motion: reduce) { .wmm-card.wmm-in { animation: none; } .wmm-card.dragging { transform: none; } }
+    .wmm-sheet .wmm-grp { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 14px 12px 4px; }
+    .wmm-sheet .wmm-grp:first-child { padding-top: 2px; }
+    #wmm-hint:empty { display: none; }
+    /* s3w: TOP 5 (44px rows, numbered, single line: 01 KEY value EDIT =) + THE REST (2-col, 36px, unranked) */
+    html.s3w #screen-9 .wmm-grid { display: block; }
+    html.s3w #wmm-top { display: flex; flex-direction: column; gap: 3px; }
+    html.s3w #wmm-rest { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--u-gut); row-gap: 3px; }
+    html.s3w .wmm-rest-k { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); line-height: 14px; margin: 6px 0 4px; }
+    html.s3w .wmm-h { display: flex; flex: none; align-items: center; justify-content: center; align-self: stretch; color: var(--muted); }
+    html.s3w .wmm-h svg { width: 14px; height: 10px; display: block; }
+    html.s3w #wmm-top .wmm-card { height: 44px; min-height: 44px; padding: 0 0 0 10px; gap: 10px; }
+    html.s3w #wmm-top .wmm-n { width: 20px; font-size: 22px; }
+    html.s3w #wmm-top .wmm-txt { flex-direction: row; align-items: baseline; gap: 10px; }
+    html.s3w #wmm-top .wmm-top { display: contents; }
+    html.s3w #wmm-top .wmm-k { order: 1; flex: 0 0 86px; }
+    html.s3w #wmm-top .wmm-v { order: 2; flex: 1 1 auto; min-width: 0; }
+    html.s3w #wmm-top .wmm-edit { order: 3; }
+    html.s3w #wmm-top .wmm-h { width: 34px; }
+    html.s3w #wmm-rest .wmm-card { height: 36px; min-height: 36px; padding: 0 0 0 10px; gap: 4px; }
+    html.s3w #wmm-rest .wmm-n { display: none; }
+    html.s3w #wmm-rest .wmm-k, html.s3w #wmm-rest .wmm-edit { line-height: 14px; }
+    html.s3w #wmm-rest .wmm-v { line-height: 18px; }
+    html.s3w #wmm-rest .wmm-h { width: 26px; }
+    html.s3w .wmm-card.wmm-src { opacity: 0.35; }
+    html.s3w .wmm-card.wmm-target { border-color: var(--accent); }
+    html.s3w .wmm-card.wmm-bump { opacity: 0.45; border-style: dashed; }
+    html.s3w #wmm-rest.wmm-zone, html.s3w .wmm-rest-k.wmm-zone { outline: 1px dashed var(--accent); outline-offset: 2px; }
+    /* s3x row layout */
+    html.s3x #wmm-grid .wmm-card { padding: 0 12px 0 10px; } /* right edge = .who-cond's 12px, so EDIT lines up with every other screen */
+    html.s3x #wmm-grid .wmm-kh { display: flex; align-items: center; min-width: 0; gap: 2px; }
+    html.s3x #wmm-grid .wmm-kh .wmm-k { flex: 0 1 auto; min-width: 0; order: 0; } /* undo s3w's order:1 so the handle follows the label */
+    html.s3x #wmm-grid .wmm-h { width: 24px; align-self: center; }
+    html.s3x #wmm-grid .who-cond-edit { margin-left: auto; padding-left: 4px; } /* position only; type comes from the shared .who-cond-edit rules */
+    html.s3x #wmm-top .wmm-card { gap: 8px; }
+    html.s3x #wmm-top .wmm-n { margin-right: 2px; }
+    html.s3x #wmm-top .wmm-kh { flex: 0 0 104px; height: 44px; }
+    html.s3x #wmm-top .wmm-h { height: 44px; }
+    html.s3x #wmm-top .wmm-v { flex: 1 1 auto; min-width: 0; }
+    html.s3x #wmm-top .who-cond-edit { order: 3; } /* after the value (s3w gave .wmm-v order 2) */
+    html.s3x #wmm-rest .wmm-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 14px 18px; column-gap: 4px; row-gap: 0; align-content: center; }
+    html.s3x #wmm-rest .wmm-kh { grid-area: 1 / 1; height: 14px; }
+    html.s3x #wmm-rest .wmm-h { height: 14px; }
+    html.s3x #wmm-rest .who-cond-edit { grid-area: 1 / 2; line-height: 14px; }
+    html.s3x #wmm-rest .wmm-v { grid-area: 2 / 1 / 3 / 3; min-width: 0; line-height: 18px; }
+    /* s3x-left: handle first */
+    html.s3x-left #wmm-grid .wmm-card { padding-left: 0; }
+    html.s3x-left #wmm-top .wmm-h { width: 30px; height: 44px; margin-right: -4px; }
+    html.s3x-left #wmm-top .wmm-kh { flex: 0 0 86px; }
+    html.s3x-left #wmm-rest .wmm-card { grid-template-columns: 26px minmax(0, 1fr) auto; }
+    html.s3x-left #wmm-rest .wmm-h { grid-area: 1 / 1 / 3 / 2; width: 26px; height: 32px; }
+    html.s3x-left #wmm-rest .wmm-kh { grid-area: 1 / 2; }
+    html.s3x-left #wmm-rest .who-cond-edit { grid-area: 1 / 3; }
+    html.s3x-left #wmm-rest .wmm-v { grid-area: 2 / 2 / 3 / 4; }
+
+    /* s3y: hide Partner city always; Distance label stays "Distance from you"; after touch Seeking|Distance half-row */
+    html.s3y #screen-3 #vk-row { display: none !important; }
+    html.s3y #ww-sd-row { margin-bottom: 0 !important; }
+    html.s3y #ww-sd-row:not(.cr-both) { display: flex; flex-direction: column; gap: 0; }
+    html.s3y #ww-sd-row.cr-both { display: grid; margin-bottom: var(--u-row) !important; }
+    html.s3y #ww-dist-c[hidden] { display: none !important; }
+    html.s3y #ww-dist-c:not([hidden]) { display: block; }
+    html.s3y #screen-3.s3y-cond #vi-dist .range-slider-wrap,
+    html.s3y #screen-3.s3y-cond #vi-dist .k4-head { display: none !important; }
+    html.s3y #screen-3.s3y-cond #vi-dist.k4-sl { border: none !important; padding: 0 !important; margin: 0 !important; min-height: 0 !important; }
+    html.s3y #screen-3.s3y-cond #vi-dist .partner-location-anywhere { margin-top: 0 !important; }
+
+    /* s3y1: every WYW box gap = --u-row */
+
+    /* s3y3: more pad under Age/Height tracks; Distance condensed value never ellipsizes */
+
+    /* s3y4: Cities field under the reopened checkbox (same box/EDIT as collapsed rows) */
+    html.s3y4 #screen-3 #ww-oc .s3y4-cities { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: var(--u-row); border: 1px solid var(--dim); border-radius: var(--radius); padding: 7px 12px; min-height: 44px; box-sizing: border-box; cursor: pointer; min-width: 0; }
+    html.s3y4 #screen-3 #ww-oc .s3y4-cities[hidden], html.s3y4 #screen-3 #ww-oc.collapsed .s3y4-cities { display: none !important; }
+    html.s3y4 #screen-3 #ww-oc .who-cond-v.s3y4-ph { color: var(--muted); }
+
+    /* s3y4: WMM slider sheet = the WYW .k4-sl rules re-scoped to the sheet body (auto-copied) */
+    html.vk4 #wmm-ss-body .k4-head .field-label { margin: 0 !important; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 18px; }
+    html.vk4 #wmm-ss-body .k4-sl .slider-bubble { display: none !important; }
+    html.vk4 #wmm-ss-body .k4-sl .range-slider-wrap { height: 24px !important; margin: 3px 0 0 !important; }
+    html.vk4 #wmm-ss-body .k4-sl input[type=range].range-input { height: 28px !important; }
+    html.vk4 #wmm-ss-body .k4-sl .range-track, html.vk4 #wmm-ss-body .k4-sl .range-fill { height: 2px; border-radius: 1px; }
+    html.vk4 #wmm-ss-body .k4-sl .range-track { background: #333; }
+    html.vk4 #wmm-ss-body .k4-sl input[type=range].range-input::-webkit-slider-thumb { width: 28px; height: 28px; box-shadow: none; background: radial-gradient(circle, var(--accent) 0 7.5px, transparent 8px); }
+    html.vk4 #wmm-ss-body .k4-sl input[type=range].range-input::-moz-range-thumb { width: 28px; height: 28px; box-shadow: none; background: radial-gradient(circle, var(--accent) 0 7.5px, transparent 8px); }
+    html.vk4 #wmm-ss-body .k4-sl .field-error:empty { display: none; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #wmm-ss-body .k4-sl { border: 1px solid var(--dim); border-radius: var(--radius); padding: 8px 12px 5px !important; box-sizing: border-box; background: none; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #wmm-ss-body .ww-age-group.k4-sl { margin-bottom: var(--bx-g) !important; }
+    html.vk4.k4s-inline.vk.vj.vk-al-box #wmm-ss-body .ww-age-group.k4-sl { margin-bottom: calc(var(--bx-g) + 4px) !important; }
+    html.vk4.k4s-inline.vk.vj.vk-al-box #wmm-ss-body #vi-dist.k4-sl { margin-top: calc(var(--bx-g) + var(--bx-p)) !important; }
+    html.vk5.k5-norow.k4s-boxed.vk.vj.vk-al-box #wmm-ss-body #vi-dist.k4-sl { margin-top: 0 !important; }
+    html.vk5.k5-norow.k4s-inline.vk.vj.vk-al-box #wmm-ss-body #vi-dist.k4-sl { margin-top: var(--bx-p) !important; }
+    html.vk5.k4s-boxed #wmm-ss-body #vi-dist.k4-sl { padding-bottom: 3px !important; }
+    html.vk4.k4s-boxed.vk.vj.vk-al-box #wmm-ss-body .ww-age-group.k4-sl { margin-bottom: var(--u-row) !important; }
+    html.vk4 #wmm-ss-body .k4-sl .field-error:not(:empty) { margin-top: 2px; }
+    html.s3y #screen-3.s3y-cond #vi-dist .k4-head { display: none !important; }
+    html.s3y #screen-3.s3y-cond #vi-dist.k4-sl { border: none !important; padding: 0 !important; margin: 0 !important; min-height: 0 !important; }
+    html.s3y3 #wmm-ss-body .k4-sl { padding-bottom: 12px !important; }
+    html.s3y1 #wmm-ss-body .ww-age-group.k4-sl { margin-bottom: var(--u-row) !important; }
+    #wmm-ssheet { top: auto; }
+    #wmm-ss-body { padding: 4px 20px 0; }
+    html #wmm-ssheet #wmm-ss-body > .k4-sl, html #wmm-ssheet #wmm-ss-body > .who-unit { display: block !important; margin: 0 !important; padding-bottom: 12px !important; animation: none !important; }
+    #wmm-ss-body .partner-location-anywhere, #wmm-ss-body .field-error:empty { display: none !important; }
+    html.s3y3 #screen-3 #ww-ranges .k4-sl { padding-bottom: 12px !important; }
+    html.s3y3 #screen-3 #ww-dist-c .who-cond-v { overflow: visible; text-overflow: clip; white-space: nowrap; }
+    html.s3y1 #screen-3 #ww-sd-row { margin: 0 0 var(--u-row) !important; }
+    html.s3y1 #screen-3.s3y-cond #ww-loc { display: none !important; }
+
+    /* s3y24: Age (and Height) stay hidden while Distance is still expanded */
+    html.s3y24s2 #screen-3:not(.s3y-cond) #ww-age,
+    html.s3y24s2 #screen-3:not(.s3y-cond) #ww-height,
+    html.s3y24s2 #screen-3:not(.s3y-cond) #ww-ah-row {
+      display: none !important;
+    }
+
+    html.s3y1 #screen-3 #ww-oc[hidden] { display: none !important; }
+    /* s3y28: EDIT Distance / OC-own-cell — never show other-cities checkbox under Distance */
+    html.s3y28s2 #screen-3.s3y-dist-edit #vi-dist .partner-location-anywhere,
+    html.s3y28s2 #screen-3.s3y-oc-own #vi-dist .partner-location-anywhere { display: none !important; }
+    html.s3y28s2 #screen-3 #ww-oc:not(.collapsed) .partner-location-anywhere { display: flex !important; }
+
+    /* s3y29: EDIT Distance — pad like open Age/Height k4-sl; no leftover checkbox / loc chrome gap */
+    html.s3y29s2 #screen-3.s3y-dist-edit #ww-loc:not(.collapsed) {
+      margin-bottom: var(--u-row) !important;
+    }
+    html.s3y29s2 #screen-3.s3y-dist-edit #ww-loc #vk-row,
+    html.s3y29s2 #screen-3.s3y-dist-edit #ww-loc #pc-extra,
+    html.s3y29s2 #screen-3.s3y-dist-edit #ww-loc #cp-field,
+    html.s3y29s2 #screen-3.s3y-dist-edit #ww-loc #vj-cities,
+    html.s3y29s2 #screen-3.s3y-dist-edit #ww-loc .pc-half-row,
+    html.s3y29s2 #screen-3.s3y-dist-edit #ww-loc .who-cond {
+      display: none !important;
+    }
+    html.s3y29s2 #screen-3.s3y-dist-edit #vi-dist.k4-sl {
+      margin: 0 0 0 !important;
+      padding: 8px 12px 5px !important; /* same as Age/Height boxed k4-sl */
+      border: 1px solid var(--dim) !important;
+      border-radius: var(--radius) !important;
+      min-height: 0 !important;
+    }
+    html.s3y29s2 #screen-3.s3y-dist-edit #vi-dist .partner-location-anywhere {
+      display: none !important;
+    }
+    html.s3y29s2 #screen-3.s3y-dist-edit #partner-location-field {
+      margin-bottom: 0 !important;
+    }
+
+    /* s3y31: Seeking → Distance → OTHER CITIES (OC never above Dist; Dist EDIT expands in Dist slot) */
+    /* s3y34: Degree/Eth/Rel/Pol/Inc must NOT sit at order:0 (above Seeking) — pin them below Height */
+    html.s3y31 #cities-single-section,
+    html.s3y34 #cities-single-section {
+      display: flex; flex-direction: column;
+    }
+    html.s3y31 #cities-single-section > #ww-sd-row,
+    html.s3y34 #cities-single-section > #ww-sd-row { order: 1; }
+    html.s3y31 #cities-single-section > #ww-loc,
+    html.s3y34 #cities-single-section > #ww-loc { order: 2; }
+    html.s3y31 #cities-single-section > #ww-oc,
+    html.s3y34 #cities-single-section > #ww-oc { order: 3; }
+    html.s3y31 #cities-single-section > #ww-ranges,
+    html.s3y34 #cities-single-section > #ww-ranges { order: 4; }
+    html.s3y34 #cities-single-section > #ww-row-de { order: 5; } /* Degree (+ Eth when paired) */
+    html.s3y34 #cities-single-section > #ww-row-rp { order: 6; } /* Rel + Pol */
+    html.s3y34 #cities-single-section > #ww-inc { order: 7; }    /* Income */
+    html.s3y31 #cities-single-section > #ww-oc:not([hidden]),
+    html.s3y34 #cities-single-section > #ww-oc:not([hidden]) {
+      margin: 0 0 var(--u-row) !important;
+    }
+
+    /* s3y33: Height never co-appears with Age until Age idle done */
+    html.s3y33 #screen-3 #ww-height.cr-later { display: none !important; }
+    /* s3y35 CRITICAL: hard-hide Height until Age touched + idle ~1s (ignore cr-later races) */
+    html.s3y35 #screen-3 #ww-height:not(.s3y35-h-ready),
+    html.s3y35 #screen-3 #ww-height:not(.s3y35-h-ready) * {
+      /* keep layout collapsed — display none on the unit itself */
+    }
+    html.s3y35 #screen-3 #ww-height:not(.s3y35-h-ready) {
+      display: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      border: none !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+
+    /* s3y36: OTHER CITIES condensed stays visible directly below Distance on Dist EDIT */
+    html.s3y36 #screen-3.s3y-dist-edit #ww-oc:not([hidden]),
+    html.s3y36 #screen-3.s3y-dist-edit #ww-oc {
+      display: block !important;
+    }
+    html.s3y36 #screen-3.s3y-dist-edit #ww-oc[hidden] {
+      /* JS should clear hidden; belt if attribute stuck */
+      display: block !important;
+    }
+    html.s3y36 #cities-single-section > #ww-oc { order: 3; }
+    html.s3y36 #cities-single-section > #ww-loc { order: 2; }
+    html.s3y36 #cities-single-section > #ww-sd-row { order: 1; }
+
+
+
+
+
+    html.s3y1 #screen-3 #ww-oc { margin: 0 0 var(--u-row) !important; }
+    html.s3y1 #screen-3 #ww-oc.collapsed > .s3y-oc-host { display: none; }
+    html.s3y1 #screen-3 #ww-oc .partner-location-anywhere { margin: 0 !important; min-height: 32px; }
+    html.s3y1 #screen-3 #ww-ranges > .who-unit:not(.cr-later) { margin-top: 0 !important; }
+    html.s3y1 #screen-3 #ww-ranges .ww-age-group.k4-sl { margin-bottom: var(--u-row) !important; }
+    html.s3y .partner-location-anywhere.s3y-cb { margin: 2px 0 var(--u-row) !important; min-height: 32px; }
+    .wmm-ghost { position: fixed; z-index: 1000; pointer-events: none; margin: 0; border-color: var(--accent) !important; background: #1b1b19 !important; box-shadow: 0 10px 26px rgba(0,0,0,0.6); }
+    html.s3v .wmm-card { padding-left: 8px; padding-right: 8px; gap: 7px; } html.s3v .wmm-n { width: 18px; }
+    html.s3v.wmm-1col .wmm-card { padding-right: 0; } html.s3v.wmm-1col .wmm-k { flex-basis: 86px; } html.s3v.wmm-1col .wmm-h { width: 28px; }
     /* s3t: the location sheet doubles as the Partner city pin map (no search / no Use my location there) */
     #wya-sheet.s3t-pc .wya-csearch, #wya-sheet.s3t-pc #wya-gps-c { display: none !important; }
     html.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #cities-single-section #ww-loc:not(.collapsed) { margin-bottom: var(--u-row) !important; }
     /* s3k: Age / Partner Height rows ease in when revealed; last row has no bottom margin */
-    #screen-3 #ww-ranges > #ww-height { margin-bottom: 0 !important; }
+
+    /* ===== s3y12: every WYW row gap = --u-row (same as Who You Are). Flex gap avoids margin-collapse flush rows on iOS. ===== */
+    html.s3y12s2 #screen-3 #cities-single-section {
+      display: flex; flex-direction: column; gap: var(--u-row);
+    }
+    html.s3y12s2 #screen-3 #cities-single-section > * {
+      margin-top: 0 !important; margin-bottom: 0 !important;
+    }
+    html.s3y12s2 #screen-3 #ww-ranges {
+      display: flex; flex-direction: column; gap: var(--u-row);
+      margin: 0 !important; padding: 0 !important;
+    }
+    html.s3y12s2 #screen-3 #ww-ranges > * {
+      margin-top: 0 !important; margin-bottom: 0 !important;
+    }
+    /* beat older s3y1/vk4 age/height margin !importants (higher specificity) */
+    html.s3y12s2.s3y1.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-ranges .ww-age-group.k4-sl,
+    html.s3y12s2.s3y1.vk4.k4s-boxed.vk.vj.vk-al-box #screen-3 #ww-ranges .ww-height-group.k4-sl,
+    html.s3y12s2.s3y1 #screen-3 #ww-ranges .ww-age-group,
+    html.s3y12s2.s3y1 #screen-3 #ww-ranges .ww-height-group,
+    html.s3y12s2 #screen-3 #ww-ranges > #ww-age,
+    html.s3y12s2 #screen-3 #ww-ranges > #ww-height,
+    html.s3y12s2 #screen-3 #ww-ranges > #ww-age.k4-sl,
+    html.s3y12s2 #screen-3 #ww-ranges > #ww-height.k4-sl {
+      margin-top: 0 !important; margin-bottom: 0 !important;
+    }
+    html.s3y12s2.s3y1 #screen-3 #ww-sd-row,
+    html.s3y12s2.s3y #ww-sd-row,
+    html.s3y12s2.s3y1 #screen-3 #ww-oc,
+    html.s3y12s2 #screen-3 #ww-row-de,
+    html.s3y12s2 #screen-3 #ww-row-rp,
+    html.s3y12s2 #screen-3 #ww-inc {
+      margin-top: 0 !important; margin-bottom: 0 !important;
+    }
+    /* last s3y11 height mb rule */
+    html.s3y12s2 #screen-3 #ww-ranges > #ww-height {
+      margin-bottom: 0 !important;
+    }
+    /* half-rows: horizontal gut when paired+collapsed; vertical --u-row when stacked (one open) */
+    html.s3y12s2 #screen-3 #cities-single-section > .cr-pair,
+    html.s3y12s2 #screen-3 #ww-ranges > .cr-pair {
+      gap: var(--u-row) var(--u-gut) !important;
+      margin: 0 !important;
+    }
+    html.s3y12s2 #screen-3 #ww-sd-row.cr-both {
+      display: grid !important;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      column-gap: var(--u-gut) !important;
+      row-gap: 0 !important;
+      margin: 0 !important;
+    }
+
+
+
+    /* s3y15: ONE condensed row height for every collapsed field on every screen */
+    @media (max-height: 720px) {
+      :root { --u-cond-h: 44px; --u-cond-py: 4px; }
+    }
+    html.s3y15s2 .who-unit.collapsed > .who-cond,
+    html.s3y15s2 .cr-pair.cr-both > .who-unit.collapsed > .who-cond,
+    html.s3y15s2 #ww-oc.collapsed > .who-cond,
+    html.s3y15s2 #ww-dist-c.collapsed > .who-cond,
+    html.s3y15s2 #screen-3 #ww-oc .s3y4-cities {
+      min-height: var(--u-cond-h) !important;
+      height: var(--u-cond-h) !important;
+      max-height: var(--u-cond-h) !important;
+      padding-top: var(--u-cond-py) !important;
+      padding-bottom: var(--u-cond-py) !important;
+      box-sizing: border-box !important;
+      align-items: center !important;
+    }
+    html.s3y15s2 .who-unit.collapsed .who-cond-txt { gap: 0 !important; min-width: 0; }
+    html.s3y15s2 .who-unit.collapsed .who-cond-k { line-height: 1.4 !important; }
+    html.s3y15s2 .who-unit.collapsed .who-cond-v {
+      display: block !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      -webkit-line-clamp: unset !important;
+      line-height: 1.4 !important;
+    }
+    /* neutralize older per-field padding that made some rows taller */
+    html.s3y15s2 #ww-loc.collapsed > .who-cond,
+    html.s3y15s2 #ww-loc .who-cond { padding-top: var(--u-cond-py) !important; padding-bottom: var(--u-cond-py) !important; }
+
+    /* s3y15: Age|Height unit chrome off when collapsed (who-cond carries the box) */
+    html.s3y15s2 #screen-3 #ww-ah-row.cr-both > .who-unit.collapsed {
+      border: none !important; padding: 0 !important; background: none !important; min-height: 0 !important;
+    }
+    /* s3y14: Age|Height half-row when both collapsed */
+    html.s3y14s2 #screen-3 #ww-ah-row.cr-both {
+      display: grid !important;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      column-gap: var(--u-gut) !important;
+      row-gap: 0 !important;
+      margin: 0 !important;
+    }
+    html.s3y14s2 #screen-3 #ww-ah-row:not(.cr-both) {
+      display: flex; flex-direction: column; gap: var(--u-row);
+      margin: 0 !important;
+    }
+    html.s3y14s2 #screen-3 #ww-ah-row > .who-unit { margin: 0 !important; min-width: 0; }
+    html.s3y14s2 #screen-3 #ww-age.collapsed.k4-sl,
+    html.s3y14s2 #screen-3 #ww-height.collapsed.k4-sl {
+      border: none !important; padding: 0 !important; background: none !important;
+    }
+
+    html.s3y12s2 #screen-3 #ww-row-de.cr-both,
+    html.s3y12s2 #screen-3 #ww-row-rp.cr-both {
+      display: grid !important;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      column-gap: var(--u-gut) !important;
+      row-gap: 0 !important;
+    }
+    /* open pref label→control stays 8px (Who You Are Religion); row-to-row gap is the flex gap above */
+    html.s3y12s2 #screen-3 #ww-deg .field-label,
+    html.s3y12s2 #screen-3 #ww-eth .field-label,
+    html.s3y12s2 #screen-3 #ww-rel .field-label,
+    html.s3y12s2 #screen-3 #ww-pol .field-label,
+    html.s3y12s2 #screen-3 #ww-inc .field-label { margin-top: 0 !important; margin-bottom: 8px !important; }
+
+    #screen-3 #ww-ranges > #ww-height { margin-bottom: 0 !important; } /* s3y12: gap via flex, not margin */
+    #screen-3 #ww-row-de, #screen-3 #ww-row-rp, #screen-3 #ww-inc { margin-bottom: 0 !important; } /* s3y12: gap via flex */
+    #screen-3 #ww-inc { margin-bottom: 0 !important; }
     @keyframes wwRowIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
     #screen-3 #ww-age:not(.cr-later), #screen-3 #ww-height:not(.cr-later) { animation: wwRowIn .24s ease-out both; }
-    @media (prefers-reduced-motion: reduce) { #screen-3 #ww-age, #screen-3 #ww-height { animation: none !important; } }
+
+    /* s3y13: ethnicity race-select full width like other WYW selects */
+    html.s3y13s2 #screen-3 #ww-eth #partner_ethnicity_btn.race-select,
+    html.s3y20s2 #screen-3 #ww-rel #partner_religion_btn.race-select,
+    html.s3y20s2 #screen-3 #ww-pol #partner_politics_btn.race-select {
+      width: 100%; min-height: var(--u-pick-h); box-sizing: border-box;
+      justify-content: center; text-align: center;
+    }
+
+    /* s3y16: collapsed Age|Height match Seeking|Distance exactly (left-aligned value, same box) */
+    html.s3y17s2 #screen-3 #ww-age.collapsed.k4-sl,
+    html.s3y16s2 #screen-3 #ww-age.collapsed.k4-sl,
+    html.s3y16s2 #screen-3 #ww-height.collapsed.k4-sl,
+    html.s3y16s2 #screen-3 #ww-ah-row > .who-unit.collapsed {
+      text-align: start !important;
+      justify-content: normal !important;
+      align-items: normal !important;
+      border: none !important;
+      padding: 0 !important;
+      background: none !important;
+      min-height: 0 !important;
+    }
+    html.s3y16s2 #screen-3 #ww-ah-row > .who-unit.collapsed > .who-cond {
+      text-align: start !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      min-height: var(--u-cond-h) !important;
+      height: var(--u-cond-h) !important;
+      max-height: var(--u-cond-h) !important;
+      padding: var(--u-cond-py) 12px !important;
+      box-sizing: border-box !important;
+    }
+    html.s3y16s2 #screen-3 #ww-ah-row .who-cond-txt,
+    html.s3y16s2 #screen-3 #ww-ah-row .who-cond-k,
+    html.s3y16s2 #screen-3 #ww-ah-row .who-cond-v {
+      text-align: start !important;
+    }
+    html.s3y16s2 #screen-3 #ww-ah-row .who-cond-v {
+      display: block !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      margin: 0 !important;
+      width: auto !important;
+      max-width: 100% !important;
+    }
+
+    /* s3y11: WYW prefs = Who-You-Are open select; outer gutters match Age/Height boxes (full column, no 13px inset) */
+    #screen-3 #ww-row-de { margin-top: 0 !important; } /* gap comes from #ww-height margin-bottom = --u-row */
+    #screen-3 #ww-deg.field-group,
+    #screen-3 #ww-eth.field-group,
+    #screen-3 #ww-rel.field-group,
+    #screen-3 #ww-pol.field-group,
+    #screen-3 #ww-inc.field-group { padding-left: 0 !important; padding-right: 0 !important; margin-bottom: 0 !important; }
+    #screen-3 #ww-row-de.cr-pair > .who-unit,
+    #screen-3 #ww-row-rp.cr-pair > .who-unit { padding-left: 0 !important; padding-right: 0 !important; }
+    #screen-3 #ww-deg .field-label,
+    #screen-3 #ww-eth .field-label,
+    #screen-3 #ww-rel .field-label,
+    #screen-3 #ww-pol .field-label,
+    #screen-3 #ww-inc .field-label { margin-bottom: 8px; margin-top: 0; } /* same label→control gap as Who You Are Religion */
+    #screen-3 #ww-deg select.field-input,
+    #screen-3 #ww-eth select.field-input,
+    #screen-3 #ww-rel select.field-input,
+    #screen-3 #ww-rel #partner_religion_btn.race-select,
+    #screen-3 #ww-pol select.field-input,
+    #screen-3 #ww-pol #partner_politics_btn.race-select,
+    #screen-3 #ww-inc select.field-input { width: 100%; min-height: var(--u-pick-h); box-sizing: border-box; }
+    #screen-3 #ww-deg:not(.cr-later), #screen-3 #ww-eth:not(.cr-later), #screen-3 #ww-rel:not(.cr-later), #screen-3 #ww-pol:not(.cr-later), #screen-3 #ww-inc:not(.cr-later) { animation: wwRowIn .24s ease-out both; }
+    @media (prefers-reduced-motion: reduce) { #screen-3 #ww-age, #screen-3 #ww-height, #screen-3 #ww-deg, #screen-3 #ww-eth, #screen-3 #ww-rel, #screen-3 #ww-pol, #screen-3 #ww-inc { animation: none !important; } }
     /* s3l: ONE picker size on every screen. Selects: centred (as Who You Are always had); date pickers: left, 10px inset. Text inputs keep 16px (iOS zooms on focus below 16px). */
     select.field-input { font-size: var(--u-pick-fs); padding: var(--u-pick-py) var(--u-pick-px); min-height: var(--u-pick-h); text-align: center; text-align-last: center; -webkit-text-align-last: center; cursor: pointer; }
     input.field-input[data-pick="date"] { font-size: var(--u-pick-fs); padding: var(--u-pick-py) var(--u-pick-dpx); min-height: var(--u-pick-h); }
@@ -1814,7 +2304,7 @@
           <div class="field-group who-unit" id="who-income" style="margin-bottom:0;min-width:0;">
             <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('who-income')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="who-income-v"></span></span><span class="who-cond-edit">EDIT</span></div>
             <label class="field-label" for="income_range">Income</label>
-            <select class="field-input is-default" id="income_range" onchange="k5IncomePick(this)"><option value="">— Select —</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–50k</option><option value="50k_75k">$50k–75k</option><option value="75k_100k">$75k–100k</option><option value="100k_150k">$100k–150k</option><option value="150k_200k">$150k–200k</option><option value="200k_300k">$200k–300k</option><option value="300k_500k">$300k–500k</option><option value="500k_1m">$500k–1M</option><option value="1m_2m">$1M–2M</option><option value="2m_3m">$2M–3M</option><option value="3m_plus">$3M+</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-income_range">Required</div>
+            <select class="field-input is-default" id="income_range" onchange="k5IncomePick(this)"><option value="">— Select —</option><option value="under_25k">Under $25k</option><option value="25k_50k">$25k–49k</option><option value="50k_75k">$50k–74k</option><option value="75k_100k">$75k–99k</option><option value="100k_150k">$100k–149k</option><option value="150k_200k">$150k–199k</option><option value="200k_300k">$200k–299k</option><option value="300k_500k">$300k–499k</option><option value="500k_1m">$500k–999k</option><option value="1m_2m">$1M–1.99M</option><option value="2m_3m">$2M–2.99M</option><option value="3m_plus">$3M+</option><option value="None Stated">None Stated</option></select><div class="field-error" id="err-income_range">Required</div>
           </div>
           <!-- K5 (k12 who-politics) own POLITICS: K5 values Left-leaning / Moderate / Right-leaning / None Stated + Left and Right. Production: politics text, null for None Stated. -->
           <div class="field-group who-unit" id="who-politics" style="margin-bottom:0;min-width:0;">
@@ -1955,7 +2445,8 @@
       <div id="cities-single-section" style="">
         <!-- One question at a time (2026-09-27l): Seeking alone; then Partner Location; then Age + Partner Height together.
              Seeking and Location collapse into the shared condensed row (EDIT to change); the two ranges stay open. -->
-        <!-- SEEKING -->
+        <!-- SEEKING + (s3y) Distance condensed half-row -->
+        <div class="cr-pair" id="ww-sd-row">
         <div class="who-unit ww-unit" id="ww-seek">
         <div class="who-cond" role="button" tabindex="0" aria-label="Edit Seeking" onclick="crExpand('ww-seek')"><span class="who-cond-txt"><span class="who-cond-k" id="ww-seek-k">Seeking</span><span class="who-cond-v" id="ww-seek-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <div class="field-group" style="margin-bottom:0;">
@@ -1966,6 +2457,12 @@
             <button class="toggle-btn" id="btn-seek-both" onclick="setGenderSeeking('both'); crTap('ww-seek')">BOTH</button>
           </div>
           <div class="field-error" id="err-gender_seeking">Required</div>
+        </div>
+        </div>
+        <div class="who-unit ww-unit collapsed s3y-dc" id="ww-dist-c" hidden>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Distance" onclick="s3yDistExpand()">
+            <span class="who-cond-txt"><span class="who-cond-k">Distance</span><span class="who-cond-v" id="ww-dist-c-v">+ 30 miles</span></span><span class="who-cond-edit">EDIT</span>
+          </div>
         </div>
         </div>
         <!-- PARTNER LOCATION (2026-09-27q: stays open, never auto-collapses; relocate checkbox relabelled, still saves open_to_anywhere) (2026-09-27p): "Partner city" is one primary city (defaults to the zip's city; "Change" swaps it with a
@@ -2030,10 +2527,21 @@
           </div>
         </div>
         </div>
+
+        <!-- s3y31: OTHER CITIES after Distance (Seeking → Distance → OTHER CITIES) -->
+        <!-- s3y1: other cities as its own unit (open = checkbox row, answered = collapsed box) -->
+        <div class="who-unit ww-unit" id="ww-oc" hidden>
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Other cities" onclick="s3yOcExpand()"><span class="who-cond-txt"><span class="who-cond-k" id="ww-oc-k">Other cities</span><span class="who-cond-v" id="ww-oc-v">No</span></span><span class="who-cond-edit">EDIT</span></div>
+          <div class="s3y-oc-host" id="ww-oc-host"></div>
+          <div class="s3y4-cities" id="ww-oc-cities" role="button" tabindex="0" aria-label="Edit other cities" hidden><span class="who-cond-txt"><span class="who-cond-k">Cities</span><span class="who-cond-v" id="ww-oc-cities-v">Add cities</span></span><span class="who-cond-edit">EDIT</span></div>
+        </div>
+
         <!-- AGE RANGE + PARTNER HEIGHT: shown together and never collapsed (untouched defaults are saved). -->
         <div id="ww-ranges"><!-- s3k: Age and Partner Height are separate one-at-a-time steps -->
         <!-- AGE RANGE SLIDER -->
-        <div class="field-group ww-age-group who-unit ww-unit" id="ww-age" style="margin-bottom:8px;">
+        <div class="cr-pair" id="ww-ah-row"><!-- s3y14: Age | Height half-row once both set -->
+        <div class="field-group ww-age-group who-unit ww-unit" id="ww-age" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Age" onclick="crExpand('ww-age')"><span class="who-cond-txt"><span class="who-cond-k">Age</span><span class="who-cond-v" id="ww-age-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">Age</label>
           <div class="range-slider-wrap">
             <div class="range-track"></div>
@@ -2046,7 +2554,8 @@
           <div class="field-error" id="err-age_range">Required</div>
         </div>
         <!-- HEIGHT PREFERENCE SLIDER -->
-        <div class="field-group ww-height-group who-unit ww-unit" id="ww-height" style="margin-bottom:0;">
+        <div class="field-group ww-height-group who-unit ww-unit" id="ww-height" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Height" onclick="crExpand('ww-height')"><span class="who-cond-txt"><span class="who-cond-k">Height</span><span class="who-cond-v" id="ww-height-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <label class="field-label">Height</label>
           <div class="range-slider-wrap">
             <div class="range-track"></div>
@@ -2057,10 +2566,46 @@
             <input type="range" id="height_max_in" class="range-input" min="58" max="84" step="1" value="78" onpointerdown="touchHeightPref()" onkeydown="touchHeightPref()" oninput="onHeightRangeInput(this,'max')">
           </div>
         </div>
+                        </div><!-- /ww-ah-row -->
+</div><!-- /ww-ranges -->
+        <!-- s3y10: partner prefs after Age/Height — who-degree open pattern; full-width then half-row when paired -->
+        <div class="cr-pair" id="ww-row-de">
+        <div class="field-group who-unit ww-unit" id="ww-deg" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Degree" onclick="crExpand('ww-deg')"><span class="who-cond-txt"><span class="who-cond-k">Degree</span><span class="who-cond-v" id="ww-deg-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_education_min">Degree</label>
+          <select class="field-input is-default" id="partner_education_min" aria-label="Minimum education" onchange="wwPrefPick('ww-deg', this)"><option value="">— Select —</option><option value="Any">Any</option><option value="high_school">High school+</option><option value="some_college">Some college+</option><option value="associates">Associate's+</option><option value="bachelors">Bachelor's+</option><option value="masters">Master's+</option><option value="doctorate">Doctorate+</option><option value="None Stated">None Stated</option></select>
+          <div class="field-error" id="err-partner_education_min">Required</div>
         </div>
-      </div>
-    </div>
-    <div class="bottom-action">
+        <div class="field-group who-unit ww-unit" id="ww-eth" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Ethnicities" onclick="crExpand('ww-eth')"><span class="who-cond-txt"><span class="who-cond-k">Ethnicities</span><span class="who-cond-v" id="ww-eth-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_ethnicity_btn">Ethnicities</label>
+          <button type="button" class="field-input race-select" id="partner_ethnicity_btn" aria-haspopup="true" aria-expanded="false" aria-controls="eth-panel" aria-label="Ethnicities preference" onclick="toggleEthPanel()"><span class="race-select-text empty" id="partner_ethnicity_text">— Select —</span></button>
+          <div class="field-error" id="err-partner_ethnicity">Required</div>
+        </div>
+        </div>
+        <div class="cr-pair" id="ww-row-rp">
+        <div class="field-group who-unit ww-unit" id="ww-rel" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Religion" onclick="crExpand('ww-rel')"><span class="who-cond-txt"><span class="who-cond-k">Religion</span><span class="who-cond-v" id="ww-rel-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_religion_btn">Religion</label>
+          <button type="button" class="field-input race-select" id="partner_religion_btn" aria-haspopup="true" aria-expanded="false" aria-controls="rel-panel" aria-label="Religion preference" onclick="toggleRelPanel()"><span class="race-select-text empty" id="partner_religion_text">— Select —</span></button>
+          <div class="field-error" id="err-partner_religion">Required</div>
+        </div>
+        <div class="field-group who-unit ww-unit" id="ww-pol" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Politics" onclick="crExpand('ww-pol')"><span class="who-cond-txt"><span class="who-cond-k">Politics</span><span class="who-cond-v" id="ww-pol-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_politics_btn">Politics</label>
+          <button type="button" class="field-input race-select" id="partner_politics_btn" aria-haspopup="true" aria-expanded="false" aria-controls="pol-panel" aria-label="Politics preference" onclick="togglePolPanel()"><span class="race-select-text empty" id="partner_politics_text">— Select —</span></button>
+          <div class="field-error" id="err-partner_politics">Required</div>
+        </div>
+        </div>
+        <div class="field-group who-unit ww-unit" id="ww-inc" style="margin-bottom:0;min-width:0;">
+          <div class="who-cond" role="button" tabindex="0" aria-label="Edit Income" onclick="crExpand('ww-inc')"><span class="who-cond-txt"><span class="who-cond-k">Income</span><span class="who-cond-v" id="ww-inc-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+          <label class="field-label" for="partner_income_min">Income</label>
+          <select class="field-input is-default" id="partner_income_min" aria-label="Minimum income" onchange="wwPrefPick('ww-inc', this)"><option value="">— Select —</option><option value="Any">Any</option><option value="25k">$25k+</option><option value="50k">$50k+</option><option value="75k">$75k+</option><option value="100k">$100k+</option><option value="150k">$150k+</option><option value="200k">$200k+</option><option value="300k">$300k+</option><option value="500k">$500k+</option><option value="1m">$1M+</option><option value="2m">$2M+</option><option value="3m">$3M+</option><option value="None Stated">None Stated</option></select>
+          <div class="field-error" id="err-partner_income_min">Required</div>
+        </div>
+      </div><!-- /cities-single-section -->
+    </div><!-- /screen-content -->
+<div class="bottom-action">
       <button class="btn btn-primary" onclick="goNext(3)">NEXT</button>
       <button class="btn-ghost" onclick="goBack(3)">← BACK</button>
     </div>
@@ -2163,7 +2708,7 @@
         <div class="who-unit fam-unit" id="fam-tl" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner timing" onclick="crExpand('fam-tl')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-tl-k">Timeline</span><span class="who-cond-v" id="fam-tl-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="relationship-timeline-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" id="timeline-label" for="relationship_timeline">Partner timing</label>
+            <label class="field-label" id="timeline-label" for="relationship_timeline">Ideal timeline for a relationship?</label>
             <select class="field-input" id="relationship_timeline" onchange="setRelationshipTimeline(this.value)">
               <option value="">— Select —</option>
               <option value="asap">ASAP</option>
@@ -2178,7 +2723,7 @@
         <div class="who-unit fam-unit" id="fam-hk" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Have kids" onclick="crExpand('fam-hk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-hk-k">Have kids</span><span class="who-cond-v" id="fam-hk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="has-children-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" for="has_children_select">Have kids</label>
+            <label class="field-label" for="has_children_select">Do you have kids?</label>
             <select class="field-input" id="has_children_select" onchange="setHasChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
@@ -2207,7 +2752,7 @@
         <div class="who-unit fam-unit" id="fam-wk" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('fam-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-wk-k">Want kids</span><span class="who-cond-v" id="fam-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
           <div class="field-group" id="wants-children-group" style="margin-bottom:0;min-width:0;">
-            <label class="field-label" id="wants-children-label" for="wants_children_select">Want kids</label>
+            <label class="field-label" id="wants-children-label" for="wants_children_select">Do you want kids?</label>
             <select class="field-input" id="wants_children_select" onchange="setWantsChildren(this.value)">
               <option value="">— Select —</option>
               <option value="yes">Yes</option>
@@ -2280,6 +2825,22 @@
   </div>
 
   <!-- SCREEN 7: YOUR PUBLIC SELF -->
+  <!-- s3u: WHAT MATTERS MOST (K5 ranked preferences; A = single list, B = two columns: left 01-06, right 07-11). Singles only, after Intentions & Family. -->
+  <div id="screen-9" class="screen" data-screen-key="what_matters_most">
+    <div class="progress-container"><div class="progress-steps" id="progress-9"></div></div>
+    <div id="badge-9" class="applying-badge"></div>
+    <div class="screen-content">
+      <div class="screen-label">Step <span id="wmm-step-num"></span> of <span class="step-total"></span></div>
+      <div class="screen-headline">WHAT MATTERS <span class="accent">MOST</span></div>
+      <p class="wmm-sub">Rank your top 5. Drag ≡ to move, tap to edit.</p>
+      <div class="wmm-grid" id="wmm-grid" role="list" aria-label="What matters most, in order"></div>
+    </div>
+    <div class="bottom-action">
+      <button class="btn btn-primary" id="wmm-next" onclick="goNext(9)">NEXT</button>
+      <button class="btn-ghost" onclick="goBack(9)">&larr; BACK</button>
+    </div>
+  </div>
+
   <div id="screen-7" class="screen" data-screen-key="public_self">
     <div class="progress-container"><div class="progress-steps" id="progress-7"></div></div>
     <div id="badge-7" class="applying-badge"></div>
@@ -2413,7 +2974,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-06p6';
+var PAGE_VERSION = '2026-10-06p8-s3y38'; // prod s3y38 WYW (s3y37 partner-live prefill + EDIT; s3y38 non-overlapping income labels; Dist EDIT keeps OTHER CITIES; Age→Height seq; Degree below Height; no WMM). // s3y38: own income labels non-overlapping (values unchanged) // s3y37: couples WHERE DOES YOUR PARTNER LIVE defaults from own Who You Are location; city-add btn EDIT when prefilled (main, no WMM) // deploy-bump-s3y36a // s3y36: Dist EDIT keeps OTHER CITIES condensed below Dist; keep Age→Height + Degree below Height (main, no WMM) // s3y35: HARD-hide Height until Age touched+idle ~1s; never auto with Age (main, no WMM) // deploy-bump-s3y34b // s3y34: Degree+prefs below Height (fix s3y31 order:0); Age then Height one-at-a-time (main, no WMM) // s3y33: after Dist only Age; Height after Age idle ~1s post-touchend (main, no WMM) // s3y32: first-visit Dist move+up (checkbox unchecked) → 1s idle → condense → Age (main, no WMM) // s3y31: Seeking→Dist→OC; Dist EDIT in Dist slot; move+1s or no-move+3s → Age (main, no WMM)
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -2529,15 +3090,15 @@ const state = {
   partnerRace: [], // Their race labels in the order picked (YOUR PARTNER, couples)
   partnerBdayTouched: false,
   partnerHeightTouched: false,
-  ageRangeTouched: false, wwDistTouched: false, wwAgeShown: false, wwHeightShown: false, // s3k reveal
-  heightPrefTouched: false,
+  ageRangeTouched: false, wwAgeIdleDone: false, wwDistTouched: false, wwDistIdleDone: false, wwAgeShown: false, wwHeightShown: false, // s3k reveal; s3y18/s3y23 idle gates
+  heightPrefTouched: false, wwHeightIdleDone: false, // s3y18: Degree after Height idle ~1s
 };
 let partnerCity = null;
 
 // ============================================================
 // PATHS
 // ============================================================
-function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,3,5,7,6]; }
+function getPath() { return state.status === 'partnered' ? [1,2,4,5,7,6] : [1,3,5,7,6]; } // s3y30/s3y9: WMM removed — Intentions (5) → Public Self (7)
 function getStepNum(screenId) { return getPath().indexOf(screenId) + 1; }
 // Consent records note where each consent was given: current step number + screen name (e.g. apply_step_4_public_self).
 function consentSurfaces() {
@@ -2843,8 +3404,9 @@ function showScreen(id, direction) {
   const bf = document.getElementById('below-fold');
   if (bf) bf.style.display = onLanding ? 'block' : 'none';
 
-  document.body.classList.toggle('form-active', id > 0 && id < 8);
-  if (id > 0 && id < 8) { renderBadge(id); renderProgress(id); renderStepNums(id); }
+  const _form = (id > 0 && id < 8) || id === 9; // s3u: 9 = What Matters Most
+  document.body.classList.toggle('form-active', _form);
+  if (_form) { renderBadge(id); renderProgress(id); renderStepNums(id); }
   window.scrollTo(0, 0);
   const sc = el.querySelector('.screen-content'); if (sc) sc.scrollTop = 0;
   // Arriving on (or coming back to) a progressive screen: show the answered questions plus the next open one only.
@@ -2910,7 +3472,7 @@ function renderProgress(screenId) {
 function renderStepNums(screenId) {
   const total = totalSteps();
   document.querySelectorAll('.screen.active .step-total').forEach(el => el.textContent = total);
-  ['partner-step-num','rel-step-num','live-step-num','kids-step-num','contact-step-num','social-step-num'].forEach(id => {
+  ['partner-step-num','rel-step-num','live-step-num','kids-step-num','wmm-step-num','contact-step-num','social-step-num'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       const parentScreen = el.closest('.screen');
@@ -2941,7 +3503,7 @@ function changeStatus() {
   syncFamilyDrip(); // has_children mapping for the new flow (Hotfix 5/7)
   _syncCouplesFlowClass();
   captureFlow(); // the other flow's path
-  if (from > 1 && from < 8) { showScreen(1, 'back'); return; }
+  if ((from > 1 && from < 8) || from === 9) { showScreen(1, 'back'); return; }
   renderBadge(from);
   renderProgress(from);
   renderStepNums(from);
@@ -3074,6 +3636,7 @@ async function saveLead() {
     partner_cities_extra_text: partnerCitiesExtraTextPayload(),
     ...partnerDistancePayload(),
     ...wyaPayload(),
+    ...wmmPayload(), // s3u: What Matters Most values (K5 keys)
     ...k5WhoExtraPayload(),
     ...devicePayload(), // s3n: proposed columns (not in the DB yet; the edge functions ignore unknown keys)
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
@@ -3430,9 +3993,9 @@ function syncFamilyDrip() {
   if (hasKidsDone) hideError('has_children');
 
   const tlLabel = document.getElementById('timeline-label');
-  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Marriage timing' : _datingOnly ? 'Dating timing' : 'Partner timing';
+  if (tlLabel) tlLabel.textContent = _hasMarriage ? 'Ideal timeline for marriage?' : _datingOnly ? 'Ideal timeline for dating?' : 'Ideal timeline for a relationship?';
   const wkLabel = document.getElementById('wants-children-label');
-  if (wkLabel) wkLabel.textContent = state.hasChildren === true ? 'Want more kids' : 'Want kids';
+  if (wkLabel) wkLabel.textContent = state.hasChildren === true ? 'Do you want more kids?' : 'Do you want kids?';
   crRefresh();
 }
 
@@ -3685,6 +4248,7 @@ async function doSubmit() {
     partner_cities_extra_text: partnerCitiesExtraTextPayload(),
     ...partnerDistancePayload(),
     ...wyaPayload(),
+    ...wmmPayload(), // s3u: What Matters Most values (K5 keys)
     ...k5WhoExtraPayload(),
     ...devicePayload(), // s3n: proposed columns (not in the DB yet; the edge functions ignore unknown keys)
     age_min: state.status === 'partnered' ? null : (state.ageMin || null),
@@ -3948,7 +4512,7 @@ const CR_STEPS = {
   2: [['pt-gender'], ['pt-name'], ['pt-bday'], ['pt-height'], ['pt-race'], ['pt-email'], ['pt-live'], ['pt-city', 'pt-moved']],
   // What You Want (singles): Seeking alone; Partner Location; then Age Range + Partner Height together (never collapsed).
   // s3k: ... then Age once Distance (slider or its checkbox) is touched, Partner Height once Age is touched; Next shows the next row (defaults kept).
-  3: [['ww-seek'], ['ww-loc'], ['ww-age'], ['ww-height']],
+  3: [['ww-seek'], ['ww-loc'], ['ww-age'], ['ww-height'], ['ww-deg'], ['ww-eth'], ['ww-rel'], ['ww-pol'], ['ww-inc']],
   4: [['rel-stage'], ['rel-first'], ['rel-eng'], ['rel-wed'], ['rel-mb']],
 };
 const _crFront = { 1: 0, 2: 0, 3: 0, 4: 0 };
@@ -4219,11 +4783,27 @@ function _crDefineAll() {
   // returning to the screen), so Partner city + Change, "+ Add city" with its tags and the relocate checkbox are always in view.
   // It doesn't hold back Age Range + Partner Height: they appear with it (a missing primary city is caught by Next with
   // "Choose a partner city"). If it ever is collapsed, EDIT reopens it as before.
-  crDef('ww-loc', { busy: _plBusy, noCollapse: true, stepDone: () => !!(state.wwDistTouched || state.wwAgeShown), value: partnerLocationSummary });
+  crDef('ww-loc', { busy: _plBusy, noCollapse: true, stepDone: () => !!(state.s3yDistCond && state.wwDistIdleDone), value: partnerLocationSummary }); // s3y24: Age only after Dist idle + condensed
   // Age range + partner height: one set, shown together, never collapsed (no condensed row); defaults are saved untouched.
   // s3k: once shown a row stays shown (also on returning to the screen); untouched defaults are saved.
-  crDef('ww-age', { noCollapse: true, stepDone: () => !!(state.ageRangeTouched || state.wwHeightShown), value: () => '' });
-  crDef('ww-height', { noCollapse: true, stepDone: () => false, value: () => '' });
+  crDef('ww-age', { partner: 'ww-height', stepDone: () => !!state.wwAgeIdleDone, value: () => (typeof _wwAgeVal === 'function' ? _wwAgeVal() : '') }); // s3y18: Height after ~1s Age idle
+  crDef('ww-height', { partner: 'ww-age', stepDone: () => !!state.wwHeightIdleDone, value: () => (typeof _wwHeightVal === 'function' ? _wwHeightVal() : '') }); // s3y18: Degree after ~1s Height idle
+  // s3y8 sandbox-2: partner prefs (collapse + half-row when paired partner is also done)
+  crDef('ww-deg', { focus: 'partner_education_min', partner: 'ww-eth',
+    stepDone: () => !!_crV('partner_education_min'),
+    value: () => _crOpt('partner_education_min', _crV('partner_education_min')) }); // s3y27: Degree pick → reveal Ethnicity only
+  crDef('ww-eth', { focus: 'partner_ethnicity_btn', partner: 'ww-deg', busy: () => typeof isEthPanelOpen === 'function' && isEthPanelOpen(), onExpand: f => { if (f && typeof openEthPanel === 'function') openEthPanel(); },
+    stepDone: () => !!(typeof _wwEthAnswered === 'function' && _wwEthAnswered()),
+    value: () => (typeof _wwEthValue === 'function' ? _wwEthValue() : '') }); // s3y27: one-at-a-time; default Select
+  crDef('ww-rel', { focus: 'partner_religion_btn', partner: 'ww-pol', busy: () => typeof isRelPanelOpen === 'function' && isRelPanelOpen(), onExpand: f => { if (f && typeof openRelPanel === 'function') openRelPanel(); },
+    stepDone: () => !!(typeof _wwRelAnswered === 'function' && _wwRelAnswered()),
+    value: () => (typeof _wwRelValue === 'function' ? _wwRelValue() : '') });
+  crDef('ww-pol', { focus: 'partner_politics_btn', partner: 'ww-rel', busy: () => typeof isPolPanelOpen === 'function' && isPolPanelOpen(), onExpand: f => { if (f && typeof openPolPanel === 'function') openPolPanel(); },
+    stepDone: () => !!(typeof _wwPolAnswered === 'function' && _wwPolAnswered()),
+    value: () => (typeof _wwPolValue === 'function' ? _wwPolValue() : '') });
+  crDef('ww-inc', { focus: 'partner_income_min',
+    stepDone: () => !!_crV('partner_income_min'),
+    value: () => _crOpt('partner_income_min', _crV('partner_income_min')) });
   // Intentions & Family
   crDef('fam-lf', {
     applies: () => !!_famShow.lf,
@@ -4615,41 +5195,71 @@ function _ownCityEntry() {
 // ---- CITY CHIP PICKER (shared) ----
 // One component for the singles "Partner Location" (multi: default chip, "+ Add more",
 // typed add) and the couples "Where does your partner live?" (single pick: type a city,
-// Enter/Add turns it into a chip; x removes it and brings the text box back).
+// Enter/Add turns it into a value; when prefilled / has a value the button says EDIT).
 // Free text, no fixed list, no floating overlay.
 function cityChipPicker(cfg) {
   const el = k => (cfg[k] ? document.getElementById(cfg[k]) : null);
-  const p = { open: false, cfg };
+  const p = { open: false, cfg, _editing: false };
   p.full = () => !cfg.multi && cfg.get().length > 0;
+  p.syncBtn = () => {
+    const addBtn = el('addBtn'), input = el('input');
+    const has = !!(cfg.get() && cfg.get().length);
+    if (addBtn) addBtn.textContent = has && !p._editing ? 'EDIT' : 'Add';
+    if (!cfg.multi && input && has && !p._editing && document.activeElement !== input) {
+      const cur = cfg.get()[0] || '';
+      if (input.value !== cur) input.value = cur;
+    }
+  };
   p.syncAdder = () => {
     const row = el('row'), more = el('more');
-    const showRow = cfg.multi ? p.open : !p.full();
-    if (row) row.hidden = !showRow;
-    if (more) more.hidden = cfg.multi ? !!p.open : true;
+    if (cfg.multi) {
+      const showRow = !!p.open;
+      if (row) row.hidden = !showRow;
+      if (more) more.hidden = !!p.open;
+    } else {
+      // Couples single-pick: always keep the zip/city row visible so a prefilled value
+      // shows in the field with EDIT (not a hidden adder + chip-only state).
+      if (row) row.hidden = false;
+      if (more) more.hidden = true;
+    }
+    p.syncBtn();
   };
   p.render = () => {
     const wrap = el('chips');
     if (wrap) {
       wrap.replaceChildren();
-      cfg.get().forEach(city => {
-        const chip = document.createElement('span');
-        chip.className = 'partner-location-chip';
-        const label = document.createElement('span');
-        label.className = 'partner-location-chip-label';
-        label.textContent = city;
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'partner-location-chip-remove';
-        btn.dataset.city = city;
-        btn.setAttribute('aria-label', 'Remove ' + city);
-        btn.textContent = '\u00d7';
-        chip.append(label, btn);
-        wrap.appendChild(chip);
-      });
+      // Multi keeps removable chips. Single-pick shows the value in the input + EDIT/Add.
+      if (cfg.multi) {
+        cfg.get().forEach(city => {
+          const chip = document.createElement('span');
+          chip.className = 'partner-location-chip';
+          const label = document.createElement('span');
+          label.className = 'partner-location-chip-label';
+          label.textContent = city;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'partner-location-chip-remove';
+          btn.dataset.city = city;
+          btn.setAttribute('aria-label', 'Remove ' + city);
+          btn.textContent = '\u00d7';
+          chip.append(label, btn);
+          wrap.appendChild(chip);
+        });
+      }
     }
     p.syncAdder();
   };
   p.openAdder = () => { p.open = true; p.syncAdder(); const i = el('input'); if (i) i.focus(); };
+  p.beginEdit = () => {
+    p._editing = true;
+    p.syncBtn();
+    const input = el('input');
+    if (input) {
+      const cur = (cfg.get()[0] || '');
+      if (!input.value) input.value = cur;
+      try { input.focus({ preventScroll: false }); input.select(); } catch (e) { try { input.focus(); } catch (e2) {} }
+    }
+  };
   p.commit = () => {
     const input = el('input');
     if (!input) return false;
@@ -4659,8 +5269,9 @@ function cityChipPicker(cfg) {
     if (cfg.multi) {
       if (!list.some(c => c.toLowerCase() === city.toLowerCase())) { cfg.set(list.concat([city])); input.value = ''; }
     } else {
-      cfg.set([city]); input.value = '';
-      if (document.activeElement === input) input.blur(); // the text box goes away once a city is picked
+      cfg.set([city]);
+      p._editing = false;
+      if (document.activeElement === input) input.blur();
     }
     p.render();
     if (cfg.onChange) cfg.onChange('commit');
@@ -4669,18 +5280,31 @@ function cityChipPicker(cfg) {
   p.remove = city => {
     if (!city) return;
     cfg.set(cfg.get().filter(c => c.toLowerCase() !== city.toLowerCase()));
+    p._editing = true;
     p.render();
     if (cfg.onChange) cfg.onChange('remove');
-    if (!cfg.multi) { const i = el('input'); if (i) i.focus(); }
+    if (!cfg.multi) { const i = el('input'); if (i) { i.value = ''; i.focus(); } }
   };
   p.bind = () => {
     const more = el('more'), addBtn = el('addBtn'), input = el('input'), chips = el('chips');
     if (more && !more.dataset.bound) { more.dataset.bound = '1'; more.addEventListener('click', e => { e.preventDefault(); p.openAdder(); }); }
-    if (addBtn && !addBtn.dataset.bound) { addBtn.dataset.bound = '1'; addBtn.addEventListener('click', e => { e.preventDefault(); p.commit(); }); }
+    if (addBtn && !addBtn.dataset.bound) {
+      addBtn.dataset.bound = '1';
+      addBtn.addEventListener('click', e => {
+        e.preventDefault();
+        if (!cfg.multi && cfg.get().length && !p._editing && addBtn.textContent === 'EDIT') { p.beginEdit(); return; }
+        p.commit();
+      });
+    }
     if (input && !input.dataset.bound) {
       input.dataset.bound = '1';
       input.addEventListener('keydown', e => { if (e.key !== 'Enter' || e.isComposing) return; e.preventDefault(); e.stopPropagation(); p.commit(); });
-      input.addEventListener('blur', () => { setTimeout(() => { if (document.activeElement !== input && input.value.trim()) p.commit(); }, 150); });
+      input.addEventListener('input', () => { if (!cfg.multi) { p._editing = true; p.syncBtn(); } });
+      input.addEventListener('blur', () => { setTimeout(() => {
+        if (document.activeElement === input) return;
+        if (input.value.trim()) p.commit();
+        else if (!cfg.multi) { p._editing = false; p.syncBtn(); }
+      }, 150); });
     }
     if (chips && !chips.dataset.bound) {
       chips.dataset.bound = '1';
@@ -4949,9 +5573,196 @@ function _renderPartnerLocationChips() {
   _pcTagsInto(document.getElementById('ww-loc-tags'));
 }
 
+
+// ---- s3y25: WYW slider idle waits for pointerup/touchend (not while finger down) ----
+window._wwSliderPtr = window._wwSliderPtr || {};
+function _wwSliderPtrDown(key) {
+  window._wwSliderPtr[key] = true;
+}
+function _wwSliderPtrUp(key) {
+  window._wwSliderPtr[key] = false;
+}
+function _wwSliderPtrHeld(key) {
+  return !!window._wwSliderPtr[key];
+}
+/** Bind pointer/touch up→callback; down clears/cancels via onDown. */
+function _wwBindSliderIdleGate(el, key, onDown, onUpReady) {
+  if (!el || el._s3y25Gate) return;
+  el._s3y25Gate = true;
+  const down = () => {
+    _wwSliderPtrDown(key);
+    window._wwSliderPtr['#' + key] = el;
+    try { onDown && onDown(); } catch (e) {}
+  };
+  const up = () => {
+    const was = _wwSliderPtrHeld(key);
+    _wwSliderPtrUp(key);
+    if (was) { try { onUpReady && onUpReady(); } catch (e) {} }
+  };
+  ['pointerdown', 'touchstart', 'mousedown'].forEach(ev => el.addEventListener(ev, down, { passive: true }));
+  ['pointerup', 'touchend', 'mouseup', 'pointercancel', 'touchcancel'].forEach(ev => el.addEventListener(ev, up, { passive: true }));
+  // s3y29: release anywhere (iOS range thumb often ends outside the input) — no target check
+  const winUp = () => { if (_wwSliderPtrHeld(key) && window._wwSliderPtr['#' + key] === el) up(); };
+  ['pointerup', 'pointercancel', 'touchend', 'touchcancel', 'mouseup'].forEach(ev =>
+    window.addEventListener(ev, winUp, { passive: true, capture: true }));
+  // keyboard / change commit
+  el.addEventListener('keyup', () => { _wwSliderPtrUp(key); try { onUpReady && onUpReady(); } catch (e) {} }, { passive: true });
+  el.addEventListener('change', () => { try { onUpReady && onUpReady(); } catch (e) {} }, { passive: true });
+}
+
 // ---- AGE RANGE SLIDER ----
-function touchAgeRange() { const first = !state.ageRangeTouched; state.ageRangeTouched = true; hideError('age_range'); if (first) crSync(); }
-function touchHeightPref() { state.heightPrefTouched = true; }
+let _wwAgeIdleT = null;
+const WW_AGE_IDLE_MS = 1000; // s3y18: Height after Age slider idle ~1s
+function _wwAgeClearIdleReveal() {
+  clearTimeout(_wwAgeIdleT);
+  _wwAgeIdleT = null;
+}
+/** s3y35: Height may show ONLY after Age touched AND idle done — hard class gate for CSS */
+function _wwHeightHardGateSync() {
+  const ready = !!(state.ageRangeTouched && state.wwAgeIdleDone);
+  try {
+    const h = document.getElementById('ww-height');
+    if (h) {
+      h.classList.toggle('s3y35-h-ready', ready);
+      if (!ready) {
+        h.classList.add('cr-later');
+        // never let a prior flash permanently unlock via wwHeightShown
+        state.wwHeightShown = false;
+      } else {
+        h.classList.remove('cr-later');
+        state.wwHeightShown = true;
+      }
+    }
+    const scr = document.getElementById('screen-3');
+    if (scr) scr.classList.toggle('s3y35-h-ready', ready);
+  } catch (e) {}
+  return ready;
+}
+window._wwHeightHardGateSync = _wwHeightHardGateSync;
+
+(function () {
+  // s3y35: after every crSync, re-hard-hide Height unless Age touched+idle
+  function wrapCrSync() {
+    if (typeof crSync !== 'function' || crSync._s3y35h) return;
+    const c0 = crSync;
+    crSync = function () {
+      const r = c0.apply(this, arguments);
+      try { _wwHeightHardGateSync(); } catch (e) {}
+      return r;
+    };
+    crSync._s3y35h = true;
+  }
+  wrapCrSync();
+  window.addEventListener('load', wrapCrSync);
+})();
+
+function _wwAgeScheduleIdleReveal() {
+  // s3y25: never start idle while finger still down
+  if (_wwSliderPtrHeld('age')) { _wwAgeClearIdleReveal(); return; }
+  clearTimeout(_wwAgeIdleT);
+  if (state.wwAgeIdleDone) return;
+  _wwAgeIdleT = setTimeout(() => {
+    _wwAgeIdleT = null;
+    if (state.wwAgeIdleDone) return;
+    if (_wwSliderPtrHeld('age')) return; // still down — abort
+    if (!state.ageRangeTouched) return; // s3y35: never unlock Height without a real Age touch
+    state.wwAgeIdleDone = true;
+    try { _wwHeightHardGateSync(); } catch (e) {}
+    try { crSync(); } catch (e) {}
+    try { if (typeof syncCond === 'function') syncCond(); } catch (e) {}
+  }, WW_AGE_IDLE_MS);
+}
+function touchAgeRange(ev) {
+  state.ageRangeTouched = true;
+  hideError('age_range');
+  // s3y33/s3y25: clear idle only while finger down / mid-drag — not on change after touchend
+  const t = ev && ev.type;
+  if (t !== 'change' && t !== 'pointerup' && t !== 'touchend' && t !== 'mouseup') {
+    if (_wwSliderPtrHeld('age') || t === 'pointerdown' || t === 'keydown' || t === 'input' || !t)
+      _wwAgeClearIdleReveal();
+  }
+  // s3y22: do NOT collapse on mere pointerdown/click — only oninput after EDIT idle
+}
+function _wwAgeIdleAfterRelease() {
+  if (!state.ageRangeTouched || state.wwAgeIdleDone) return;
+  try { if (typeof _wwSliderPtrUp === 'function') _wwSliderPtrUp('age'); } catch (e) {}
+  // s3y33: defer so sibling change handlers cannot clear the just-armed idle
+  setTimeout(() => { try { _wwAgeScheduleIdleReveal(); } catch (e) {} }, 0);
+}
+function _wwAgeVal() {
+  if (!state.ageRangeTouched) return ''; // s3y15: no condensed value until touched
+  if (state.ageMin != null && state.ageMax != null) return String(state.ageMin) + '–' + String(state.ageMax);
+  const a = (document.getElementById('age_min_label') || {}).textContent || '';
+  const b = (document.getElementById('age_max_label') || {}).textContent || '';
+  return (a && b) ? (a.trim() + '–' + b.trim()) : '';
+}
+function _wwHeightVal() {
+  if (!state.heightPrefTouched) return ''; // s3y15: no condensed value until touched
+  const a = ((document.getElementById('height_min_label') || {}).textContent || '').trim();
+  const b = ((document.getElementById('height_max_label') || {}).textContent || '').trim();
+  if (!a || !b) return '';
+  return (a + '–' + b).replace(/ cm–(\d+) cm$/, '–$1 cm');
+}
+function _wwDegHasValue() {
+  const sel = document.getElementById('partner_education_min');
+  if (sel && sel.value) return true;
+  if (state.partnerEducationMin) return true;
+  if (typeof crText === 'function' && crText('ww-deg')) return true;
+  return false;
+}
+function _wwAhShouldHalfRow() {
+  // s3y17: half-row ONLY after both Age+Height touched AND a Degree value is selected
+  if (!(state.ageRangeTouched && state.heightPrefTouched)) return false;
+  const deg = document.getElementById('ww-deg');
+  if (!deg || deg.classList.contains('cr-later')) return false;
+  return _wwDegHasValue();
+}
+function _wwAhCollapse() {
+  if (!_wwAhShouldHalfRow()) return;
+  const age = document.getElementById('ww-age'), h = document.getElementById('ww-height');
+  if (!age || !h) return;
+  if (age.classList.contains('cr-later') || h.classList.contains('cr-later')) return;
+  try { crSettle('ww-age'); crSettle('ww-height'); } catch (e) {}
+}
+let _wwAhSettleT = null;
+function _wwAhScheduleCollapse() {
+  clearTimeout(_wwAhSettleT);
+  _wwAhSettleT = setTimeout(() => { _wwAhSettleT = null; _wwAhCollapse(); }, typeof CR_TAP_DELAY === 'number' ? CR_TAP_DELAY : 300);
+}
+function _wwDegValueSelected() {
+  // s3y17: Degree value chosen → bump Age|Height into half-row
+  if (!_wwDegHasValue()) return;
+  state._wwDegSelecting = true; // keep half-row after EDIT reopen of AH
+  _wwAhCollapse();
+}
+let _wwHeightIdleT = null;
+const WW_HEIGHT_IDLE_MS = 1000; // s3y18: Degree after Height slider idle ~1s
+function _wwHeightClearIdleReveal() {
+  clearTimeout(_wwHeightIdleT);
+  _wwHeightIdleT = null;
+}
+function _wwHeightScheduleIdleReveal() {
+  if (_wwSliderPtrHeld('height')) { _wwHeightClearIdleReveal(); return; }
+  clearTimeout(_wwHeightIdleT);
+  if (state.wwHeightIdleDone) return;
+  _wwHeightIdleT = setTimeout(() => {
+    _wwHeightIdleT = null;
+    if (state.wwHeightIdleDone) return;
+    if (_wwSliderPtrHeld('height')) return;
+    state.wwHeightIdleDone = true;
+    try { crSync(); } catch (e) {}
+  }, WW_HEIGHT_IDLE_MS);
+}
+function touchHeightPref() {
+  state.heightPrefTouched = true;
+  // s3y25: mark interaction; idle starts only after pointerup
+  _wwHeightClearIdleReveal();
+  // s3y22: do NOT collapse on mere pointerdown/click — only oninput after EDIT idle
+} // s3y17: half-row waits for Degree value; s3y18: Degree reveal waits for Height idle
+function _wwHeightIdleAfterRelease() {
+  if (!state.heightPrefTouched || state.wwHeightIdleDone) return;
+  _wwHeightScheduleIdleReveal();
+}
 function onAgeRangeInput(el, which) {
   touchAgeRange();
   const minEl = document.getElementById('age_min');
@@ -5089,6 +5900,21 @@ function setDefaultAges() {
 // ============================================================
 let _zipTimer = null;
 
+// Couples "Where does your partner live?" — default label from Who You Are location.
+function _defaultPartnerCityLabel() {
+  try {
+    if (state.wya) {
+      if (typeof _wyaTxt === 'function') return _wyaTxt(state.wya) || null;
+      return state.wya.label || state.wya.zip || null;
+    }
+    if (state.locationMode === 'zip') {
+      const z = (document.getElementById('postal_code')?.value || '').trim();
+      if (z) return z + (state.zipCity ? ' · ' + state.zipCity : '');
+      return (state.zipCity || '').trim() || null;
+    }
+    return (typeof _canonicalOwnCity === 'function' ? _canonicalOwnCity() : null) || null;
+  } catch (e) { return null; }
+}
 function setLivesWithPartner(val, fromTap) {
   state.livesWithPartner = val || null; if (val) hideError('lives_with_partner');
   document.getElementById('btn-lives-yes').classList.toggle('selected', val === 'yes');
@@ -5110,6 +5936,12 @@ function setLivesWithPartner(val, fromTap) {
     const inp = document.getElementById('partner_city_input'); if (inp) inp.value = '';
     if (cityUnit) cityUnit.classList.remove('collapsed');
     clearTimeout(_crT['pt-city']); _crT['pt-city'] = null;
+    if (partnerCityPicker) partnerCityPicker._editing = false;
+  } else if (!partnerCity) {
+    // s3y37: prefill from the applicant's own Who You Are location (zip/city already saved).
+    const d = _defaultPartnerCityLabel();
+    if (d) partnerCity = d;
+    if (partnerCityPicker) partnerCityPicker._editing = false;
   }
   partnerCityPicker.render();
   if (fromTap && val) crTap('pt-live');
@@ -5322,6 +6154,84 @@ async function _doZipLookup(zip) {
   <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="partner-race-done">DONE</button></div>
 </div>
 
+
+<!-- s3y13: WYW partner ethnicity multi-select (Race-style sheet) -->
+<div class="cp-backdrop" id="eth-backdrop" hidden></div>
+<div class="cp-sheet race-sheet" id="eth-panel" role="dialog" aria-modal="true" aria-label="Ethnicities" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title">Ethnicities</span><button type="button" class="cp-x" id="eth-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button></div>
+  <div class="cp-hint" id="eth-hint" style="display:none"></div>
+  <div class="cp-list" id="eth-list" role="group" aria-label="Ethnicities preference (select all that apply)">
+<button type="button" class="race-opt" data-eth="Any" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">Any</span></button>
+<button type="button" class="race-opt" data-eth="White" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">White</span></button>
+<button type="button" class="race-opt" data-eth="Black" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">Black</span></button>
+<button type="button" class="race-opt" data-eth="Asian" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">Asian</span></button>
+<button type="button" class="race-opt" data-eth="Hispanic / Latino" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">Hispanic / Latino</span></button>
+<button type="button" class="race-opt" data-eth="South Asian" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">South Asian</span></button>
+<button type="button" class="race-opt" data-eth="MENA" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">MENA</span></button>
+<button type="button" class="race-opt" data-eth="Pacific Islander" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">Pacific Islander</span></button>
+<button type="button" class="race-opt" data-eth="Native American" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">Native American</span></button>
+<button type="button" class="race-opt" data-eth="Other" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
+<button type="button" class="race-opt" data-eth="None Stated" aria-pressed="false" onclick="toggleEth(this.dataset.eth)"><span class="race-box"></span><span class="race-opt-txt">None Stated</span></button>
+  </div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="eth-done">DONE</button></div>
+</div>
+
+<!-- s3y20: WYW partner religion multi-select (Ethnicity-style sheet) -->
+<div class="cp-backdrop" id="rel-backdrop" hidden></div>
+<div class="cp-sheet race-sheet" id="rel-panel" role="dialog" aria-modal="true" aria-label="Religion" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title">Religion</span><button type="button" class="cp-x" id="rel-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button></div>
+  <div class="cp-hint" id="rel-hint" style="display:none"></div>
+  <div class="cp-list" id="rel-list" role="group" aria-label="Religion preference (select all that apply)">
+<button type="button" class="race-opt" data-rel="Any" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Any</span></button>
+<button type="button" class="race-opt" data-rel="Agnostic" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Agnostic</span></button>
+<button type="button" class="race-opt" data-rel="Atheist" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Atheist</span></button>
+<button type="button" class="race-opt" data-rel="Buddhist" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Buddhist</span></button>
+<button type="button" class="race-opt" data-rel="Catholic" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Catholic</span></button>
+<button type="button" class="race-opt" data-rel="Christian" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Christian</span></button>
+<button type="button" class="race-opt" data-rel="Hindu" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Hindu</span></button>
+<button type="button" class="race-opt" data-rel="Jewish" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Jewish</span></button>
+<button type="button" class="race-opt" data-rel="Muslim" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Muslim</span></button>
+<button type="button" class="race-opt" data-rel="Sikh" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Sikh</span></button>
+<button type="button" class="race-opt" data-rel="Spiritual" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Spiritual</span></button>
+<button type="button" class="race-opt" data-rel="Other" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">Other</span></button>
+<button type="button" class="race-opt" data-rel="None Stated" aria-pressed="false" onclick="toggleRel(this.dataset.rel)"><span class="race-box"></span><span class="race-opt-txt">None Stated</span></button>
+  </div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="rel-done">DONE</button></div>
+</div>
+
+<!-- s3y20: WYW partner politics multi-select -->
+<div class="cp-backdrop" id="pol-backdrop" hidden></div>
+<div class="cp-sheet race-sheet" id="pol-panel" role="dialog" aria-modal="true" aria-label="Politics" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title">Politics</span><button type="button" class="cp-x" id="pol-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button></div>
+  <div class="cp-hint" id="pol-hint" style="display:none"></div>
+  <div class="cp-list" id="pol-list" role="group" aria-label="Politics preference (select all that apply)">
+<button type="button" class="race-opt" data-pol="Any" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">Any</span></button>
+<button type="button" class="race-opt" data-pol="Left" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">Left</span></button>
+<button type="button" class="race-opt" data-pol="Left-leaning" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">Left-leaning</span></button>
+<button type="button" class="race-opt" data-pol="Moderate" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">Moderate</span></button>
+<button type="button" class="race-opt" data-pol="Right-leaning" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">Right-leaning</span></button>
+<button type="button" class="race-opt" data-pol="Right" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">Right</span></button>
+<button type="button" class="race-opt" data-pol="Apolitical" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">Apolitical</span></button>
+<button type="button" class="race-opt" data-pol="None Stated" aria-pressed="false" onclick="togglePol(this.dataset.pol)"><span class="race-box"></span><span class="race-opt-txt">None Stated</span></button>
+  </div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="pol-done">DONE</button></div>
+</div>
+
+<!-- s3y4: WMM Distance / Age / Height edit sheet (same cp-sheet pattern as the other-cities picker; holds the WYW slider itself) -->
+<div class="cp-backdrop" id="wmm-ss-backdrop" hidden></div>
+<div class="cp-sheet" id="wmm-ssheet" role="dialog" aria-modal="true" aria-label="Edit" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title" id="wmm-ss-title"></span><button type="button" class="cp-x" id="wmm-ss-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
+  <div id="wmm-ss-body"></div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="wmm-ss-done">DONE</button></div>
+</div>
+<!-- s3u: What Matters Most option sheet (same bottom sheet as Race: 14px options, big DONE) -->
+<div class="cp-backdrop" id="wmm-backdrop" hidden></div>
+<div class="cp-sheet race-sheet wmm-sheet" id="wmm-sheet" role="dialog" aria-modal="true" aria-label="What matters most" hidden>
+  <div class="cp-sheet-head"><span class="cp-sheet-title" id="wmm-sheet-title"></span><button type="button" class="cp-x" id="wmm-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
+  <div class="cp-hint" id="wmm-hint"></div>
+  <div class="cp-list" id="wmm-list" role="group"></div>
+  <div class="cp-foot"><button type="button" class="btn btn-primary cp-done-btm" id="wmm-done">DONE</button></div>
+</div>
 <div class="cp-backdrop" id="cp-backdrop" hidden></div>
 <div class="cp-sheet" id="cp-sheet" role="dialog" aria-modal="true" aria-label="Partner cities" hidden>
   <div class="cp-sheet-head"><span class="cp-sheet-title" id="cp-sheet-title">Partner cities</span><button type="button" class="cp-x" id="cp-x" aria-label="Close"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button></div>
@@ -6019,12 +6929,99 @@ function k5Rows() {
   const d = document.getElementById('vi-dist'), cb = document.querySelector('#screen-3 .partner-location-anywhere');
   if (d && cb && cb.parentElement !== d) d.appendChild(cb);
 }
-function wwDistTouch() { if (state.wwDistTouched) return; state.wwDistTouched = true; crSync(); }
+window._wwDistIdleT = window._wwDistIdleT || null;
+const WW_DIST_IDLE_MS = 1000; // s3y23: Age after Distance slider idle ~1s
+window.WW_DIST_EDIT_NOMOVE_MS = 3000; // s3y31: EDIT Dist no-move → condense + Age after ~3s
+function _wwDistClearIdleReveal() {
+  clearTimeout(window._wwDistIdleT);
+  window._wwDistIdleT = null;
+}
+function _wwDistDoCondenseAndRevealAge() {
+  // s3y31/s3y32: condense Distance then reveal Age (checkbox checked/unchecked irrelevant)
+  state.wwDistTouched = true;
+  state.wwDistIdleDone = true; // set BEFORE cond/sync so Age gate allows unhide
+  state._wwDistEditOnly = false;
+  state._wwDistEditMoved = false;
+  try { if (typeof _wwSliderPtrUp === 'function') _wwSliderPtrUp('dist'); } catch (e) {}
+  try { if (typeof s3yDistCondNow === 'function') s3yDistCondNow(); } catch (e) {}
+  // first-visit unchecked: still mark OC answered as No so Age is not gated on checkbox
+  try { if (typeof s3yOcDone === 'function') s3yOcDone(); } catch (e) {}
+  // s3y35: unhide Age only — hard-hide Height until Age touched+idle
+  try {
+    const age = document.getElementById('ww-age');
+    if (age) age.classList.remove('cr-later');
+    // Reset any stale Height unlock from prior flashes
+    state.wwHeightShown = false;
+    if (!(state.ageRangeTouched && state.wwAgeIdleDone)) {
+      state.wwAgeIdleDone = false; // Dist just done — Age idle must run again for this visit
+    }
+    try { if (typeof _wwHeightHardGateSync === 'function') _wwHeightHardGateSync(); } catch (e2) {}
+    const h = document.getElementById('ww-height');
+    if (h) { h.classList.add('cr-later'); h.classList.remove('s3y35-h-ready'); }
+  } catch (e) {}
+  try { crSync(); } catch (e) {}
+  try { if (typeof syncCond === 'function') syncCond(); } catch (e) {}
+}
+function _wwDistScheduleIdleReveal(ms) {
+  // s3y25/s3y31: do not start idle while finger still down
+  if (typeof _wwSliderPtrHeld === 'function' && _wwSliderPtrHeld('dist')) { _wwDistClearIdleReveal(); return; }
+  clearTimeout(window._wwDistIdleT);
+  if (state.wwDistIdleDone && state.s3yDistCond) return;
+  // s3y31: EDIT Dist — move → ~1s; no move → ~3s; first-visit → ~1s
+  const delay = (typeof ms === 'number') ? ms
+    : (state._wwDistEditOnly && !state.s3yDistCond && !state._wwDistEditMoved)
+      ? (window.WW_DIST_EDIT_NOMOVE_MS || 3000)
+      : WW_DIST_IDLE_MS;
+  window._wwDistIdleT = setTimeout(() => {
+    window._wwDistIdleT = null;
+    if (typeof _wwSliderPtrHeld === 'function' && _wwSliderPtrHeld('dist')) return;
+    _wwDistDoCondenseAndRevealAge();
+  }, delay);
+}
+function wwDistTouch(ev) {
+  state.wwDistTouched = true;
+  // s3y32: only clear idle while finger still down / mid-drag — NOT on change
+  // (change fires after pointerup and was wiping the 1s timer → Age never appeared on first visit)
+  const t = ev && ev.type;
+  if (t === 'change') return;
+  if (t === 'pointerup' || t === 'touchend' || t === 'mouseup') return;
+  if (typeof _wwSliderPtrHeld === 'function' && _wwSliderPtrHeld('dist')) {
+    _wwDistClearIdleReveal();
+    return;
+  }
+  if (t === 'pointerdown' || t === 'touchstart' || t === 'mousedown' || t === 'keydown' || t === 'input') {
+    _wwDistClearIdleReveal();
+  }
+}
+function _wwDistIdleAfterRelease() {
+  if (!state.wwDistTouched && !state._wwDistEditMoved && !state._wwDistEditOnly) return;
+  if (state.wwDistIdleDone && state.s3yDistCond) return;
+  // Clear stuck held so idle can start after thumb-up outside the input (iOS)
+  try { if (typeof _wwSliderPtrUp === 'function') _wwSliderPtrUp('dist'); } catch (e) {}
+  // s3y32: first-visit move+up (checkbox yes/no irrelevant) → ~1s → condense → Age
+  // s3y31: EDIT + moved → 1s; EDIT + no move → 3s
+  _wwDistScheduleIdleReveal();
+}
+function _wwDistNoteSliderMove() {
+  state.wwDistTouched = true;
+  if (!state.s3yDistCond) state._wwDistEditMoved = true; // any open-Dist drag counts (EDIT or first visit)
+  // s3y31: cancel the 3s no-move timer while dragging; release will arm ~1s
+  try { if (typeof _wwDistClearIdleReveal === 'function') _wwDistClearIdleReveal(); } catch (e) {}
+}
 window.addEventListener('load', () => {
   const _ds = document.getElementById('vi_dist_mi');
-  if (_ds) ['pointerdown', 'keydown', 'input', 'change'].forEach(ev => _ds.addEventListener(ev, wwDistTouch));
+  if (_ds) {
+    ['pointerdown', 'keydown', 'input', 'change'].forEach(ev => _ds.addEventListener(ev, wwDistTouch));
+    try {
+      _ds.addEventListener('input', () => { try { _wwDistNoteSliderMove(); } catch (e) {} }, { passive: true });
+      _wwBindSliderIdleGate(_ds, 'dist',
+        () => { try { _wwDistClearIdleReveal(); } catch (e) {} },
+        () => { try { _wwDistIdleAfterRelease(); } catch (e) {} });
+    } catch (e) {}
+  }
   const _dc = document.getElementById('partner-location-anywhere');
-  if (_dc) _dc.addEventListener('change', wwDistTouch);
+  // checkbox: no finger-hold on slider — arm idle immediately on change
+  if (_dc) _dc.addEventListener('change', () => { wwDistTouch(); try { _wwDistIdleAfterRelease(); } catch (e) {} });
   _k4Condense();
   const _show0 = showScreen;
   showScreen = function (id) {
@@ -6476,7 +7473,7 @@ document.addEventListener('DOMContentLoaded', () => { try { s3qHeightPrefLabels(
 </script>
 
 <script>
-// ==== s3t (production 2026-10-06p6) ====
+// ==== s3t (sandbox) ====
 // 1) What You Want: Seeking -> Distance (from her own Who You Are location) -> Age -> Height, one at a time as before.
 //    Partner city + Other cities show (under the Distance box) only once "I'm open to dating in other cities" is ticked.
 //    Unticked: partner_city_primary = the home city (as before), no other cities; unticking resets Partner city to home and
@@ -6484,7 +7481,7 @@ document.addEventListener('DOMContentLoaded', () => { try { s3qHeightPrefLabels(
 //    label follows it ("Distance from 94102" / "Distance from Denver"), because the distance is measured from that city.
 // 2) A US city picked by name (own Location sheet or Partner city) drops a draggable pin there; the pin is reverse-geocoded
 //    (on the pick and after every drag / tap) and its zip is used for the label and the zip fields. Google geocoding first,
-//    Nominatim when Google refuses, city name only when neither gives a zip.
+//    Nominatim when Google refuses (sandbox referer), city name only when neither gives a zip.
 (function () {
   const $ = id => document.getElementById(id);
   const z5 = v => (/^\d{5}$/.test(String(v || '').trim()) ? String(v).trim() : '');
@@ -6604,5 +7601,1485 @@ document.addEventListener('DOMContentLoaded', () => { try { s3qHeightPrefLabels(
   ['_vkCommit', '_vk2Postcode'].forEach(f => { const g = window[f]; if (typeof g === 'function') window[f] = function () { PC.seq++; return g.apply(this, arguments); }; });
 })();
 </script>
+
+<script>
+// ==== s3u (sandbox): K5 What Matters Most (ranked). html.wmm-1col = K5 single list (A); html.wmm-2col = two columns, ranks down the left then the right (B) ====
+// Flow (singles): Who You Are -> What You Want -> Intentions & Family -> What Matters Most (screen 9) -> Public Self -> Text Me.
+// Couples: unchanged. Rows: Age / Height / Distance show the What You Want values (EDIT goes back there: no sliders here);
+// the rest open the Race-style bottom sheet. Values save with K5's keys (wmmPayload); the order itself has no column (see report).
+// K5 WYW-flash fix: Next stays on What Matters Most while saving and goes straight to Public Self; What You Want / Intentions &
+// Family are shown only if they still fail validation.
+const WMM_INCOME = [['', 'Any'], ['25k', '$25k+'], ['50k', '$50k+'], ['75k', '$75k+'], ['100k', '$100k+'], ['150k', '$150k+'], ['200k', '$200k+'], ['300k', '$300k+'], ['500k', '$500k+'], ['1m', '$1M+'], ['2m', '$2M+'], ['3m', '$3M+']];
+const WMM_EDU = [['', 'Any', 'Any'], ['high_school', 'HS/GED+', 'HS/GED+ (high school)'], ['some_college', 'Some col+', 'Some college+'], ['associates', 'Assoc+', 'Assoc+ (associate\u2019s)'], ['bachelors', 'BA/BS+', 'BA/BS+ (bachelor\u2019s)'], ['masters', 'MA/MS+', 'MA/MS+ (master\u2019s)'], ['doctorate', 'PhD/MD/JD', 'PhD/MD/JD (doctorate)']]; // s3v: box shows the abbreviation; codes unchanged
+const WMM_TIER_SHORT = { 'Top 100': 'T100', 'Top 50': 'T50', 'Ivy+': 'Ivy+' }; // last resort only, when 'X \u00b7 Top 100' cannot fit
+const WMM_SHORT = { 'Hispanic / Latino': 'Hispanic/Latino', 'Pacific Islander': 'Pac. Islander', 'Native American': 'Native Am.', 'Open to either': 'Either' };
+const WMM_TIERS = ['Any', 'Top 100', 'Top 50', 'Ivy+'];
+const WMM_DEF = [
+  { k: 'age', t: 'Age', wyw: true }, { k: 'height', t: 'Height', wyw: true }, { k: 'dist', t: 'Distance', wyw: true },
+  { k: 'ethnicity', t: 'Ethnicity', multi: true, o: ['Any', 'White', 'Black', 'Asian', 'Hispanic / Latino', 'South Asian', 'MENA', 'Pacific Islander', 'Native American', 'Other'] },
+  { k: 'education', t: 'Education', edu: true },
+  { k: 'income', t: 'Income', pick: WMM_INCOME },
+  { k: 'intentions', t: 'Intentions', multi: true, o: ['Any', 'Casual', 'Dating', 'Relationship', 'Marriage', 'Life partner'] },
+  { k: 'haskids', t: 'Have kids', o: ['Any', 'Yes', 'No'] },
+  { k: 'wantkids', t: 'Want kids', o: ['Any', 'Yes', 'No', 'Open to either', 'Unsure'] },
+  { k: 'religion', t: 'Religion', multi: true, o: null }, // the Who You Are Religion list (without None Stated) + Any
+  { k: 'politics', t: 'Politics', multi: true, o: ['Any', 'Left-leaning', 'Moderate', 'Right-leaning'] },
+];
+const WMM_ORDER = { man: ['age', 'dist', 'height', 'ethnicity', 'education', 'income', 'intentions', 'haskids', 'wantkids', 'religion', 'politics'],
+                    other: ['dist', 'age', 'height', 'ethnicity', 'education', 'income', 'intentions', 'haskids', 'wantkids', 'religion', 'politics'] };
+state.wmm = { order: WMM_ORDER.other.slice(), userOrdered: false, ret: false,
+  v: { ethnicity: [], intentions: [], religion: [], politics: [], haskids: 'Any', wantkids: 'Any', income: '', edu: '', tier: 'Any' } };
+const _wmmDef = k => WMM_DEF.find(d => d.k === k);
+function _wmmRelOpts() { return ['Any'].concat([...document.querySelectorAll('#religion option')].map(o => o.value).filter(v => v && v !== 'None Stated')); }
+function _wmmLab(list, v) { const x = list.find(p => p[0] === v); return x ? x[1] : 'Any'; }
+function _wmmVal(k) { // [text, isAny]
+  const v = state.wmm.v, w = typeof _k4Vals === 'function' ? _k4Vals() : {};
+  if (k === 'age') return [w.age || '', false];
+  if (k === 'height') return [w.height || '', false];
+  if (k === 'dist') return [w.dist || '', false];
+  if (k === 'education') { const a = v.edu ? _wmmLab(WMM_EDU, v.edu) : '', t = v.tier !== 'Any' ? v.tier : ''; if (!a && !t) return ['Any', true];
+    const A = a || 'Any'; if (!t) return [A, false]; const ts = WMM_TIER_SHORT[t] || t;
+    const th = x => A + '\u2009\u00b7\u2009' + x; // thin spaces around the dot before shortening the tier
+    return [A + ' \u00b7 ' + t, false, [A + ' \u00b7 ' + t, th(t), A + ' \u00b7 ' + ts, th(ts)]]; }
+  if (k === 'income') return v.income ? [_wmmLab(WMM_INCOME, v.income), false] : ['Any', true];
+  const x = v[k];
+  const S = s => WMM_SHORT[s] || s;
+  if (Array.isArray(x)) { if (!x.length) return ['Any', true]; const n = x.length, f = x[0];
+    return [x.join(', '), false, n === 1 ? [f, S(f)] : [x.join(', '), x.map(S).join(', '), f + ' + ' + (n - 1) + ' more', S(f) + ' + ' + (n - 1) + ' more', S(f) + ' +' + (n - 1), n + ' selected']]; }
+  return [x, x === 'Any', [x, S(x)]];
+}
+function wmmPayload() { // K5 keys / columns (partial_leads + waitlist): null = Any
+  if (state.status === 'partnered' || !state.wmm) return {};
+  const v = state.wmm.v, A = a => (a.length ? a.slice() : null), T = a => (a.length ? a.join(', ') : 'Any');
+  const WK = { 'Yes': 'yes', 'No': 'no', 'Open to either': 'open_either_way', 'Unsure': 'not_sure' };
+  return {
+    partner_ethnicity: A(v.ethnicity), partner_ethnicity_text: T(v.ethnicity),
+    partner_education_min: v.edu || null, partner_income_min: v.income || null,
+    partner_politics: A(v.politics), partner_politics_text: T(v.politics),
+    partner_religion: A(v.religion), partner_religion_text: T(v.religion),
+    partner_intentions: v.intentions.length ? v.intentions.join('; ') : null,
+    partner_has_children: v.haskids !== 'Any' ? v.haskids.toLowerCase() : null,
+    partner_wants_children: v.wantkids !== 'Any' ? (WK[v.wantkids] || null) : null,
+  };
+}
+function wmmRender(anim) {
+  const g = document.getElementById('wmm-grid'); if (!g) return;
+  g.replaceChildren();
+  state.wmm.order.forEach((k, i) => {
+    const d = _wmmDef(k), [txt, any, alts] = _wmmVal(k);
+    const c = document.createElement('div'); c.className = 'wmm-card' + (anim ? ' wmm-in' : ''); c.dataset.k = k; c.tabIndex = 0; c.setAttribute('role', 'listitem');
+    if (anim) c.style.setProperty('--i', i);
+    c.innerHTML = '<span class="wmm-n"></span><span class="wmm-txt"><span class="wmm-top"><span class="wmm-k"></span><span class="wmm-edit">EDIT</span></span><span class="wmm-v"></span></span><span class="wmm-h" aria-hidden="true"><svg viewBox="0 0 14 10"><path d="M0 1h14M0 5h14M0 9h14" stroke="currentColor" stroke-width="1.4"/></svg></span>';
+    c.querySelector('.wmm-n').textContent = String(i + 1).padStart(2, '0');
+    c.querySelector('.wmm-k').textContent = d.t;
+    const v = c.querySelector('.wmm-v'); v.textContent = txt; v.title = txt; v.classList.toggle('wmm-any', any); if (alts) v._alts = alts;
+    c.setAttribute('aria-label', String(i + 1) + '. ' + d.t + ': ' + txt + '. Drag or use the arrow keys to rank; Enter to edit.');
+    g.appendChild(c);
+  });
+  document.documentElement.dataset.wmmOrder = state.wmm.order.join(',');
+  _wmmFit();
+}
+function _wmmFit() { // s3v: first form that fits the box without an ellipsis (full words first)
+  document.querySelectorAll('#wmm-grid .wmm-v').forEach(v => { const a = v._alts; if (!a || !v.clientWidth) return;
+    for (const t of a) { v.textContent = t; if (v.scrollWidth <= v.clientWidth) return; } }); }
+function _wmmRenumber() { document.querySelectorAll('#wmm-grid .wmm-card').forEach((c, i) => { c.querySelector('.wmm-n').textContent = String(i + 1).padStart(2, '0'); }); }
+function _wmmCommitDom() { const o = [...document.querySelectorAll('#wmm-grid .wmm-card')].map(c => c.dataset.k); if (o.join() !== state.wmm.order.join()) state.wmm.userOrdered = true; state.wmm.order = o; }
+function wmmMove(k, dir) {
+  const o = state.wmm.order, i = o.indexOf(k), j = i + dir; if (i < 0 || j < 0 || j >= o.length) return;
+  o.splice(i, 1); o.splice(j, 0, k); state.wmm.userOrdered = true; wmmRender(false);
+  const c = document.querySelector('#wmm-grid .wmm-card[data-k="' + k + '"]'); if (c) c.focus();
+}
+function wmmShow() {
+  if (!state.wmm.userOrdered) state.wmm.order = (state.gender === 'man' ? WMM_ORDER.man : WMM_ORDER.other).slice();
+  state.wmm.ret = false;
+  try { if (typeof _k4Refresh === 'function') _k4Refresh(); } catch (e) {}
+  wmmRender(true);
+}
+// ---- edit: Age / Height / Distance live on What You Want; the rest use the bottom sheet ----
+let _wmmOpenK = null;
+function wmmEdit(k) {
+  const d = _wmmDef(k); if (!d) return;
+  if (d.wyw) { state.wmm.ret = true; showScreen(3, 'back'); requestAnimationFrame(() => { try { _k4Refresh(); } catch (e) {} }); return; }
+  _wmmOpenK = k;
+  document.getElementById('wmm-sheet-title').textContent = d.t;
+  document.getElementById('wmm-hint').textContent = d.multi ? '(select all)' : '';
+  _wmmList();
+  const s = document.getElementById('wmm-sheet'), b = document.getElementById('wmm-backdrop');
+  s.hidden = false; b.hidden = false; s.setAttribute('aria-label', d.t);
+  try { if (typeof sheetPinDone === 'function') sheetPinDone('wmm-sheet'); } catch (e) {}
+  const l = document.getElementById('wmm-list'); l.scrollTop = 0;
+}
+function _wmmList() {
+  const k = _wmmOpenK, d = _wmmDef(k), v = state.wmm.v, l = document.getElementById('wmm-list'); l.replaceChildren();
+  const opt = (txt, on, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'race-opt' + (on ? ' selected' : ''); b.setAttribute('aria-pressed', String(!!on));
+    b.innerHTML = '<span class="race-box"></span><span class="race-opt-txt"></span>'; b.lastChild.textContent = txt; b.addEventListener('click', e => { e.preventDefault(); fn(); _wmmList(); wmmRender(false); }); l.appendChild(b); };
+  const grp = t => { const g = document.createElement('div'); g.className = 'wmm-grp'; g.textContent = t; l.appendChild(g); };
+  if (d.edu) {
+    grp('Degree'); WMM_EDU.forEach(([c, t, s]) => opt(s, v.edu === c, () => { v.edu = c; }));
+    grp('Tier'); WMM_TIERS.forEach(t => opt(t, v.tier === t, () => { v.tier = t; }));
+  } else if (d.pick) d.pick.forEach(([c, t]) => opt(t, v[k] === c, () => { v[k] = c; }));
+  else if (d.multi) (d.o || _wmmRelOpts()).forEach(o => opt(o, o === 'Any' ? !v[k].length : v[k].includes(o), () => {
+    if (o === 'Any') v[k] = []; else v[k] = v[k].includes(o) ? v[k].filter(x => x !== o) : v[k].concat(o); })); // Any = no preference (clears the rest)
+  else d.o.forEach(o => opt(o, v[k] === o, () => { v[k] = o; }));
+}
+function wmmClose() {
+  const s = document.getElementById('wmm-sheet'), b = document.getElementById('wmm-backdrop'); if (!s || s.hidden) return;
+  s.hidden = true; b.hidden = true; const k = _wmmOpenK; _wmmOpenK = null; wmmRender(false);
+  const c = k && document.querySelector('#wmm-grid .wmm-card[data-k="' + k + '"]'); if (c) c.focus({ preventScroll: true });
+  if (typeof saveLead === 'function') saveLead();
+}
+// ---- drag (pointer anywhere on a card; a tap without movement edits). Cells are equal size, so the card simply takes the slot under the finger. ----
+function _wmmDown(e) {
+  const card = e.target.closest('.wmm-card'); if (!card || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  const g = document.getElementById('wmm-grid'), d = { id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false };
+  const move = ev => {
+    if (ev.pointerId !== d.id) return;
+    if (!d.moved && Math.hypot(ev.clientX - d.x0, ev.clientY - d.y0) < 6) return;
+    ev.preventDefault();
+    if (!d.moved) { d.moved = true; card.classList.add('dragging'); }
+    const cards = [...g.children], t = cards.find(c => { if (c === card) return false; const r = c.getBoundingClientRect(); return ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom; });
+    if (t) { const i = cards.indexOf(card), j = cards.indexOf(t); g.insertBefore(card, i < j ? t.nextSibling : t); _wmmRenumber(); }
+  };
+  const end = (ev, cancel) => {
+    if (ev.pointerId !== d.id) return;
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cc);
+    card.classList.remove('dragging');
+    if (d.moved) { _wmmCommitDom(); wmmRender(false); } else if (!cancel) wmmEdit(card.dataset.k);
+  };
+  const up = ev => end(ev, false), cc = ev => end(ev, true);
+  window.addEventListener('pointermove', move, { passive: false }); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cc);
+}
+window.addEventListener('load', () => {
+  const g = document.getElementById('wmm-grid');
+  g.addEventListener('pointerdown', _wmmDown);
+  g.addEventListener('keydown', e => {
+    const c = e.target.closest('.wmm-card'); if (!c) return;
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wmmEdit(c.dataset.k); }
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); wmmMove(c.dataset.k, -1); }
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); wmmMove(c.dataset.k, 1); }
+  });
+  document.getElementById('wmm-done').addEventListener('click', e => { e.preventDefault(); wmmClose(); });
+  document.getElementById('wmm-x').addEventListener('click', e => { e.preventDefault(); wmmClose(); });
+  document.getElementById('wmm-backdrop').addEventListener('click', wmmClose);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('wmm-sheet').hidden) wmmClose(); });
+  // ---- flow wrappers (installed after every other load-time wrapper) ----
+  const show0 = showScreen;
+  showScreen = function (id) { const r = show0.apply(this, arguments); if (id === 9) wmmShow(); return r; };
+  const next0 = goNext;
+  goNext = async function (id) {
+    if (id === 9 && state.status !== 'partnered') { // K5 flash fix: never paint What You Want on the way to Public Self
+      if (!validateScreen(3)) { showScreen(3, 'back'); return next0.call(this, 3); }
+      if (!validateScreen(5)) { showScreen(5, 'back'); return next0.call(this, 5); }
+    }
+    return next0.apply(this, arguments);
+  };
+  const back0 = goBack;
+  goBack = function (id) { if (id === 3) state.wmm.ret = false; return back0.apply(this, arguments); };
+  const gn0 = getNextScreen;
+  getNextScreen = function (c) { // EDIT from What Matters Most -> What You Want: its Next comes straight back (Intentions & Family already done)
+    if (c === 3 && state.wmm.ret && state.status !== 'partnered') { state.wmm.ret = false; if (validateScreen(5)) return 9; }
+    return gn0.apply(this, arguments);
+  };
+  window.addEventListener('resize', () => { if (state.currentScreen === 9) wmmRender(false); });
+});
+</script>
+
+<script>
+// ==== s3w (sandbox): TOP 5 + THE REST. state.wmm.order stays one list: the first 5 are ranked, the rest unranked. ====
+const WMM_TOP = 5;
+const WMM_HANDLE = '<span class="wmm-h" aria-hidden="true"><svg viewBox="0 0 14 10"><path d="M0 1h14M0 5h14M0 9h14" stroke="currentColor" stroke-width="1.4"/></svg></span>';
+function _wmmCard(k, i, anim) {
+  const d = _wmmDef(k), [txt, any, alts] = _wmmVal(k), top = i < WMM_TOP;
+  const c = document.createElement('div'); c.className = 'wmm-card' + (anim ? ' wmm-in' : ''); c.dataset.k = k; c.tabIndex = 0; c.setAttribute('role', 'listitem');
+  if (anim) c.style.setProperty('--i', i);
+  c.innerHTML = '<span class="wmm-n"></span><span class="wmm-txt"><span class="wmm-top"><span class="wmm-k"></span><span class="wmm-edit">EDIT</span></span><span class="wmm-v"></span></span>' + WMM_HANDLE;
+  c.querySelector('.wmm-n').textContent = top ? String(i + 1).padStart(2, '0') : '';
+  c.querySelector('.wmm-k').textContent = d.t;
+  const v = c.querySelector('.wmm-v'); v.textContent = txt; v.title = txt; v.classList.toggle('wmm-any', any); if (alts) v._alts = alts;
+  c.setAttribute('aria-label', (top ? 'Number ' + (i + 1) + '. ' : 'Unranked. ') + d.t + ': ' + txt + '. Drag or use the arrow keys to move; Enter to edit.');
+  return c;
+}
+wmmRender = function (anim) {
+  const g = document.getElementById('wmm-grid'); if (!g) return;
+  g.replaceChildren();
+  const top = document.createElement('div'); top.id = 'wmm-top'; top.setAttribute('role', 'list'); top.setAttribute('aria-label', 'Top 5, in order');
+  const lab = document.createElement('div'); lab.className = 'wmm-rest-k'; lab.textContent = 'Other preferences'; lab.id = 'wmm-rest-k';
+  const rest = document.createElement('div'); rest.id = 'wmm-rest'; rest.setAttribute('role', 'list'); rest.setAttribute('aria-label', 'Other preferences, unranked');
+  state.wmm.order.forEach((k, i) => (i < WMM_TOP ? top : rest).appendChild(_wmmCard(k, i, anim)));
+  g.removeAttribute('role'); g.append(top, lab, rest);
+  document.documentElement.dataset.wmmOrder = state.wmm.order.join(',');
+  _wmmFit();
+};
+// drop rules (one list underneath: indexes 0-4 = top 5)
+function wmmDrop(src, tgt, zone) {
+  const o = state.wmm.order, top = o.slice(0, WMM_TOP), rest = o.slice(WMM_TOP), inTop = k => top.includes(k);
+  if (!src || src === tgt) return false;
+  if (inTop(src)) {
+    if (tgt && inTop(tgt)) { const j = top.indexOf(tgt); top.splice(top.indexOf(src), 1); top.splice(j, 0, src); }     // reorder the top 5
+    else if (tgt) { const i = top.indexOf(src), r = rest.indexOf(tgt); top[i] = tgt; rest[r] = src; }                  // onto a rest item: the two swap
+    else if (zone === 'rest') { top.splice(top.indexOf(src), 1); top.push(rest.shift()); rest.push(src); }              // into THE REST: #5 backfills from it
+    else return false;
+  } else {
+    const r = rest.indexOf(src);
+    if (tgt && inTop(tgt) || zone === 'top') { const j = tgt && inTop(tgt) ? top.indexOf(tgt) : WMM_TOP - 1;
+      top.splice(j, 0, src); rest[r] = top.pop(); }                                                                        // into a full top 5: old #5 drops into its slot
+    else if (tgt) { rest.splice(r, 1); rest.splice(rest.indexOf(tgt) + (rest.indexOf(tgt) >= r ? 1 : 0), 0, src); }   // reorder within THE REST
+    else return false;
+  }
+  state.wmm.order = top.concat(rest); state.wmm.userOrdered = true; return true;
+}
+// drag: pointer / touch anywhere on a card (the = handle shows it); a ghost follows the finger, the drop target is outlined
+_wmmDown = function (e) {
+  const card = e.target.closest('.wmm-card'); if (!card || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  const d = { id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false, ghost: null, r: card.getBoundingClientRect(), tgt: null, zone: null };
+  const src = card.dataset.k, srcTop = state.wmm.order.indexOf(src) < WMM_TOP;
+  const clear = () => document.querySelectorAll('.wmm-target, .wmm-bump, .wmm-zone').forEach(x => x.classList.remove('wmm-target', 'wmm-bump', 'wmm-zone'));
+  const move = ev => {
+    if (ev.pointerId !== d.id) return;
+    if (!d.moved && Math.hypot(ev.clientX - d.x0, ev.clientY - d.y0) < 6) return;
+    ev.preventDefault();
+    if (!d.moved) {
+      d.moved = true; card.classList.add('wmm-src');
+      d.ghost = card.cloneNode(true); d.ghost.classList.remove('wmm-in', 'wmm-src'); d.ghost.classList.add('wmm-ghost');
+      Object.assign(d.ghost.style, { left: d.r.left + 'px', top: d.r.top + 'px', width: d.r.width + 'px', height: d.r.height + 'px' });
+      document.body.appendChild(d.ghost);
+    }
+    d.ghost.style.transform = 'translate(' + (ev.clientX - d.x0) + 'px,' + (ev.clientY - d.y0) + 'px)';
+    const el = document.elementFromPoint(ev.clientX, ev.clientY), t = el && el.closest && el.closest('#wmm-grid .wmm-card');
+    d.tgt = t && t !== card ? t.dataset.k : null;
+    d.zone = el && el.closest ? (el.closest('#wmm-top') ? 'top' : el.closest('#wmm-rest, #wmm-rest-k') ? 'rest' : null) : null;
+    clear();
+    if (d.tgt) t.classList.add('wmm-target');
+    else if (d.zone === 'rest' && srcTop) { document.getElementById('wmm-rest').classList.add('wmm-zone'); }
+    if (!srcTop && (d.zone === 'top' || (d.tgt && state.wmm.order.indexOf(d.tgt) < WMM_TOP))) { // show who gets bumped
+      const b = document.querySelectorAll('#wmm-top .wmm-card')[WMM_TOP - 1]; if (b) b.classList.add('wmm-bump'); }
+  };
+  const end = (ev, cancel) => {
+    if (ev.pointerId !== d.id) return;
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cc);
+    clear(); card.classList.remove('wmm-src'); if (d.ghost) d.ghost.remove();
+    if (d.moved) { if (!cancel && wmmDrop(src, d.tgt, d.zone)) wmmRender(false); }
+    else if (!cancel) wmmEdit(src);
+  };
+  const up = ev => end(ev, false), cc = ev => end(ev, true);
+  window.addEventListener('pointermove', move, { passive: false }); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cc);
+};
+</script>
+
+<script>
+// ==== s3x (sandbox): row markup = [n] [label + handle] [value] [EDIT]; drag still works from the handle or anywhere on the row ====
+const WMM_LEFT = document.documentElement.classList.contains('s3x-left');
+_wmmCard = function (k, i, anim) {
+  const d = _wmmDef(k), [txt, any, alts] = _wmmVal(k), top = i < WMM_TOP;
+  const c = document.createElement('div'); c.className = 'wmm-card' + (anim ? ' wmm-in' : ''); c.dataset.k = k; c.tabIndex = 0; c.setAttribute('role', 'listitem');
+  if (anim) c.style.setProperty('--i', i);
+  c.innerHTML = (WMM_LEFT ? WMM_HANDLE : '') + '<span class="wmm-n"></span><span class="wmm-kh"><span class="wmm-k"></span>' + (WMM_LEFT ? '' : WMM_HANDLE) + '</span><span class="wmm-v"></span><span class="who-cond-edit">EDIT</span>';  // shared app EDIT class, no custom type
+  c.querySelector('.wmm-n').textContent = top ? String(i + 1).padStart(2, '0') : '';
+  c.querySelector('.wmm-k').textContent = d.t;
+  const v = c.querySelector('.wmm-v'); v.textContent = txt; v.title = txt; v.classList.toggle('wmm-any', any); if (alts) v._alts = alts;
+  c.setAttribute('aria-label', (top ? 'Number ' + (i + 1) + '. ' : 'Unranked. ') + d.t + ': ' + txt + '. Drag or use the arrow keys to move; Enter to edit.');
+  return c;
+};
+</script>
+
+<script>
+
+// s3y31/s3y32: Dist release → idle → Age (EDIT + first-visit; last-word schedule so change-clear race cannot win)
+(function () {
+  function bindDistEditIdle() {
+    const el = document.getElementById('vi_dist_mi');
+    if (!el || el._s3y32DistIdle) return;
+    el._s3y32DistIdle = true;
+    el.addEventListener('input', () => { try { _wwDistNoteSliderMove(); } catch (e) {} }, { passive: true });
+    const onRelease = () => {
+      try {
+        if (typeof _wwSliderPtrUp === 'function') _wwSliderPtrUp('dist');
+        // Defer to after sibling change/wwDistTouch handlers so we are the last to arm idle
+        setTimeout(() => { try { _wwDistIdleAfterRelease(); } catch (e) {} }, 0);
+      } catch (e) {}
+    };
+    ['pointerup', 'touchend', 'mouseup', 'pointercancel', 'touchcancel', 'change'].forEach(ev => {
+      el.addEventListener(ev, onRelease, { passive: true });
+    });
+    // Document capture: iOS range often ends outside the input
+    const docUp = (e) => {
+      if (state.s3yDistCond && state.wwDistIdleDone) return;
+      if (!state.wwDistTouched && !state._wwDistEditMoved && !state._wwDistEditOnly) return;
+      // first-visit or EDIT: if this was our active dist drag, or EDIT moved
+      if (window._wwSliderPtr && window._wwSliderPtr['#dist'] === el) onRelease();
+      else if (!state.s3yDistCond && (state._wwDistEditMoved || state.wwDistTouched)) onRelease();
+    };
+    ['pointerup', 'touchend', 'pointercancel', 'touchcancel'].forEach(ev =>
+      document.addEventListener(ev, docUp, { passive: true, capture: true }));
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindDistEditIdle);
+  else bindDistEditIdle();
+  window.addEventListener('load', bindDistEditIdle);
+})();
+</script>
+<script>
+// ==== s3y2 (sandbox): Distance stays expanded until Age/Next; EDIT reopens first-visit Distance; OTHER CITIES from s3y1 ====
+(function () {
+  const $ = id => document.getElementById(id);
+  const scr = () => $('screen-3');
+  function distTxt() {
+    const mi = (typeof _viMi === 'function') ? _viMi() : (state.partnerDistanceMi || 30);
+    const miles = (typeof _vk2Miles !== 'function') || _vk2Miles();
+    if (miles) return '+ ' + mi + (mi === 1 ? ' mile' : ' miles');
+    const km = state.partnerDistanceKm || (typeof _vk2Km === 'function' ? _vk2Km(mi) : mi);
+    return '+ ' + km + ' km';
+  }
+  // condensed only after Age (or Next), never on slider touch alone
+  function isCond() { return !!(state.s3yDistCond); }
+  function syncCond() {
+    const v = $('ww-dist-c-v'); if (v) v.textContent = distTxt();
+    const row = $('ww-sd-row'), dc = $('ww-dist-c'), s = scr();
+    const cond = isCond();
+    if (s) {
+      s.classList.toggle('s3y-cond', cond);
+      s.classList.remove('s3y-open-dist');
+      s.classList.toggle('s3y-dist-edit', !!state._wwDistEditOnly && !cond);
+      const _exCls = (typeof partnerCitiesExtra !== 'undefined' && partnerCitiesExtra) || [];
+      s.classList.toggle('s3y-oc-own', !!state._wwOcOwnCell || _exCls.length > 0);
+    }
+    // s3y24/s3y35: Dist expanded → hide Age+Height; Dist done → Age only; Height ONLY after Age touched+idle
+    (function () {
+      const distReady = !!(cond && (state.wwDistIdleDone || state.wwAgeShown));
+      const age = $('ww-age'), h = $('ww-height');
+      if (age) {
+        if (!distReady) age.classList.add('cr-later');
+        else age.classList.remove('cr-later');
+      }
+      // s3y35: hard gate — never unlock Height just because Dist/Age shown
+      try { if (typeof _wwHeightHardGateSync === 'function') _wwHeightHardGateSync(); } catch (e) {}
+      if (h && !(state.ageRangeTouched && state.wwAgeIdleDone)) {
+        h.classList.add('cr-later');
+        h.classList.remove('s3y35-h-ready');
+      }
+    })();
+    if (dc) {
+      if (cond) { dc.hidden = false; dc.classList.add('collapsed'); }
+      else { dc.hidden = true; }
+    }
+    if (row) {
+      const seekCol = $('ww-seek') && $('ww-seek').classList.contains('collapsed');
+      row.classList.toggle('cr-both', cond && seekCol && !dc.hidden);
+      row.classList.toggle('cr-solo', !(cond && seekCol));
+    }
+    // s3y28: when cities are set, OTHER CITIES is its own condensed cell; EDIT Distance never shows the checkbox
+    const oc = $('ww-oc'), host = $('ww-oc-host');
+    const cb = document.querySelector('#screen-3 .partner-location-anywhere');
+    const ex = (typeof partnerCitiesExtra !== 'undefined' && partnerCitiesExtra) || [];
+    const citiesSet = ex.length > 0;
+    const ocOwnCell = citiesSet || !!state._wwOcOwnCell;
+    if (citiesSet) state._wwOcOwnCell = true;
+    if (oc) {
+      // s3y36: keep OC visible on Dist EDIT; also when Dist condensed / own-cell / OC done (incl. "No")
+      const showOc = !!(cond || ocOwnCell || state._wwDistEditOnly || state.s3yOcDone || state._wwOcOwnCell);
+      if (showOc) { oc.hidden = false; oc.removeAttribute('hidden'); }
+      else oc.hidden = true;
+      // Condensed unless user is explicitly editing OTHER CITIES
+      const ocCollapsed = !state._wwOcEditing && !!(ocOwnCell || state.s3yOcDone || state._wwDistEditOnly || cond);
+      oc.classList.toggle('collapsed', ocCollapsed);
+      const ok = $('ww-oc-k');
+      const ov = $('ww-oc-v');
+      const names = ex.map(c => String(c.city || c.label || '').split(',')[0].trim()).filter(Boolean);
+      if (ok) ok.textContent = names.length ? ('Other cities (' + names.length + ')') : 'Other cities';
+      if (ov) {
+        ov.textContent = !partnerLocationAnywhere && !names.length ? 'No'
+          : names.length ? names.join(', ')
+          : (partnerLocationAnywhere ? 'Open to other cities' : 'No');
+        ov.title = ov.textContent;
+      }
+    }
+    if (cb) {
+      const distEditOnly = !!state._wwDistEditOnly; // EDIT Distance: never host the checkbox
+      if (ocOwnCell || distEditOnly || (cond && state.s3yOcDone)) {
+        // Checkbox belongs to OTHER CITIES only (visible when OC expanded via EDIT)
+        if (host && cb.parentElement !== host) host.appendChild(cb);
+        cb.classList.remove('s3y-cb');
+        // Host is hidden while OC collapsed, so checkbox is not under Distance
+      } else {
+        // First visit only (before OC is its own cell): checkbox under Distance
+        const d = $('vi-dist');
+        if (d && cb.parentElement !== d) d.appendChild(cb);
+        cb.classList.remove('s3y-cb');
+      }
+    }
+  }
+  window.s3yDistCondNow = function () {
+    if (!state.wwDistTouched) return;
+    state.s3yDistCond = true;
+    state._wwDistEditOnly = false;
+    state._wwDistEditMoved = false;
+    state._wwOcEditing = false;
+    // once Distance is condensed, OTHER CITIES is answered (current Yes/No / city list)
+    state.s3yOcDone = true;
+    // s3y36: always own-cell once answered — including "No" — so Dist EDIT cannot hide OC
+    state._wwOcOwnCell = true;
+    try { if (state.genderSeeking && typeof crSettle === 'function') crSettle('ww-seek'); } catch (e) {}
+    syncCond();
+  };
+  // s3y28: EDIT Distance = slider only; never resurface other-cities checkbox; keep OTHER CITIES cell if cities set
+  window.s3yDistExpand = function () {
+    state.s3yDistCond = false;
+    state._wwDistEditOnly = true;
+    state._wwDistEditMoved = false; // s3y31: move→1s idle, or no-move→3s idle → Age
+    state._wwOcEditing = false; // keep OC condensed (not OC-editing)
+    // s3y36: OTHER CITIES condensed must stay visible directly below Dist on EDIT (incl. "No")
+    state._wwOcOwnCell = true;
+    state.s3yOcDone = true;
+    state.wwDistIdleDone = false; // s3y24: Age hides until Dist idle + condensed again
+    clearTimeout(window._wwDistIdleT); window._wwDistIdleT = null;
+    syncCond();
+    try { if (typeof crSync === 'function') crSync(); } catch (e) {}
+    try { if (typeof _k4Refresh === 'function') _k4Refresh(); } catch (e) {}
+    // Force OC visible + condensed under Dist after sync
+    try {
+      const oc = $('ww-oc');
+      if (oc) {
+        oc.hidden = false;
+        oc.classList.add('collapsed');
+        oc.removeAttribute('hidden');
+      }
+    } catch (e) {}
+    const el = $('vi_dist_mi'); if (el) try { el.focus({ preventScroll: true }); } catch (e) {}
+    // s3y31: arm ~3s no-move idle so Age still reveals if user never touches the slider
+    try {
+      state.wwDistTouched = true;
+      if (typeof _wwDistScheduleIdleReveal === 'function') _wwDistScheduleIdleReveal(window.WW_DIST_EDIT_NOMOVE_MS || 3000);
+    } catch (e) {}
+  };
+  // OTHER CITIES: answered on Age touch, Next, sheet Done, or CR_DELAY after untick; EDIT reopens the checkbox
+  let ocT = null;
+  window.s3yOcDone = function () {
+    clearTimeout(ocT); ocT = null;
+    state.s3yOcDone = true;
+    state._wwOcEditing = false;
+    state._wwOcOwnCell = true; // s3y36: incl. "No" — Dist EDIT must not hide OC
+    syncCond();
+  };
+  window.s3yOcExpand = function () {
+    clearTimeout(ocT);
+    state.s3yOcDone = false;
+    state._wwOcEditing = true; // s3y28: expand OTHER CITIES (checkbox / cities) — not Distance
+    state._wwOcOwnCell = true;
+    syncCond();
+    const i = $('partner-location-anywhere'); if (i) try { i.focus({ preventScroll: true }); } catch (e) {}
+  };
+  // always "Distance from you"
+  const labFix = () => {
+    const lab = $('vi-dist-label');
+    if (lab) { lab.textContent = 'Distance from you'; lab.title = 'Distance from you'; }
+    const v = $('ww-dist-c-v'); if (v) v.textContent = distTxt();
+  };
+  const u0 = _viDistUpdate;
+  _viDistUpdate = function () { const r = u0.apply(this, arguments); labFix(); syncCond(); return r; };
+  // never show Partner city
+  const k0 = k5Rows;
+  k5Rows = function () {
+    try { k0.apply(this, arguments); } catch (e) {}
+    const row = $('vk-row'); if (row) { row.classList.add('s3t-off'); row.style.display = 'none'; }
+    syncCond();
+  };
+  // s3y25: slider touch marks Dist touched; idle/condense only after pointerup
+  const w0 = wwDistTouch;
+  wwDistTouch = function (ev) {
+    const r = w0.apply(this, arguments);
+    state.wwDistTouched = true;
+    // s3y32: wrap must not clear idle on change (same race as bare wwDistTouch)
+    const t = ev && ev.type;
+    if (t !== 'change' && t !== 'pointerup' && t !== 'touchend' && t !== 'mouseup') {
+      try {
+        if (typeof _wwSliderPtrHeld === 'function' && _wwSliderPtrHeld('dist')) _wwDistClearIdleReveal();
+        else if (t === 'pointerdown' || t === 'touchstart' || t === 'mousedown' || t === 'keydown' || t === 'input')
+          _wwDistClearIdleReveal();
+      } catch (e) {}
+    }
+    syncCond(); // still expanded
+    return r;
+  };
+  window.addEventListener('load', () => {
+    const el = $('vi_dist_mi');
+    if (el) {
+      ['pointerdown','touchstart','mousedown','input','change'].forEach(ev =>
+        el.addEventListener(ev, (e) => { wwDistTouch(e); }, {passive:true}));
+      try {
+        el.addEventListener('input', () => { try { _wwDistNoteSliderMove(); } catch (e) {} }, { passive: true });
+        _wwBindSliderIdleGate(el, 'dist',
+          () => { try { _wwDistClearIdleReveal(); } catch (e) {} },
+          () => { try { _wwDistIdleAfterRelease(); } catch (e) {} });
+      } catch (e) {}
+    }
+    const i = $('partner-location-anywhere');
+    if (i) i.addEventListener('change', () => {
+      if (!isCond()) return;
+      clearTimeout(ocT);
+      // untick: collapse after a beat; tick opens the city picker (existing), collapses on Done via _cpClose
+      if (!i.checked) ocT = setTimeout(s3yOcDone, typeof CR_DELAY === 'number' ? CR_DELAY : 1200);
+      else ocT = setTimeout(() => { // backup if the sheet never opened / closed without Done
+        const sh = $('cp-sheet'); if (!sh || sh.hidden) s3yOcDone();
+      }, 800);
+    });
+    // wrap whatever _cpClose is now (may already be wrapped by k5/s3t): after Done, collapse OTHER CITIES
+    (function () {
+      const wrap = () => {
+        if (typeof _cpClose !== 'function' || _cpClose._s3y3) return;
+        const cc = _cpClose;
+        _cpClose = function () {
+          const r = cc.apply(this, arguments);
+          if (isCond()) { clearTimeout(ocT); setTimeout(s3yOcDone, typeof CR_TAP_DELAY === 'number' ? CR_TAP_DELAY : 300); }
+          else syncCond();
+          return r;
+        };
+        _cpClose._s3y3 = true;
+      };
+      wrap(); window.addEventListener('load', wrap);
+    })();
+    // Age touch / Height reveal: now condense Distance + mark OTHER CITIES answered
+    ['age_min','age_max'].forEach(id => {
+      const e = $(id); if (!e) return;
+      ['pointerdown','keydown','input'].forEach(ev => e.addEventListener(ev, () => {
+        s3yDistCondNow();
+        if (!state.s3yOcDone) s3yOcDone();
+      }));
+    });
+    ['height_min_in','height_max_in'].forEach(id => {
+      const e = $(id); if (!e) return;
+      ['pointerdown','keydown','input'].forEach(ev => e.addEventListener(ev, () => {
+        if (state.wwDistTouched && !isCond()) s3yDistCondNow();
+      }));
+    });
+  });
+  const c0 = crSync;
+  crSync = function () { const r = c0.apply(this, arguments); syncCond(); return r; };
+  const g0 = goNext;
+  goNext = function (id) {
+    if (id === 3 && state.wwDistTouched) {
+      s3yDistCondNow(); s3yOcDone();
+      state.wwDistIdleDone = true; // s3y24: Next = done with Distance → Age may reveal
+      try { crSync(); } catch (e) {}
+    }
+    return g0.apply(this, arguments);
+  };
+  const boot = () => { labFix(); k5Rows(); syncCond(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  window.addEventListener('load', () => { labFix(); syncCond(); });
+})();
+</script>
+
+<script>
+// ==== s3y4 (sandbox): ticked + city picker finished (Done / X / backdrop: the sheet goes hidden) -> condense now ====
+(function () {
+  const $ = id => document.getElementById(id);
+  function ocNames() { const ex = (typeof partnerCitiesExtra !== 'undefined' && partnerCitiesExtra) || [];
+    return ex.map(c => String(c.city || c.label || '').split(',')[0].trim()).filter(Boolean); }
+  function citiesSync() {
+    const f = $('ww-oc-cities'), v = $('ww-oc-cities-v'); if (!f) return;
+    f.hidden = !partnerLocationAnywhere; const n = ocNames();
+    if (v) { v.textContent = n.length ? n.join(', ') : 'Add cities'; v.classList.toggle('s3y4-ph', !n.length); v.title = v.textContent; }
+  }
+  // EDIT on OTHER CITIES: the checkbox + (when ticked) the Cities field; Done on the picker / Age / Next collapse it again
+  const ox = window.s3yOcExpand;
+  window.s3yOcExpand = function () { const r = ox.apply(this, arguments); citiesSync(); return r; };
+  window.addEventListener('load', () => {
+    const f = $('ww-oc-cities');
+    if (f) { f.addEventListener('click', e => { e.preventDefault(); _cpOpen(); });
+      f.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _cpOpen(); } }); }
+    const i = $('partner-location-anywhere'); if (i) i.addEventListener('change', () => setTimeout(citiesSync, 0));
+    citiesSync();
+  });
+  window.addEventListener('load', () => {
+    const sh = $('cp-sheet'); if (!sh || !window.MutationObserver) return;
+    let was = sh.hidden;
+    new MutationObserver(() => {
+      const now = sh.hidden; if (now === was) return; was = now; citiesSync();
+      if (!now) return;                                   // just opened: never condense while she is picking
+      const s = $('screen-3'); if (!s || !s.classList.contains('active') && getComputedStyle(s).display === 'none') return;
+      if (!partnerLocationAnywhere) return;               // unticked: Age / Next stay the trigger
+      setTimeout(() => { if (sh.hidden && partnerLocationAnywhere) { s3yDistCondNow(); s3yOcDone(); } }, typeof CR_TAP_DELAY === 'number' ? CR_TAP_DELAY : 300);
+    }).observe(sh, { attributes: true, attributeFilter: ['hidden'] });
+  });
+})();
+</script>
+<script>
+// ==== s3y4: WMM EDIT on Distance / Age / Height opens a sheet with the WYW slider itself (moved in, moved back on Done) ====
+(function () {
+  const $ = id => document.getElementById(id);
+  const GROUP = { dist: () => $('vi-dist'), age: () => $('ww-age'), height: () => $('ww-height') };
+  const TITLE = { dist: 'Distance', age: 'Age', height: 'Height' };
+  let cur = null, openedAt = 0; // { k, el, parent, next }
+  function open(k) {
+    const el = GROUP[k](); if (!el) return false;
+    cur = { k, el, parent: el.parentNode, next: el.nextSibling }; openedAt = Date.now();
+    $('wmm-ss-body').appendChild(el);
+    $('wmm-ss-title').textContent = TITLE[k];
+    const s = $('wmm-ssheet'); s.setAttribute('aria-label', TITLE[k]);
+    s.hidden = false; $('wmm-ss-backdrop').hidden = false;
+    requestAnimationFrame(() => { try { _k4Refresh(); } catch (e) {} try { if (typeof sheetPinDone === 'function') sheetPinDone('wmm-ssheet'); } catch (e) {} });
+    return true;
+  }
+  function close() {
+    if (!cur) return;
+    const { k, el, parent, next } = cur; cur = null;
+    parent.insertBefore(el, next && next.parentNode === parent ? next : null);
+    $('wmm-ssheet').hidden = true; $('wmm-ss-backdrop').hidden = true;
+    if (k === 'dist') state.wwDistTouched = true;
+    if (k === 'age') state.ageRangeTouched = true;
+    if (k === 'height') { try { if (typeof touchHeightPref === 'function') touchHeightPref(); } catch (e) {} }
+    try { _k4Refresh(); } catch (e) {}
+    try { wmmRender(false); } catch (e) {}
+    const c = document.querySelector('#wmm-grid .wmm-card[data-k="' + k + '"]'); if (c) try { c.focus({ preventScroll: true }); } catch (e) {}
+  }
+  window.wmmSliderEdit = open; window.wmmSliderDone = close;
+  const e0 = wmmEdit;
+  wmmEdit = function (k) { if (GROUP[k] && open(k)) return; return e0.apply(this, arguments); };
+  window.addEventListener('load', () => {
+    ['wmm-ss-done', 'wmm-ss-x', 'wmm-ss-backdrop'].forEach(id => { const b = $(id); if (b) b.addEventListener('click', e => { e.preventDefault(); if (Date.now() - openedAt < 450) return; close(); }); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && cur) close(); });
+  });
+})();
+</script>
+<script>
+// ==== s3y5 (sandbox): OTHER CITIES (n) label; EDIT opens the city picker directly (no checkbox). s3y7: no "Not open" row. ====
+(function () {
+  const $ = id => document.getElementById(id);
+  const names = () => ((typeof partnerCitiesExtra !== 'undefined' && partnerCitiesExtra) || []).map(c => String(c.city || c.label || '').split(',')[0].trim()).filter(Boolean);
+  function ocLabel() {
+    const k = document.querySelector('#ww-oc > .who-cond .who-cond-k'); if (!k) return;
+    const n = partnerLocationAnywhere ? names().length : 0;
+    const t = n ? 'Other cities (' + n + ')' : 'Other cities';
+    if (k.textContent !== t) k.textContent = t;
+  }
+  function setAnywhere(on) {
+    partnerLocationAnywhere = !!on;
+    const i = $('partner-location-anywhere'); if (i) i.checked = !!on;
+    try { _renderPartnerLocationChips(); } catch (e) {}
+    try { _wwLocChanged(); } catch (e) {}
+  }
+  let fromOc = false;
+  // EDIT on the collapsed OTHER CITIES box: straight to the picker (the box stays collapsed behind it)
+  window.s3yOcExpand = function () { fromOc = true; _cpOpen(); };
+  window.addEventListener('load', () => {
+    const v = $('ww-oc-v');
+    if (v && window.MutationObserver) new MutationObserver(ocLabel).observe(v, { childList: true, characterData: true, subtree: true });
+    const sh = $('cp-sheet');
+    if (sh && window.MutationObserver) {
+      let was = sh.hidden;
+      new MutationObserver(() => {
+        const now = sh.hidden; if (now === was) return; was = now;
+        if (!now) return;
+        if (fromOc) { fromOc = false; setAnywhere(names().length > 0); } // picked any city = yes; removed them all = No
+        try { crSync(); } catch (e) {}
+        ocLabel();
+      }).observe(sh, { attributes: true, attributeFilter: ['hidden'] });
+    }
+    // s3y7: no "Not open to other cities" row — picker is cities list / search only (pre-s3y5).
+    const r0 = _cpRenderList;
+    _cpRenderList = function () {
+      const r = r0.apply(this, arguments);
+      const list = $('cp-list'); if (list) list.querySelectorAll('.s3y5-none').forEach(el => el.remove());
+      return r;
+    };
+    ocLabel();
+  });
+})();
+</script>
+<script>
+// ==== s3y6 (sandbox): answered fields stay collapsed; long-form questions while asking, short caps keys once collapsed ====
+(function () {
+  // 1) EDIT / reveal never re-expands an answered pair partner: only the tapped unit opens. The partner stays a collapsed
+  //    full-width row until both are answered again, then the pair goes back to the half-row.
+  crExpand = function (id, focus) {
+    const u = _crEl(id), c = CR[id];
+    if (!u || !c) return;
+    clearTimeout(_crT[id]); _crT[id] = null;
+    u.classList.remove('collapsed', 'cr-skipped');
+    c._movedOn = false; c._expandedAt = Date.now();
+    if (focus !== false) c._editing = true;
+    if (c.onExpand) c.onExpand(focus !== false);
+    crSync();
+    if (focus === false) return;
+    const fid = typeof c.focus === 'function' ? c.focus() : c.focus;
+    const el = fid && _crEl(fid);
+    if (el) { try { el.focus({ preventScroll: false }); } catch (e) {} }
+  };
+  // leaving a question for its pair partner is leaving it (settles it), like any other field
+  _crScope = function (id) { return _crEl(id); };
+
+  // 2) Long-form questions (K5 copy) while a field is open; the collapsed rows keep their short keys.
+  const LONG = {
+    'who-gender': 'I am a', 'who-loc': 'Where you live',
+    'pt-gender': 'My partner is a', 'pt-name': 'Their first name', 'pt-bday': 'Their birthday', 'pt-height': 'Their height',
+    'pt-race': 'Their race', 'pt-email': 'Their email', 'pt-live': 'Do you live together?', 'pt-moved': 'When did you move in together?',
+    'pt-city': 'Where does your partner live?',
+    'rel-mb': 'Have either of you been married before?',
+    'fam-nk': 'How many kids do you have?', 'fam-kt': 'Ideal timeline for kids?', 'fam-fert': 'Did you invest in fertility preservation?',
+  };
+  function longLabels() {
+    Object.keys(LONG).forEach(id => {
+      const u = document.getElementById(id); if (!u) return;
+      const l = u.querySelector(':scope > label.field-label, :scope > .wya-labrow > label.field-label, :scope > .field-group > label.field-label, :scope > .field-group .field-label');
+      if (l && l.textContent !== LONG[id]) l.textContent = LONG[id];
+      const w = u.querySelector('.wya-row-k'); if (w && w.textContent !== LONG[id]) w.textContent = LONG[id];
+    });
+  }
+  const c1 = crSync;
+  crSync = function () { const r = c1.apply(this, arguments); longLabels(); return r; };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', longLabels); else longLabels();
+  window.addEventListener('load', longLabels);
+})();
+</script>
+<script>
+// ==== s3y7 (sandbox): keep OTHER CITIES (n) + EDIT→picker (no checkbox); REMOVE s3y5 "Not open to other cities" picker row ====
+(function () {
+  // Undo the s3y5 _cpRenderList wrapper that injects .s3y5-none, if it already ran / is about to run.
+  // s3y5 binds the wrapper on window 'load'. We also strip any existing row and restore the original renderer when possible.
+  function stripNone() {
+    const list = document.getElementById('cp-list');
+    if (!list) return;
+    list.querySelectorAll('.s3y5-none').forEach(el => el.remove());
+  }
+  function unwrap() {
+    // If s3y5 wrapped _cpRenderList, re-wrap so we call through then strip the row.
+    if (typeof _cpRenderList !== 'function') return;
+    const cur = _cpRenderList;
+    if (cur._s3y7) return;
+    _cpRenderList = function () {
+      const r = cur.apply(this, arguments);
+      stripNone();
+      return r;
+    };
+    _cpRenderList._s3y7 = true;
+  }
+  function boot() {
+    unwrap();
+    stripNone();
+    const list = document.getElementById('cp-list');
+    if (list && window.MutationObserver) {
+      new MutationObserver(stripNone).observe(list, { childList: true });
+    }
+    const sh = document.getElementById('cp-sheet');
+    if (sh && window.MutationObserver) {
+      new MutationObserver(() => { if (!sh.hidden) stripNone(); }).observe(sh, { attributes: true, attributeFilter: ['hidden'] });
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  window.addEventListener('load', () => { unwrap(); stripNone(); });
+})();
+</script>
+
+
+
+
+<script>
+// ==== s3y25: bind Age/Height slider idle to pointerup/touchend ====
+(function () {
+  function bind() {
+    ['age_min', 'age_max'].forEach(id => {
+      const el = document.getElementById(id); if (!el) return;
+      try {
+        _wwBindSliderIdleGate(el, 'age',
+          () => { try { _wwAgeClearIdleReveal(); if (typeof _wwAhClearEditIdleCollapse === 'function') _wwAhClearEditIdleCollapse(); } catch (e) {} },
+          () => { try { _wwAgeIdleAfterRelease(); if (typeof _wwAhIdleAfterRelease === 'function') _wwAhIdleAfterRelease(); } catch (e) {} });
+      } catch (e) {}
+    });
+    ['height_min_in', 'height_max_in'].forEach(id => {
+      const el = document.getElementById(id); if (!el) return;
+      try {
+        _wwBindSliderIdleGate(el, 'height',
+          () => { try { _wwHeightClearIdleReveal(); if (typeof _wwAhClearEditIdleCollapse === 'function') _wwAhClearEditIdleCollapse(); } catch (e) {} },
+          () => { try { _wwHeightIdleAfterRelease(); if (typeof _wwAhIdleAfterRelease === 'function') _wwAhIdleAfterRelease(); } catch (e) {} });
+      } catch (e) {}
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+  window.addEventListener('load', bind);
+})();
+</script>
+<script>
+// ==== s3y17: Age|Height half-row only after Degree value is SELECTED ====
+// ==== s3y22: EDIT Age/Height — no collapse on mere click; move slider then ~1s idle ====
+(function () {
+  state._wwAgeEditHold = !!state._wwAgeEditHold;
+  state._wwHeightEditHold = !!state._wwHeightEditHold;
+  let _wwAhEditIdleT = null;
+  const WW_AH_EDIT_IDLE_MS = 1000;
+
+  function _wwAhEditHolding() {
+    return !!(state._wwAgeEditHold || state._wwHeightEditHold);
+  }
+  function _wwAhMarkEditHold() {
+    state._wwAgeEditHold = true;
+    state._wwHeightEditHold = true;
+    clearTimeout(_wwAhEditIdleT);
+    _wwAhEditIdleT = null;
+  }
+  function _wwAhClearEditIdleCollapse() {
+    clearTimeout(_wwAhEditIdleT);
+    _wwAhEditIdleT = null;
+  }
+  window._wwAhClearEditIdleCollapse = _wwAhClearEditIdleCollapse;
+  function _wwAhScheduleEditIdleCollapse() {
+    // s3y25: do not collapse while finger still down on Age or Height
+    if (_wwSliderPtrHeld('age') || _wwSliderPtrHeld('height')) { _wwAhClearEditIdleCollapse(); return; }
+    clearTimeout(_wwAhEditIdleT);
+    _wwAhEditIdleT = setTimeout(() => {
+      _wwAhEditIdleT = null;
+      if (_wwSliderPtrHeld('age') || _wwSliderPtrHeld('height')) return;
+      state._wwAgeEditHold = false;
+      state._wwHeightEditHold = false;
+      try {
+        if (typeof _wwAhShouldHalfRow === 'function' && _wwAhShouldHalfRow()) _wwAhCollapse();
+        else { crSettle('ww-age'); crSettle('ww-height'); }
+      } catch (e) {}
+    }, WW_AH_EDIT_IDLE_MS);
+  }
+  window._wwAhNoteSliderMove = function () {
+    // Actual thumb move (oninput) — arm collapse only after pointerup
+    if (_wwAhEditHolding()) {
+      _wwAhClearEditIdleCollapse();
+      // if finger already up (rare), schedule now; else pointerup gate will call
+      if (!_wwSliderPtrHeld('age') && !_wwSliderPtrHeld('height')) _wwAhScheduleEditIdleCollapse();
+      return;
+    }
+    // Not in EDIT-hold: s3y17 half-row collapse after Degree value (debounce) — also wait for release
+    if (_wwSliderPtrHeld('age') || _wwSliderPtrHeld('height')) return;
+    try { if (typeof _wwDegHasValue === 'function' && _wwDegHasValue()) _wwAhScheduleCollapse(); } catch (e) {}
+  };
+  window._wwAhIdleAfterRelease = function () {
+    if (_wwAhEditHolding()) _wwAhScheduleEditIdleCollapse();
+    else if (typeof _wwDegHasValue === 'function' && _wwDegHasValue()) {
+      try { _wwAhScheduleCollapse(); } catch (e) {}
+    }
+  };
+
+  const _settle = window.crSettle;
+  if (typeof _settle === 'function' && !_settle._s3y22) {
+    window.crSettle = function (id) {
+      if ((id === 'ww-age' || id === 'ww-height') && _wwAhEditHolding()) return false; // s3y22
+      if ((id === 'ww-age' || id === 'ww-height') && typeof _wwAhShouldHalfRow === 'function' && !_wwAhShouldHalfRow()) return false; // s3y17
+      return _settle.apply(this, arguments);
+    };
+    window.crSettle._s3y22 = true;
+    window.crSettle._s3y17 = true;
+  }
+  const _collapse = window.crCollapse;
+  if (typeof _collapse === 'function' && !_collapse._s3y22) {
+    window.crCollapse = function (id) {
+      if ((id === 'ww-age' || id === 'ww-height') && _wwAhEditHolding()) return false;
+      return _collapse.apply(this, arguments);
+    };
+    window.crCollapse._s3y22 = true;
+  }
+  const _expand = window.crExpand;
+  if (typeof _expand === 'function' && !_expand._s3y22) {
+    window.crExpand = function (id, focus) {
+      const u = document.getElementById(id);
+      const was = !!(u && u.classList.contains('collapsed'));
+      const r = _expand.apply(this, arguments);
+      if (was && (id === 'ww-age' || id === 'ww-height')) _wwAhMarkEditHold();
+      return r;
+    };
+    window.crExpand._s3y22 = true;
+  }
+  ['onAgeRangeInput', 'onHeightRangeInput'].forEach(name => {
+    const orig = window[name];
+    if (typeof orig !== 'function') return;
+    window[name] = function () {
+      const r = orig.apply(this, arguments);
+      try { _wwAhNoteSliderMove(); } catch (e) {}
+      return r;
+    };
+  });
+
+  function bindDeg() {
+    const sel = document.getElementById('partner_education_min');
+    if (!sel || sel._s3y17) return;
+    sel._s3y17 = true;
+    // change only — not focus/open (Degree appearing must keep AH full-width)
+    sel.addEventListener('change', () => { try { _wwDegValueSelected(); } catch (e) {} });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindDeg);
+  else bindDeg();
+  window.addEventListener('load', bindDeg);
+})();
+</script>
+<script>
+// ==== s3y13: WYW Ethnicity multi-select (Race-style sheet) ====
+// s3y20: None Stated stacks with races; all non-Any options → collapsed value Any
+(function () {
+  const ETH_ANY = 'Any', ETH_NONE = 'None Stated';
+  const ETH_RACES = ['White', 'Black', 'Asian', 'Hispanic / Latino', 'South Asian', 'MENA', 'Pacific Islander', 'Native American', 'Other', ETH_NONE];
+  state._ethWork = Array.isArray(state._ethWork) ? state._ethWork : [];
+  // s3y19: default Any (not — Select —)
+  if (state._ethMode === undefined) state._ethMode = null; // s3y27: default Select (not Any)
+  // migrate legacy exclusive 'none' → list with None Stated
+  if (state._ethMode === 'none') { state._ethMode = 'list'; state._ethWork = [ETH_NONE]; }
+
+  function _ethAllRacesSelected() {
+    return ETH_RACES.every(r => state._ethWork.includes(r));
+  }
+  function _ethCoerceAllToAny() {
+    if (state._ethMode === 'list' && _ethAllRacesSelected()) {
+      state._ethMode = 'any';
+      state._ethWork = [];
+      return true;
+    }
+    return false;
+  }
+
+  window._wwEthValue = function () {
+    if (state._ethMode === 'any') return 'Any';
+    if (state._ethMode === 'list' && state._ethWork.length) {
+      if (_ethAllRacesSelected()) return 'Any'; // avoid long ellipsis
+      return state._ethWork.join(', ');
+    }
+    return '';
+  };
+  window._wwEthAnswered = function () {
+    return state._ethMode === 'any' || (state._ethMode === 'list' && state._ethWork.length > 0);
+  };
+  function _syncEthPayload() {
+    if (state._ethMode === 'any') { state.partnerEthnicity = null; state.partnerEthnicityText = 'Any'; }
+    else if (state._ethMode === 'list' && state._ethWork.length) {
+      if (_ethAllRacesSelected()) { state.partnerEthnicity = null; state.partnerEthnicityText = 'Any'; }
+      else {
+        state.partnerEthnicity = state._ethWork.slice();
+        state.partnerEthnicityText = state._ethWork.join(', ');
+      }
+    } else { state.partnerEthnicity = null; state.partnerEthnicityText = null; }
+  }
+  function _syncEthUi() {
+    _ethCoerceAllToAny();
+    document.querySelectorAll('#eth-panel .race-opt').forEach(btn => {
+      const v = btn.dataset.eth;
+      const on = v === ETH_ANY ? state._ethMode === 'any'
+        : (state._ethMode === 'list' && state._ethWork.includes(v));
+      btn.classList.toggle('selected', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    const t = document.getElementById('partner_ethnicity_text');
+    if (t) {
+      const txt = _wwEthValue() || '\u2014 Select \u2014';
+      t.textContent = txt; t.title = _wwEthAnswered() ? txt : '';
+      t.classList.toggle('empty', !_wwEthAnswered());
+    }
+    _syncEthPayload();
+    try { crRefresh(); } catch (e) {}
+  }
+  window.toggleEth = function (label) {
+    if (label === ETH_ANY) {
+      state._ethMode = (state._ethMode === 'any') ? null : 'any';
+      state._ethWork = [];
+    } else {
+      // s3y20: races + None Stated are multi; selecting any clears exclusive Any
+      if (state._ethMode !== 'list') { state._ethMode = 'list'; state._ethWork = []; }
+      const i = state._ethWork.indexOf(label);
+      if (i !== -1) state._ethWork.splice(i, 1); else state._ethWork.push(label);
+      if (!state._ethWork.length) state._ethMode = null;
+      else _ethCoerceAllToAny();
+    }
+    _syncEthUi();
+    if (_wwEthAnswered()) hideError('partner_ethnicity');
+  };
+  window.isEthPanelOpen = function () { const p = document.getElementById('eth-panel'); return !!p && !p.hidden; };
+  window.openEthPanel = function () {
+    const p = document.getElementById('eth-panel'), c = document.getElementById('partner_ethnicity_btn');
+    const b = document.getElementById('eth-backdrop');
+    if (!p) return;
+    clearTimeout(_crT['ww-deg']); clearTimeout(_crT['ww-eth']);
+    p.hidden = false; if (b) b.hidden = false;
+    p.classList.add('open'); if (c) c.setAttribute('aria-expanded', 'true');
+    _syncEthUi();
+    try { if (typeof sheetPinDone === 'function') sheetPinDone('eth-panel'); } catch (e) {}
+  };
+  window.closeEthPanel = function (noCommit) {
+    const p = document.getElementById('eth-panel'), c = document.getElementById('partner_ethnicity_btn');
+    const b = document.getElementById('eth-backdrop');
+    if (!p || p.hidden) return;
+    p.hidden = true; if (b) b.hidden = true;
+    p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
+    _syncEthUi();
+    if (!noCommit && _wwEthAnswered()) crTap('ww-eth', CR_DELAY);
+  };
+  window.toggleEthPanel = function () { if (isEthPanelOpen()) closeEthPanel(); else openEthPanel(); };
+  document.addEventListener('DOMContentLoaded', () => {
+    const xd = document.getElementById('eth-done');
+    if (xd) xd.addEventListener('click', e => { e.preventDefault(); closeEthPanel(); });
+    const xx = document.getElementById('eth-x');
+    if (xx) xx.addEventListener('click', e => { e.preventDefault(); closeEthPanel(); });
+    const xb = document.getElementById('eth-backdrop');
+    if (xb) xb.addEventListener('click', () => closeEthPanel());
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && isEthPanelOpen()) closeEthPanel(); });
+    try { _syncEthUi(); } catch (e) {} // s3y19: show default Any
+  });
+  try { _syncEthUi(); } catch (e) {}
+})();
+</script>
+
+
+<script>
+// ==== s3y20: WYW Religion multi-select (Ethnicity-style; None Stated stacks; all→Any) ====
+(function () {
+  const REL_ANY = 'Any', REL_NONE = 'None Stated';
+  const REL_OPTS = ['Agnostic', 'Atheist', 'Buddhist', 'Catholic', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'Sikh', 'Spiritual', 'Other', REL_NONE];
+  state._relWork = Array.isArray(state._relWork) ? state._relWork : [];
+  if (state._relMode === undefined) state._relMode = null; // s3y27: default Select
+
+  function _relAllSelected() {
+    return REL_OPTS.every(r => state._relWork.includes(r));
+  }
+  function _relCoerceAllToAny() {
+    if (state._relMode === 'list' && _relAllSelected()) {
+      state._relMode = 'any';
+      state._relWork = [];
+      return true;
+    }
+    return false;
+  }
+
+  window._wwRelValue = function () {
+    if (state._relMode === 'any') return 'Any';
+    if (state._relMode === 'list' && state._relWork.length) {
+      if (_relAllSelected()) return 'Any';
+      return state._relWork.join(', ');
+    }
+    return '';
+  };
+  window._wwRelAnswered = function () {
+    return state._relMode === 'any' || (state._relMode === 'list' && state._relWork.length > 0);
+  };
+  function _syncRelPayload() {
+    if (state._relMode === 'any' || (state._relMode === 'list' && _relAllSelected())) {
+      state.partnerReligion = null;
+      state.partnerReligionText = 'Any';
+      state.partnerReligionArr = null;
+    } else if (state._relMode === 'list' && state._relWork.length) {
+      state.partnerReligionArr = state._relWork.slice();
+      state.partnerReligionText = state._relWork.join(', ');
+      state.partnerReligion = state._relWork.join(', '); // legacy string mirror
+    } else {
+      state.partnerReligion = null;
+      state.partnerReligionText = null;
+      state.partnerReligionArr = null;
+    }
+  }
+  function _syncRelUi() {
+    _relCoerceAllToAny();
+    document.querySelectorAll('#rel-panel .race-opt').forEach(btn => {
+      const v = btn.dataset.rel;
+      const on = v === REL_ANY ? state._relMode === 'any'
+        : (state._relMode === 'list' && state._relWork.includes(v));
+      btn.classList.toggle('selected', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    const t = document.getElementById('partner_religion_text');
+    if (t) {
+      const txt = _wwRelValue() || '\u2014 Select \u2014';
+      t.textContent = txt; t.title = _wwRelAnswered() ? txt : '';
+      t.classList.toggle('empty', !_wwRelAnswered());
+    }
+    _syncRelPayload();
+    try { crRefresh(); } catch (e) {}
+  }
+  window.toggleRel = function (label) {
+    if (label === REL_ANY) {
+      state._relMode = (state._relMode === 'any') ? null : 'any';
+      state._relWork = [];
+    } else {
+      if (state._relMode !== 'list') { state._relMode = 'list'; state._relWork = []; }
+      const i = state._relWork.indexOf(label);
+      if (i !== -1) state._relWork.splice(i, 1); else state._relWork.push(label);
+      if (!state._relWork.length) state._relMode = null;
+      else _relCoerceAllToAny();
+    }
+    _syncRelUi();
+    if (_wwRelAnswered()) hideError('partner_religion');
+  };
+  window.isRelPanelOpen = function () { const p = document.getElementById('rel-panel'); return !!p && !p.hidden; };
+  window.openRelPanel = function () {
+    const p = document.getElementById('rel-panel'), c = document.getElementById('partner_religion_btn');
+    const b = document.getElementById('rel-backdrop');
+    if (!p) return;
+    clearTimeout(_crT['ww-rel']); clearTimeout(_crT['ww-pol']);
+    p.hidden = false; if (b) b.hidden = false;
+    p.classList.add('open'); if (c) c.setAttribute('aria-expanded', 'true');
+    _syncRelUi();
+    try { if (typeof sheetPinDone === 'function') sheetPinDone('rel-panel'); } catch (e) {}
+  };
+  window.closeRelPanel = function (noCommit) {
+    const p = document.getElementById('rel-panel'), c = document.getElementById('partner_religion_btn');
+    const b = document.getElementById('rel-backdrop');
+    if (!p || p.hidden) return;
+    p.hidden = true; if (b) b.hidden = true;
+    p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
+    _syncRelUi();
+    if (!noCommit && _wwRelAnswered()) crTap('ww-rel', CR_DELAY);
+  };
+  window.toggleRelPanel = function () { if (isRelPanelOpen()) closeRelPanel(); else openRelPanel(); };
+  document.addEventListener('DOMContentLoaded', () => {
+    const xd = document.getElementById('rel-done');
+    if (xd) xd.addEventListener('click', e => { e.preventDefault(); closeRelPanel(); });
+    const xx = document.getElementById('rel-x');
+    if (xx) xx.addEventListener('click', e => { e.preventDefault(); closeRelPanel(); });
+    const xb = document.getElementById('rel-backdrop');
+    if (xb) xb.addEventListener('click', () => closeRelPanel());
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && isRelPanelOpen()) closeRelPanel(); });
+    try { _syncRelUi(); } catch (e) {}
+  });
+  try { _syncRelUi(); } catch (e) {}
+})();
+</script>
+<script>
+// ==== s3y20: WYW Politics multi-select (None Stated stacks; all→Any; default Any) ====
+(function () {
+  const POL_ANY = 'Any', POL_NONE = 'None Stated';
+  const POL_OPTS = ['Left', 'Left-leaning', 'Moderate', 'Right-leaning', 'Right', 'Apolitical', POL_NONE];
+  state._polWork = Array.isArray(state._polWork) ? state._polWork : [];
+  if (state._polMode === undefined) state._polMode = null; // s3y27: default Select
+
+  function _polAllSelected() {
+    return POL_OPTS.every(r => state._polWork.includes(r));
+  }
+  function _polCoerceAllToAny() {
+    if (state._polMode === 'list' && _polAllSelected()) {
+      state._polMode = 'any';
+      state._polWork = [];
+      return true;
+    }
+    return false;
+  }
+
+  window._wwPolValue = function () {
+    if (state._polMode === 'any') return 'Any';
+    if (state._polMode === 'list' && state._polWork.length) {
+      if (_polAllSelected()) return 'Any';
+      return state._polWork.join(', ');
+    }
+    return '';
+  };
+  window._wwPolAnswered = function () {
+    return state._polMode === 'any' || (state._polMode === 'list' && state._polWork.length > 0);
+  };
+  function _syncPolPayload() {
+    if (state._polMode === 'any' || (state._polMode === 'list' && _polAllSelected())) {
+      state.partnerPolitics = null;
+      state.partnerPoliticsText = 'Any';
+      state.partnerPoliticsArr = null;
+    } else if (state._polMode === 'list' && state._polWork.length) {
+      state.partnerPoliticsArr = state._polWork.slice();
+      state.partnerPoliticsText = state._polWork.join(', ');
+      state.partnerPolitics = state._polWork.join(', ');
+    } else {
+      state.partnerPolitics = null;
+      state.partnerPoliticsText = null;
+      state.partnerPoliticsArr = null;
+    }
+  }
+  function _syncPolUi() {
+    _polCoerceAllToAny();
+    document.querySelectorAll('#pol-panel .race-opt').forEach(btn => {
+      const v = btn.dataset.pol;
+      const on = v === POL_ANY ? state._polMode === 'any'
+        : (state._polMode === 'list' && state._polWork.includes(v));
+      btn.classList.toggle('selected', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    const t = document.getElementById('partner_politics_text');
+    if (t) {
+      const txt = _wwPolValue() || '\u2014 Select \u2014';
+      t.textContent = txt; t.title = _wwPolAnswered() ? txt : '';
+      t.classList.toggle('empty', !_wwPolAnswered());
+    }
+    _syncPolPayload();
+    try { crRefresh(); } catch (e) {}
+  }
+  window.togglePol = function (label) {
+    if (label === POL_ANY) {
+      state._polMode = (state._polMode === 'any') ? null : 'any';
+      state._polWork = [];
+    } else {
+      if (state._polMode !== 'list') { state._polMode = 'list'; state._polWork = []; }
+      const i = state._polWork.indexOf(label);
+      if (i !== -1) state._polWork.splice(i, 1); else state._polWork.push(label);
+      if (!state._polWork.length) state._polMode = null;
+      else _polCoerceAllToAny();
+    }
+    _syncPolUi();
+    if (_wwPolAnswered()) hideError('partner_politics');
+  };
+  window.isPolPanelOpen = function () { const p = document.getElementById('pol-panel'); return !!p && !p.hidden; };
+  window.openPolPanel = function () {
+    const p = document.getElementById('pol-panel'), c = document.getElementById('partner_politics_btn');
+    const b = document.getElementById('pol-backdrop');
+    if (!p) return;
+    clearTimeout(_crT['ww-rel']); clearTimeout(_crT['ww-pol']);
+    p.hidden = false; if (b) b.hidden = false;
+    p.classList.add('open'); if (c) c.setAttribute('aria-expanded', 'true');
+    _syncPolUi();
+    try { if (typeof sheetPinDone === 'function') sheetPinDone('pol-panel'); } catch (e) {}
+  };
+  window.closePolPanel = function (noCommit) {
+    const p = document.getElementById('pol-panel'), c = document.getElementById('partner_politics_btn');
+    const b = document.getElementById('pol-backdrop');
+    if (!p || p.hidden) return;
+    p.hidden = true; if (b) b.hidden = true;
+    p.classList.remove('open'); if (c) c.setAttribute('aria-expanded', 'false');
+    _syncPolUi();
+    if (!noCommit && _wwPolAnswered()) crTap('ww-pol', CR_DELAY);
+  };
+  window.togglePolPanel = function () { if (isPolPanelOpen()) closePolPanel(); else openPolPanel(); };
+  document.addEventListener('DOMContentLoaded', () => {
+    const xd = document.getElementById('pol-done');
+    if (xd) xd.addEventListener('click', e => { e.preventDefault(); closePolPanel(); });
+    const xx = document.getElementById('pol-x');
+    if (xx) xx.addEventListener('click', e => { e.preventDefault(); closePolPanel(); });
+    const xb = document.getElementById('pol-backdrop');
+    if (xb) xb.addEventListener('click', () => closePolPanel());
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && isPolPanelOpen()) closePolPanel(); });
+    try { _syncPolUi(); } catch (e) {}
+    // s3y27: Income stays Select (empty) until user picks
+    try {
+      const inc = document.getElementById('partner_income_min');
+      if (inc) { inc.classList.toggle('is-default', !inc.value); }
+    } catch (e) {}
+  });
+  try { _syncPolUi(); } catch (e) {}
+})();
+</script>
+<script>
+// ==== s3y8 sandbox-2: WYW partner prefs pick + validate + payload keys ====
+(function () {
+  window.wwPrefPick = function (id, el) {
+    if (!el) return;
+    el.classList.toggle('is-default', !el.value);
+    const errMap = { 'ww-deg': 'partner_education_min', 'ww-eth': 'partner_ethnicity', 'ww-rel': 'partner_religion', 'ww-pol': 'partner_politics', 'ww-inc': 'partner_income_min' };
+    if (el.value && typeof hideError === 'function') hideError(errMap[id] || id);
+    // state mirrors for payload
+    if (id === 'ww-deg') { state.partnerEducationMin = el.value || null; if (el.value) { try { _wwDegValueSelected(); } catch (e) {} } }
+    if (id === 'ww-inc') state.partnerIncomeMin = el.value || null;
+    try { crRefresh(); } catch (e) {}
+    if (el.value) crTap(id);
+  };
+
+  // Validate when the prefs units are revealed (not cr-later)
+  const _vs = validateScreen;
+  validateScreen = function (screenId) {
+    let ok = _vs.apply(this, arguments);
+    if (screenId === 3 && state.status !== 'partnered') {
+      const need = [
+        ['ww-deg', 'partner_education_min', 'partner_education_min'],
+        ['ww-inc', 'partner_income_min', 'partner_income_min'],
+      ];
+      need.forEach(([uid, selId, errId]) => {
+        const u = document.getElementById(uid);
+        if (!u || u.classList.contains('cr-later') || u.hidden) { hideError(errId); return; }
+        const v = (document.getElementById(selId) || {}).value || '';
+        if (!v) { showError(errId, 'Required'); ok = false; } else hideError(errId);
+      });
+      // Ethnicity multi-select
+      (function () {
+        const u = document.getElementById('ww-eth');
+        if (!u || u.classList.contains('cr-later') || u.hidden) { hideError('partner_ethnicity'); return; }
+        if (typeof _wwEthAnswered === 'function' && _wwEthAnswered()) hideError('partner_ethnicity');
+        else { showError('partner_ethnicity', 'Required'); ok = false; }
+      })();
+      // Religion multi-select (s3y20)
+      (function () {
+        const u = document.getElementById('ww-rel');
+        if (!u || u.classList.contains('cr-later') || u.hidden) { hideError('partner_religion'); return; }
+        if (typeof _wwRelAnswered === 'function' && _wwRelAnswered()) hideError('partner_religion');
+        else { showError('partner_religion', 'Required'); ok = false; }
+      })();
+      // Politics multi-select (s3y20)
+      (function () {
+        const u = document.getElementById('ww-pol');
+        if (!u || u.classList.contains('cr-later') || u.hidden) { hideError('partner_politics'); return; }
+        if (typeof _wwPolAnswered === 'function' && _wwPolAnswered()) hideError('partner_politics');
+        else { showError('partner_politics', 'Required'); ok = false; }
+      })();
+    }
+    return ok;
+  };
+
+  // Attach partner_* to the singles payload object builders (two near-identical sites in this file)
+  function _wwPrefPayload() {
+    const nullish = v => (!v || v === 'Any' || v === 'None Stated') ? null : v;
+    // Ethnicity multi: prefer live state (Race-style sheet)
+    let ethArr = null, ethTxt = null;
+    if (typeof _wwEthAnswered === 'function' && _wwEthAnswered()) {
+      if (state._ethMode === 'any' || (typeof _wwEthValue === 'function' && _wwEthValue() === 'Any')) { ethArr = null; ethTxt = 'Any'; }
+      else { ethArr = (state.partnerEthnicity && state.partnerEthnicity.length) ? state.partnerEthnicity.slice() : null; ethTxt = state.partnerEthnicityText || (ethArr ? ethArr.join(', ') : null); }
+    }
+    // Religion multi (s3y20)
+    let relArr = null, relTxt = null;
+    if (typeof _wwRelAnswered === 'function' && _wwRelAnswered()) {
+      if (state._relMode === 'any' || (typeof _wwRelValue === 'function' && _wwRelValue() === 'Any')) { relArr = null; relTxt = 'Any'; }
+      else { relArr = (state.partnerReligionArr && state.partnerReligionArr.length) ? state.partnerReligionArr.slice() : null; relTxt = state.partnerReligionText || (relArr ? relArr.join(', ') : null); }
+    }
+    return {
+      partner_education_min: nullish((document.getElementById('partner_education_min') || {}).value),
+      partner_income_min: nullish((document.getElementById('partner_income_min') || {}).value),
+      partner_religion: relArr,
+      partner_religion_text: relTxt,
+      partner_politics: (function(){ if (typeof _wwPolAnswered === 'function' && _wwPolAnswered()) { if (state._polMode === 'any' || (typeof _wwPolValue === 'function' && _wwPolValue() === 'Any')) return null; return (state.partnerPoliticsArr && state.partnerPoliticsArr.length) ? state.partnerPoliticsArr.slice() : null; } return null; })(),
+      partner_politics_text: (function(){ if (typeof _wwPolAnswered === 'function' && _wwPolAnswered()) { if (state._polMode === 'any' || (typeof _wwPolValue === 'function' && _wwPolValue() === 'Any')) return 'Any'; return state.partnerPoliticsText || null; } return null; })(),
+      partner_ethnicity: ethArr,
+      partner_ethnicity_text: ethTxt,
+    };
+  }
+  // Patch Object.assign sites that build the apply payload — wrap a known unique key addition
+  // Prefer: when k5IncomePayload exists elsewhere for WMM, also expose ww prefs on window for submit hooks.
+  window._s3y8WwPrefPayload = _wwPrefPayload;
+
+  // Merge into buildPartial / submit if those spread a local object — hook goNext after validate for screen 3 by wrapping save helpers.
+  const _collect = window.collectFormData || window.buildLeadPayload;
+  // Soft merge: find timing/save payload construction via existing gender_seeking lines is too brittle;
+  // instead patch the object literal sites by wrapping JSON methods used in sandbox fakes.
+  const origFetch = window.fetch;
+  if (origFetch) {
+    window.fetch = function (url, opts) {
+      try {
+        if (opts && opts.body && typeof opts.body === 'string' && opts.body.indexOf('gender_seeking') !== -1) {
+          const o = JSON.parse(opts.body);
+          Object.assign(o, _wwPrefPayload());
+          opts = Object.assign({}, opts, { body: JSON.stringify(o) });
+        }
+      } catch (e) {}
+      return origFetch.call(this, url, opts);
+    };
+  }
+})();
+</script>
+
+
+<script>
+// ==== s3y21: Eth/Rel/Pol picker order — Any first, None Stated last ====
+(function () {
+  function _wwPrefOrderList(listId, dataAttr) {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    const btns = Array.from(list.querySelectorAll('.race-opt'));
+    if (!btns.length) return;
+    const any = btns.find(b => b.getAttribute('data-' + dataAttr) === 'Any');
+    const none = btns.find(b => b.getAttribute('data-' + dataAttr) === 'None Stated');
+    const mid = btns.filter(b => b !== any && b !== none);
+    // stable: Any, then others (preserve relative order), then None Stated
+    const ordered = [];
+    if (any) ordered.push(any);
+    ordered.push.apply(ordered, mid);
+    if (none) ordered.push(none);
+    ordered.forEach(b => list.appendChild(b));
+  }
+  function _wwPrefOrderAll() {
+    _wwPrefOrderList('eth-list', 'eth');
+    _wwPrefOrderList('rel-list', 'rel');
+    _wwPrefOrderList('pol-list', 'pol');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _wwPrefOrderAll);
+  else _wwPrefOrderAll();
+  window.addEventListener('load', _wwPrefOrderAll);
+})();
+</script>
+
+<script>
+// ==== s3y27: Eth/Rel/Pol/Inc default Select; one-at-a-time after Degree (keep multi + Any-first/None-last) ====
+(function () {
+  // Ensure modes start unanswered (Select), not Any
+  if (state._ethMode === 'any' && !state._ethWork?.length && !state._wwEthUserPicked) state._ethMode = null;
+  if (state._relMode === 'any' && !state._relWork?.length && !state._wwRelUserPicked) state._relMode = null;
+  if (state._polMode === 'any' && !state._polWork?.length && !state._wwPolUserPicked) state._polMode = null;
+
+  window._wwSyncSelectUi = function () {
+    const et = document.getElementById('partner_ethnicity_text');
+    if (et) {
+      const answered = typeof _wwEthAnswered === 'function' && _wwEthAnswered();
+      const raw = answered && typeof _wwEthValue === 'function' ? _wwEthValue() : '';
+      et.textContent = raw || '\u2014 Select \u2014';
+      et.classList.toggle('empty', !answered);
+      et.title = answered ? raw : '';
+    }
+    const rt = document.getElementById('partner_religion_text');
+    if (rt) {
+      const answered = typeof _wwRelAnswered === 'function' && _wwRelAnswered();
+      const raw = answered && typeof _wwRelValue === 'function' ? _wwRelValue() : '';
+      rt.textContent = raw || '\u2014 Select \u2014';
+      rt.classList.toggle('empty', !answered);
+      rt.title = answered ? raw : '';
+    }
+    const pt = document.getElementById('partner_politics_text');
+    if (pt) {
+      const answered = typeof _wwPolAnswered === 'function' && _wwPolAnswered();
+      const raw = answered && typeof _wwPolValue === 'function' ? _wwPolValue() : '';
+      pt.textContent = raw || '\u2014 Select \u2014';
+      pt.classList.toggle('empty', !answered);
+      pt.title = answered ? raw : '';
+    }
+    const inc = document.getElementById('partner_income_min');
+    if (inc) inc.classList.toggle('is-default', !inc.value);
+  };
+
+  // Mark user picked so we don't wipe intentional Any
+  function mark(key) { state[key] = true; }
+
+  function wrapPick(name, markKey) {
+    const orig = window[name];
+    if (typeof orig !== 'function' || orig._s3y27) return;
+    window[name] = function () {
+      try { mark(markKey); } catch (e) {}
+      const r = orig.apply(this, arguments);
+      try { _wwSyncSelectUi(); } catch (e) {}
+      return r;
+    };
+    window[name]._s3y27 = true;
+  }
+  wrapPick('toggleEth', '_wwEthUserPicked');
+  wrapPick('toggleRel', '_wwRelUserPicked');
+  wrapPick('togglePol', '_wwPolUserPicked');
+  ['closeEthPanel', 'closeRelPanel', 'closePolPanel'].forEach(name => {
+    const orig = window[name];
+    if (typeof orig !== 'function' || orig._s3y27ui) return;
+    window[name] = function () {
+      const r = orig.apply(this, arguments);
+      try { _wwSyncSelectUi(); } catch (e) {}
+      return r;
+    };
+    window[name]._s3y27ui = true;
+  });
+
+  // Disable s3y26 settle-ready blocks if still present on crSettle chain
+  // (crDefs no longer use settle-ready; ensure flags don't linger as false forever)
+  state._wwDegSettleReady = true;
+  state._wwEthSettleReady = true;
+  state._wwRelSettleReady = true;
+  state._wwPolSettleReady = true;
+  state._wwIncSettleReady = true;
+
+  function boot() {
+    // Income: ensure empty Select if somehow Any selected without user pick
+    const inc = document.getElementById('partner_income_min');
+    if (inc && inc.value === 'Any' && !state._wwIncUserPicked) {
+      inc.value = '';
+      inc.classList.add('is-default');
+    }
+    if (inc && !inc._s3y27) {
+      inc._s3y27 = true;
+      inc.addEventListener('change', () => {
+        state._wwIncUserPicked = true;
+        _wwSyncSelectUi();
+      });
+    }
+    _wwSyncSelectUi();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  window.addEventListener('load', boot);
+})();
+</script>
+
 </body>
 </html>
