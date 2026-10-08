@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Deletion Instructions — I Hereby Commit</title>
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Data Deletion Instructions — I Hereby Commit">
+  <meta property="og:url" content="https://iherebycommit.com/data-deletion">
+  <link rel="canonical" href="https://iherebycommit.com/data-deletion">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0e0e0e; --text:#f0ece0; --body:#9a978c; --accent:#c8f135; --orange:#FF7A2F; --muted:#888; --dim:#333; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html,body { background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; }
+    a { color:inherit; text-decoration:none; }
+    body::before { content:''; position:fixed; top:-50%; left:-50%; width:200%; height:200%; pointer-events:none; z-index:9999; opacity:0.04;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size:256px 256px; animation:grain 0.3s steps(1) infinite; }
+    @keyframes grain { 0%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,1%)} 30%{transform:translate(-1%,4%)} 40%{transform:translate(4%,-2%)} 50%{transform:translate(-3%,3%)} 60%{transform:translate(2%,-1%)} 70%{transform:translate(-4%,2%)} 80%{transform:translate(1%,-4%)} 90%{transform:translate(-2%,1%)} 100%{transform:translate(3%,-3%)} }
+    .doc-wrap { max-width:680px; margin:0 auto; padding:64px 24px; }
+    .doc-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:56px; flex-wrap:wrap; gap:12px; }
+    .doc-back { font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:0.05em; }
+    .doc-back:hover { color:var(--text); }
+    .wordmark-wrap { display:inline-block; line-height:1; }
+    .wordmark-text { font-family:'Bebas Neue',sans-serif; letter-spacing:0.06em; display:block; font-size:22px; }
+    .wm-white { color:#f0ece0; } .wm-green { color:#c8f135; }
+    .wordmark-wrap::after { content:''; display:block; height:2px; background:#c8f135; margin-top:2px; }
+    .doc-title { font-family:'Bebas Neue',sans-serif; font-size:48px; line-height:1.0; color:var(--text); margin-bottom:10px; }
+    .doc-effective { font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); margin-bottom:40px; }
+    .doc-divider { height:1px; background:var(--dim); }
+    .doc-section { margin-top:40px; }
+    .doc-section-heading { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--text); margin-bottom:16px; line-height:1.1; }
+    .doc-sub { font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:0.02em; color:var(--text); margin:28px 0 10px; line-height:1.1; }
+    .doc-p { font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; color:var(--body); }
+    .doc-p + .doc-p, .doc-list + .doc-p, .doc-p + .doc-list { margin-top:16px; }
+    .doc-p strong, .doc-list strong { color:var(--text); font-weight:700; }
+    .doc-p code { font-family:'Space Mono',monospace; font-size:13px; color:var(--text); background:#1a1a1a; padding:0 4px; word-break:break-word; }
+    .doc-list { list-style:none; padding:0 0 0 20px; margin:0; }
+    .doc-list li { font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; color:var(--body); position:relative; margin-bottom:12px; }
+    .doc-list li::before { content:'—'; position:absolute; left:-20px; color:var(--muted); }
+    .doc-list li:last-child { margin-bottom:0; }
+    .doc-callout { border-left:3px solid var(--accent); background:#151515; padding:14px 16px; margin-top:16px; }
+    .doc-tag { display:inline-block; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.1em; color:#0e0e0e; background:var(--orange); padding:1px 6px; margin-left:8px; vertical-align:middle; line-height:1.6; }
+    .doc-toc a { color:var(--accent); }
+    a.accent-link { color:var(--accent); }
+    a.accent-link:hover, .doc-toc a:hover { text-decoration:underline; }
+    .doc-address { font-family:'Space Mono',monospace; font-size:14px; color:var(--body); line-height:2.0; margin-top:12px; }
+    @media(max-width:480px) { .doc-title{font-size:36px;} .doc-section-heading{font-size:22px;} .doc-sub{font-size:19px;} .doc-p,.doc-list li{font-size:14px;} }
+  </style>
+</head>
+<body>
+  <div class="doc-wrap">
+    <nav class="doc-nav">
+      <a href="https://iherebycommit.com">
+        <span class="wordmark-wrap"><span class="wordmark-text"><span class="wm-white">I HEREBY </span><span class="wm-green">COMMIT</span></span></span>
+      </a>
+      <a href="https://iherebycommit.com" class="doc-back">← Back to application</a>
+    </nav>
+
+    <h1 class="doc-title">Data Deletion Instructions</h1>
+    <p class="doc-effective">Effective: October 8, 2026</p>
+    <div class="doc-divider"></div>
+
+    <div class="doc-section">
+      <p class="doc-p">This page explains how to delete the information I Hereby Commit (iherebycommit.com, operated by Hatch Labs Holdings LLC) holds about you, including data from Facebook, Google, Oura, Apple Health, or Plaid if you connected them. Some of these connections may not be available to everyone yet; the steps for each one apply if you connected it. You don't need an account or a password to ask. Questions: <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>.</p>
+      <ul class="doc-list">
+        <li><a href="#everything" class="accent-link">Delete everything</a></li>
+        <li><a href="#facebook" class="accent-link">Facebook</a></li>
+        <li><a href="#google" class="accent-link">Google</a></li>
+        <li><a href="#oura" class="accent-link">Oura</a></li>
+        <li><a href="#apple-health" class="accent-link">Apple Health</a></li>
+        <li><a href="#plaid" class="accent-link">Bank account (Plaid)</a></li>
+        <li><a href="#partner" class="accent-link">If someone listed you as their partner</a></li>
+      </ul>
+
+    </div>
+
+    <div class="doc-section" id="everything">
+      <h2 class="doc-section-heading">Delete everything</h2>
+      <p class="doc-p">Email <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a> from the address you applied with, with the subject <strong>"Delete my data"</strong>. We'll confirm when it's done. We delete your application and any data from connected accounts. Connected-account data is deleted within 72 hours; we'll complete the rest of your request within 45 days, and usually much sooner.</p>
+
+    </div>
+
+    <div class="doc-section" id="facebook">
+      <h2 class="doc-section-heading">Facebook</h2>
+      <p class="doc-p">If you connected Facebook to find friends in the study, you can delete that data any of these ways:</p>
+      <ul class="doc-list">
+        <li><strong>Remove our app in Facebook.</strong> In Facebook, go to <strong>Settings &amp; privacy → Settings → Apps and websites</strong>, choose <strong>I Hereby Commit</strong>, and tap <strong>Remove</strong>. Facebook notifies us, and we automatically delete the Facebook data we hold for you.</li>
+        <li><strong>Send a deletion request through Facebook.</strong> On that same Apps and websites screen, request that I Hereby Commit delete your data. We delete it automatically, and Facebook gives you a <strong>confirmation code</strong> and a link where you can check the status of your request.</li>
+        <li><strong>Disconnect on our site</strong> using Disconnect next to Facebook.</li>
+        <li><strong>Email us</strong> at <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a> with the subject <strong>"Delete my Facebook data"</strong>. We delete it within 72 hours.</li>
+      </ul>
+      <p class="doc-p">What gets deleted: your Facebook ID (which we store only as a one-way code) and your connections to Facebook friends who also joined. We never stored your name, photo, email, or posts from Facebook.</p>
+
+    </div>
+
+    <div class="doc-section" id="google">
+      <h2 class="doc-section-heading">Google</h2>
+      <ul class="doc-list">
+        <li><strong>Disconnect on our site</strong> using Disconnect next to Google.</li>
+        <li><strong>Email us</strong> at <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a> with the subject <strong>"Delete my Google data"</strong>. We delete it within 72 hours.</li>
+      </ul>
+      <p class="doc-p">What gets deleted: the one-way codes made from your contacts' email addresses and phone numbers, your Google account ID, and the connections created from your import. We never stored names or raw contact details.</p>
+      <p class="doc-p">You can also remove our access in your Google Account at <a href="https://myaccount.google.com/connections" class="accent-link" target="_blank" rel="noopener">myaccount.google.com/connections</a>. We already give up access right after each one-time import, so removing it there doesn't delete what we imported. Use Disconnect or email us for that.</p>
+
+    </div>
+
+    <div class="doc-section" id="oura">
+      <h2 class="doc-section-heading">Oura</h2>
+      <ul class="doc-list">
+        <li><strong>Disconnect on our site</strong> using Disconnect next to Oura. We stop collecting and using your Oura data right away.</li>
+        <li><strong>In Oura,</strong> remove I Hereby Commit from the connected or authorized apps in your Oura account.</li>
+        <li><strong>Email us</strong> at <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a> with the subject <strong>"Delete my Oura data"</strong>.</li>
+      </ul>
+      <p class="doc-p">We delete all of your Oura data within 72 hours of a deletion request or of you deleting your application.</p>
+
+    </div>
+
+    <div class="doc-section" id="apple-health">
+      <h2 class="doc-section-heading">Apple Health</h2>
+      <p class="doc-p">Apple Health can only be connected in our iPhone app.</p>
+      <ul class="doc-list">
+        <li><strong>Disconnect in our iPhone app</strong> using Disconnect next to Apple Health. We stop receiving your Apple Health data right away and delete what we received.</li>
+        <li><strong>On your iPhone,</strong> go to Settings → Health → Data Access &amp; Devices → I Hereby Commit and tap Turn Off All (on some iOS versions it's Settings → Apps → Health → Data Access &amp; Devices). This stops new data reaching us, but iOS doesn't tell us, so it doesn't delete what we already have. Use Disconnect or email us for that.</li>
+        <li><strong>Email us</strong> at <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a> with the subject <strong>"Delete my Apple Health data"</strong>.</li>
+      </ul>
+      <p class="doc-p">We delete all of your Apple Health data within 72 hours of a deletion request or of you deleting your application. Nothing in Apple Health on your iPhone is changed or deleted.</p>
+
+    </div>
+
+    <div class="doc-section" id="plaid">
+      <h2 class="doc-section-heading">Bank account (Plaid)</h2>
+      <ul class="doc-list">
+        <li><strong>Disconnect on our site</strong> using Disconnect next to your bank. We remove our access through Plaid and delete the financial data we stored.</li>
+        <li><strong>Email us</strong> at <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a> with the subject <strong>"Delete my bank data"</strong>. We delete it within 72 hours.</li>
+        <li>You can also manage connections made through Plaid at <a href="https://my.plaid.com" class="accent-link" target="_blank" rel="noopener">my.plaid.com</a>.</li>
+      </ul>
+
+    </div>
+
+    <div class="doc-section" id="partner">
+      <h2 class="doc-section-heading">If someone listed you as their partner</h2>
+      <p class="doc-p">Use the unsubscribe link in the email we sent you, or email <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a> with the subject <strong>"Remove me"</strong> and the address that received our email. We'll delete your name and email from their application and stop contacting you.</p>
+
+    </div>
+
+    <div class="doc-section">
+      <h2 class="doc-section-heading">What we may keep</h2>
+      <ul class="doc-list">
+        <li>A minimal record that you asked, so we can keep honoring your request.</li>
+        <li>If another member has blocked you, a one-way code of your email or phone number (nothing else), so their block stays in place if you apply again. You can ask us to remove it.</li>
+        <li>Copies in our hosting provider's encrypted backups, for a short time until they're overwritten.</li>
+      </ul>
+      <p class="doc-p">More detail: <a href="/privacy/" class="accent-link">Privacy Policy</a>.</p>
+
+    </div>
+
+    <div class="doc-section">
+      <h2 class="doc-section-heading">Contact</h2>
+      <div class="doc-address">
+        Hatch Labs Holdings LLC<br>
+        701 Tillery Street, Suite 12 B256<br>
+        Austin, TX 78702-3738<br>
+        <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

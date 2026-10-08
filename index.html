@@ -4368,7 +4368,7 @@ async function doSubmit(ts) {
       turnstile_status: ts.status === 'ok' ? 'ok' : 'unavailable', // s3y43: 'unavailable' = the widget could not load / errored on this device
       turnstile_reason: ts.reason || null,
       consent_surfaces: consentSurfaces(),
-      terms_version: '2026-10-01',
+      terms_version: '2026-10-08',
       notify_partner: state.status === 'partnered' ? notifyPartnerChoice() : false, // s3y47
       partner_notice_version: '2026-10-07', // s3y47: the checkbox version of the partner notice
       terms_accepted_at: new Date().toISOString(),
