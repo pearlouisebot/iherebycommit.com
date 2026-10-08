@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="s3y45 s3y44 s3y43 s3y42 s3y40 s3y38 s3y37 s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
+<html lang="en" class="s3y47 s3y46 s3y45 s3y44 s3y43 s3y42 s3y40 s3y38 s3y37 s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
 <head>
   <!-- SANDBOX_grokbot (k5-s3y38-main_income): non-overlapping own income labels; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y37-main_ptloc): couples partner live defaults from own location; Add→EDIT when prefilled; no WMM -->
@@ -2396,11 +2396,12 @@
         </div>
       </div>
       <div class="field-group who-unit" id="pt-email" style="margin-bottom:12px;">
-        <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner email" onclick="crExpand('pt-email')"><span class="who-cond-txt"><span class="who-cond-k">Email</span><span class="who-cond-v" id="pt-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
+        <div class="who-cond" role="button" tabindex="0" aria-label="Edit partner email" onclick="crExpand('pt-email')"><span class="who-cond-txt"><span class="who-cond-k" id="pt-email-k">Email</span><span class="who-cond-v" id="pt-email-v"></span></span><span class="who-cond-edit">EDIT</span></div>
         <label class="field-label" for="partner_email">Email</label>
         <input class="field-input" id="partner_email" type="email" placeholder="they@example.com" autocomplete="off">
         <div class="field-error" id="err-partner_email">Required</div>
-        <p class="partner-notice">We'll link your accounts this way</p>
+        <label class="pt-notify-cb" for="notify_partner"><input type="checkbox" id="notify_partner" checked onchange="onNotifyPartnerChange()"><span class="vk-cb-txt">Notify my partner to link accounts</span></label>
+        <p class="partner-notice" id="pt-notify-note">We'll email your partner to let them know you applied together.</p>
       </div>
       <div class="cr-pair cr-stack" id="pt-row-lc">
         <div class="field-group who-unit" id="pt-live" style="margin-bottom:0;min-width:0;">
@@ -2827,8 +2828,6 @@
     </div>
     <div class="bottom-action">
       <p class="legal-consent-text">By applying, you agree to our <a href="terms/" target="_blank" rel="noopener">Terms</a> and <a href="privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
-      <div id="cf-turnstile-widget"></div>
-      <div class="field-error" id="err-turnstile" role="alert" aria-live="polite"></div>
       <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">SUBMIT APPLICATION</button>
       <button class="btn-ghost" onclick="goBack(6)">← BACK</button>
     </div>
@@ -2983,7 +2982,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-07p3-s3y45ts'; // p3: corrected Turnstile sitekey (capital O after wsDH, was zero). prod s3y45: couples Their City auto-collapse (PT_CITY_IDLE_MS 4000, no EDIT box while open); city-name search; clean partner_city; one-press NEXT (background saves); Turnstile fail-safe client. Prior prod: 2026-10-06p8-s3y38.
+var PAGE_VERSION = '2026-10-07p4-s3y47'; // prod s3y47: couples 'Notify my partner to link accounts' checkbox (checked by default; sends notify_partner + partner_notice_version 2026-10-07). s3y46: Turnstile Invisible client (hidden container, no visible widget ever; token fetched silently; fail-safe kept; rejected token -> one silent fresh-token resubmit, then a small 'Please tap Submit again.' toast). Prior prod: 2026-10-07p3-s3y45ts (p3: corrected Turnstile sitekey). prod s3y45: couples Their City auto-collapse (PT_CITY_IDLE_MS 4000, no EDIT box while open); city-name search; clean partner_city; one-press NEXT (background saves); Turnstile fail-safe client. Prior prod: 2026-10-06p8-s3y38.
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -4197,16 +4196,18 @@ function resetUnder18() {
 // ============================================================
 // SUBMISSION
 // ============================================================
-// ==== TURNSTILE (s3y43, fail-safe) ====
-// The widget renders explicitly on the Submit screen with appearance "interaction-only": most people never see it; it only
-// shows (above SUBMIT) when Cloudflare wants a tap. Submit waits for the token instead of sending an empty one.
-//  - token arrives                          -> sent; the server verifies it with siteverify (invalid -> 403, page shows a retry message)
+// ==== TURNSTILE (s3y43 fail-safe; s3y46 Invisible) ====
+// The production widget is in Invisible mode. It renders explicitly when the Submit screen opens, into an off-screen container
+// (#cf-turnstile-widget.ts-hidden): no widget, box or checkbox is ever shown, and nothing on the page moves. Submit waits for the token.
+//  - token arrives                          -> sent; the server verifies it with siteverify
 //  - script fails / not loaded in 8s / widget errors twice -> sent WITHOUT a token, flagged turnstile_status "unavailable" (never blocks)
-//  - widget loaded fine but no token after 10s + one reset (or 30s once a tap is asked for) -> not sent; retry message shown
-const TS_SITEKEY = '0x4AAAAAAE_wsDHOXiSXmyR9'; // production Turnstile widget (Managed mode; hostnames iherebycommit.com + www)
-const TS_LOAD_TIMEOUT_MS = 8000, TS_TOKEN_WAIT_MS = 10000, TS_INTERACTIVE_WAIT_MS = 30000;
+//  - Cloudflare asks for an interaction (only possible if the widget is not Invisible) -> can't be shown, so treated as "unavailable" (never blocks)
+//  - widget loaded fine but no token after 10s + one reset -> not sent; small toast "Please tap Submit again."
+//  - server rejects the token (403 turnstile_failed / 400 turnstile_missing) -> fresh token + one silent resubmit; if that is rejected too, the toast
+const TS_SITEKEY = '0x4AAAAAAE_wsDHOXiSXmyR9'; // production Turnstile widget (Invisible mode; hostnames iherebycommit.com + www)
+const TS_LOAD_TIMEOUT_MS = 8000, TS_TOKEN_WAIT_MS = 10000;
 const _ts = window.__ts || (window.__ts = { api: 'loading' });
-_ts.id = null; _ts.err = null; _ts.interactive = false; _ts.waiters = [];
+_ts.id = null; _ts.err = null; _ts.interactive = false; _ts.waiters = []; _ts.autoRetried = false;
 function _tsWake() { const w = _ts.waiters; _ts.waiters = []; w.forEach(f => f()); }
 _ts.on = function () { if (_ts.api === 'ready' && state.currentScreen === 6) _tsRender(); _tsWake(); };
 function _tsWait(ms) { return new Promise(res => { const go = () => { clearTimeout(t); res(); }; const t = setTimeout(() => { _ts.waiters = _ts.waiters.filter(f => f !== go); res(); }, Math.max(0, ms)); _ts.waiters.push(go); }); }
@@ -4214,17 +4215,18 @@ function _tsRender() {
   if (_ts.api !== 'ready' || _ts.id !== null || !window.turnstile) return;
   try {
     _ts.id = window.turnstile.render('#cf-turnstile-widget', {
-      sitekey: TS_SITEKEY, appearance: 'interaction-only', size: 'flexible', 'refresh-expired': 'auto', retry: 'auto',
+      sitekey: TS_SITEKEY, appearance: 'interaction-only', 'refresh-expired': 'auto', retry: 'auto',
       callback: onTurnstileSuccess,
       'expired-callback': () => { state.turnstileToken = null; },
-      'before-interactive-callback': () => { _ts.interactive = true; _tsWake(); },
+      'before-interactive-callback': () => { _ts.interactive = true; _tsWake(); }, // hidden container: an interaction can't happen here
       'error-callback': code => { _ts.err = String(code || 'error'); state.turnstileToken = null; _tsWake(); return true; },
     });
   } catch (e) { _ts.err = 'render:' + (e && e.message || e); _tsWake(); }
 }
 function _tsReset() { state.turnstileToken = null; _ts.err = null; _ts.interactive = false; if (_ts.id !== null && window.turnstile) { try { window.turnstile.reset(_ts.id); } catch (e) {} } }
 function onTurnstileSuccess(token) { state.turnstileToken = token; _ts.err = null; _tsMsg(''); _tsWake(); }
-function _tsMsg(t) { const e = document.getElementById('err-turnstile'); if (!e) return; e.textContent = t || ''; e.classList.toggle('visible', !!t); }
+// Small app-styled message (the existing error toast; nothing on the page moves) + the same text for screen readers.
+function _tsMsg(t) { const e = document.getElementById('err-turnstile'); if (e) { e.textContent = t || ''; e.classList.toggle('visible', !!t); } if (t) showToast(t); }
 async function _tsGetToken() {
   if (state.turnstileToken) return { token: state.turnstileToken, status: 'ok' };
   if (_ts.api === 'loading') { const end = Date.now() + TS_LOAD_TIMEOUT_MS; while (_ts.api === 'loading' && Date.now() < end) await _tsWait(end - Date.now()); }
@@ -4232,22 +4234,20 @@ async function _tsGetToken() {
   _tsRender();
   for (let attempt = 0; attempt < 2; attempt++) {
     if (attempt) _tsReset();
-    let end = Date.now() + TS_TOKEN_WAIT_MS, longWait = false;
-    while (!state.turnstileToken && !_ts.err && Date.now() < end) {
-      if (_ts.interactive && !longWait) { longWait = true; end = Date.now() + TS_INTERACTIVE_WAIT_MS; } // a tap is being asked for: give them time
-      await _tsWait(Math.min(end - Date.now(), 1000));
-    }
+    const end = Date.now() + TS_TOKEN_WAIT_MS;
+    while (!state.turnstileToken && !_ts.err && !_ts.interactive && Date.now() < end) await _tsWait(Math.min(end - Date.now(), 1000));
     if (state.turnstileToken) return { token: state.turnstileToken, status: 'ok' };
-    if (_ts.interactive) break; // a tap was asked for and not given: don't reset it away
+    if (_ts.interactive) return { token: '', status: 'unavailable', reason: 'interaction_requested' };
   }
   if (_ts.err) return { token: '', status: 'unavailable', reason: 'widget_error:' + _ts.err };
-  return { token: '', status: 'timeout', reason: _ts.interactive ? 'needs_interaction' : 'token_timeout' };
+  return { token: '', status: 'timeout', reason: 'token_timeout' };
 }
 function _submitReset(btn) { btn.classList.remove('btn-loading'); btn.textContent = 'SUBMIT APPLICATION'; state.submitting = false; _submitInFlight = false; }
 
 // Submit is on the phone screen (6): check the phone format here, inline, before anything is sent.
-async function submitForm() {
+async function submitForm(_auto) {
   if (state.submitting) return;
+  if (_auto !== true) _ts.autoRetried = false; // a real tap re-arms the one silent retry
   if (!validateScreen(6)) { surfaceErrors(6); logValidationFailed(6); return; }
   clearErrorSummary(6);
   state.submitting = true;
@@ -4257,7 +4257,7 @@ async function submitForm() {
   btn.textContent = 'VERIFYING';
   const ts = await _tsGetToken();
   if (ts.status === 'timeout') {
-    _tsMsg(ts.reason === 'needs_interaction' ? 'Please tap the verification box above, then tap Submit again.' : 'We couldn\u2019t finish a quick security check. Please tap Submit again.');
+    _tsMsg('Please tap Submit again.');
     _submitReset(btn);
     return;
   }
@@ -4331,6 +4331,8 @@ async function doSubmit(ts) {
     turnstile_reason: ts.reason || null,
     consent_surfaces: consentSurfaces(),
     terms_version: '2026-10-01',
+    notify_partner: state.status === 'partnered' ? notifyPartnerChoice() : false, // s3y47
+    partner_notice_version: '2026-10-07', // s3y47: the checkbox version of the partner notice
     terms_accepted_at: new Date().toISOString(),
   };
   try {
@@ -4345,7 +4347,12 @@ async function doSubmit(ts) {
       setTimeout(saveLead, 0); // flush confirmation screen_shown (save-lead stores events only for converted rows)
     } else {
       _tsReset(); // a Turnstile token works once: get a fresh one for the next try
-      if (data && typeof data.code === 'string' && data.code.indexOf('turnstile_') === 0) _tsMsg(data.error || 'We couldn\u2019t confirm you\u2019re a person. Please tap Submit again.');
+      if (data && typeof data.code === 'string' && data.code.indexOf('turnstile_') === 0) {
+        _submitReset(btn);
+        if (!_ts.autoRetried) { _ts.autoRetried = true; submitForm(true); return; } // s3y46: fresh token + resubmit once, silently
+        _tsMsg('Please tap Submit again.');
+        return;
+      }
       showToast(data.error || 'Something went wrong. Please try again.');
       _submitReset(btn);
     }
@@ -4821,7 +4828,7 @@ function _crDefineAll() {
   crDef('pt-bday', { focus: 'partner_birthday', stepDone: () => !!state.partnerBdayTouched, value: () => state.partnerBdayTouched ? _crMdy(_crV('partner_birthday')) : '' });
   crDef('pt-height', { focus: 'partner_height', partner: 'pt-race', stepDone: () => !!state.partnerHeightTouched, nextReveals: true, value: () => state.partnerHeightTouched ? _crOpt('partner_height', _crV('partner_height')) : '' });
   crDef('pt-race', { partner: 'pt-height', focus: 'partner_race', busy: isPartnerRacePanelOpen, onExpand: f => { if (f) openPartnerRacePanel(); }, value: () => Array.isArray(state.partnerRace) ? state.partnerRace.join(', ') : '' });
-  crDef('pt-email', { focus: 'partner_email', value: () => { const e = _crV('partner_email'); return e && isValidEmail(e) ? e : ''; } });
+  crDef('pt-email', { focus: 'partner_email', key: () => notifyPartnerChoice() ? 'Email' : 'Email \u00b7 won\'t notify', value: () => { const e = _crV('partner_email'); return e && isValidEmail(e) ? e : ''; } }); // s3y47: the key shows when the partner won't be emailed
   crDef('pt-live', { partner: () => state.livesWithPartner === 'no' ? 'pt-city' : (state.livesWithPartner === 'yes' ? 'pt-moved' : null), value: () => ({ yes: 'Yes', no: 'No', part_time: 'Part-time' })[state.livesWithPartner] || '' });
   crDef('pt-city', { partner: 'pt-live', focus: 'partner_city_input', busy: () => _ptCityHold, applies: () => state.livesWithPartner === 'no', value: () => state.livesWithPartner === 'no' ? (partnerCity || '') : '' });
   crDef('pt-moved', { optional: true, partner: 'pt-live', focus: 'moved_in_date', applies: () => state.livesWithPartner === 'yes', value: () => state.livesWithPartner === 'yes' ? _crMdy(_crV('moved_in_date')) : '' });
@@ -6062,8 +6069,15 @@ function onPartnerHeightChange() {
   const val = document.getElementById('partner_height').value;
   if (val) _touchPartnerHeight(); else crExpand('pt-height', false);
 }
+// s3y47: "Notify my partner to link accounts" (checked by default). Controls the partner completion email.
+function notifyPartnerChoice() { const cb = document.getElementById('notify_partner'); return !!(cb && cb.checked); }
+function onNotifyPartnerChange() {
+  const n = document.getElementById('pt-notify-note');
+  if (n) n.textContent = notifyPartnerChoice() ? "We'll email your partner to let them know you applied together." : "We won't email your partner.";
+}
 // Back to a fresh Your Partner screen (used when switching to singles).
 function resetPartnerScreen() {
+  { const cb = document.getElementById('notify_partner'); if (cb) { cb.checked = true; onNotifyPartnerChange(); } } // s3y47
   ['pt-gender', 'pt-name', 'pt-bday', 'pt-height', 'pt-race', 'pt-email', 'pt-live', 'pt-city', 'pt-moved'].forEach(crReset);
   _crFront[2] = 0;
   setPartnerGender(null);
@@ -7541,6 +7555,23 @@ window.addEventListener('load', () => {
   if (chips && window.MutationObserver) new MutationObserver(() => { if (partnerCity) hideError('partner_city'); }).observe(chips, { childList: true, subtree: true });
 });
 </script>
+
+<!-- s3y46: Turnstile Invisible. The widget lives in an off-screen container and is never shown; nothing on the page moves. -->
+<style>
+  .ts-hidden { position: fixed; left: -10000px; top: 0; width: 300px; height: 65px; overflow: hidden; opacity: 0; pointer-events: none; }
+  .ts-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+</style>
+<div id="cf-turnstile-widget" class="ts-hidden" aria-hidden="true"></div>
+<div class="ts-sr" id="err-turnstile" role="alert" aria-live="polite"></div>
+<!-- s3y47: Notify-my-partner checkbox (Other Cities checkbox style) -->
+<style>
+  .pt-notify-cb { display: flex; align-items: center; gap: 10px; min-height: 32px; margin: 6px 0 0; font-family: 'Space Mono', monospace; font-size: 13px; color: #888; cursor: pointer; touch-action: manipulation; }
+  .pt-notify-cb:has(input:checked), .pt-notify-cb:has(input:checked) .vk-cb-txt { color: #fff; }
+  .pt-notify-cb input { width: 20px; height: 20px; margin: 0; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
+  .pt-notify-cb .vk-cb-txt { white-space: normal; overflow: visible; }
+  #screen-2 #pt-notify-note { margin: 0 0 0 30px; }
+  @media (max-width: 359px) { .pt-notify-cb { font-size: 12px; gap: 8px; } #screen-2 #pt-notify-note { margin-left: 28px; } }
+</style>
 
 <script>
 // s3p: every empty select is grey (placeholder colour), on every screen. Untouched defaults (heights) keep their own rule.
