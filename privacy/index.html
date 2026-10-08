@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0e0e0e; --text:#f0ece0; --body:#9a978c; --accent:#c8f135; --muted:#888; --dim:#333; }
+    :root { --bg:#0e0e0e; --text:#f0ece0; --body:#9a978c; --accent:#c8f135; --orange:#FF7A2F; --muted:#888; --dim:#333; }
     * { box-sizing:border-box; margin:0; padding:0; }
     html,body { background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; }
     a { color:inherit; text-decoration:none; }
@@ -33,16 +33,22 @@
     .doc-divider { height:1px; background:var(--dim); }
     .doc-section { margin-top:40px; }
     .doc-section-heading { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--text); margin-bottom:16px; line-height:1.1; }
+    .doc-sub { font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:0.02em; color:var(--text); margin:28px 0 10px; line-height:1.1; }
     .doc-p { font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; color:var(--body); }
-    .doc-p + .doc-p { margin-top:16px; }
+    .doc-p + .doc-p, .doc-list + .doc-p, .doc-p + .doc-list { margin-top:16px; }
+    .doc-p strong, .doc-list strong { color:var(--text); font-weight:700; }
+    .doc-p code { font-family:'Space Mono',monospace; font-size:13px; color:var(--text); background:#1a1a1a; padding:0 4px; word-break:break-word; }
     .doc-list { list-style:none; padding:0 0 0 20px; margin:0; }
     .doc-list li { font-family:'Space Mono',monospace; font-size:15px; line-height:1.7; color:var(--body); position:relative; margin-bottom:12px; }
     .doc-list li::before { content:'—'; position:absolute; left:-20px; color:var(--muted); }
     .doc-list li:last-child { margin-bottom:0; }
+    .doc-callout { border-left:3px solid var(--accent); background:#151515; padding:14px 16px; margin-top:16px; }
+    .doc-tag { display:inline-block; font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.1em; color:#0e0e0e; background:var(--orange); padding:1px 6px; margin-left:8px; vertical-align:middle; line-height:1.6; }
+    .doc-toc a { color:var(--accent); }
     a.accent-link { color:var(--accent); }
-    a.accent-link:hover { text-decoration:underline; }
+    a.accent-link:hover, .doc-toc a:hover { text-decoration:underline; }
     .doc-address { font-family:'Space Mono',monospace; font-size:14px; color:var(--body); line-height:2.0; margin-top:12px; }
-    @media(max-width:480px) { .doc-title{font-size:36px;} .doc-section-heading{font-size:22px;} .doc-p,.doc-list li{font-size:14px;} }
+    @media(max-width:480px) { .doc-title{font-size:36px;} .doc-section-heading{font-size:22px;} .doc-sub{font-size:19px;} .doc-p,.doc-list li{font-size:14px;} }
   </style>
 </head>
 <body>
@@ -55,11 +61,12 @@
     </nav>
 
     <h1 class="doc-title">Privacy Policy</h1>
-    <p class="doc-effective">Effective: October 7, 2026</p>
+    <p class="doc-effective">Effective: October 8, 2026</p>
     <div class="doc-divider"></div>
 
     <div class="doc-section">
-      <p class="doc-p">I Hereby Commit is a project of Hatch Labs Holdings LLC, a Texas limited liability company ("Hatch Labs," "we," "us"). This policy explains what we collect when you apply at iherebycommit.com, how we use it, and the choices you have.</p>
+      <p class="doc-p">I Hereby Commit is a project of Hatch Labs Holdings LLC, a Texas limited liability company ("Hatch Labs," "we," "us"). This policy explains what we collect when you apply at iherebycommit.com, what we receive if you later choose to connect another account (such as Google, Facebook, Oura, Apple Health in our iPhone app, or a bank account through Plaid), how we use it, and the choices you have.</p>
+
     </div>
 
     <div class="doc-section">
@@ -70,14 +77,37 @@
         <li>We never sell your information, and we don't use it for third-party advertising.</li>
         <li>We may email you about other apps and products built by Hatch Labs. You can unsubscribe anytime.</li>
         <li>Scientists only ever receive de-identified, anonymized data — never your name or contact details.</li>
-        <li>You can ask us to delete your information at any time.</li>
+        <li>Where we offer it, connecting Google, Facebook, Oura, Apple Health, or a bank account is always optional and comes after you apply. Each has its own consent step, and you can disconnect anytime.</li>
+        <li>Data from connected accounts is never sold, never used for ads or marketing, and never used to train AI. Google contacts and Facebook friends are never used for research, not even as totals.</li>
+        <li>You can ask us to delete your information at any time. See <a href="/data-deletion/" class="accent-link">how to delete your data</a>.</li>
       </ul>
+
     </div>
 
     <div class="doc-section">
+      <h2 class="doc-section-heading">On this page</h2>
+      <ul class="doc-list doc-toc">
+        <li><a href="#what-we-collect">What we collect</a></li>
+        <li><a href="#connected-accounts">Connected accounts</a></li>
+        <li><a href="#mutual-friends">Mutual friends and blocking</a></li>
+        <li><a href="#google">Google user data</a></li>
+        <li><a href="#facebook">Facebook data</a></li>
+        <li><a href="#oura">Oura Ring data</a></li>
+        <li><a href="#apple-health">Apple Health data</a></li>
+        <li><a href="#plaid">Bank account data (Plaid)</a></li>
+        <li><a href="#sharing">Who we share it with</a></li>
+        <li><a href="#retention">How long we keep it</a></li>
+        <li><a href="#rights">Your choices and rights</a></li>
+      </ul>
+    </div>
+
+    <div class="doc-section" id="what-we-collect">
       <h2 class="doc-section-heading">What we collect</h2>
-      <p class="doc-p">From you: your name; date of birth; city; whether you're applying as a single or as a couple; if you apply as a couple, your relationship stage and your partner's name and email; whether you have or want children; your email address; your mobile number if you give us one; and the social profile links you choose to share (LinkedIn, and optionally Instagram, X, and TikTok).</p>
+      <p class="doc-p">From you, when you apply: your name; date of birth; gender; height; your city or ZIP/postal code, and, if you choose to share it, your location on a map (we store it rounded to about 1 km); whether you're applying as a single or as a couple; if you apply as a couple, your relationship stage and your partner's name, email, and the other details you give about them; whether you have or want children and related family plans; optional details such as your ethnicity, religion, politics, education, and income range; what you're looking for in a partner and what matters most to you; your email address; your mobile number if you give us one; and the social profile links you choose to share (LinkedIn, Instagram, X, and TikTok, all optional).</p>
+      <p class="doc-p">Some of these answers, such as ethnicity, religion, politics, and family plans, are sensitive. They're optional unless the form says otherwise, and we use them only as this policy describes. We save your answers as you fill in the form, so what you've entered may be stored even if you don't finish and submit.</p>
       <p class="doc-p">Automatically: your browser type, the page that referred you to us, which headline you were viewing when you applied, and a one-way scrambled ("hashed") version of your IP address that we use only to block spam. We don't currently use analytics, advertising cookies, or third-party tracking pixels. If that changes, we'll update this policy first.</p>
+      <p class="doc-p">Only if you choose to connect another account: the data described under <a href="#connected-accounts" class="accent-link">Connected accounts</a>.</p>
+
     </div>
 
     <div class="doc-section">
@@ -87,79 +117,210 @@
         <li>To select and balance Cohort 01.</li>
         <li>To send you text messages about the study, only if you opted in.</li>
         <li>To analyze who is applying and to publish aggregate, de-identified statistics and findings about our applicant pool — for example, how many people applied as couples, which cities they're in, or what they say they want. We never publish anything that identifies an individual.</li>
-        <li>To tell you by email about other apps, products, and early-access invitations from Hatch Labs. Every marketing email includes an unsubscribe link. Unsubscribing from marketing doesn't remove you from the study list unless you ask us to.</li>
+        <li>To tell you by email about other apps, products, and early-access invitations from Hatch Labs. Every marketing email includes an unsubscribe link. Unsubscribing from marketing doesn't remove you from the study list unless you ask us to. We never use data from connected accounts, or the fact that you connected one, to market other Hatch Labs products.</li>
+        <li>If you connect accounts, to provide the features you connected them for, such as showing you mutual friends or keeping you apart from someone you've blocked, as described below.</li>
         <li>To protect the site from bots and abuse.</li>
       </ul>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Research, analysis and publishing</h2>
       <p class="doc-p">We analyze applications to plan and select our cohorts, and we may publish aggregate, de-identified statistics and findings drawn from them — in articles, press, presentations or research write-ups. Published results never include your name, contact details, social profiles, or anything else that identifies you.</p>
       <p class="doc-p">By applying, you agree that your information may be analyzed and published in de-identified form, as described in our Terms. Using your individual answers as data in the study itself is different: that happens only after you receive full details and give separate informed consent. Scientists we work with receive only de-identified, anonymized data. You can ask us to stop using your information at any time by emailing <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>.</p>
+      <p class="doc-p">This section doesn't apply to data from connected accounts. Google contacts and Facebook data are never used for research in any form, including aggregated, anonymized, or derived form. Oura, Apple Health, and bank data are handled only as described in their own sections below and in the consent you give when you connect.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Your partner's information</h2>
       <p class="doc-p">If you apply as a couple, you give us your partner's name and email. We use it to connect your application with theirs and to contact your partner about the study: an invitation when it opens, and occasional reminders or updates about joining. Every email we send them includes an unsubscribe link, and we'll stop as soon as they ask. We will never use your partner's information to market other products, and we never sell or share it. Please share their details only if your partner is comfortable with that. Your partner can ask us to delete their information at any time by emailing <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Your social profiles</h2>
       <p class="doc-p">We collect links to public profiles so we can confirm applicants are real people when Cohort 01 opens. We never post to your accounts or access anything beyond the public profile you link.</p>
+
+    </div>
+
+    <div class="doc-section" id="connected-accounts">
+      <h2 class="doc-section-heading">Connected accounts<span class="doc-tag">OPTIONAL</span></h2>
+      <p class="doc-p">After you apply, you may choose to connect other accounts: Google (to find mutual friends from your contacts), Facebook (to see Facebook friends who also joined), Oura (to share sleep and health data with the study), Apple Health in our iPhone app (to share sleep, heart, and activity data with the study), or a bank account through Plaid. Some of these features may not be available to everyone yet; this section explains how they work when they are.</p>
+      <ul class="doc-list">
+        <li><strong>Always optional.</strong> Connecting isn't required to apply or to stay in the study.</li>
+        <li><strong>Its own consent.</strong> Each connection shows you what we'll receive and why before anything is shared, and the provider (Google, Facebook, Oura, or Plaid, or Apple on your iPhone for Apple Health) shows its own permission screen.</li>
+        <li><strong>Only for the purpose you connected it for.</strong> We never sell connected-account data, never use it for advertising or marketing, never use it to make credit, lending, insurance, or employment decisions, and never use it to train, fine-tune, or feed artificial-intelligence or machine-learning models.</li>
+        <li><strong>No passwords.</strong> We never see or store your Google, Facebook, Oura, Apple Account, or bank password.</li>
+        <li><strong>Disconnect anytime.</strong> See <a href="/data-deletion/" class="accent-link">how to disconnect and delete your data</a>.</li>
+      </ul>
+
+    </div>
+
+    <div class="doc-section" id="mutual-friends">
+      <h2 class="doc-section-heading">Mutual friends and blocking</h2>
+      <p class="doc-p">These features may not be available to everyone yet; this section explains how they work when they are.</p>
+      <p class="doc-p"><strong>One-way codes, not contact lists.</strong> When you connect Google contacts or Facebook, or when you block someone, we turn each email address, phone number, or account ID into a one-way keyed code (a "hash") before it's stored. We don't store the names or raw contact details of people in your contacts, and the secret key used to make the codes is kept separately from the data. We never contact anyone because they appear in your contacts.</p>
+      <p class="doc-p"><strong>What other members can see.</strong> We can show you study members that you and another member are both connected to. A connection that comes from your contacts counts only for you: we never show anyone your contact list, and we never identify someone who isn't a member to anyone. Because mutual friends work both ways, another member may see that the two of you are connected to the same member.</p>
+      <p class="doc-p"><strong>Blocking.</strong> Where blocking is offered, you can block someone, such as an ex, by entering their phone number or email. We store only a one-way code of it. If that person applies, now or later, we use the block to keep the two of you apart in the study's features, such as mutual friends. We may count blocks in de-identified totals, but never who blocked whom.</p>
+      <p class="doc-p"><strong>If you're not a member.</strong> If a member connected their contacts or blocked you, we may hold a one-way code of your email or phone number, never your name, linked to that member. We don't contact you because of it. If you later apply with that email or phone number, your application takes it over, so an existing block stays in place.</p>
+
+    </div>
+
+    <div class="doc-section" id="google">
+      <h2 class="doc-section-heading">Google user data<span class="doc-tag">OPTIONAL</span></h2>
+      <p class="doc-p"><strong>What we access.</strong> If you tap "Find mutual friends" and connect Google, we ask Google for these permissions: your Google Contacts (read-only, <code>contacts.readonly</code>), your Google "Other contacts" (read-only, <code>contacts.other.readonly</code>), and your basic sign-in info (<code>openid</code> and <code>email</code>). From your contacts and other contacts we read only <strong>email addresses and phone numbers</strong>. We don't read names, photos, notes, or any other contact fields, and we don't access your Gmail messages, calendar, or files. From your sign-in info we use your Google account ID and, if it matches the email on your application, your verified email address.</p>
+      <p class="doc-p"><strong>Why.</strong> Only to show you mutual friends in the study, as described above. Both contacts permissions are needed because "Other contacts" holds people you've emailed but never saved.</p>
+      <p class="doc-p"><strong>How it's stored.</strong> Each email address and phone number is converted into a one-way keyed code before it's saved; the raw values are never written to our database or logs. Your Google account ID is stored the same way. It's a one-time, read-only import: we revoke Google's access token right after the import, and re-syncing asks for your permission again.</p>
+      <p class="doc-p"><strong>What we never do.</strong> We never sell Google user data. We never use or transfer it for advertising, including retargeting or personalized ads. We never use it to determine credit-worthiness or for lending. We never use it to train, fine-tune, or improve artificial-intelligence or machine-learning models. We never use it for research, analytics, or publishing — not the raw data, and not data aggregated, anonymized, or derived from it. No one at Hatch Labs reads it, except where the law requires, for security purposes such as investigating abuse, or with your express permission. We don't transfer it to anyone except the service providers that host and run this feature for us (Supabase and Cloudflare), only as needed to provide it.</p>
+      <p class="doc-p"><strong>How long we keep it.</strong> Until you disconnect Google, delete your application, or 365 days pass without you importing again, whichever comes first.</p>
+      <p class="doc-p"><strong>How to revoke access and delete it.</strong> Use Disconnect next to Google on our site, or email us; either way we delete the contact codes, your Google account ID, and the connections created from your import (see <a href="/data-deletion/#google" class="accent-link">deletion steps</a>). You can also review or remove our access at any time in your Google Account at <a href="https://myaccount.google.com/connections" class="accent-link" target="_blank" rel="noopener">myaccount.google.com/connections</a>. Because we revoke our access right after each import, removing it there doesn't by itself delete what we already imported — use Disconnect or email us for that.</p>
+      <div class="doc-callout"><p class="doc-p">I Hereby Commit's use and transfer of information received from Google APIs to any other app will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy" class="accent-link" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the <a href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes" class="accent-link" target="_blank" rel="noopener">Limited Use requirements</a>.</p></div>
+
+    </div>
+
+    <div class="doc-section" id="facebook">
+      <h2 class="doc-section-heading">Facebook data<span class="doc-tag">OPTIONAL</span></h2>
+      <p class="doc-p"><strong>What we access.</strong> If you connect Facebook, we ask for your public profile and your friends list (<code>public_profile</code> and <code>user_friends</code>). We use only your Facebook user ID for our app and the IDs of your Facebook friends who have <strong>also</strong> connected I Hereby Commit and granted the same permission. Facebook doesn't share your other friends with us. We don't store your name, photo, or email from Facebook, and we never post to Facebook.</p>
+      <p class="doc-p"><strong>Why.</strong> Only to personalize your experience by showing you which of your Facebook friends are also in the study (mutual friends).</p>
+      <p class="doc-p"><strong>How it's stored and how long we keep it.</strong> Your Facebook ID and your friends' IDs are stored only as one-way codes, and we keep only the connections to people who are already members. We keep this while Facebook stays connected and delete it when you disconnect, remove our app in Facebook, send a deletion request through Facebook, or delete your application.</p>
+      <p class="doc-p"><strong>What we never do.</strong> We never sell Facebook data, never use it for advertising or marketing, never use it to train AI, and never use it for research or analytics in any form.</p>
+      <p class="doc-p"><strong>Removing the app and deleting your data.</strong> You can disconnect Facebook on our site, or remove I Hereby Commit in Facebook under Settings &amp; privacy → Settings → Apps and websites. When you remove the app there, Facebook notifies us and we automatically delete the Facebook data we hold for you. You can also send a data deletion request from that same Facebook screen; we delete your Facebook data automatically and Facebook gives you a confirmation code and a link to check its status. Full steps: <a href="/data-deletion/#facebook" class="accent-link">Data deletion instructions</a>.</p>
+
+    </div>
+
+    <div class="doc-section" id="oura">
+      <h2 class="doc-section-heading">Oura Ring data<span class="doc-tag">OPTIONAL</span></h2>
+      <p class="doc-p">This section applies only if you choose to connect an Oura Ring account. Oura data is health data, so we treat it with extra care.</p>
+      <p class="doc-p"><strong>What we collect.</strong> We request only the data types listed on our consent screen, and you can switch individual types on or off on Oura's own permission screen. We may request:</p>
+      <ul class="doc-list">
+        <li><strong>Daily summaries</strong> (Oura "daily" permission): sleep (duration, timing, stages, efficiency, and sleep score), readiness, and activity summaries.</li>
+        <li><strong>Heart rate</strong> (Oura "heartrate" permission): heart-rate readings over time.</li>
+        <li><strong>Personal information</strong> (Oura "personal" permission): age, biological sex, height, and weight.</li>
+        <li>Only if listed on the consent screen: blood-oxygen (SpO2) averages ("spo2"), workout summaries ("workout"), or heart-health data ("heart_health").</li>
+      </ul>
+      <p class="doc-p">We don't request your Oura email address, and we don't collect or store location information from Oura.</p>
+      <p class="doc-p"><strong>How we use it.</strong> Only to run the study you agreed to join (including research on how sleep, health, and daily rhythms relate to relationships), to show you your own summaries, and to keep the connection working and secure. We analyze study data in de-identified, aggregated form. We never try to re-identify you from it, and we never combine it with other data to identify you or to build profiles beyond the study you consented to.</p>
+      <p class="doc-p"><strong>What we never do with Oura data.</strong> We never sell it. We never use it, or the fact that you connected Oura, for advertising, marketing, or promoting other Hatch Labs products, and we never use it to contact you about anything other than the study. We never use it to train, fine-tune, or feed artificial-intelligence or machine-learning models. We never use it to make credit, insurance, or employment decisions about you. We never charge you for connecting Oura.</p>
+      <p class="doc-p"><strong>Who can see it.</strong> Hatch Labs staff and contractors who run the study, limited to what their role requires, and our service providers (Supabase for database hosting and Cloudflare for hosting and security), which process it only on our behalf. <strong>Your partner, or anyone else, will never see your Oura data unless you expressly choose to share it with them.</strong> We don't share identifiable Oura data with scientists or other third parties. We share Oura-derived data with outside researchers, or publish findings based on it, only in aggregated form that can't identify you and only as our agreement with Oura permits, including any approval Oura requires. If we ever want to share your Oura data in any other way, we'll ask for your separate consent first. We may disclose information if the law requires it.</p>
+      <p class="doc-p"><strong>How long we keep it.</strong> Only as long as it's strictly needed for the study you consented to. It is not kept for future studies or for other Hatch Labs products.</p>
+      <ul class="doc-list">
+        <li><strong>If you disconnect Oura or withdraw consent,</strong> we stop collecting and using your Oura data right away.</li>
+        <li><strong>If you ask us to delete it,</strong> or delete your application or account, we delete all of your Oura data <strong>within 72 hours</strong>.</li>
+        <li><strong>When the study ends, or you leave it,</strong> we delete your Oura data.</li>
+      </ul>
+      <p class="doc-p"><strong>How to disconnect.</strong> Use Disconnect next to Oura on our site; remove I Hereby Commit from the connected or authorized apps in your Oura account; or email <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>. Disconnecting won't affect your Oura membership or your use of Oura's products.</p>
+      <p class="doc-p"><strong>Security.</strong> Oura data is encrypted in transit and at rest. Only authorized people can reach it, using multi-factor authentication. We maintain an incident-response process and will notify affected people and partners as the law and our agreements require.</p>
+      <p class="doc-p"><strong>Oura's own policy.</strong> Oura handles your data on its side under its own privacy policy and terms. I Hereby Commit is not affiliated with, endorsed by, or sponsored by Oura.</p>
+
+    </div>
+
+    <div class="doc-section" id="apple-health">
+      <h2 class="doc-section-heading">Apple Health data<span class="doc-tag">OPTIONAL</span></h2>
+      <p class="doc-p">This section applies only if you choose to connect Apple Health in our iPhone app. Apple Health data stays on your iPhone, and apps can reach it only through Apple's HealthKit, so it can't be connected from our website. Connecting is optional, is offered after you register, and isn't required to apply or to stay in the study. Apple Health data is health data, so we treat it with the same extra care as Oura data.</p>
+      <p class="doc-p"><strong>What we read.</strong> We ask only for the data types listed on our consent screen, and you can switch each one on or off on Apple's own permission screen. We may ask to read:</p>
+      <ul class="doc-list">
+        <li><strong>Sleep:</strong> time asleep and in bed, and sleep stages.</li>
+        <li><strong>Heart rate:</strong> heart-rate readings over time and resting heart rate.</li>
+        <li><strong>Heart rate variability</strong> (HRV).</li>
+        <li><strong>Activity:</strong> steps, active energy (calories burned through movement), and exercise minutes.</li>
+      </ul>
+      <p class="doc-p">We don't ask for cycle tracking, sexual activity, pregnancy, or any other reproductive or sexual health data. We don't read health records, medications, your Medical ID, workout routes or other location data, or any Apple Health data type not listed above. If we ever want to add a data type, we'll update this policy first and you'll be asked again on Apple's permission screen.</p>
+      <p class="doc-p"><strong>Read-only.</strong> We only read. Our app never writes, changes, or deletes anything in Apple Health.</p>
+      <p class="doc-p"><strong>How we use it.</strong> Only to show you your own summaries in the app and, if you separately agree to take part in a research study that uses it, for that study. Research use always needs your separate informed consent, which explains the study's nature, purpose, and duration; its procedures, risks, and benefits; how your data is kept confidential and whether it's shared with anyone; who to contact with questions; and how to withdraw. Any such study must be approved and overseen by an independent ethics review board (an IRB). Without that consent, your Apple Health data is not used for research. Research analyses use de-identified, aggregated data, and we never try to re-identify you from it.</p>
+      <p class="doc-p"><strong>What we never do with Apple Health data.</strong> We never sell it, including to advertising platforms, data brokers, or information resellers. We never use it, or the fact that you connected Apple Health, for advertising, marketing, or promoting other Hatch Labs products. We never use it for data mining or to build a profile of you, and never to make credit, insurance, or employment decisions about you. We never use it to train, fine-tune, or feed artificial-intelligence or machine-learning models. We never charge you for connecting Apple Health.</p>
+      <p class="doc-p"><strong>Who can see it.</strong> Hatch Labs staff and contractors who run the study, limited to what their role requires, and our service providers (Supabase for database hosting and Cloudflare for hosting and security), which process it only on our behalf and may not use it for themselves. <strong>Your partner, or anyone else, will never see your Apple Health data unless you expressly choose to share it with them.</strong> We don't disclose Apple Health data to any other third party without your express permission, and even with it, only to a party that provides a health or fitness service to you or for health research you've consented to. We don't send your Apple Health data to Apple. We may disclose information if the law requires it.</p>
+      <p class="doc-p"><strong>Where it's stored.</strong> In our access-restricted database in the United States, encrypted in transit and at rest. We never store Apple Health data in iCloud: our app doesn't save it to iCloud, iCloud Drive, or iCloud backups.</p>
+      <p class="doc-p"><strong>How long we keep it.</strong> Only as long as it's strictly needed for the features you use or the study you consented to. It is not kept for future studies or for other Hatch Labs products.</p>
+      <ul class="doc-list">
+        <li><strong>If you turn off our access in your iPhone's settings,</strong> we stop receiving new Apple Health data right away. iOS doesn't tell apps when access is turned off, so this doesn't delete what we already received; use Disconnect or email us for that.</li>
+        <li><strong>If you disconnect Apple Health in our app, ask us to delete it, or delete your application or account,</strong> we delete all of your Apple Health data <strong>within 72 hours</strong>.</li>
+        <li><strong>When the study ends, or you leave it,</strong> we delete your Apple Health data.</li>
+      </ul>
+      <p class="doc-p"><strong>How to disconnect.</strong> Use Disconnect next to Apple Health in our iPhone app. Or, on your iPhone, go to <strong>Settings → Health → Data Access &amp; Devices → I Hereby Commit</strong> and tap <strong>Turn Off All</strong> (on some iOS versions it's Settings → Apps → Health → Data Access &amp; Devices). Or email <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>. Deleting our app from your iPhone stops it reading Apple Health but doesn't delete what we already received. Disconnecting never changes or deletes the data in Apple Health on your iPhone.</p>
+      <p class="doc-p"><strong>Apple's own policy.</strong> Your Apple Health data on your iPhone is handled by Apple under its own privacy policy. I Hereby Commit is not affiliated with, endorsed by, or sponsored by Apple. Apple, Apple Health, HealthKit, and iPhone are trademarks of Apple Inc.</p>
+
+    </div>
+
+    <div class="doc-section" id="plaid">
+      <h2 class="doc-section-heading">Bank account data (Plaid)<span class="doc-tag">OPTIONAL</span></h2>
+      <p class="doc-p">This section applies only if you choose to connect a bank account, which is offered after you register. We use Plaid Inc. ("Plaid") to connect to your financial institution. You sign in to your bank through Plaid; we never receive or store your bank username or password. By connecting, you also agree to Plaid's handling of your data under the <a href="https://plaid.com/legal/#end-user-privacy-policy" class="accent-link" target="_blank" rel="noopener">Plaid End User Privacy Policy</a>.</p>
+      <p class="doc-p"><strong>What we receive and why.</strong> Only the account and transaction information you authorize on the connection screen, which tells you exactly what's being shared. We use it only for the study you consented to (analyzed in de-identified, aggregated form) and to show you your own summaries.</p>
+      <p class="doc-p"><strong>What we never do.</strong> We never sell your financial data, never use it for advertising or marketing, never use it to train AI, and never use it for credit, lending, or other eligibility decisions.</p>
+      <p class="doc-p"><strong>Disconnecting.</strong> When you disconnect, or delete your application or account, we remove our access through Plaid and delete the financial data we stored. You can also manage the connections you've made through Plaid at <a href="https://my.plaid.com" class="accent-link" target="_blank" rel="noopener">my.plaid.com</a>.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Text messages</h2>
-      <p class="doc-p">If you opt in, we'll send occasional texts about the study through our messaging provider, Twilio. Message frequency varies. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help. Agreeing to texts is not a condition of applying, and you don't need to give us a mobile number at all. We will not send you marketing texts about other Hatch Labs products unless you separately agree to receive them. We never share your mobile number or text-message consent with anyone for their own marketing.</p>
+      <p class="doc-p">If you opt in, then once we start sending texts, I Hereby Commit (Hatch Labs) will send you texts about the study, such as when your cohort opens or something is ready for you, through our messaging provider, Twilio. You opt in by ticking the box under the phone number on the application's last screen; it is never ticked for you. Message frequency varies. Message and data rates may apply. Agreeing to texts is not a condition of applying or of joining the study. We will not send you marketing texts about other Hatch Labs products unless you separately agree to receive them.</p>
+      <p class="doc-p"><strong>Your mobile number is not shared for marketing.</strong> No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. Text-message opt-in data and consent are excluded from every category of sharing in this policy and will not be shared with any third parties, except the service providers (such as Twilio) that deliver our texts for us.</p>
+      <p class="doc-p"><strong>How to stop texts.</strong> Reply STOP (or STOPALL, UNSUBSCRIBE, CANCEL, END, or QUIT) to any text and we'll confirm and send no more. Reply START to opt back in. Reply HELP for help, or email <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>. You can also email us to stop texts.</p>
+
     </div>
 
-    <div class="doc-section">
+    <div class="doc-section" id="sharing">
       <h2 class="doc-section-heading">Who we share it with</h2>
       <p class="doc-p">We share information only with service providers that help us run this site and our communications, and who may use it only on our behalf:</p>
       <ul class="doc-list" style="margin-top:16px;">
-        <li>Supabase (database hosting, in the United States)</li>
-        <li>Cloudflare (security and bot protection)</li>
-        <li>GitHub (website hosting)</li>
+        <li>Supabase (database hosting and server functions, in the United States)</li>
+        <li>Cloudflare (website hosting on Cloudflare Workers, security, and bot protection with Cloudflare Turnstile)</li>
+        <li>Resend (email delivery)</li>
         <li>Twilio (text messages)</li>
-        <li>Twilio SendGrid or Mailchimp (email)</li>
+        <li>Location lookups while you fill in the form: Google Maps Platform and OpenStreetMap (maps, and turning a map location into a city name) and Zippopotam.us (finding the city for a ZIP or postal code you type). These receive only what's needed for the lookup, such as the ZIP code or map location, along with standard browser information like your IP address.</li>
+        <li>Google Fonts (delivers the site's typefaces to your browser)</li>
+        <li>Only if you connect them: Google, Facebook (Meta), Oura, and Plaid, each as described in Connected accounts. Apple Health data is read on your iPhone and sent only to us; we don't send it to Apple.</li>
       </ul>
-      <p class="doc-p" style="margin-top:16px;">We share only de-identified, anonymized data with scientists, as described above. We may disclose information if the law requires it. If Hatch Labs is reorganized or acquired, your information may transfer to the successor, which will be bound by this policy. We do not sell your personal information or share it for targeted advertising.</p>
+      <p class="doc-p">We require these service providers to give your information the same or equal protection as this policy. We share only de-identified, anonymized data with scientists, as described above, and never share Google contacts or Facebook data with them in any form. Data from connected accounts is shared only as described in Connected accounts. We may disclose information if the law requires it. If Hatch Labs is reorganized or acquired, your information may transfer to the successor, which will be bound by this policy; we'll ask for your consent first before Google user data is transferred that way. We do not sell your personal information or share it for targeted advertising.</p>
+
     </div>
 
-    <div class="doc-section">
+    <div class="doc-section" id="retention">
       <h2 class="doc-section-heading">How long we keep it</h2>
-      <p class="doc-p">We keep your information for as long as you remain on our list and it is needed for the purposes described in this policy, including future Hatch Labs studies and products, unless you ask us to delete it sooner. When it's no longer needed, we delete or de-identify it. We may keep a minimal record of an opt-out or deletion request so we can keep honoring it. If you join the study, the study's consent terms will also govern your study data.</p>
+      <p class="doc-p">We keep your application information for as long as you remain on our list and it is needed for the purposes described in this policy, including future Hatch Labs studies and products, unless you ask us to delete it sooner. When it's no longer needed, we delete or de-identify it. We may keep a minimal record of an opt-out or deletion request so we can keep honoring it. If you join the study, the study's consent terms will also govern your study data.</p>
+      <p class="doc-p">This doesn't apply to data from connected accounts. That data is kept only as described in its own section above (Google contacts: until you disconnect or 365 days after your last import; Facebook: until you disconnect or remove the app; Oura and Apple Health: deleted within 72 hours of a request; Plaid: until you disconnect) and is never kept for future studies or products.</p>
+      <p class="doc-p">If you delete your application, we also delete your connections, imports, and connected-account data. One exception keeps blocks working: if another member has blocked you, we keep a one-way code of your email or phone number, and nothing else, so that their block stays in place if you apply again. You can ask us to remove it, and we'll explain if the law lets us keep it.</p>
+      <p class="doc-p">Deleted data may remain for a short time in our hosting provider's encrypted backups until they're overwritten.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Security</h2>
-      <p class="doc-p">Your information is encrypted in transit and stored in an access-restricted database. No system is perfectly secure, but we work to protect your information and limit who can see it.</p>
+      <p class="doc-p">Your information is encrypted in transit and at rest and stored in an access-restricted database. Contact details from connected accounts are stored only as keyed one-way codes, with the key held separately. No system is perfectly secure, but we work to protect your information and limit who can see it.</p>
       <p class="doc-p">We use Cloudflare Turnstile to protect this site from spam and abuse. It may collect information about your device and browser for that purpose, and its use is subject to Cloudflare's <a href="https://www.cloudflare.com/turnstile-privacy-policy/" class="accent-link" target="_blank" rel="noopener">Turnstile Privacy Addendum</a>.</p>
+
     </div>
 
-    <div class="doc-section">
+    <div class="doc-section" id="rights">
       <h2 class="doc-section-heading">Your choices and rights</h2>
       <p class="doc-p">You can ask to access, correct, or delete your information, get a copy of it, stop marketing emails, or remove yourself from the list by emailing <a href="mailto:contact@hatchlabs.com" class="accent-link">contact@hatchlabs.com</a>. We'll respond within 45 days. If we decline your request, you can appeal by replying to our response, and we'll answer your appeal within 60 days. Depending on where you live, you may have additional privacy rights under state law; we honor these requests from everyone, wherever you live. We won't treat you differently for making a request.</p>
+      <p class="doc-p">For connected accounts, you can disconnect at any time, which stops collection right away. If you ask us to delete data from a connected account, we delete it within 72 hours. For Oura and Apple Health data, you can also see a copy or withdraw consent at any time; withdrawing consent stops collection and use right away.</p>
+      <p class="doc-p">Step-by-step instructions: <a href="/data-deletion/" class="accent-link">Data deletion instructions</a>.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Age</h2>
       <p class="doc-p">This site is for adults 18 and older. We don't knowingly collect information from anyone under 18. If we learn we have, we'll delete it.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Where your data is stored</h2>
       <p class="doc-p">In the United States.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Other Hatch Labs apps</h2>
       <p class="doc-p">Other apps and products from Hatch Labs have their own terms and privacy policies, which you'll be asked to accept when you sign up for them.</p>
+
     </div>
 
     <div class="doc-section">
       <h2 class="doc-section-heading">Changes to this policy</h2>
-      <p class="doc-p">If we change this policy, we'll update the effective date above. If a change materially affects how we use information you've already given us, we'll email you before it takes effect.</p>
+      <p class="doc-p">If we change this policy, we'll update the effective date above. If a change materially affects how we use information you've already given us, we'll email you before it takes effect. We'll never use data from a connected account in a new way, or for a purpose not described here, without first asking for your consent.</p>
+
     </div>
 
     <div class="doc-section">
