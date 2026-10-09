@@ -2824,7 +2824,7 @@
       </div>
       <label class="checkbox-group" id="sms-consent-label" style="opacity:0.5;">
         <input type="checkbox" id="sms_consent" disabled>
-        <span class="checkbox-label">Text me when the study goes live and important updates. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. We will ask you for additional consents prior to enrolling you in any research study. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
+        <span class="checkbox-label">I agree to receive text messages from IHereByCommit (Hatch Labs Holdings LLC), including verification codes, pilot study notifications, match and introduction updates, account alerts, and study check-in reminders. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of membership. See our <a href="privacy/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a> and <a href="terms/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">Terms</a>.</span>
       </label>
     </div>
     <div class="bottom-action">
@@ -2983,7 +2983,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-09p6-s3y48-kidscount'; // kidscount: singles asked How many kids after Have kids = Yes (was couples-only). Prev 2026-10-07p5-s3y48. // prod s3y48 hotfix: Turnstile never blocks Submit (3 s max wait, then sent without a token flagged unavailable; widget rendered early; partial save in parallel; in-viewport transparent container; watchdog; payload errors release the button). s3y47: couples Notify-my-partner checkbox.
+var PAGE_VERSION = '2026-10-09p7-s3y48-sms'; // sms: Twilio A2P opt-in wording (consent_documents sms_optin@2026-10-09). Prev 2026-10-09p6-s3y48-kidscount. // kidscount: singles asked How many kids after Have kids = Yes (was couples-only). Prev 2026-10-07p5-s3y48. // prod s3y48 hotfix: Turnstile never blocks Submit (3 s max wait, then sent without a token flagged unavailable; widget rendered early; partial save in parallel; in-viewport transparent container; watchdog; payload errors release the button). s3y47: couples Notify-my-partner checkbox.
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -4360,6 +4360,7 @@ async function doSubmit(ts) {
       relationship_timeline: relationshipTimelinePayload(),
       phone: document.getElementById('phone').value.trim(),
       sms_consent: document.getElementById('sms_consent').checked,
+      sms_consent_version: document.getElementById('sms_consent').checked ? '2026-10-09' : null, // = consent_documents sms_optin@2026-10-09
       linkedin_url: 'https://www.linkedin.com/in/' + username,
       instagram: document.getElementById('instagram').value.trim() || null,
       x_handle: document.getElementById('x_handle').value.trim() || null,
