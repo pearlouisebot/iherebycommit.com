@@ -68,6 +68,7 @@
     <span>Sign in with Google</span>
   </button>
   <div class="err" id="err" role="alert"></div>
+  <p class="fine" style="margin:0 0 8px">Google window not opening or closing? <button type="button" class="linkbtn" id="gsi-redirect">Continue in this tab instead</button></p>
   <div class="fine">Demo mode: no application is needed. On this page your contacts are read once and only counted. Nothing is saved, and Google access is revoked right after.</div>
 
   <div class="box ok" id="result" hidden>
@@ -104,11 +105,8 @@
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || !j.ok) { var e = new Error(j.error || 'server_error'); e.code = j.error || 'server_error'; throw e; } return j; }); },
             function () { var e = new Error('network'); e.code = 'network'; throw e; });
   }
-  function onToken(resp) {
-    if (!resp || resp.error) { setBusy(false); err(resp && resp.error || 'access_denied'); return; }
-    if (!google.accounts.oauth2.hasGrantedAnyScope(resp, SC_CONTACTS, SC_OTHER)) { try { google.accounts.oauth2.revoke(resp.access_token, function () {}); } catch (e) {} setBusy(false); err('scopes'); return; }
-    // Reviewer / demo mode: no study_code, so the server reads + counts only, stores nothing, and revokes the grant.
-    api({ action: 'import', access_token: resp.access_token })
+  function runImport(tok) {
+    api({ action: 'import', access_token: tok })
       .then(function (j) {
         studyCode = j.study_code || null; setBusy(false); err('');
         $('r-contacts').textContent = String(j.contacts != null ? j.contacts : (j.contacts_linked || 0));
@@ -118,17 +116,53 @@
       })
       .catch(function (e) { setBusy(false); err(e.code); });
   }
+  function onToken(resp) {
+    if (!resp || resp.error) { setBusy(false); err(resp && resp.error || 'access_denied'); return; }
+    if (!google.accounts.oauth2.hasGrantedAnyScope(resp, SC_CONTACTS, SC_OTHER)) { try { google.accounts.oauth2.revoke(resp.access_token, function () {}); } catch (e) {} setBusy(false); err('scopes'); return; }
+    // Reviewer / demo mode: no study_code, so the server reads + counts only, stores nothing, and revokes the grant.
+    runImport(resp.access_token);
+  }
   function init() {
     if (tc || !(window.google && google.accounts && google.accounts.oauth2)) return tc;
     tc = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPE, include_granted_scopes: false, callback: onToken,
       error_callback: function (e) { setBusy(false); err((e && e.type) || 'popup_closed'); } });
     return tc;
   }
+  // s3y73 (_grokbot): phones and in-app browsers often open Google's "popup" as a new tab with no link back to this page.
+  // Google then sends that tab to the site's home page and our callback never runs. On those devices we use a same-tab
+  // redirect (response_type=token) back to THIS page and read the token from the #fragment instead.
+  var REDIRECT_URI = location.origin + '/connect-google/';
+  function preferRedirect() {
+    var ua = navigator.userAgent || '';
+    return /iPhone|iPad|iPod|Android|FBAN|FBAV|Instagram|Line\/|Telegram|GSA\/|wv\)/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua));
+  }
+  function startRedirect() {
+    var st = (crypto.getRandomValues ? Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(16)), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('') : String(Math.random()).slice(2));
+    try { sessionStorage.setItem('cg_state', st); } catch (e) {}
+    var q = { client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, response_type: 'token', scope: SCOPE, include_granted_scopes: 'false', prompt: 'consent', state: st };
+    location.assign('https://accounts.google.com/o/oauth2/v2/auth?' + Object.keys(q).map(function (k) { return k + '=' + encodeURIComponent(q[k]); }).join('&'));
+  }
+  function fromHash() {
+    if (!/(access_token|error)=/.test(location.hash)) return;
+    var h = {}; location.hash.slice(1).split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) h[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, ' ')); });
+    history.replaceState(null, '', location.pathname + location.search);   // token never stays in the URL / history
+    var st = null; try { st = sessionStorage.getItem('cg_state'); sessionStorage.removeItem('cg_state'); } catch (e) {}
+    if (h.error) { err(h.error === 'access_denied' ? 'access_denied' : h.error); return; }
+    if (!st || h.state !== st) { err('state'); return; }
+    var sc = ' ' + (h.scope || '') + ' ';
+    if (sc.indexOf(' ' + SC_CONTACTS + ' ') < 0 && sc.indexOf(' ' + SC_OTHER + ' ') < 0) { revokeTok(h.access_token); err('scopes'); return; }
+    setBusy(true); runImport(h.access_token);
+  }
+  function revokeTok(t) { try { fetch('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'token=' + encodeURIComponent(t) }); } catch (e) {} }
+  ERR.state = 'The sign-in link expired. Please tap Sign in with Google again.';
+  $('gsi-redirect').addEventListener('click', function () { if (!busy) { err(''); startRedirect(); } });
   $('gsi-btn').addEventListener('click', function () {
     if (busy) return; err('');
+    if (preferRedirect()) { setBusy(true); startRedirect(); return; }
     if (!init()) { err('gis_load'); return; }
     setBusy(true); tc.requestAccessToken({ prompt: 'consent' });
   });
+  fromHash();
   $('disconnect').addEventListener('click', function () {
     if (!studyCode || busy) return; setBusy(true);
     api({ action: 'disconnect', study_code: studyCode }).then(function () {
