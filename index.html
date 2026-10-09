@@ -2712,7 +2712,7 @@
           <div class="field-error" id="err-looking_for">Required</div>
         </div>
       </div>
-      <!-- Singles: timeline + have kids. Couples: have kids + how many. -->
+      <!-- Singles: timeline + have kids (+ how many on its own row). Casual-only singles and couples: have kids + how many. -->
       <div class="cr-pair cr-stack" id="fam-row-kids">
         <div class="who-unit fam-unit" id="fam-tl" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Partner timing" onclick="crExpand('fam-tl')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-tl-k">Partner timeline</span><span class="who-cond-v" id="fam-tl-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -2757,6 +2757,7 @@
           </div>
         </div>
       </div>
+      <div class="cr-pair cr-stack" id="fam-row-nk"><!-- kidscount: singles with a timeline get How many here (full-width row); filled by syncFamilyDrip --></div>
       <div class="cr-pair cr-stack" id="fam-row-want">
         <div class="who-unit fam-unit" id="fam-wk" style="min-width:0;">
           <div class="who-cond" role="button" tabindex="0" aria-label="Edit Want kids" onclick="crExpand('fam-wk')"><span class="who-cond-txt"><span class="who-cond-k" id="fam-wk-k">Want kids</span><span class="who-cond-v" id="fam-wk-v"></span></span><span class="who-cond-edit">EDIT</span></div>
@@ -2982,7 +2983,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-07p5-s3y48'; // prod s3y48 hotfix: Turnstile never blocks Submit (3 s max wait, then sent without a token flagged unavailable; widget rendered early; partial save in parallel; in-viewport transparent container; watchdog; payload errors release the button). s3y47: couples Notify-my-partner checkbox.
+var PAGE_VERSION = '2026-10-09p6-s3y48-kidscount'; // kidscount: singles asked How many kids after Have kids = Yes (was couples-only). Prev 2026-10-07p5-s3y48. // prod s3y48 hotfix: Turnstile never blocks Submit (3 s max wait, then sent without a token flagged unavailable; widget rendered early; partial save in parallel; in-viewport transparent container; watchdog; payload errors release the button). s3y47: couples Notify-my-partner checkbox.
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -3066,7 +3067,7 @@ const state = {
   wantsChildren: null,
   kidsTimeline: null,
   fertilityPreservation: null,
-  numChildren: null, // couples: "How many kids do you have?" (1-4, 5+), only when they have kids
+  numChildren: null, // singles + couples: "How many kids do you have?" (1-4, 5+), only when they have kids
   lookingFor: [],
   race: [], // Race labels in the order picked (WHO YOU ARE)
   religion: null, incomeRange: null, education: null, politics: null, // K5 own Religion / Income / Degree
@@ -3844,9 +3845,9 @@ function setNumChildren(val) {
   syncFamilyDrip();
   crTap('fam-nk');
 }
-// Couples only, and only when they have kids. Singles send null. Text, no value checks.
+// Singles and couples (kidscount: singles too), only when they have kids. Text, no value checks.
 function numChildrenPayload() {
-  if (state.status !== 'partnered' || state.hasChildren !== true) return null;
+  if (state.hasChildren !== true) return null;
   return state.numChildren || null;
 }
 
@@ -3956,8 +3957,8 @@ function syncFamilyDrip() {
   }
   if (!needsTL) { state.relationshipTimeline = null; const tl = document.getElementById('relationship_timeline'); if (tl) tl.value = ''; hideError('relationship_timeline'); }
 
-  // Couples: "How many kids do you have?" right after any Yes. Cleared when the answer is not a Yes.
-  const needsNum = partnered && state.hasChildren === true;
+  // "How many kids do you have?" right after any Yes (couples; singles too since kidscount). Cleared when the answer is not a Yes.
+  const needsNum = state.hasChildren === true;
   if (!needsNum && state.numChildren) state.numChildren = null;
   if (!needsNum) { const el = document.getElementById('num_children_select'); if (el) el.value = ''; }
 
@@ -3993,6 +3994,9 @@ function syncFamilyDrip() {
   show.kt = show.wk && state.wantsChildren === 'yes';
   show.fert = !partnered && hasLF && state.wantsChildren === 'yes' && kidsTimelineDone;
   _famShow = show;
+  // kidscount: singles with a timeline already pair TIMELINE | HAVE KIDS, so How many gets its own row; otherwise HAVE KIDS | HOW MANY.
+  { const nk = document.getElementById('fam-nk'), row = document.getElementById((!partnered && needsTL) ? 'fam-row-nk' : 'fam-row-kids');
+    if (nk && row && nk.parentElement !== row) row.appendChild(nk); }
   [['lf','fam-lf'],['tl','fam-tl'],['hk','fam-hk'],['nk','fam-nk'],['wk','fam-wk'],['kt','fam-kt'],['fert','fam-fert']].forEach(([k, id]) => {
     const u = document.getElementById(id); if (u) u.style.display = show[k] ? '' : 'none';
   });
@@ -4936,10 +4940,10 @@ function _crDefineAll() {
   });
   crDef('fam-hk', {
     focus: 'has_children_select', applies: () => !!_famShow.hk,
-    partner: () => lookingForNeedsTimeline() ? 'fam-tl' : (state.status === 'partnered' && state.hasChildren === true ? 'fam-nk' : null),
+    partner: () => lookingForNeedsTimeline() ? 'fam-tl' : (state.hasChildren === true ? 'fam-nk' : null),
     value: () => _crOpt('has_children_select', state.hasChildrenDetail),
   });
-  crDef('fam-nk', { focus: 'num_children_select', partner: 'fam-hk', applies: () => !!_famShow.nk, value: () => _crOpt('num_children_select', state.numChildren) });
+  crDef('fam-nk', { focus: 'num_children_select', partner: () => lookingForNeedsTimeline() ? null : 'fam-hk', applies: () => !!_famShow.nk, value: () => _crOpt('num_children_select', state.numChildren) });
   crDef('fam-wk', { focus: 'wants_children_select', partner: 'fam-kt', applies: () => !!_famShow.wk, key: () => state.hasChildren === true ? 'Want more kids' : 'Want kids', value: () => _crOpt('wants_children_select', state.wantsChildren) });
   crDef('fam-kt', { focus: 'kids_timeline_select', partner: 'fam-wk', applies: () => !!_famShow.kt, value: () => _crOpt('kids_timeline_select', state.kidsTimeline) });
   crDef('fam-fert', { focus: 'fertility_select', applies: () => !!_famShow.fert, value: () => _crOpt('fertility_select', state.fertilityPreservation) });
