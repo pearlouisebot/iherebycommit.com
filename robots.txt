@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /connect-google/
+
+Sitemap: https://iherebycommit.com/sitemap.xml
