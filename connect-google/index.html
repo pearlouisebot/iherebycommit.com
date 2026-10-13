@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
-<title>Connect Google · I Hereby Commit</title>
-<!-- s3y72 (_grokbot): PRODUCTION hidden page for Google OAuth app verification (reviewer / demo mode). Unlisted: not linked from anywhere, noindex, not in sitemap. -->
+<title>Google Contacts demo · I Hereby Commit</title>
+<!-- s3y179 (_grokbot): /connect-google/ now = full (copy of /google-review/). s3y174: full Google Contacts experience for OAuth verification (mutual friends + block). Client 383853981170 (s3y178; was 881371521868), BRANCH backend ycoaslgtaaiwfwgytqlm (test DB). noindex, unlisted, not in sitemap.  -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Roboto:wght@500&display=swap" rel="stylesheet">
@@ -39,48 +39,54 @@
   .links { margin-top:28px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
   .linkbtn { background:none; border:0; padding:0; color:var(--accent); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
   .fine { font-size:11px; color:var(--muted); }
+
+  .sec { border-top:1px solid var(--dim); margin-top:18px; padding-top:14px; }
+  .sechead { display:flex; justify-content:space-between; align-items:center; }
+  .lbl { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); }
+  .mlist { list-style:none; padding:0; margin:8px 0 0; }
+  .mlist li { display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid #222; color:var(--text); }
+  .mlist .mc { color:var(--muted); font-size:11px; }
+  .brow { display:flex; gap:8px; margin-top:8px; }
+  .brow input { flex:1; background:#161616; border:1px solid var(--dim); color:var(--text); font:inherit; font-size:16px; padding:9px 10px; border-radius:4px; min-width:0; }
+  .bbtn, .yes, .no { background:var(--accent); color:#000; border:0; font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:.05em; padding:0 16px; border-radius:4px; cursor:pointer; }
+  .no { background:#333; color:var(--text); }
+  .bbtn:disabled { opacity:.5; }
+  .sugg { list-style:none; padding:0; margin:4px 0 0; border:1px solid var(--dim); border-radius:4px; }
+  .sugg button { display:block; width:100%; text-align:left; background:none; border:0; color:var(--text); font:inherit; font-size:12px; padding:8px 10px; cursor:pointer; }
+  .sugg button:hover { background:#1c1c1c; }
+  .msg { color:var(--accent); font-size:12px; }
+  .acct { color:var(--muted); font-size:12px; }
+  .confirm-row { display:flex; gap:8px; height:40px; }
 </style>
 </head>
 <body>
 <main>
   <div class="brand">I HEREBY <span>COMMIT</span></div>
   <div class="tag">Reviewer / demo mode</div>
-  <h1>Connect <span>Google</span></h1>
-  <p class="lead">I Hereby Commit is a research study on what makes relationships last. Connecting Google lets us show you which of your friends are also in the study (mutual friends), and lets you block people you never want to be matched with.</p>
+  <h1>Find mutual <span>friends</span></h1>
+  <p class="lead">I Hereby Commit is a research study on what makes relationships last. Connecting Google lets you see which people you know are also in the study (mutual friends), and lets you block people you never want to be matched with or shown to.</p>
 
   <h2>What we access</h2>
   <ul>
     <li><b>Your Google account email</b> (<code>openid</code>, <code>email</code>): to confirm it is you.</li>
     <li><b>Email addresses and phone numbers in your Google Contacts</b> (<code>https://www.googleapis.com/auth/contacts.readonly</code>).</li>
-    <li><b>Email addresses and phone numbers in your "Other contacts"</b> (<code>https://www.googleapis.com/auth/contacts.other.readonly</code>).</li>
+    <li><b>Email addresses and phone numbers in your "Other contacts"</b> (<code>https://www.googleapis.com/auth/contacts.other.readonly</code>), such as people you've emailed but never saved.</li>
   </ul>
   <h2>How we use it</h2>
   <ul>
     <li>We read your contacts <b>one time</b>. Each email and phone number is turned into a one-way code before anything is saved. We never save names.</li>
-    <li>The codes are used only to show you mutual friends in the study and to apply your blocks. They are never used for research, advertising or sold, and we never contact anyone in your contacts.</li>
-    <li>We don't read your Gmail. We revoke Google access right after the one-time read.</li>
-    <li>You can disconnect at any time, and we delete what we imported.</li>
+    <li><b>Mutual friends:</b> the codes are matched against other members who also connected, so you see people you have in common.</li>
+    <li><b>Block someone:</b> your own contacts' emails and phone numbers are sent back to this page only, so you can pick someone to block. They are not stored.</li>
+    <li>Never used for research or advertising, never sold, and we never contact anyone in your contacts. We don't read your Gmail, and we revoke Google access right after the one-time read.</li>
+    <li>Disconnect at any time and we delete what we imported.</li>
   </ul>
-  <p class="fine">I Hereby Commit's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+  <p class="fine">I Hereby Commit's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements. See our <a href="/privacy/#google">Privacy Policy</a>.</p>
 
-  <button type="button" class="gsi-btn" id="gsi-btn" aria-label="Sign in with Google">
-    <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-    <span>Sign in with Google</span>
-  </button>
+  <div id="body" aria-live="polite"></div>
   <div class="err" id="err" role="alert"></div>
-  <p class="fine" style="margin:0 0 8px">Google window not opening or closing? <button type="button" class="linkbtn" id="gsi-redirect">Continue in this tab instead</button></p>
-  <div class="fine">Demo mode: no application is needed. On this page your contacts are read once and only counted. Nothing is saved, and Google access is revoked right after.</div>
-
-  <div class="box ok" id="result" hidden>
-    <h2 style="margin-top:0">Connected</h2>
-    <div class="big" id="r-contacts">0</div>
-    <p style="margin:2px 0 10px">contacts read (demo: counted only, nothing saved)</p>
-    <p style="margin:0" id="r-more"></p>
-    <p class="fine" style="margin-top:10px">Google access was revoked right after the one-time read.</p>
-  </div>
+  <div class="fine">Demo mode: no application is needed. A clearly marked demo applicant is created for your Google account on our test database.</div>
 
   <div class="links">
-    <button type="button" class="linkbtn" id="disconnect" hidden>Disconnect Google and delete imported contacts</button>
     <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Manage Google access</a>
     <a href="/privacy/#google">Privacy Policy</a>
     <a href="/terms/">Terms</a>
@@ -89,89 +95,167 @@
 </main>
 <script>
 (function () {
-  var CLIENT_ID = '383853981170-bsc8a7qbk2lre05oe2mmi0tmkfrdv02j.apps.googleusercontent.com';
-  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/import-google-contacts';
+  var CLIENT_ID = '383853981170-bsc8a7qbk2lre05oe2mmi0tmkfrdv02j.apps.googleusercontent.com'; // s3y178: i-hereby-commit client (same as /connect-google/)
+  var FN = 'https://ycoaslgtaaiwfwgytqlm.supabase.co/functions/v1/import-google-contacts';
   var SC_CONTACTS = 'https://www.googleapis.com/auth/contacts.readonly', SC_OTHER = 'https://www.googleapis.com/auth/contacts.other.readonly';
-  var SCOPE = 'openid email ' + SC_CONTACTS + ' ' + SC_OTHER; // same as the s3y54 Connect Google contacts card
-  var $ = function (id) { return document.getElementById(id); };
-  var tc = null, studyCode = null, busy = false;
+  var SCOPE = 'openid email ' + SC_CONTACTS + ' ' + SC_OTHER;
+  var REDIRECT_URI = location.origin + '/connect-google/';
+  var SS = 'ihc_gr174';
+  var G_ICON = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+  var S = { view: 'idle', sc: null, token: null, picker: [], tc: null, busy: false, err: '', msg: '', data: null, confirm: false };
+  try { var o = JSON.parse(sessionStorage.getItem(SS) || 'null'); if (o && o.sc) S.sc = o.sc; } catch (e) {}
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var ERR = { popup_closed: 'The Google window closed before you finished.', popup_failed_to_open: 'Your browser blocked the Google window. Allow pop-ups and try again.',
     access_denied: 'Google access wasn\'t allowed, so nothing was imported.', scopes: 'Please allow both contacts permissions on Google\'s screen. Nothing was imported.',
     missing_scope: 'Please allow both contacts permissions on Google\'s screen. Nothing was imported.', rate_limited: 'Too many tries in the last hour. Please try again later.',
-    google_api_error: 'Google didn\'t send the contacts. Please try again.', network: 'Network error. Please try again.' };
-  function err(c) { $('err').textContent = c ? (ERR[c] || 'Something went wrong (' + c + '). Please try again.') : ''; }
-  function setBusy(b) { busy = b; $('gsi-btn').disabled = b; }
-  function api(body) {
-    return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ surface: 'google_review_demo' }, body)) })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || !j.ok) { var e = new Error(j.error || 'server_error'); e.code = j.error || 'server_error'; throw e; } return j; }); },
-            function () { var e = new Error('network'); e.code = 'network'; throw e; });
+    google_api_error: 'Google didn\'t send the contacts. Please try again.', network: 'Network error. Please try again.', invalid_token: 'Google sign-in didn\'t verify. Please try again.',
+    token_wrong_client: 'Google sign-in didn\'t verify. Please try again.', not_configured: 'Google isn\'t set up yet.', invalid_value: 'That doesn\'t look like an email or phone number.',
+    cannot_block_self: 'That\'s your own email or phone.', state: 'The sign-in link expired. Please tap Sign in with Google again.', gis_load: 'Couldn\'t load Google sign-in. Check your connection and try again.' };
+  function errText(c) { return c ? (ERR[c] || 'Something went wrong (' + c + '). Please try again.') : ''; }
+  function api(action, extra) {
+    return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ action: action, surface: 'google_review_full' }, extra || {})) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) {
+        if (j && j.study_code) { S.sc = j.study_code; try { sessionStorage.setItem(SS, JSON.stringify({ sc: j.study_code })); } catch (e) {} }
+        if (!r.ok || !j.ok) { var e = new Error(j.error || 'server_error'); e.code = j.error || 'server_error'; throw e; } return j; }); },
+        function () { var e = new Error('network'); e.code = 'network'; throw e; });
   }
+  function buildPicker(cards) {
+    var seen = {}, out = [];
+    cards.forEach(function (c) {
+      (c.e || []).forEach(function (v) { if (!seen[v]) { seen[v] = 1; out.push({ v: v, k: 'email', d: v }); } });
+      (c.p || []).forEach(function (v) { if (!seen[v]) { seen[v] = 1; out.push({ v: v, k: 'phone', d: v.replace(/\D/g, '') }); } });
+    });
+    return out;
+  }
+  function suggestions(q) {
+    q = (q || '').trim().toLowerCase(); if (q.length < 2) return [];
+    var qd = q.replace(/\D/g, ''), dig = qd.length >= 3 && !/[a-z@]/.test(q), out = [];
+    for (var i = 0; i < S.picker.length && out.length < 6; i++) { var it = S.picker[i];
+      if (dig ? (it.k === 'phone' && it.d.indexOf(qd) >= 0) : (it.k === 'email' && it.v.indexOf(q) >= 0)) out.push(it); }
+    return out;
+  }
+  function kindOf(v) { v = (v || '').trim(); if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return 'email'; if (v.replace(/\D/g, '').length >= 7 && !/[a-z@]/i.test(v)) return 'phone'; return ''; }
+
   function runImport(tok) {
-    api({ action: 'import', access_token: tok })
-      .then(function (j) {
-        studyCode = j.study_code || null; setBusy(false); err('');
-        $('r-contacts').textContent = String(j.contacts != null ? j.contacts : (j.contacts_linked || 0));
-        var m = j.matched_applicants || 0, mu = (j.mutual || []).length;
-        $('r-more').textContent = m + ' matched with people already in the study' + (mu ? ' · ' + mu + ' mutual friend' + (mu === 1 ? '' : 's') : '') + (j.truncated ? ' · list truncated' : '') + '.';
-        $('result').hidden = false; $('disconnect').hidden = !studyCode;
-      })
-      .catch(function (e) { setBusy(false); err(e.code); });
+    S.token = tok; S.busy = true; S.err = ''; render();
+    api('import', { access_token: tok, study_code: S.sc || undefined, sandbox_applicant: { first_name: 'Google', last_name: 'Reviewer (demo)', status: 'single' } })
+      .then(function (j) { S.data = j; S.picker = buildPicker(j.picker || []); S.view = 'connected'; S.busy = false; S.msg = ''; render(); })
+      .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
   }
   function onToken(resp) {
-    if (!resp || resp.error) { setBusy(false); err(resp && resp.error || 'access_denied'); return; }
-    if (!google.accounts.oauth2.hasGrantedAnyScope(resp, SC_CONTACTS, SC_OTHER)) { try { google.accounts.oauth2.revoke(resp.access_token, function () {}); } catch (e) {} setBusy(false); err('scopes'); return; }
-    // Reviewer / demo mode: no study_code, so the server reads + counts only, stores nothing, and revokes the grant.
+    if (!resp || resp.error) { S.busy = false; S.err = errText(resp && resp.error || 'access_denied'); render(); return; }
+    if (!google.accounts.oauth2.hasGrantedAnyScope(resp, SC_CONTACTS, SC_OTHER)) { try { google.accounts.oauth2.revoke(resp.access_token, function () {}); } catch (e) {} S.busy = false; S.err = errText('scopes'); render(); return; }
     runImport(resp.access_token);
   }
-  function init() {
-    if (tc || !(window.google && google.accounts && google.accounts.oauth2)) return tc;
-    tc = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPE, include_granted_scopes: false, callback: onToken,
-      error_callback: function (e) { setBusy(false); err((e && e.type) || 'popup_closed'); } });
-    return tc;
+  function initTc() {
+    if (S.tc || !(window.google && google.accounts && google.accounts.oauth2)) return S.tc;
+    S.tc = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPE, include_granted_scopes: false, callback: onToken,
+      error_callback: function (e) { S.busy = false; S.err = errText((e && e.type) || 'popup_closed'); render(); } });
+    return S.tc;
   }
-  // s3y73 (_grokbot): phones and in-app browsers often open Google's "popup" as a new tab with no link back to this page.
-  // Google then sends that tab to the site's home page and our callback never runs. On those devices we use a same-tab
-  // redirect (response_type=token) back to THIS page and read the token from the #fragment instead.
-  var REDIRECT_URI = location.origin + '/connect-google/';
-  function preferRedirect() {
-    var ua = navigator.userAgent || '';
-    return /iPhone|iPad|iPod|Android|FBAN|FBAV|Instagram|Line\/|Telegram|GSA\/|wv\)/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua));
-  }
+  // Phones / in-app browsers: same-tab redirect back to /connect-google/ (token in #fragment) (s3y73).
+  function preferRedirect() { var ua = navigator.userAgent || ''; return /iPhone|iPad|iPod|Android|FBAN|FBAV|Instagram|Line\/|Telegram|GSA\/|wv\)/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua)); }
   function startRedirect() {
-    var st = (crypto.getRandomValues ? Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(16)), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('') : String(Math.random()).slice(2));
-    try { sessionStorage.setItem('cg_state', st); } catch (e) {}
+    var st = Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(16)), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+    try { sessionStorage.setItem('gr_state', st); } catch (e) {}
     var q = { client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, response_type: 'token', scope: SCOPE, include_granted_scopes: 'false', prompt: 'consent', state: st };
     location.assign('https://accounts.google.com/o/oauth2/v2/auth?' + Object.keys(q).map(function (k) { return k + '=' + encodeURIComponent(q[k]); }).join('&'));
   }
+  function revokeTok(t) { try { fetch('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'token=' + encodeURIComponent(t) }); } catch (e) {} }
   function fromHash() {
     if (!/(access_token|error)=/.test(location.hash)) return;
     var h = {}; location.hash.slice(1).split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) h[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, ' ')); });
-    history.replaceState(null, '', location.pathname + location.search);   // token never stays in the URL / history
-    var st = null; try { st = sessionStorage.getItem('cg_state'); sessionStorage.removeItem('cg_state'); } catch (e) {}
-    if (h.error) { err(h.error === 'access_denied' ? 'access_denied' : h.error); return; }
-    if (!st || h.state !== st) { err('state'); return; }
+    history.replaceState(null, '', location.pathname + location.search);
+    var st = null; try { st = sessionStorage.getItem('gr_state'); sessionStorage.removeItem('gr_state'); } catch (e) {}
+    if (h.error) { S.err = errText(h.error === 'access_denied' ? 'access_denied' : h.error); return; }
+    if (!st || h.state !== st) { S.err = errText('state'); return; }
     var sc = ' ' + (h.scope || '') + ' ';
-    if (sc.indexOf(' ' + SC_CONTACTS + ' ') < 0 && sc.indexOf(' ' + SC_OTHER + ' ') < 0) { revokeTok(h.access_token); err('scopes'); return; }
-    setBusy(true); runImport(h.access_token);
+    if (sc.indexOf(' ' + SC_CONTACTS + ' ') < 0 && sc.indexOf(' ' + SC_OTHER + ' ') < 0) { revokeTok(h.access_token); S.err = errText('scopes'); return; }
+    runImport(h.access_token);
   }
-  function revokeTok(t) { try { fetch('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'token=' + encodeURIComponent(t) }); } catch (e) {} }
-  ERR.state = 'The sign-in link expired. Please tap Sign in with Google again.';
-  $('gsi-redirect').addEventListener('click', function () { if (!busy) { err(''); startRedirect(); } });
-  $('gsi-btn').addEventListener('click', function () {
-    if (busy) return; err('');
-    if (preferRedirect()) { setBusy(true); startRedirect(); return; }
-    if (!init()) { err('gis_load'); return; }
-    setBusy(true); tc.requestAccessToken({ prompt: 'consent' });
-  });
-  fromHash();
-  $('disconnect').addEventListener('click', function () {
-    if (!studyCode || busy) return; setBusy(true);
-    api({ action: 'disconnect', study_code: studyCode }).then(function () {
-      setBusy(false); $('result').hidden = true; $('disconnect').hidden = true; $('err').textContent = 'Disconnected. Imported contacts were deleted.';
-    }).catch(function (e) { setBusy(false); err(e.code); });
-  });
-  var s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = init; s.onerror = function () { err('gis_load'); }; document.head.appendChild(s);
-  ERR.gis_load = 'Couldn\'t load Google sign-in. Check your connection and try again.';
+  function connect() {
+    if (S.busy) return; S.err = ''; S.msg = '';
+    if (preferRedirect()) { S.busy = true; render(); startRedirect(); return; }
+    var tc = initTc(); if (!tc) { S.err = errText('gis_load'); render(); return; }
+    S.busy = true; render(); tc.requestAccessToken({ prompt: 'consent' });
+  }
+  function block() {
+    var inp = $('block-in'); if (!inp || S.busy) return;
+    var v = inp.value.trim(), k = kindOf(v); S.err = ''; S.msg = '';
+    if (!k) { S.err = 'Enter an email address or a phone number.'; render(); return; }
+    S.busy = true; render();
+    api('block', { study_code: S.sc, kind: k, value: v })
+      .then(function (j) { S.data = Object.assign({}, S.data || {}, j); S.msg = 'Blocked ' + v + '. You\'ll never be matched with or shown to them.'; S.busy = false; render(); })
+      .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
+  }
+  function refresh() {
+    if (!S.sc || S.busy) return; S.busy = true; S.err = ''; render();
+    api('status', { study_code: S.sc }).then(function (j) { S.data = Object.assign({}, S.data || {}, j); S.busy = false; render(); })
+      .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
+  }
+  function disconnect() {
+    if (!S.sc || S.busy) return; S.busy = true; S.err = ''; S.msg = ''; render();
+    api('disconnect', { study_code: S.sc }).then(function (j) { S.token = null; S.picker = []; S.data = Object.assign({}, S.data || {}, j); S.view = 'disconnected'; S.confirm = false; S.busy = false; render(); })
+      .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
+  }
+  function btn(label) { return '<button type="button" class="gsi-btn" id="gsi-btn"' + (S.busy ? ' disabled' : '') + '>' + G_ICON + '<span>' + esc(S.busy ? 'Connecting…' : label) + '</span></button>' +
+    '<p class="fine" style="margin:0 0 8px">Google window not opening or closing? <button type="button" class="linkbtn" id="gsi-redirect">Continue in this tab instead</button></p>'; }
+  function mutualSec(d) {
+    var m = (d && d.mutual) || [];
+    var list = m.length ? '<ul class="mlist" id="mutual">' + m.map(function (p) {
+        var c = p.mutual_count > 0 ? (p.mutual_count + ' mutual friend' + (p.mutual_count === 1 ? '' : 's')) : 'In each other\'s contacts';
+        return '<li><span>' + esc(p.name) + '</span><span class="mc">' + esc(c) + '</span></li>'; }).join('') + '</ul>'
+      : '<p id="mutual-empty">No one yet. When people you know apply and connect Google too, they\'ll show up here.</p>';
+    return '<div class="sec"><div class="sechead"><span class="lbl">Mutual friends in the study</span><button type="button" class="linkbtn" id="refresh">Refresh</button></div>' + list + '</div>';
+  }
+  function blockSec(d) {
+    var bc = (d && d.blocked_count) || 0;
+    return '<div class="sec"><span class="lbl">Block someone</span><p style="margin:6px 0 0">Who should never be matched with you or see you? Start typing to pick from your contacts, or type an email or phone.</p>' +
+      '<div class="brow"><input id="block-in" type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Email or phone" aria-label="Email or phone to block">' +
+      '<button type="button" class="bbtn" id="block-btn"' + (S.busy ? ' disabled' : '') + '>BLOCK</button></div><ul class="sugg" id="sugg" hidden></ul>' +
+      (S.msg ? '<p class="msg" id="msg">' + esc(S.msg) + '</p>' : '') +
+      (bc ? '<p class="fine" id="blocked-count">Blocked so far: ' + bc + '. Blocks stay even if you disconnect Google.</p>' : '') + '</div>';
+  }
+  function discSec() {
+    if (S.confirm) return '<div class="sec"><p>Disconnect Google? We\'ll delete the contacts we imported. Your blocks stay in place.</p><div class="confirm-row"><button type="button" class="yes" id="disc-yes">YES, DISCONNECT</button><button type="button" class="no" id="disc-no">CANCEL</button></div></div>';
+    return '<div class="sec"><button type="button" class="linkbtn" id="disc">Disconnect Google and delete imported contacts</button></div>';
+  }
+  function render() {
+    var d = S.data, h = '';
+    if (S.view === 'connected') {
+      h += '<div class="box ok" id="result"><span class="lbl">Google connected</span><div class="acct">' + esc((d && d.google_email) || '') + '</div>' +
+        '<div class="big" id="r-contacts" style="margin-top:8px">' + esc(((d && d.contacts) || 0).toLocaleString()) + '</div><p style="margin:2px 0 0">contacts imported (as one-way codes) · ' + esc((d && d.matched_applicants) || 0) + ' matched with people in the study' + (d && d.truncated ? ' · list truncated' : '') + '</p>' +
+        '<p class="fine">Google access was revoked right after the one-time read.</p>' + mutualSec(d) + blockSec(d) + discSec() + '</div>';
+    } else if (S.view === 'disconnected') {
+      h += '<p class="msg" id="disc-done">Google disconnected. We deleted the contacts we imported.</p>' + btn('Sign in with Google again');
+    } else { h += btn('Sign in with Google'); }
+    var keep = $('block-in'), kv = keep ? keep.value : '', foc = keep && document.activeElement === keep;
+    $('body').innerHTML = h; $('err').textContent = S.err || '';
+    var inp = $('block-in'); if (inp) { inp.value = S.msg ? '' : kv; if (foc) inp.focus(); }
+    wire();
+  }
+  function wire() {
+    var x;
+    if ((x = $('gsi-btn'))) x.onclick = connect;
+    if ((x = $('gsi-redirect'))) x.onclick = function () { if (!S.busy) { S.err = ''; startRedirect(); } };
+    if ((x = $('refresh'))) x.onclick = refresh;
+    if ((x = $('block-btn'))) x.onclick = block;
+    if ((x = $('disc'))) x.onclick = function () { S.confirm = true; render(); };
+    if ((x = $('disc-no'))) x.onclick = function () { S.confirm = false; render(); };
+    if ((x = $('disc-yes'))) x.onclick = disconnect;
+    var inp = $('block-in'), ul = $('sugg');
+    if (inp && ul) {
+      var show = function () { var s = suggestions(inp.value);
+        if (!s.length) { ul.hidden = true; ul.innerHTML = ''; return; }
+        ul.innerHTML = s.map(function (it, i) { return '<li><button type="button" data-i="' + i + '">' + esc(it.v) + '</button></li>'; }).join(''); ul.hidden = false;
+        [].forEach.call(ul.querySelectorAll('button'), function (b) { b.onclick = function () { inp.value = s[+b.getAttribute('data-i')].v; ul.hidden = true; inp.focus(); }; }); };
+      inp.oninput = function () { if (S.msg) { S.msg = ''; var m = $('msg'); if (m) m.remove(); } show(); };
+      inp.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); ul.hidden = true; block(); } };
+    }
+  }
+  render(); fromHash();
+  var s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = initTc; s.onerror = function () { S.err = errText('gis_load'); render(); }; document.head.appendChild(s);
 })();
 </script>
 </body>
