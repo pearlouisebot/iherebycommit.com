@@ -140,11 +140,23 @@
   }
   function kindOf(v) { v = (v || '').trim(); if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return 'email'; if (v.replace(/\D/g, '').length >= 7 && !/[a-z@]/i.test(v)) return 'phone'; return ''; }
 
+  // s3y181: big address books finish saving in the background (server answers 202 pending); poll status until saved.
+  function pollSaved(since, first, t0) {
+    api('status', { study_code: S.sc }).then(function (j) {
+      var done = j.imported_at && since && j.imported_at >= since && j.import_status && j.import_status !== 'running';
+      if (done) { S.saving = 0; S.data = Object.assign({}, first, j); S.view = 'connected'; S.busy = false; render(); return; }
+      if (Date.now() - t0 > 180000) { S.saving = 0; S.busy = false; S.err = 'Saving your contacts is taking longer than expected. Tap Sign in with Google to check again.'; render(); return; }
+      setTimeout(function () { pollSaved(since, first, t0); }, 2000);
+    }).catch(function () { if (Date.now() - t0 > 180000) { S.saving = 0; S.busy = false; S.err = errText('timeout'); render(); } else setTimeout(function () { pollSaved(since, first, t0); }, 3000); });
+  }
   function runImport(tok) {
     clearTimeout(WD);
     S.token = tok; S.busy = true; S.err = ''; render();
     api('import', { access_token: tok, study_code: S.sc || undefined, sandbox_applicant: { first_name: 'Google', last_name: 'Reviewer (demo)', status: 'single' } })
-      .then(function (j) { S.data = j; S.picker = buildPicker(j.picker || []); S.view = 'connected'; S.busy = false; S.msg = ''; render(); })
+      .then(function (j) {
+        S.picker = buildPicker(j.picker || []); S.msg = '';
+        if (j.pending) { S.data = j; S.saving = j.contacts_fetched || 0; render(); pollSaved(j.ingest_started_at, j, Date.now()); return; }
+        S.data = j; S.view = 'connected'; S.busy = false; render(); })
       .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
   }
   function onToken(resp) {
@@ -206,7 +218,7 @@
     api('disconnect', { study_code: S.sc }).then(function (j) { S.token = null; S.picker = []; S.data = Object.assign({}, S.data || {}, j); S.view = 'disconnected'; S.confirm = false; S.busy = false; render(); })
       .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
   }
-  function btn(label) { return '<button type="button" class="gsi-btn" id="gsi-btn"' + (S.busy ? ' disabled' : '') + '>' + G_ICON + '<span>' + esc(S.busy ? (S.token ? 'Importing contacts…' : 'Connecting…') : label) + '</span></button>' +
+  function btn(label) { return '<button type="button" class="gsi-btn" id="gsi-btn"' + (S.busy ? ' disabled' : '') + '>' + G_ICON + '<span>' + esc(S.busy ? (S.saving ? ('Saving ' + S.saving.toLocaleString() + ' contacts…') : S.token ? 'Importing contacts…' : 'Connecting…') : label) + '</span></button>' +
     '<p class="fine" style="margin:0 0 8px">Google window not opening or closing? <button type="button" class="linkbtn" id="gsi-redirect">Continue in this tab instead</button></p>'; }
   function mutualSec(d) {
     var m = (d && d.mutual) || [];
