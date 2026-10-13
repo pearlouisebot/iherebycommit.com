@@ -46,6 +46,10 @@
   .mlist { list-style:none; padding:0; margin:8px 0 0; }
   .mlist li { display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid #222; color:var(--text); }
   .mlist .mc { color:var(--muted); font-size:11px; }
+  .stag { display:inline-block; margin-left:6px; padding:1px 6px; border:1px solid var(--muted); border-radius:9px; font-size:10px; color:var(--muted); white-space:nowrap; }
+  .scope { margin-top:8px; padding:8px 0; border-top:1px solid rgba(127,127,127,.25); }
+  .scope .sl { font-size:11px; font-weight:700; letter-spacing:.06em; }
+  .scope code { font-size:11px; }
   .brow { display:flex; gap:8px; margin-top:8px; }
   .brow input { flex:1; background:#161616; border:1px solid var(--dim); color:var(--text); font:inherit; font-size:16px; padding:9px 10px; border-radius:4px; min-width:0; }
   .bbtn, .yes, .no { background:var(--accent); color:#000; border:0; font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:.05em; padding:0 16px; border-radius:4px; cursor:pointer; }
@@ -125,9 +129,11 @@
   }
   function buildPicker(cards) {
     var seen = {}, out = [];
+    // s3y185: saved contacts (contacts.readonly) win over Other contacts when a value is in both
+    cards = cards.slice().sort(function (a, b) { return (a.g === 'o') - (b.g === 'o'); });
     cards.forEach(function (c) {
-      (c.e || []).forEach(function (v) { if (!seen[v]) { seen[v] = 1; out.push({ v: v, k: 'email', d: v }); } });
-      (c.p || []).forEach(function (v) { if (!seen[v]) { seen[v] = 1; out.push({ v: v, k: 'phone', d: v.replace(/\D/g, '') }); } });
+      (c.e || []).forEach(function (v) { if (!seen[v]) { seen[v] = 1; out.push({ v: v, k: 'email', d: v, g: c.g }); } });
+      (c.p || []).forEach(function (v) { if (!seen[v]) { seen[v] = 1; out.push({ v: v, k: 'phone', d: v.replace(/\D/g, ''), g: c.g }); } });
     });
     return out;
   }
@@ -220,11 +226,20 @@
   }
   function btn(label) { return '<button type="button" class="gsi-btn" id="gsi-btn"' + (S.busy ? ' disabled' : '') + '>' + G_ICON + '<span>' + esc(S.busy ? (S.saving ? ('Saving ' + S.saving.toLocaleString() + ' contacts…') : S.token ? 'Importing contacts…' : 'Connecting…') : label) + '</span></button>' +
     '<p class="fine" style="margin:0 0 8px">Google window not opening or closing? <button type="button" class="linkbtn" id="gsi-redirect">Continue in this tab instead</button></p>'; }
+  function tag(g) { return g === 'c' ? '<span class="stag">from your saved contacts</span>' : g === 'o' ? '<span class="stag">from Other contacts</span>' : ''; }
+  function scopeRows(d) {
+    var g = (d && d.groups) || {}, row = function (id, title, scope, x) { x = x || {};
+      var n = x.read != null ? x.read : x.linked;
+      return '<div class="scope" id="' + id + '"><div class="sl">' + title + ' · <code>' + scope + '</code></div><div>' +
+        esc((n || 0).toLocaleString()) + (x.read != null ? ' read' : ' linked') + ' · ' + esc(x.in_study || 0) + ' in the study</div></div>'; };
+    return row('scope-saved', 'SAVED CONTACTS', 'contacts.readonly', g.saved) +
+      row('scope-other', 'OTHER CONTACTS (people you\'ve emailed)', 'contacts.other.readonly', g.other);
+  }
   function mutualSec(d) {
     var m = (d && d.mutual) || [];
     var list = m.length ? '<ul class="mlist" id="mutual">' + m.map(function (p) {
         var c = p.mutual_count > 0 ? (p.mutual_count + ' mutual friend' + (p.mutual_count === 1 ? '' : 's')) : 'In each other\'s contacts';
-        return '<li><span>' + esc(p.name) + '</span><span class="mc">' + esc(c) + '</span></li>'; }).join('') + '</ul>'
+        return '<li><span>' + esc(p.name) + tag(p.via === 'saved' ? 'c' : p.via === 'other' ? 'o' : '') + '</span><span class="mc">' + esc(c) + '</span></li>'; }).join('') + '</ul>'
       : '<p id="mutual-empty">No one yet. When people you know apply and connect Google too, they\'ll show up here.</p>';
     return '<div class="sec"><div class="sechead"><span class="lbl">Mutual friends in the study</span><button type="button" class="linkbtn" id="refresh">Refresh</button></div>' + list + '</div>';
   }
@@ -244,7 +259,7 @@
     var d = S.data, h = '';
     if (S.view === 'connected') {
       h += '<div class="box ok" id="result"><span class="lbl">Google connected</span><div class="acct">' + esc((d && d.google_email) || '') + '</div>' +
-        '<div class="big" id="r-contacts" style="margin-top:8px">' + esc(((d && d.contacts) || 0).toLocaleString()) + '</div><p style="margin:2px 0 0">contacts imported (as one-way codes) · ' + esc((d && d.matched_applicants) || 0) + ' matched with people in the study' + (d && d.truncated ? ' · list truncated' : '') + '</p>' +
+        scopeRows(d) + '<p class="fine" id="r-contacts">' + esc(((d && d.contacts) || 0).toLocaleString()) + ' contacts saved as one-way codes' + (d && d.truncated ? ' · list truncated' : '') + '</p>' +
         '<p class="fine">Google access was revoked right after the one-time read.</p>' + mutualSec(d) + blockSec(d) + discSec() + '</div>';
     } else if (S.view === 'disconnected') {
       h += '<p class="msg" id="disc-done">Google disconnected. We deleted the contacts we imported.</p>' + btn('Sign in with Google again');
@@ -267,7 +282,7 @@
     if (inp && ul) {
       var show = function () { var s = suggestions(inp.value);
         if (!s.length) { ul.hidden = true; ul.innerHTML = ''; return; }
-        ul.innerHTML = s.map(function (it, i) { return '<li><button type="button" data-i="' + i + '">' + esc(it.v) + '</button></li>'; }).join(''); ul.hidden = false;
+        ul.innerHTML = s.map(function (it, i) { return '<li><button type="button" data-i="' + i + '">' + esc(it.v) + tag(it.g) + '</button></li>'; }).join(''); ul.hidden = false;
         [].forEach.call(ul.querySelectorAll('button'), function (b) { b.onclick = function () { inp.value = s[+b.getAttribute('data-i')].v; ul.hidden = true; inp.focus(); }; }); };
       inp.oninput = function () { if (S.msg) { S.msg = ''; var m = $('msg'); if (m) m.remove(); } show(); };
       inp.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); ul.hidden = true; block(); } };
