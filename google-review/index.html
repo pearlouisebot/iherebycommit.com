@@ -109,16 +109,19 @@
   var ERR = { popup_closed: 'The Google window closed before you finished.', popup_failed_to_open: 'Your browser blocked the Google window. Allow pop-ups and try again.',
     access_denied: 'Google access wasn\'t allowed, so nothing was imported.', scopes: 'Please allow both contacts permissions on Google\'s screen. Nothing was imported.',
     missing_scope: 'Please allow both contacts permissions on Google\'s screen. Nothing was imported.', rate_limited: 'Too many tries in the last hour. Please try again later.',
-    google_api_error: 'Google didn\'t send the contacts. Please try again.', network: 'Network error. Please try again.', invalid_token: 'Google sign-in didn\'t verify. Please try again.',
+    google_api_error: 'Google didn\'t send the contacts. Please try again.', network: 'Network error. Please try again.', timeout: 'This is taking too long. Please try again.', server_error: 'Something went wrong on our side importing your contacts. Please try again.', invalid_token: 'Google sign-in didn\'t verify. Please try again.',
     token_wrong_client: 'Google sign-in didn\'t verify. Please try again.', not_configured: 'Google isn\'t set up yet.', invalid_value: 'That doesn\'t look like an email or phone number.',
     cannot_block_self: 'That\'s your own email or phone.', state: 'The sign-in link expired. Please tap Sign in with Google again.', gis_load: 'Couldn\'t load Google sign-in. Check your connection and try again.' };
   function errText(c) { return c ? (ERR[c] || 'Something went wrong (' + c + '). Please try again.') : ''; }
   function api(action, extra) {
-    return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ action: action, surface: 'google_review_full' }, extra || {})) })
+    // s3y180: every call has a hard timeout (import of a big address book can take a while) and a visible error.
+    var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ac) ac.abort(); }, action === 'import' ? 120000 : 20000);
+    return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ac ? ac.signal : undefined, body: JSON.stringify(Object.assign({ action: action, surface: 'google_review_full' }, extra || {})) })
+      .finally(function () { clearTimeout(to); })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) {
         if (j && j.study_code) { S.sc = j.study_code; try { sessionStorage.setItem(SS, JSON.stringify({ sc: j.study_code })); } catch (e) {} }
         if (!r.ok || !j.ok) { var e = new Error(j.error || 'server_error'); e.code = j.error || 'server_error'; throw e; } return j; }); },
-        function () { var e = new Error('network'); e.code = 'network'; throw e; });
+        function (x) { var e = new Error('network'); e.code = (x && x.name === 'AbortError') ? 'timeout' : 'network'; throw e; });
   }
   function buildPicker(cards) {
     var seen = {}, out = [];
@@ -138,6 +141,7 @@
   function kindOf(v) { v = (v || '').trim(); if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return 'email'; if (v.replace(/\D/g, '').length >= 7 && !/[a-z@]/i.test(v)) return 'phone'; return ''; }
 
   function runImport(tok) {
+    clearTimeout(WD);
     S.token = tok; S.busy = true; S.err = ''; render();
     api('import', { access_token: tok, study_code: S.sc || undefined, sandbox_applicant: { first_name: 'Google', last_name: 'Reviewer (demo)', status: 'single' } })
       .then(function (j) { S.data = j; S.picker = buildPicker(j.picker || []); S.view = 'connected'; S.busy = false; S.msg = ''; render(); })
@@ -155,7 +159,8 @@
     return S.tc;
   }
   // Phones / in-app browsers: same-tab redirect back to /google-review/ (token in #fragment), like /connect-google/ (s3y73).
-  function preferRedirect() { var ua = navigator.userAgent || ''; return /iPhone|iPad|iPod|Android|FBAN|FBAV|Instagram|Line\/|Telegram|GSA\/|wv\)/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua)); }
+  // s3y180: any phone/tablet, touch device or in-app browser (incl. Grok Bot) goes straight to the same-tab redirect; GIS popups are unreliable there.
+  function preferRedirect() { var ua = navigator.userAgent || ''; return /iPhone|iPad|iPod|Android|Mobile|FBAN|FBAV|Instagram|Line\/|Telegram|GSA\/|Grok|wv\)/i.test(ua) || (navigator.maxTouchPoints > 0) || ('ontouchstart' in window); }
   function startRedirect() {
     var st = Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(16)), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
     try { sessionStorage.setItem('gr_state', st); } catch (e) {}
@@ -174,11 +179,13 @@
     if (sc.indexOf(' ' + SC_CONTACTS + ' ') < 0 && sc.indexOf(' ' + SC_OTHER + ' ') < 0) { revokeTok(h.access_token); S.err = errText('scopes'); return; }
     runImport(h.access_token);
   }
+  var WD = null;
+  function watchdog() { clearTimeout(WD); WD = setTimeout(function () { if (S.busy && S.view !== 'connected') { S.busy = false; S.err = 'Google didn\'t respond. Tap "Continue in this tab instead" below to sign in without a pop-up.'; render(); } }, 8000); }
   function connect() {
-    if (S.busy) return; S.err = ''; S.msg = '';
+    if (S.busy) return; S.err = ''; S.msg = ''; S.token = null;
     if (preferRedirect()) { S.busy = true; render(); startRedirect(); return; }
     var tc = initTc(); if (!tc) { S.err = errText('gis_load'); render(); return; }
-    S.busy = true; render(); tc.requestAccessToken({ prompt: 'consent' });
+    S.busy = true; render(); watchdog(); tc.requestAccessToken({ prompt: 'consent' });
   }
   function block() {
     var inp = $('block-in'); if (!inp || S.busy) return;
@@ -199,7 +206,7 @@
     api('disconnect', { study_code: S.sc }).then(function (j) { S.token = null; S.picker = []; S.data = Object.assign({}, S.data || {}, j); S.view = 'disconnected'; S.confirm = false; S.busy = false; render(); })
       .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
   }
-  function btn(label) { return '<button type="button" class="gsi-btn" id="gsi-btn"' + (S.busy ? ' disabled' : '') + '>' + G_ICON + '<span>' + esc(S.busy ? 'Connecting…' : label) + '</span></button>' +
+  function btn(label) { return '<button type="button" class="gsi-btn" id="gsi-btn"' + (S.busy ? ' disabled' : '') + '>' + G_ICON + '<span>' + esc(S.busy ? (S.token ? 'Importing contacts…' : 'Connecting…') : label) + '</span></button>' +
     '<p class="fine" style="margin:0 0 8px">Google window not opening or closing? <button type="button" class="linkbtn" id="gsi-redirect">Continue in this tab instead</button></p>'; }
   function mutualSec(d) {
     var m = (d && d.mutual) || [];
@@ -238,7 +245,7 @@
   function wire() {
     var x;
     if ((x = $('gsi-btn'))) x.onclick = connect;
-    if ((x = $('gsi-redirect'))) x.onclick = function () { if (!S.busy) { S.err = ''; startRedirect(); } };
+    if ((x = $('gsi-redirect'))) x.onclick = function () { S.err = ''; startRedirect(); };
     if ((x = $('refresh'))) x.onclick = refresh;
     if ((x = $('block-btn'))) x.onclick = block;
     if ((x = $('disc'))) x.onclick = function () { S.confirm = true; render(); };
@@ -254,6 +261,7 @@
       inp.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); ul.hidden = true; block(); } };
     }
   }
+  window.addEventListener('pageshow', function (e) { if (e.persisted && S.view !== 'connected') { S.busy = false; render(); } });
   render(); fromHash();
   var s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = initTc; s.onerror = function () { S.err = errText('gis_load'); render(); }; document.head.appendChild(s);
 })();
