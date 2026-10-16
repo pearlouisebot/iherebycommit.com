@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Connect Fitbit · I Hereby Commit</title>
+  <link rel="canonical" href="https://iherebycommit.com/connect-fitbit/">
+<!-- (_grokbot): /connect-fitbit/ on prod for IHC Health OAuth verification (client ...4eda), same pattern as /connect-google/: BRANCH backend ycoaslgtaaiwfwgytqlm (test DB), fitbit-callback-grokbot v3. noindex, unlisted, not in sitemap. Provider numbers shown as-is. No AI. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#000; --text:#fff; --body:#bdbdbd; --accent:#c8f135; --orange:#FF7A2F; --dim:#333; }
+  * { box-sizing:border-box; } html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; }
+  main { max-width:640px; margin:0 auto; padding:28px 18px 40px; }
+  .brand { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.06em; margin:0 0 26px; } .brand span { color:var(--accent); }
+  .tag { display:inline-block; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#000; background:var(--orange); padding:3px 7px; border-radius:3px; margin-bottom:10px; }
+  h1 { font-family:'Bebas Neue',sans-serif; font-weight:400; font-size:56px; line-height:.95; margin:0 0 18px; } h1 span { color:var(--accent); }
+  p, li { font-size:13px; line-height:1.7; color:var(--body); } p.lead { color:var(--text); font-size:14px; }
+  h2 { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin:22px 0 8px; font-weight:400; }
+  ul { padding-left:18px; margin:0; } a { color:var(--accent); }
+  .btn { display:block; width:100%; height:48px; margin:22px 0 10px; background:var(--accent); color:#000; border:0; border-radius:4px; font-family:'Space Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .err { color:var(--orange); font-size:12px; min-height:18px; }
+  .box { border:1px solid var(--dim); border-radius:4px; padding:14px; margin-top:18px; } .ok { border-color:var(--accent); }
+  .fine { font-size:11px; color:#888; }
+  table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  th, td { padding:6px 4px; text-align:right; border-bottom:1px solid #222; white-space:nowrap; } th:first-child, td:first-child { text-align:left; }
+  th { color:var(--accent); font-weight:400; font-size:10px; letter-spacing:.1em; text-transform:uppercase; }
+  .scroll { overflow-x:auto; }
+  label.opt { display:flex; gap:10px; align-items:flex-start; font-size:12px; color:var(--text); margin:10px 0; line-height:1.5; cursor:pointer; }
+  label.opt input { appearance:none; width:18px; height:18px; flex:none; margin-top:1px; border:1.5px solid #fff; border-radius:2px; background:#000; }
+  label.opt input:checked { background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px #000; }
+  .linkbtn { background:none; border:0; padding:0; color:var(--orange); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
+  .links { margin-top:24px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">I HEREBY <span>COMMIT</span></div>
+  <div class="tag">Sandbox · test data</div>
+  <h1>Connect <span>Fitbit</span></h1>
+  <p class="lead">Connect your Fitbit (through your Google account) to see your own daily steps, activity and fitness data here, by date.</p>
+  <p class="fine">Since September 2026, Fitbit data is shared through Google. You’ll sign in with the Google account your Fitbit uses.</p>
+  <h2>What we access</h2>
+  <ul>
+    <li>Your Google account email (<code>openid</code>, <code>email</code>), to confirm it’s you.</li>
+    <li>Daily activity and fitness, health measurements and sleep from Fitbit, read-only, through the Google Health API (<code>activity_and_fitness</code>, <code>health_metrics_and_measurements</code>, <code>sleep</code>).</li>
+  </ul>
+  <h2>How we use it</h2>
+  <ul>
+    <li>We copy the last 30 days when you connect and show them to you as is. Your Fitbit tokens stay on our server and are encrypted.</li>
+    <li>We never run AI on your Fitbit data, and we never sell it.</li>
+    <li>Using it for research or matching needs your separate yes below. Both start off.</li>
+    <li>You can disconnect at any time. We revoke access and delete everything we copied.</li>
+  </ul>
+
+  <div id="pre">
+    <button type="button" class="btn" id="connect">Connect Fitbit</button>
+  </div>
+  <div class="err" id="err" role="alert"></div>
+
+  <div id="post" hidden>
+    <div class="box ok">
+      <h2 style="margin-top:0">Connected</h2>
+      <p style="margin:0" id="meta"></p>
+      <p class="fine" style="margin:6px 0 0"><button type="button" class="linkbtn" id="resync" style="color:var(--accent)">Sync again</button></p>
+    </div>
+    <div class="box">
+      <h2 style="margin-top:0">Your Fitbit data</h2>
+      <div class="scroll"><table>
+        <thead><tr><th>Date</th><th>Steps</th><th>Active cal</th><th>Zone min</th><th>Distance km</th><th>Sleep h</th><th>Resting HR</th><th>HR avg</th><th>VO2 max</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <p class="fine">Numbers come straight from Fitbit / Google Health. Zone min = Active Zone Minutes.</p>
+    </div>
+    <div class="box">
+      <h2 style="margin-top:0">Your choices (optional)</h2>
+      <label class="opt"><input type="checkbox" id="opt-research"><span>Use my Fitbit data in the I Hereby Commit research study (de-identified).</span></label>
+      <label class="opt"><input type="checkbox" id="opt-matching"><span>Use my Fitbit data to help with matching.</span></label>
+      <div class="fine" id="opt-msg"></div>
+    </div>
+    <div class="links"><button type="button" class="linkbtn" id="disconnect">Disconnect Fitbit and delete my Fitbit data</button></div>
+  </div>
+
+  <div class="links">
+    <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener">Fitbit account</a>
+    <a href="../privacy/">Privacy Policy</a>
+    <a href="../terms/">Terms</a>
+  </div>
+</main>
+<script>
+(function () {
+  var FN = 'https://ycoaslgtaaiwfwgytqlm.supabase.co/functions/v1/fitbit-callback-grokbot';
+  var LS = 'ihc_fitbit_key_sbx';
+  var COLS = [["steps",1],["active_kcal",1],["azm",0],["distance_km","d1"],["sleep_hours","d1"],["resting_hr",0],["hr_avg",0],["vo2max",0]];
+  var TZ = (function(){ try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch (e) { return null; } })();
+  var $ = function (id) { return document.getElementById(id); };
+  var ERR = { state:'The connect link expired. Please tap Connect Fitbit again.', access_denied:'Fitbit access wasn\'t allowed, so nothing was connected.',
+    not_configured:'Fitbit isn\'t set up on our side yet. Check back soon.', server:'Something went wrong connecting Fitbit. Please try again.', network:'Network error. Please try again.',
+    not_connected:'Your Fitbit connection was not found. Please connect again.', sync_failed:'Fitbit didn\'t send the data. Please try again.' };
+  function err(c) { $('err').textContent = c ? (ERR[c] || 'Something went wrong (' + c + ').') : ''; }
+  function api(b) {
+    return fetch(FN, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(b) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || !j.ok) { var e = new Error(j.error || 'server'); e.code = j.error || 'server'; throw e; } return j; }); },
+            function () { var e = new Error('network'); e.code = 'network'; throw e; });
+  }
+  var key = null; try { key = localStorage.getItem(LS); } catch (e) {}
+  if (/(^#|&)(k|e)=/.test(location.hash)) {
+    var h = {}; location.hash.slice(1).split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) h[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); });
+    history.replaceState(null, '', location.pathname + location.search);
+    if (h.e) err(h.e);
+    if (h.k && /^[0-9a-f]{64}$/.test(h.k)) { key = h.k; try { localStorage.setItem(LS, key); } catch (e) {} if (h.s === '0') err('sync_failed'); }
+  }
+  function v(x) { return x == null ? '–' : String(x); }
+  function fmt(d) { var p = d.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' }); }
+  function render(j) {
+    $('pre').hidden = true; $('post').hidden = false;
+    $('meta').textContent = (j.email ? j.email + ' · ' : '') + j.rows.length + ' days synced' + (j.last_synced_at ? ' · last sync ' + new Date(j.last_synced_at).toLocaleString() : '');
+    var tb = $('rows'); tb.innerHTML = '';
+    if (!j.rows.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:left;color:#888">No data for the last 30 days yet.</td></tr>'; }
+    j.rows.forEach(function (r) {
+      var tr = document.createElement('tr'), m = r.summary || {};
+      [fmt(r.day)].concat(COLS.map(function (c) { var x = m[c[0]]; return x == null ? '–' : (c[1] === 'd1' ? (isNaN(Number(x)) ? '–' : Number(x).toFixed(1)) : c[1] ? Number(x).toLocaleString() : String(Math.round(Number(x)) || x)); })).forEach(function (t) { var td = document.createElement('td'); td.textContent = t; tr.appendChild(td); });
+      tb.appendChild(tr);
+    });
+    $('opt-research').checked = !!j.research_optin; $('opt-matching').checked = !!j.matching_optin;
+  }
+  function load(resync) {
+    if (!key) return;
+    api({ action:'data', key:key, resync:!!resync, tz:TZ }).then(render).catch(function (e) {
+      if (e.code === 'not_connected') { try { localStorage.removeItem(LS); } catch (x) {} key = null; $('pre').hidden = false; $('post').hidden = true; }
+      err(e.code);
+    });
+  }
+  $('connect').addEventListener('click', function () {
+    err(''); $('connect').disabled = true;
+    api({ action:'start', tz:TZ }).then(function (j) { location.assign(j.url); }).catch(function (e) { $('connect').disabled = false; err(e.code); });
+  });
+  $('resync').addEventListener('click', function () { err(''); load(true); });
+  ['research', 'matching'].forEach(function (n) {
+    $('opt-' + n).addEventListener('change', function () {
+      var b = { action:'optin', key:key }; b[n + '_optin'] = this.checked; var el = this;
+      api(b).then(function () { $('opt-msg').textContent = 'Saved.'; }).catch(function (e) { el.checked = !el.checked; err(e.code); });
+    });
+  });
+  $('disconnect').addEventListener('click', function () {
+    if (!confirm('Disconnect Fitbit and delete all the Fitbit data we copied?')) return;
+    api({ action:'disconnect', key:key }).then(function () {
+      try { localStorage.removeItem(LS); } catch (e) {} key = null;
+      $('post').hidden = true; $('pre').hidden = false; $('connect').disabled = false; $('err').textContent = 'Disconnected. Your Fitbit data was deleted.';
+    }).catch(function (e) { err(e.code); });
+  });
+  load(false);
+})();
+</script>
+</body>
+</html>
