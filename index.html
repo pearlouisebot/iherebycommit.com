@@ -2990,7 +2990,7 @@ const FUNCTIONS_URL = SUPABASE_URL + '/functions/v1';
 // ONBOARDING TIMING (2026-09-27): screen-by-screen events, sent with save-lead.
 // No answer values are ever logged, only screen keys and (for validation_failed) field names.
 // ============================================================
-var PAGE_VERSION = '2026-10-09p9-s3y48-sms-dba'; // sms-dba: single business naming 'Hatch Labs Holdings LLC dba IHereByCommit' (sms_optin@2026-10-09c). Prev 2026-10-09p8-s3y48-sms-insights. // sms-insights: + insights, (for singles) (sms_optin@2026-10-09b). Prev 2026-10-09p7-s3y48-sms. // sms: Twilio A2P opt-in wording (consent_documents sms_optin@2026-10-09). Prev 2026-10-09p6-s3y48-kidscount. // kidscount: singles asked How many kids after Have kids = Yes (was couples-only). Prev 2026-10-07p5-s3y48. // prod s3y48 hotfix: Turnstile never blocks Submit (3 s max wait, then sent without a token flagged unavailable; widget rendered early; partial save in parallel; in-viewport transparent container; watchdog; payload errors release the button). s3y47: couples Notify-my-partner checkbox.
+var PAGE_VERSION = '2026-10-16p1-s3y195-ageafterdist'; // s3y195: NEXT after Distance shows Age (also untouched Distance), next NEXT shows Height; no invisible skip to Degree. // sms-dba: single business naming 'Hatch Labs Holdings LLC dba IHereByCommit' (sms_optin@2026-10-09c). Prev 2026-10-09p8-s3y48-sms-insights. // sms-insights: + insights, (for singles) (sms_optin@2026-10-09b). Prev 2026-10-09p7-s3y48-sms. // sms: Twilio A2P opt-in wording (consent_documents sms_optin@2026-10-09). Prev 2026-10-09p6-s3y48-kidscount. // kidscount: singles asked How many kids after Have kids = Yes (was couples-only). Prev 2026-10-07p5-s3y48. // prod s3y48 hotfix: Turnstile never blocks Submit (3 s max wait, then sent without a token flagged unavailable; widget rendered early; partial save in parallel; in-viewport transparent container; watchdog; payload errors release the button). s3y47: couples Notify-my-partner checkbox.
 var timing = { startedAt:null, shownAt:null, currentKey:null, seq:0, events:[], flow:[] };
 
 function keyOf(el) { return el ? (el.getAttribute('data-screen-key') || el.id || null) : null; }
@@ -9368,6 +9368,38 @@ window.addEventListener('load', function () {
   l.addEventListener('click', e => { const r = e.target.closest('.vk2-opt[data-i]'); if (r) pick(opts[+r.dataset.i]); });
   inp.addEventListener('focus', () => loadPartnerCities(), { once: true }); // the city list loads only when needed
 });
+</script>
+<script>
+// ==== s3y195 (_grokbot): What You Want NEXT after Distance -> Age, then Height (never an invisible skip to Degree) ====
+// Bug: with Distance left at its default (untouched) NEXT advanced the reveal front past Age and Height while the s3y24/s3y35
+// gates kept both hidden, so NEXT looked dead and a later tap showed Degree. NEXT now finishes Distance and shows Age at once,
+// and a NEXT while Age is open (Height still gated) shows Height. Nothing is skipped unseen.
+(function () {
+  function vis(id) { var u = document.getElementById(id); return !!(u && !u.classList.contains('cr-later') && u.style.display !== 'none' && u.offsetParent); }
+  function on3() { var s = document.getElementById('screen-3'); return !!(s && s.classList.contains('active')); }
+  window.addEventListener('load', function () {
+    var g0 = goNext;
+    goNext = function (id) {
+      if (id === 3 && on3() && state.status !== 'partnered') {
+        if (!vis('ww-age') && vis('ww-loc')) {
+          try { if (typeof _wwDistDoCondenseAndRevealAge === 'function') _wwDistDoCondenseAndRevealAge(); } catch (e) {}
+          state.wwDistTouched = true; state.wwDistIdleDone = true;
+          try { if (typeof s3yDistCondNow === 'function') s3yDistCondNow(); } catch (e) {}
+          try { crSync(); } catch (e) {}
+          try { hideError('age_range'); } catch (e) {}
+          if (vis('ww-age')) return;
+        } else if (vis('ww-age') && !vis('ww-height')) {
+          state.ageRangeTouched = true; state.wwAgeIdleDone = true;
+          try { crSync(); } catch (e) {}
+          try { hideError('partner_height'); } catch (e) {}
+          if (vis('ww-height')) return;
+        }
+      }
+      return g0.apply(this, arguments);
+    };
+    window.goNext = goNext;
+  });
+})();
 </script>
 </body>
 </html>
