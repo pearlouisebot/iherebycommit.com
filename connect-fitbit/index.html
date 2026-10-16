@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Connect Fitbit · I Hereby Commit</title>
   <link rel="canonical" href="https://iherebycommit.com/connect-fitbit/">
-<!-- (_grokbot): /connect-fitbit/ on prod for IHC Health OAuth verification (client ...4eda), same pattern as /connect-google/: BRANCH backend ycoaslgtaaiwfwgytqlm (test DB), fitbit-callback-grokbot v3. noindex, unlisted, not in sitemap. Provider numbers shown as-is. No AI. -->
+<!-- (_grokbot): /connect-fitbit/ on prod for IHC Health OAuth verification (client ...4eda), same pattern as /connect-google/: BRANCH backend ycoaslgtaaiwfwgytqlm (test DB), fitbit-callback-grokbot v4; redirect_uri = location.origin + '/connect-fitbit/' (code returns to this page). noindex, unlisted, not in sitemap. Provider numbers shown as-is. No AI. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -94,11 +94,14 @@
 (function () {
   var FN = 'https://ycoaslgtaaiwfwgytqlm.supabase.co/functions/v1/fitbit-callback-grokbot';
   var LS = 'ihc_fitbit_key_sbx';
+  var REDIRECT_URI = location.origin + '/connect-fitbit/';
+  var SS = 'ihc_fitbit_state';
   var COLS = [["steps",1],["active_kcal",1],["azm",0],["distance_km","d1"],["sleep_hours","d1"],["resting_hr",0],["hr_avg",0],["vo2max",0]];
   var TZ = (function(){ try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch (e) { return null; } })();
   var $ = function (id) { return document.getElementById(id); };
   var ERR = { state:'The connect link expired. Please tap Connect Fitbit again.', access_denied:'Fitbit access wasn\'t allowed, so nothing was connected.',
     not_configured:'Fitbit isn\'t set up on our side yet. Check back soon.', server:'Something went wrong connecting Fitbit. Please try again.', network:'Network error. Please try again.',
+    redirect_uri:'This page isn\'t allowed to connect Fitbit.', missing_code:'Fitbit didn\'t send a sign-in code. Please try again.',
     not_connected:'Your Fitbit connection was not found. Please connect again.', sync_failed:'Fitbit didn\'t send the data. Please try again.' };
   function err(c) { $('err').textContent = c ? (ERR[c] || 'Something went wrong (' + c + ').') : ''; }
   function api(b) {
@@ -112,6 +115,23 @@
     history.replaceState(null, '', location.pathname + location.search);
     if (h.e) err(h.e);
     if (h.k && /^[0-9a-f]{64}$/.test(h.k)) { key = h.k; try { localStorage.setItem(LS, key); } catch (e) {} if (h.s === '0') err('sync_failed'); }
+  }
+  var qs = new URLSearchParams(location.search), qCode = qs.get('code'), qState = qs.get('state'), qErr = qs.get('error');
+  if (qCode || qState || qErr) {
+    history.replaceState(null, '', location.pathname + location.hash);
+    var want = null; try { want = sessionStorage.getItem(SS); sessionStorage.removeItem(SS); } catch (e) {}
+    if (qErr) err(qErr.slice(0, 40));
+    else if (!qCode || !qState) err('missing_code');
+    else if (want && want !== qState) err('state');
+    else {
+      $('connect').disabled = true;
+      api({ action:'exchange', code:qCode, state:qState, redirect_uri:REDIRECT_URI, tz:TZ }).then(function (j) {
+        if (j.key && /^[0-9a-f]{64}$/.test(j.key)) { key = j.key; try { localStorage.setItem(LS, key); } catch (e) {} }
+        if (j.synced === false) err('sync_failed');
+        $('connect').disabled = false; load(false);
+      }).catch(function (e) { $('connect').disabled = false; err(e.code); });
+      qCode = 'pending';
+    }
   }
   function v(x) { return x == null ? '–' : String(x); }
   function fmt(d) { var p = d.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' }); }
@@ -136,7 +156,7 @@
   }
   $('connect').addEventListener('click', function () {
     err(''); $('connect').disabled = true;
-    api({ action:'start', tz:TZ }).then(function (j) { location.assign(j.url); }).catch(function (e) { $('connect').disabled = false; err(e.code); });
+    api({ action:'start', tz:TZ, redirect_uri:REDIRECT_URI }).then(function (j) { try { var st = new URL(j.url).searchParams.get('state'); if (st) sessionStorage.setItem(SS, st); } catch (e) {} location.assign(j.url); }).catch(function (e) { $('connect').disabled = false; err(e.code); });
   });
   $('resync').addEventListener('click', function () { err(''); load(true); });
   ['research', 'matching'].forEach(function (n) {
@@ -152,7 +172,7 @@
       $('post').hidden = true; $('pre').hidden = false; $('connect').disabled = false; $('err').textContent = 'Disconnected. Your Fitbit data was deleted.';
     }).catch(function (e) { err(e.code); });
   });
-  load(false);
+  if (qCode !== 'pending') load(false);
 })();
 </script>
 </body>
