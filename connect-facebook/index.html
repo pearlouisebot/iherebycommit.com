@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Connect Facebook · I Hereby Commit</title>
+  <link rel="canonical" href="https://iherebycommit.com/connect-facebook/">
+<!-- (_grokbot): /connect-facebook/ on prod for Meta App Review (app 1629328658570864, Facebook Login + user_friends), same pattern as /connect-google/ and /connect-fitbit/: FB JS SDK popup (no redirect URI), BRANCH backend ycoaslgtaaiwfwgytqlm (test DB), import-facebook-friends (import / status / disconnect) with a demo applicant like /connect-google/. noindex, unlisted, not in sitemap or nav. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#000; --text:#fff; --body:#bdbdbd; --accent:#c8f135; --orange:#FF7A2F; --dim:#333; --fb:#1877F2; }
+  * { box-sizing:border-box; } html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; }
+  main { max-width:640px; margin:0 auto; padding:28px 18px 40px; }
+  .brand { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.06em; margin:0 0 26px; } .brand span { color:var(--accent); }
+  .tag { display:inline-block; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#000; background:var(--orange); padding:3px 7px; border-radius:3px; margin-bottom:10px; }
+  h1 { font-family:'Bebas Neue',sans-serif; font-weight:400; font-size:56px; line-height:.95; margin:0 0 18px; } h1 span { color:var(--accent); }
+  p, li { font-size:13px; line-height:1.7; color:var(--body); } p.lead { color:var(--text); font-size:14px; }
+  h2 { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin:22px 0 8px; font-weight:400; }
+  ul { padding-left:18px; margin:0; } a { color:var(--accent); }
+  .fbbtn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; height:48px; margin:22px 0 10px; background:var(--fb); color:#fff; border:0; border-radius:4px; font-family:Helvetica,Arial,sans-serif; font-weight:700; font-size:16px; cursor:pointer; }
+  .fbbtn svg { width:22px; height:22px; } .fbbtn:disabled { opacity:.5; cursor:default; }
+  .err { color:var(--orange); font-size:12px; min-height:18px; }
+  .box { border:1px solid var(--dim); border-radius:4px; padding:14px; margin-top:18px; } .ok { border-color:var(--accent); }
+  .fine { font-size:11px; color:#888; }
+  .list { list-style:none; padding:0; margin:8px 0 0; } .list li { display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid #222; padding:7px 0; color:var(--text); }
+  .list .mc { color:#888; font-size:11px; }
+  .linkbtn { background:none; border:0; padding:0; color:var(--orange); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
+  .links { margin-top:24px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">I HEREBY <span>COMMIT</span></div>
+  <div class="tag">Sandbox · test data</div>
+  <h1>Connect <span>Facebook</span></h1>
+  <p class="lead">Log in with Facebook to see which of your Facebook friends also use I Hereby Commit, so you can invite them to the study or keep them out of your matches.</p>
+  <h2>What we access</h2>
+  <ul>
+    <li>Your public profile: name and Facebook ID (<code>public_profile</code>).</li>
+    <li>Your friends list (<code>user_friends</code>). Facebook only shares friends who have also connected I Hereby Commit. We never see your other friends.</li>
+  </ul>
+  <h2>How we use it</h2>
+  <ul>
+    <li>Only to show you friends who also use I Hereby Commit, and to keep friends out of your matches if you want.</li>
+    <li>We never post to Facebook, never contact your friends, and never sell your data or use it for research.</li>
+    <li>Your Facebook ID is stored as a one-way code. Disconnect here at any time and we delete it.</li>
+  </ul>
+
+  <div id="pre">
+    <button type="button" class="fbbtn" id="connect"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#fff"/><path fill="#1877F2" d="M13.4 24V14.7h3.1l.5-3.6h-3.6V8.8c0-1 .3-1.8 1.8-1.8h1.9V3.8c-.3 0-1.5-.1-2.8-.1-2.8 0-4.6 1.7-4.6 4.8v2.6H6.6v3.6h3.1V24h3.7z"/></svg><span id="connect-label">Continue with Facebook</span></button>
+  </div>
+  <div class="err" id="err" role="alert"></div>
+
+  <div id="post" hidden>
+    <div class="box ok">
+      <h2 style="margin-top:0">Facebook connected</h2>
+      <p style="margin:0" id="meta"></p>
+    </div>
+    <div class="box">
+      <h2 style="margin-top:0">Friends who use I Hereby Commit</h2>
+      <div id="friends"></div>
+      <p class="fine" style="margin:8px 0 0"><button type="button" class="linkbtn" id="refresh" style="color:var(--accent)">Refresh</button></p>
+    </div>
+    <div class="links"><button type="button" class="linkbtn" id="disconnect">Disconnect Facebook and delete my Facebook data</button></div>
+  </div>
+
+  <div class="links">
+    <a href="https://www.facebook.com/settings?tab=applications" target="_blank" rel="noopener">Facebook app settings</a>
+    <a href="../privacy/">Privacy Policy</a>
+    <a href="../data-deletion/">Data deletion</a>
+    <a href="../terms/">Terms</a>
+  </div>
+</main>
+<script>
+(function () {
+  var FB_APP_ID = '1629328658570864';
+  var FB_VERSION = 'v26.0';
+  var FN = 'https://ycoaslgtaaiwfwgytqlm.supabase.co/functions/v1/import-facebook-friends';
+  var SCOPE = 'public_profile,user_friends';
+  var SS = 'ihc_fb_connect_prod';
+  var $ = function (id) { return document.getElementById(id); };
+  var S = { sc: null, token: null, sdk: 'none', rerequest: false, busy: false };
+  try { var o = JSON.parse(sessionStorage.getItem(SS) || 'null'); if (o && o.sc) S.sc = o.sc; } catch (e) {}
+  var ERR = {
+    cancelled: 'The Facebook window closed before you finished. Tap Continue with Facebook to try again.',
+    sdk_load: 'Couldn\'t load Facebook login. Check your connection or turn off content blockers, then try again.',
+    sdk_loading: 'Facebook is still loading. Tap the button again in a second.',
+    missing_scope: 'Keep "friends list" switched on in Facebook\'s screen so we can find friends who use I Hereby Commit. Nothing was imported.',
+    not_configured: 'Facebook isn\'t set up on our side yet.',
+    invalid_token: 'Facebook sign-in didn\'t verify. Please try again.', token_wrong_app: 'Facebook sign-in didn\'t verify. Please try again.',
+    rate_limited: 'Too many tries in the last hour. Please try again later.',
+    facebook_api_error: 'Facebook didn\'t send your friends list. Please try again in a minute.',
+    facebook_account_linked_to_another_applicant: 'This Facebook account is already connected to a different account.',
+    unknown_applicant: 'Your session expired. Please tap Continue with Facebook again.',
+    network: 'Network error. Check your connection and try again.'
+  };
+  function err(c, raw) { $('err').textContent = raw ? c : (c ? (ERR[c] || 'Something went wrong. Please try again.') : ''); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+  function saveSc(sc) { S.sc = sc; try { sessionStorage.setItem(SS, JSON.stringify({ sc: sc })); } catch (e) {} }
+  function api(action, extra) {
+    return fetch(FN, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(Object.assign({ action: action, surface: 'connect_facebook_prod' }, extra || {})) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (j && j.study_code) saveSc(j.study_code); if (!r.ok || !j.ok) { var e = new Error(j.error || 'server'); e.code = j.error || 'server'; throw e; } return j; }); },
+            function () { var e = new Error('network'); e.code = 'network'; throw e; });
+  }
+  function busy(b) { S.busy = b; $('connect').disabled = b; $('connect-label').textContent = b ? 'Connecting…' : 'Continue with Facebook'; }
+
+  function sdkReady() { return S.sdk === 'ready' && window.FB && typeof FB.login === 'function'; }
+  function loadSdk(cb) {
+    if (sdkReady()) { cb && cb(); return; }
+    window.fbAsyncInit = function () {
+      try { FB.init({ appId: FB_APP_ID, cookie: false, xfbml: false, version: FB_VERSION }); S.sdk = 'ready'; } catch (e) { S.sdk = 'error'; }
+      cb && cb();
+    };
+    if ($('facebook-jssdk')) return;
+    S.sdk = 'loading';
+    var el = document.createElement('script');
+    el.id = 'facebook-jssdk'; el.src = 'https://connect.facebook.net/en_US/sdk.js'; el.async = true; el.defer = true; el.crossOrigin = 'anonymous';
+    el.onerror = function () { S.sdk = 'error'; if (S.busy) { busy(false); err('sdk_load'); } };
+    document.head.appendChild(el);
+  }
+
+  function show(j) {
+    $('pre').hidden = true; $('post').hidden = false;
+    var n = (j && j.friends_on_app) || 0;
+    $('meta').textContent = n + ' Facebook friend' + (n === 1 ? '' : 's') + ' use I Hereby Commit.';
+    var m = (j && j.mutual) || [];
+    $('friends').innerHTML = m.length
+      ? '<ul class="list">' + m.map(function (p) { var c = p.mutual_count > 0 ? (p.mutual_count + ' mutual friend' + (p.mutual_count === 1 ? '' : 's')) : 'Facebook friend'; return '<li><span>' + esc(p.name) + '</span><span class="mc">' + esc(c) + '</span></li>'; }).join('') + '</ul>'
+      : '<p style="margin:0">None of your Facebook friends use I Hereby Commit yet. When they join and connect Facebook, they\'ll show up here.</p>';
+  }
+  function onLogin(resp) {
+    var ar = resp && resp.authResponse;
+    if (!ar || !ar.accessToken) { busy(false); err('cancelled'); return; }
+    if (String(ar.grantedScopes || '').split(',').indexOf('user_friends') < 0) { S.rerequest = true; busy(false); err('missing_scope'); return; }
+    S.token = ar.accessToken; S.rerequest = false;
+    api('import', { access_token: S.token, study_code: S.sc || undefined, sandbox_applicant: { first_name: 'Facebook', last_name: 'Reviewer (demo)', status: 'single' } })
+      .then(function (j) { busy(false); err(''); show(j); })
+      .catch(function (e) { busy(false); if (e.code === 'missing_scope') S.rerequest = true; if (e.code === 'unknown_applicant') { S.sc = null; try { sessionStorage.removeItem(SS); } catch (x) {} } err(e.code); });
+  }
+  $('connect').addEventListener('click', function () {
+    if (S.busy) return; err('');
+    if (!sdkReady()) {
+      err(S.sdk === 'error' ? 'sdk_load' : 'sdk_loading');
+      if (S.sdk === 'error') { S.sdk = 'none'; var old = $('facebook-jssdk'); if (old) old.remove(); }
+      loadSdk(function () { err(''); });
+      return;
+    }
+    busy(true);
+    var opts = { scope: SCOPE, return_scopes: true };
+    if (S.rerequest) opts.auth_type = 'rerequest';
+    try { FB.login(onLogin, opts); } catch (e) { busy(false); err('sdk_load'); }
+  });
+  $('refresh').addEventListener('click', function () {
+    if (!S.sc) return; err('');
+    api('status', { study_code: S.sc }).then(show).catch(function (e) { err(e.code); });
+  });
+  $('disconnect').addEventListener('click', function () {
+    if (!S.sc) return;
+    if (!confirm('Disconnect Facebook? We\'ll delete your Facebook ID and friend links and remove our access on Facebook.')) return;
+    api('disconnect', { study_code: S.sc, access_token: S.token || undefined }).then(function () {
+      S.token = null; $('post').hidden = true; $('pre').hidden = false; busy(false);
+      err('Facebook disconnected. We deleted your Facebook ID and friend links and removed our access.', true);
+    }).catch(function (e) { err(e.code); });
+  });
+  window.ihcFb = { state: S };
+  loadSdk();
+  if (S.sc) api('status', { study_code: S.sc }).then(function (j) { if (j.connected) show(j); }).catch(function () {});
+})();
+</script>
+</body>
+</html>
