@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Google Contacts demo · I Hereby Commit</title>
   <link rel="canonical" href="https://iherebycommit.com/google-review/">
-<!-- s3y174 (_grokbot): /google-review/ = full Google Contacts experience for OAuth verification (mutual friends + block). Client 383853981170 (s3y178; was 881371521868), BRANCH backend ycoaslgtaaiwfwgytqlm (test DB). noindex, unlisted, not in sitemap. /connect-google/ is untouched. -->
+<!-- s3y174 (_grokbot): /google-review/ = full Google Contacts experience for OAuth verification (mutual friends + block). Client 383853981170 (s3y178; was 881371521868), PRODUCTION backend dqrmyqmpqnlemkwdndsf (import-google-contacts v5, applicant identified by study code via ?sc= link or pasted; no demo applicants on production; _grokbot). noindex, unlisted, not in sitemap. /connect-google/ is untouched. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Roboto:wght@500&display=swap" rel="stylesheet">
@@ -67,7 +67,7 @@
 <body>
 <main>
   <div class="brand">I HEREBY <span>COMMIT</span></div>
-  <div class="tag">Reviewer / demo mode</div>
+  <div class="tag">Test page</div>
   <h1>Find mutual <span>friends</span></h1>
   <p class="lead">I Hereby Commit is a research study on what makes relationships last. Connecting Google lets you see which people you know are also in the study (mutual friends), and lets you block people you never want to be matched with or shown to.</p>
 
@@ -89,7 +89,7 @@
 
   <div id="body" aria-live="polite"></div>
   <div class="err" id="err" role="alert"></div>
-  <div class="fine">Demo mode: no application is needed. A clearly marked demo applicant is created for your Google account on our test database.</div>
+  <div id="need-sc" hidden style="margin-top:14px"><p class="fine" style="margin:0 0 6px">Study code (from your personal link):</p><input id="sc-in" type="text" autocomplete="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="width:100%;max-width:420px;padding:10px;background:#111;color:#fff;border:1px solid #333;font:inherit"> <button type="button" id="sc-save" style="background:none;border:0;padding:0;color:#c8f135;text-decoration:underline;font:inherit;font-size:12px;cursor:pointer">Use this code</button></div>
 
   <div class="links">
     <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Manage Google access</a>
@@ -101,7 +101,7 @@
 <script>
 (function () {
   var CLIENT_ID = '383853981170-bsc8a7qbk2lre05oe2mmi0tmkfrdv02j.apps.googleusercontent.com'; // s3y178: i-hereby-commit client (same as /connect-google/)
-  var FN = 'https://ycoaslgtaaiwfwgytqlm.supabase.co/functions/v1/import-google-contacts';
+  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/import-google-contacts';
   var SC_CONTACTS = 'https://www.googleapis.com/auth/contacts.readonly', SC_OTHER = 'https://www.googleapis.com/auth/contacts.other.readonly';
   var SCOPE = 'openid email ' + SC_CONTACTS + ' ' + SC_OTHER;
   var REDIRECT_URI = location.origin + '/google-review/';
@@ -109,6 +109,10 @@
   var G_ICON = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
   var S = { view: 'idle', sc: null, token: null, picker: [], tc: null, busy: false, err: '', msg: '', data: null, confirm: false };
   try { var o = JSON.parse(sessionStorage.getItem(SS) || 'null'); if (o && o.sc) S.sc = o.sc; } catch (e) {}
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, SCK = 'ihc_study_code';
+  try { var qsc = new URLSearchParams(location.search).get('sc'); if (qsc && UUID.test(qsc)) { S.sc = qsc.toLowerCase(); localStorage.setItem(SCK, S.sc); history.replaceState(null, '', location.pathname + location.hash); } } catch (e) {}
+  if (!S.sc) { try { var lsc = localStorage.getItem(SCK); if (lsc && UUID.test(lsc)) S.sc = lsc; } catch (e) {} }
+  function saveSc(v) { S.sc = v; try { sessionStorage.setItem(SS, JSON.stringify({ sc: v })); localStorage.setItem(SCK, v); } catch (e) {} }
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var ERR = { popup_closed: 'The Google window closed before you finished.', popup_failed_to_open: 'Your browser blocked the Google window. Allow pop-ups and try again.',
@@ -116,7 +120,7 @@
     missing_scope: 'Please allow both contacts permissions on Google\'s screen. Nothing was imported.', rate_limited: 'Too many tries in the last hour. Please try again later.',
     google_api_error: 'Google didn\'t send the contacts. Please try again.', network: 'Network error. Please try again.', timeout: 'This is taking too long. Please try again.', server_error: 'Something went wrong on our side importing your contacts. Please try again.', invalid_token: 'Google sign-in didn\'t verify. Please try again.',
     token_wrong_client: 'Google sign-in didn\'t verify. Please try again.', not_configured: 'Google isn\'t set up yet.', invalid_value: 'That doesn\'t look like an email or phone number.',
-    cannot_block_self: 'That\'s your own email or phone.', state: 'The sign-in link expired. Please tap Sign in with Google again.', gis_load: 'Couldn\'t load Google sign-in. Check your connection and try again.' };
+    cannot_block_self: 'That\'s your own email or phone.', unknown_applicant: 'We couldn\'t find your application. Open this page from your personal link, or paste your study code below.', need_sc: 'Paste your study code below first (it\'s in your personal link).', state: 'The sign-in link expired. Please tap Sign in with Google again.', gis_load: 'Couldn\'t load Google sign-in. Check your connection and try again.' };
   function errText(c) { return c ? (ERR[c] || 'Something went wrong (' + c + '). Please try again.') : ''; }
   function api(action, extra) {
     // s3y180: every call has a hard timeout (import of a big address book can take a while) and a visible error.
@@ -159,12 +163,12 @@
   function runImport(tok) {
     clearTimeout(WD);
     S.token = tok; S.busy = true; S.err = ''; render();
-    api('import', { access_token: tok, study_code: S.sc || undefined, sandbox_applicant: { first_name: 'Google', last_name: 'Reviewer (demo)', status: 'single' } })
+    api('import', { access_token: tok, study_code: S.sc || undefined })
       .then(function (j) {
         S.picker = buildPicker(j.picker || []); S.msg = '';
         if (j.pending) { S.data = j; S.saving = j.contacts_fetched || 0; render(); pollSaved(j.ingest_started_at, j, Date.now()); return; }
         S.data = j; S.view = 'connected'; S.busy = false; render(); })
-      .catch(function (e) { S.busy = false; S.err = errText(e.code); render(); });
+      .catch(function (e) { S.busy = false; if (e.code === 'unknown_applicant') { S.sc = null; try { sessionStorage.removeItem(SS); localStorage.removeItem(SCK); } catch (x) {} $('need-sc').hidden = false; } S.err = errText(e.code); render(); });
   }
   function onToken(resp) {
     if (!resp || resp.error) { S.busy = false; S.err = errText(resp && resp.error || 'access_denied'); render(); return; }
@@ -202,6 +206,7 @@
   function watchdog() { clearTimeout(WD); WD = setTimeout(function () { if (S.busy && S.view !== 'connected') { S.busy = false; S.err = 'Google didn\'t respond. Tap "Continue in this tab instead" below to sign in without a pop-up.'; render(); } }, 8000); }
   function connect() {
     if (S.busy) return; S.err = ''; S.msg = ''; S.token = null;
+    if (!S.sc) { $('need-sc').hidden = false; S.err = errText('need_sc'); render(); return; }
     if (preferRedirect()) { S.busy = true; render(); startRedirect(); return; }
     var tc = initTc(); if (!tc) { S.err = errText('gis_load'); render(); return; }
     S.busy = true; render(); watchdog(); tc.requestAccessToken({ prompt: 'consent' });
@@ -290,6 +295,8 @@
     }
   }
   window.addEventListener('pageshow', function (e) { if (e.persisted && S.view !== 'connected') { S.busy = false; render(); } });
+  $('sc-save').onclick = function () { var v = ($('sc-in').value || '').trim(); if (!UUID.test(v)) { S.err = 'That doesn\'t look like a study code.'; render(); return; } saveSc(v.toLowerCase()); $('need-sc').hidden = true; S.err = ''; render(); };
+  if (!S.sc) $('need-sc').hidden = false;
   render(); fromHash();
   var s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = initTc; s.onerror = function () { S.err = errText('gis_load'); render(); }; document.head.appendChild(s);
 })();
