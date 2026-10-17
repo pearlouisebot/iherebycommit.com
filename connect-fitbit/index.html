@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Connect Fitbit · I Hereby Commit</title>
   <link rel="canonical" href="https://iherebycommit.com/connect-fitbit/">
-<!-- (_grokbot): /connect-fitbit/ on prod for IHC Health OAuth verification (client ...4eda), same pattern as /connect-google/: BRANCH backend ycoaslgtaaiwfwgytqlm (test DB), fitbit-callback-grokbot v4; redirect_uri = location.origin + '/connect-fitbit/' (code returns to this page). noindex, unlisted, not in sitemap. Provider numbers shown as-is. No AI. -->
+<!-- (_grokbot): /connect-fitbit/ on prod for IHC Health OAuth verification (client ...4eda), same pattern as /connect-google/: PRODUCTION backend dqrmyqmpqnlemkwdndsf, fitbit-callback-grokbot v1 (port of branch v7); redirect_uri = location.origin + '/connect-fitbit/' (code returns to this page). noindex, unlisted, not in sitemap. Provider numbers shown as-is. No AI. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +39,7 @@
 <body>
 <main>
   <div class="brand">I HEREBY <span>COMMIT</span></div>
-  <div class="tag">Sandbox · test data</div>
+  <div class="tag">Test page</div>
   <h1>Connect <span>Fitbit</span></h1>
   <p class="lead">Connect your Fitbit (through your Google account) to see your own daily steps, activity and fitness data here, by date.</p>
   <p class="fine">Since September 2026, Fitbit data is shared through Google. You’ll sign in with the Google account your Fitbit uses.</p>
@@ -92,7 +92,7 @@
 </main>
 <script>
 (function () {
-  var FN = 'https://ycoaslgtaaiwfwgytqlm.supabase.co/functions/v1/fitbit-callback-grokbot';
+  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/fitbit-callback-grokbot';
   var LS = 'ihc_fitbit_key_sbx';
   var REDIRECT_URI = location.origin + '/connect-fitbit/';
   var SS = 'ihc_fitbit_state';
