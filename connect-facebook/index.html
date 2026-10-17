@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Connect Facebook · I Hereby Commit</title>
   <link rel="canonical" href="https://iherebycommit.com/connect-facebook/">
-<!-- (_grokbot): /connect-facebook/ on prod for Meta App Review (app 1629328658570864, Facebook Login + user_friends), same pattern as /connect-google/ and /connect-fitbit/: FB JS SDK popup (no redirect URI), BRANCH backend ycoaslgtaaiwfwgytqlm (test DB), import-facebook-friends (import / status / disconnect) with a demo applicant like /connect-google/. noindex, unlisted, not in sitemap or nav. -->
+<!-- (_grokbot): /connect-facebook/ on prod for Meta App Review (app 1629328658570864, Facebook Login + user_friends), same pattern as /connect-google/ and /connect-fitbit/: FB JS SDK popup (no redirect URI), PRODUCTION backend dqrmyqmpqnlemkwdndsf (import-facebook-friends v1, import / status / disconnect). Identifies the applicant by study code (?sc= link or pasted); no demo applicants on production. Reviewer demo copy (Sandbox) is at /facebook-review/. noindex, unlisted, not in sitemap or nav. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -52,6 +52,7 @@
   <div id="pre">
     <button type="button" class="fbbtn" id="connect"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#fff"/><path fill="#1877F2" d="M13.4 24V14.7h3.1l.5-3.6h-3.6V8.8c0-1 .3-1.8 1.8-1.8h1.9V3.8c-.3 0-1.5-.1-2.8-.1-2.8 0-4.6 1.7-4.6 4.8v2.6H6.6v3.6h3.1V24h3.7z"/></svg><span id="connect-label">Continue with Facebook</span></button>
   </div>
+  <div id="need-sc" hidden style="margin-top:14px"><p class="fine" style="margin:0 0 6px">Study code (from your personal link):</p><input id="sc-in" type="text" autocomplete="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="width:100%;max-width:420px;padding:10px;background:#111;color:#fff;border:1px solid #333;font:inherit"> <button type="button" class="linkbtn" id="sc-save" style="color:var(--accent)">Use this code</button></div>
   <div class="err" id="err" role="alert"></div>
 
   <div id="post" hidden>
@@ -78,12 +79,15 @@
 (function () {
   var FB_APP_ID = '1629328658570864';
   var FB_VERSION = 'v26.0';
-  var FN = 'https://ycoaslgtaaiwfwgytqlm.supabase.co/functions/v1/import-facebook-friends';
+  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/import-facebook-friends';
   var SCOPE = 'public_profile,user_friends';
   var SS = 'ihc_fb_connect_prod';
   var $ = function (id) { return document.getElementById(id); };
   var S = { sc: null, token: null, sdk: 'none', rerequest: false, busy: false };
   try { var o = JSON.parse(sessionStorage.getItem(SS) || 'null'); if (o && o.sc) S.sc = o.sc; } catch (e) {}
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, SCK = 'ihc_study_code';
+  try { var qsc = new URLSearchParams(location.search).get('sc'); if (qsc && UUID.test(qsc)) { S.sc = qsc.toLowerCase(); localStorage.setItem(SCK, S.sc); history.replaceState(null, '', location.pathname); } } catch (e) {}
+  if (!S.sc) { try { var lsc = localStorage.getItem(SCK); if (lsc && UUID.test(lsc)) S.sc = lsc; } catch (e) {} }
   var ERR = {
     cancelled: 'The Facebook window closed before you finished. Tap Continue with Facebook to try again.',
     sdk_load: 'Couldn\'t load Facebook login. Check your connection or turn off content blockers, then try again.',
@@ -94,13 +98,14 @@
     rate_limited: 'Too many tries in the last hour. Please try again later.',
     facebook_api_error: 'Facebook didn\'t send your friends list. Please try again in a minute.',
     facebook_account_linked_to_another_applicant: 'This Facebook account is already connected to a different account.',
-    unknown_applicant: 'Your session expired. Please tap Continue with Facebook again.',
+    unknown_applicant: 'We couldn\'t find your application. Open this page from your personal link, or paste your study code below.',
+    need_sc: 'Paste your study code below first (it\'s in your personal link).',
     network: 'Network error. Check your connection and try again.'
   };
   function err(c, raw) { $('err').textContent = raw ? c : (c ? (ERR[c] || 'Something went wrong. Please try again.') : ''); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
-  function demoEmail() { var k = 'ihc_fb_demo_email', v = null; try { v = localStorage.getItem(k); } catch (e) {} if (!v) { var a = new Uint8Array(8); crypto.getRandomValues(a); v = 'fb-demo-' + Array.from(a, function (b) { return ('0' + b.toString(16)).slice(-2); }).join('') + '@demo.iherebycommit.com'; try { localStorage.setItem(k, v); } catch (e) {} } return v; }
-  function saveSc(sc) { S.sc = sc; try { sessionStorage.setItem(SS, JSON.stringify({ sc: sc })); } catch (e) {} }
+  function demoEmailUnused() { var k = 'ihc_fb_demo_email', v = null; try { v = localStorage.getItem(k); } catch (e) {} if (!v) { var a = new Uint8Array(8); crypto.getRandomValues(a); v = 'fb-demo-' + Array.from(a, function (b) { return ('0' + b.toString(16)).slice(-2); }).join('') + '@demo.iherebycommit.com'; try { localStorage.setItem(k, v); } catch (e) {} } return v; }
+  function saveSc(sc) { S.sc = sc; try { sessionStorage.setItem(SS, JSON.stringify({ sc: sc })); localStorage.setItem(SCK, sc); } catch (e) {} }
   function api(action, extra) {
     return fetch(FN, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(Object.assign({ action: action, surface: 'connect_facebook_prod' }, extra || {})) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (j && j.study_code) saveSc(j.study_code); if (!r.ok || !j.ok) { var e = new Error(j.error || 'server'); e.code = j.error || 'server'; throw e; } return j; }); },
@@ -137,12 +142,13 @@
     if (!ar || !ar.accessToken) { busy(false); err('cancelled'); return; }
     if (String(ar.grantedScopes || '').split(',').indexOf('user_friends') < 0) { S.rerequest = true; busy(false); err('missing_scope'); return; }
     S.token = ar.accessToken; S.rerequest = false;
-    api('import', { access_token: S.token, study_code: S.sc || undefined, sandbox_applicant: { first_name: 'Facebook', last_name: 'Reviewer (demo)', status: 'single', email: demoEmail() } })
+    api('import', { access_token: S.token, study_code: S.sc || undefined })
       .then(function (j) { busy(false); err(''); show(j); })
-      .catch(function (e) { busy(false); if (e.code === 'missing_scope') S.rerequest = true; if (e.code === 'unknown_applicant') { S.sc = null; try { sessionStorage.removeItem(SS); } catch (x) {} } err(e.code); });
+      .catch(function (e) { busy(false); if (e.code === 'missing_scope') S.rerequest = true; if (e.code === 'unknown_applicant') { S.sc = null; try { sessionStorage.removeItem(SS); localStorage.removeItem(SCK); } catch (x) {} $('need-sc').hidden = false; } err(e.code); });
   }
   $('connect').addEventListener('click', function () {
     if (S.busy) return; err('');
+    if (!S.sc) { $('need-sc').hidden = false; err('need_sc'); return; }
     if (!sdkReady()) {
       err(S.sdk === 'error' ? 'sdk_load' : 'sdk_loading');
       if (S.sdk === 'error') { S.sdk = 'none'; var old = $('facebook-jssdk'); if (old) old.remove(); }
@@ -166,6 +172,8 @@
       err('Facebook disconnected. We deleted your Facebook ID and friend links and removed our access.', true);
     }).catch(function (e) { err(e.code); });
   });
+  $('sc-save').addEventListener('click', function () { var v = ($('sc-in').value || '').trim(); if (!UUID.test(v)) { err('That doesn\'t look like a study code.', true); return; } saveSc(v.toLowerCase()); $('need-sc').hidden = true; err(''); api('status', { study_code: S.sc }).then(function (j) { if (j.connected) show(j); }).catch(function (e) { err(e.code); }); });
+  if (!S.sc) $('need-sc').hidden = false;
   window.ihcFb = { state: S };
   loadSdk();
   if (S.sc) api('status', { study_code: S.sc }).then(function (j) { if (j.connected) show(j); }).catch(function () {});
