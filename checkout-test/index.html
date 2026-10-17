@@ -7,8 +7,7 @@
 <title>Checkout (test) · I Hereby Commit</title>
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://iherebycommit.com/checkout-test/">
-<!-- checkout-test PRODUCTION site (_grokbot): hidden test page (noindex, unlisted, not in sitemap/nav). Stripe TEST mode only; no real charges. Server: production dqrmyqmpqnlemkwdndsf create-checkout-session-grokbot v1. Optional ?sc= study code links the session to the applicant. -->
-<script src="https://js.stripe.com/dahlia/stripe.js"></script>
+<!-- checkout-test PRODUCTION site (_grokbot): hidden test page (noindex, unlisted, not in sitemap/nav). Stripe TEST mode only; no real charges. v2: button redirects to standard Stripe-hosted Checkout (session.url) from production create-checkout-session-grokbot; ?paid=1&session_id= return is verified server-side. Optional ?sc= study code links the session to the applicant. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -44,66 +43,38 @@
   <div class="tag">Test mode · no real charges</div>
   <h1>Become a <span>member</span></h1>
   <p class="lead">Start your I Hereby Commit membership. Payments are processed securely by Stripe.</p>
-  <div id="checkout-form"></div>
+  <div id="done" class="box ok" hidden></div>
+  <button class="btn" id="pay" type="button">Continue to secure checkout</button>
   <div class="err" id="err"></div>
-  <p class="fine">Test mode, no real charges: use card 4242 4242 4242 4242, any future date, any CVC.</p>
+  <p class="fine">Test mode, no real charges: use card 4242 4242 4242 4242, any future date, any CVC. You'll be taken to Stripe's checkout page and brought back here.</p>
   <div class="links"><a href="../">Home</a><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms</a></div>
 </main>
 <script>
-// ===== STRIPE PUBLISHABLE KEY (REPLACE) =====
-// Set to your Stripe test publishable key (pk_test_...). Placeholder below = checkout disabled.
-const STRIPE_PUBLISHABLE_KEY_grokbot = 'pk_test_51UR4Tc9iHhoSvgvVmvK2DCe9zb3X2d9LNBNqdQ5kvC61ID6VlSoeb6qYcdyhYmcGn1kcNI9ryIhfWyVhnnqGPFhy00WFrSJhAM';
-// ============================================
-const FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/create-checkout-session-grokbot';
-let SC = '';
-try { const u = new URL(location.href), q = u.searchParams.get('sc'); if (q && /^[0-9a-f-]{36}$/i.test(q)) { localStorage.setItem('ihc_study_code', q.toLowerCase()); u.searchParams.delete('sc'); history.replaceState(null, '', u.pathname + u.search + u.hash); } SC = localStorage.getItem('ihc_study_code') || ''; } catch (e) {}
-const appearance = {
-  "theme": "stripe",
-  "labels": "auto",
-  "inputs": "spaced",
-  "variables": {
-    "borderRadius": "4px",
-    "colorBackground": "#ffffff",
-    "colorDanger": "#df1b41",
-    "colorPrimary": "#0570de",
-    "colorSuccess": "#00c853",
-    "colorText": "#30313d",
-    "fontFamily": "default",
-    "fontSizeBase": "16px",
-    "spacingUnit": "4px"
+(function () {
+  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/create-checkout-session-grokbot';
+  var SC = '', u = new URL(location.href);
+  try { var q = u.searchParams.get('sc'); if (q && /^[0-9a-f-]{36}$/i.test(q)) localStorage.setItem('ihc_study_code', q.toLowerCase()); SC = localStorage.getItem('ihc_study_code') || ''; } catch (e) {}
+  var paid = u.searchParams.get('paid') === '1', sid = u.searchParams.get('session_id') || '', canceled = u.searchParams.get('canceled') === '1';
+  if (u.searchParams.has('sc') || paid || canceled) { ['sc', 'paid', 'session_id', 'canceled'].forEach(function (k) { u.searchParams.delete(k); }); history.replaceState(null, '', u.pathname + u.search + u.hash); }
+  var $ = function (id) { return document.getElementById(id); };
+  function fail(m) { $('err').textContent = m; }
+  function call(body) { return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); }); }
+  if (canceled) fail('Checkout was canceled. You can try again.');
+  if (paid && /^cs_test_/.test(sid)) {
+    $('done').hidden = false; $('done').textContent = 'Checking your payment…'; $('pay').hidden = true;
+    call({ action: 'verify', session_id: sid }).then(function (j) {
+      if (j.paid) { $('done').innerHTML = '<h2 style="margin-top:0">You\u2019re a member</h2><p>Payment confirmed: $' + (j.amount_total / 100).toFixed(2) + ' ' + String(j.currency || '').toUpperCase() + ' per year (test mode, no real charge).</p>'; }
+      else { $('done').hidden = true; $('pay').hidden = false; fail('We couldn\u2019t confirm that payment yet (' + (j.payment_status || j.error || 'unknown') + '). Please try again.'); }
+    }).catch(function () { $('done').hidden = true; $('pay').hidden = false; fail('Couldn\u2019t check your payment. Please refresh.'); });
   }
-};
-const errEl = document.getElementById('err');
-function fail(msg){ errEl.textContent = msg; }
-(async () => {
-  try {
-    if (!window.Stripe) return fail('Payments couldn’t load. Please refresh and try again.');
-    if (!/^pk_test_[A-Za-z0-9]{10,}/.test(STRIPE_PUBLISHABLE_KEY_grokbot)) return fail('Checkout isn’t set up yet. Please check back soon.');
-    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY_grokbot, {betas: ['custom_checkout_payment_form_1']});
-    const clientSecret = fetch(FN, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(SC ? {sc: SC} : {})})
-      .then((r) => r.json())
-      .then((json) => { if (!json.client_secret) throw new Error(json.error || 'no_client_secret'); return json.client_secret; });
-    await clientSecret; // fail gracefully before initializing if the server isn't configured
-    const checkout = stripe.initCheckoutFormSdk({clientSecret, appearance});
-    const form = checkout.createForm({layout: 'expanded'});
-    form.mount('#checkout-form');
-    const loadActionsResult = await checkout.loadActions();
-    if (loadActionsResult.type === 'success') {
-      form.on('confirm', async (event) => {
-        try {
-          await loadActionsResult.actions.confirm({formConfirmEvent: event});
-        } catch (error) {
-          console.error('Payment confirmation error:', error);
-          fail('Payment didn’t go through. Please try again.');
-        }
-      });
-    } else {
-      fail('Checkout couldn’t load. Please refresh and try again.');
-    }
-  } catch (e) {
-    console.error(e);
-    fail('Checkout isn’t available right now. Please check back soon.');
-  }
+  $('pay').addEventListener('click', function () {
+    fail(''); $('pay').disabled = true; $('pay').textContent = 'Opening checkout…';
+    call(SC ? { action: 'create', sc: SC } : { action: 'create' }).then(function (j) {
+      if (j.url && /^https:\/\/checkout\.stripe\.com\//.test(j.url)) { location.href = j.url; return; }
+      throw new Error(j.error || 'no_url');
+    }).catch(function () { $('pay').disabled = false; $('pay').textContent = 'Continue to secure checkout'; fail('Checkout isn\u2019t available right now. Please try again.'); });
+  });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { $('pay').disabled = false; $('pay').textContent = 'Continue to secure checkout'; } });
 })();
 </script>
 </body>
