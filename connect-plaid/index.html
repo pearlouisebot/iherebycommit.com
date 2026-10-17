@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Connect your bank · I Hereby Commit</title>
   <link rel="canonical" href="https://iherebycommit.com/connect-plaid/">
-<!-- connect-plaid PRODUCTION (_grokbot): hidden test page (noindex, unlisted, not in sitemap/nav). Backend: production dqrmyqmpqnlemkwdndsf plaid-grokbot v1 (Plaid production env). Applicant identified by study code (?sc= link, saved locally, or pasted). Stores account names/masks/types and a 30-day spending-by-category total only; no raw transactions; never sold. -->
+<!-- connect-plaid PRODUCTION (_grokbot): hidden test page (noindex, unlisted, not in sitemap/nav). Backend: production dqrmyqmpqnlemkwdndsf plaid-grokbot v2 (Plaid production env). v2: Hosted Link in the same tab by default (Plaid runs the bank OAuth); sessions are stored server-side and finalized via ?ls= on return, so a bank app opening a new tab cannot lose the connection. Embedded Link (?mode=embedded) resumes on ?oauth_state_id= from localStorage or the server. Applicant identified by study code (?sc= link, saved locally, or pasted). Stores account names/masks/types and a 30-day spending-by-category total only; no raw transactions; never sold. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -62,6 +62,7 @@
     <input id="sc-in" class="sc" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off" spellcheck="false">
     <button class="btn" id="sc-save" type="button">Continue</button>
   </div>
+  <div id="finishing" class="box" hidden><p id="fin-msg" style="margin:0;color:var(--text)">Finishing your bank connection…</p></div>
   <div id="main" hidden>
     <button class="btn" id="go" type="button">Connect with Plaid</button>
     <div class="err" id="err"></div>
@@ -72,15 +73,25 @@
 <script>
 (function () {
   var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/plaid-grokbot';
-  var SCK = 'ihc_study_code', UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  var SCK = 'ihc_study_code', LTK = 'ihc_plaid_lt', LSK = 'ihc_plaid_ls', UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   var MSG = { unknown_applicant: "We couldn't find that study code. Please check it and try again.", not_configured: 'Bank connections are not switched on yet.',
-    plaid_error: 'Plaid returned an error. Please try again.', server: 'Something went wrong. Please try again.', network: 'Network error. Please try again.' };
+    plaid_error: 'Plaid returned an error. Please try again.', server: 'Something went wrong. Please try again.', network: 'Network error. Please try again.',
+    exited: "The bank connection didn't finish.", expired: 'That bank connection session expired. Please start again.', no_session: 'Your bank connection session was not found. Please start again.' };
   var $ = function (id) { return document.getElementById(id); };
-  var sc = '';
-  try { var u = new URL(location.href), q = u.searchParams.get('sc'); if (q && UUID.test(q)) { localStorage.setItem(SCK, q.toLowerCase()); u.searchParams.delete('sc'); history.replaceState(null, '', u.pathname + u.search + u.hash); } sc = localStorage.getItem(SCK) || ''; } catch (e) {}
-  function err(code, detail) { $('err').textContent = code ? (MSG[code] || MSG.server) + (detail ? ' (' + detail + ')' : '') : ''; }
-  function api(body) { body.sc = sc; return fetch(FN, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); }).catch(function () { return { ok: false, error: 'network' }; }); }
-  function needSc() { try { localStorage.removeItem(SCK); } catch (e) {} sc = ''; $('main').hidden = true; $('need-sc').hidden = false; }
+  function lsGet(k) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); if (v && v.exp && v.exp < Date.now()) { localStorage.removeItem(k); return null; } return v; } catch (e) { return null; } }
+  function lsSet(k, val, ms) { try { localStorage.setItem(k, JSON.stringify({ v: val, exp: Date.now() + ms })); } catch (e) {} }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  var url = new URL(location.href), sc = '';
+  var oauthReturn = url.searchParams.has('oauth_state_id');
+  var retLs = url.searchParams.get('ls'); if (retLs && !UUID.test(retLs)) retLs = '';
+  var embedded = url.searchParams.get('mode') === 'embedded';
+  try { var q = url.searchParams.get('sc'); if (q && UUID.test(q)) localStorage.setItem(SCK, q.toLowerCase()); sc = localStorage.getItem(SCK) || ''; } catch (e) {}
+  // Clean the URL, except on an OAuth return: Plaid needs that exact URL as receivedRedirectUri.
+  if (!oauthReturn && (url.searchParams.has('sc') || retLs)) { url.searchParams.delete('sc'); url.searchParams.delete('ls'); history.replaceState(null, '', url.pathname + url.search + url.hash); }
+  function err(code, detail) { $('err').textContent = code ? (MSG[code] || MSG.server) + (detail ? ' ' + detail : '') : ''; }
+  function api(body) { if (sc) body.sc = sc; return fetch(FN, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); }).catch(function () { return { ok: false, error: 'network' }; }); }
+  function needSc() { lsDel(SCK); sc = ''; $('main').hidden = true; $('need-sc').hidden = false; }
+  function finishing(on, msg) { $('finishing').hidden = !on; if (msg) $('fin-msg').textContent = msg; }
   function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
   function money(n) { return '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function render(items) {
@@ -93,7 +104,8 @@
     }).join('');
   }
   function load() {
-    api({ action: 'status' }).then(function (j) {
+    if (!sc) { needSc(); return Promise.resolve(); }
+    return api({ action: 'status' }).then(function (j) {
       if (!j.ok && j.error === 'unknown_applicant') { needSc(); err(''); return; }
       $('need-sc').hidden = true; $('main').hidden = false;
       if (!j.ok) return err(j.error);
@@ -101,35 +113,70 @@
       render(j.items || []);
     });
   }
+  // Poll the server until the stored Link session is finished (Plaid reports it via /link/token/get).
+  function finalizeLs(ls, tries) {
+    finishing(true, 'Finishing your bank connection…'); $('main').hidden = true; $('need-sc').hidden = true;
+    api({ action: 'finalize', ls: ls }).then(function (j) {
+      if (j.ok && j.state === 'pending' && tries > 0) return setTimeout(function () { finalizeLs(ls, tries - 1); }, 3000);
+      lsDel(LSK); finishing(false);
+      if (j.ok && j.state === 'done') { load().then(function () { if (!sc) { finishing(true, 'Your bank is connected' + (j.institution ? ' (' + j.institution + ')' : '') + '. Open your study link to see it here.'); } }); return; }
+      load().then(function () {
+        if (!j.ok) return err(j.error);
+        if (j.state === 'exited') return err('exited', j.error_message || (j.error_code ? '(' + j.error_code + ')' : 'Please try again.'));
+        if (j.state === 'pending') return err('', ''), ($('err').textContent = "We haven't heard back from your bank yet. If you finished connecting, tap Connect again or refresh in a minute.");
+        err(j.state);
+      });
+    });
+  }
+  function onExit(e, meta) {
+    $('go').disabled = false; finishing(false);
+    if (e) err('plaid_error', (e.display_message || e.error_message || '') + (e.error_code ? ' (' + e.error_code + ')' : ''));
+  }
+  function openEmbedded(token, ls, receivedRedirectUri) {
+    if (!window.Plaid) { $('go').disabled = false; finishing(false); return err('network'); }
+    var cfg = { token: token,
+      onSuccess: function (public_token, meta) {
+        lsDel(LTK); finishing(true, 'Finishing your bank connection…');
+        api({ action: 'exchange', public_token: public_token, institution: meta && meta.institution, ls: ls }).then(function (j) {
+          $('go').disabled = false; finishing(false);
+          if (oauthReturn) history.replaceState(null, '', location.pathname);
+          if (!j.ok) err(j.error, j.code ? '(' + j.code + ')' : ''); load();
+        });
+      },
+      onExit: onExit };
+    if (receivedRedirectUri) cfg.receivedRedirectUri = receivedRedirectUri;
+    window.Plaid.create(cfg).open();
+  }
   $('items').addEventListener('click', function (e) {
     var t = e.target, id;
-    if ((id = t.getAttribute('data-r'))) { t.disabled = true; api({ action: 'refresh', id: id }).then(function (j) { if (!j.ok) err(j.error, j.code); load(); }); }
-    if ((id = t.getAttribute('data-d'))) { if (!confirm('Disconnect this bank and delete what we saved?')) return; t.disabled = true; api({ action: 'disconnect', id: id }).then(function (j) { if (!j.ok) err(j.error, j.code); load(); }); }
+    if ((id = t.getAttribute('data-r'))) { t.disabled = true; api({ action: 'refresh', id: id }).then(function (j) { if (!j.ok) err(j.error, j.code ? '(' + j.code + ')' : ''); load(); }); }
+    if ((id = t.getAttribute('data-d'))) { if (!confirm('Disconnect this bank and delete what we saved?')) return; t.disabled = true; api({ action: 'disconnect', id: id }).then(function (j) { if (!j.ok) err(j.error, j.code ? '(' + j.code + ')' : ''); load(); }); }
   });
   $('go').addEventListener('click', function () {
     if (!sc) return needSc();
     err(''); $('go').disabled = true;
-    api({ action: 'link_token' }).then(function (j) {
-      if (!j.ok) { $('go').disabled = false; return err(j.error, j.code); }
-      try { sessionStorage.setItem('ihc_plaid_lt', j.link_token); } catch (e) {}
-      open(j.link_token, null);
+    api({ action: 'link_token', mode: embedded ? 'embedded' : 'hosted' }).then(function (j) {
+      if (!j.ok) { $('go').disabled = false; return err(j.error, j.code ? '(' + j.code + ')' : ''); }
+      lsSet(LSK, j.ls, 2 * 3600e3);
+      if (j.hosted_link_url) { location.href = j.hosted_link_url; return; } // same tab; Plaid returns to ?ls=
+      lsSet(LTK, { t: j.link_token, ls: j.ls }, 30 * 60e3);
+      openEmbedded(j.link_token, j.ls, null);
     });
   });
-  function open(token, receivedRedirectUri) {
-    if (!window.Plaid) { $('go').disabled = false; return err('network'); }
-    var cfg = { token: token,
-      onSuccess: function (public_token, meta) {
-        try { sessionStorage.removeItem('ihc_plaid_lt'); } catch (e) {}
-        api({ action: 'exchange', public_token: public_token, institution: meta && meta.institution }).then(function (j) { $('go').disabled = false; if (!j.ok) err(j.error, j.code); load(); });
-      },
-      onExit: function (e) { $('go').disabled = false; if (e && e.error_code) err('plaid_error', e.error_code); } };
-    if (receivedRedirectUri) cfg.receivedRedirectUri = receivedRedirectUri;
-    window.Plaid.create(cfg).open();
+  $('sc-save').addEventListener('click', function () { var v = $('sc-in').value.trim().toLowerCase(); if (!UUID.test(v)) return; sc = v; try { localStorage.setItem(SCK, v); } catch (e) {} if (oauthReturn) resumeOauth(); else load(); });
+  function resumeOauth() {
+    finishing(true, 'Finishing your bank connection…'); $('main').hidden = true;
+    var saved = lsGet(LTK);
+    if (saved && saved.v && saved.v.t) return openEmbedded(saved.v.t, saved.v.ls, location.href);
+    if (!sc) { finishing(true, 'To finish connecting your bank, enter your study code below (or open your study link in this browser).'); $('need-sc').hidden = false; return; }
+    api({ action: 'resume' }).then(function (j) {
+      if (j.ok && j.link_token) return openEmbedded(j.link_token, j.ls, location.href);
+      finishing(false); history.replaceState(null, '', location.pathname); load().then(function () { err(j.error || 'no_session'); });
+    });
   }
-  $('sc-save').addEventListener('click', function () { var v = $('sc-in').value.trim().toLowerCase(); if (!UUID.test(v)) return; sc = v; try { localStorage.setItem(SCK, v); } catch (e) {} load(); });
-  if (!sc) { needSc(); } else { load(); }
-  // OAuth banks return here with ?oauth_state_id=...; resume Link with the saved token.
-  if (/[?&]oauth_state_id=/.test(location.search)) { var lt = ''; try { lt = sessionStorage.getItem('ihc_plaid_lt') || ''; } catch (e) {} if (lt) open(lt, location.href); }
+  if (oauthReturn) { resumeOauth(); }
+  else if (retLs) { finalizeLs(retLs, 20); }
+  else { var pend = lsGet(LSK); if (pend && pend.v && sc) { finalizeLs(pend.v, 2); } else { load(); } }
 })();
 </script>
 </body>
