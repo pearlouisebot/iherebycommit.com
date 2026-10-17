@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Checkout (test) · I Hereby Commit</title>
+<meta name="referrer" content="no-referrer">
+<link rel="canonical" href="https://iherebycommit.com/checkout-test/">
+<!-- checkout-test PRODUCTION site (_grokbot): hidden test page (noindex, unlisted, not in sitemap/nav). Stripe TEST mode only; no real charges. Server: production dqrmyqmpqnlemkwdndsf create-checkout-session-grokbot v1. Optional ?sc= study code links the session to the applicant. -->
+<script src="https://js.stripe.com/dahlia/stripe.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#000; --text:#fff; --body:#bdbdbd; --accent:#c8f135; --orange:#FF7A2F; --dim:#333; }
+  * { box-sizing:border-box; } html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; }
+  main { max-width:640px; margin:0 auto; padding:28px 18px 40px; }
+  .brand { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.06em; margin:0 0 26px; } .brand span { color:var(--accent); }
+  .tag { display:inline-block; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#000; background:var(--orange); padding:3px 7px; border-radius:3px; margin-bottom:10px; }
+  h1 { font-family:'Bebas Neue',sans-serif; font-weight:400; font-size:56px; line-height:.95; margin:0 0 18px; } h1 span { color:var(--accent); }
+  p, li { font-size:13px; line-height:1.7; color:var(--body); } p.lead { color:var(--text); font-size:14px; }
+  h2 { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin:22px 0 8px; font-weight:400; }
+  ul { padding-left:18px; margin:0; } a { color:var(--accent); }
+  .btn { display:block; width:100%; height:48px; margin:22px 0 10px; background:var(--accent); color:#000; border:0; border-radius:4px; font-family:'Space Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .err { color:var(--orange); font-size:12px; min-height:18px; }
+  .box { border:1px solid var(--dim); border-radius:4px; padding:14px; margin-top:18px; } .ok { border-color:var(--accent); }
+  .fine { font-size:11px; color:#888; }
+  table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  th, td { padding:6px 4px; text-align:right; border-bottom:1px solid #222; white-space:nowrap; } th:first-child, td:first-child { text-align:left; }
+  th { color:var(--accent); font-weight:400; font-size:10px; letter-spacing:.1em; text-transform:uppercase; }
+  .scroll { overflow-x:auto; }
+  label.opt { display:flex; gap:10px; align-items:flex-start; font-size:12px; color:var(--text); margin:10px 0; line-height:1.5; cursor:pointer; }
+  label.opt input { appearance:none; width:18px; height:18px; flex:none; margin-top:1px; border:1.5px solid #fff; border-radius:2px; background:#000; }
+  label.opt input:checked { background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px #000; }
+  .linkbtn { background:none; border:0; padding:0; color:var(--orange); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
+  .links { margin-top:24px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
+</style>
+<style>#checkout-form { background:#fff; border-radius:4px; padding:16px; margin-top:18px; } #checkout-form:empty { display:none; }</style>
+</head>
+<body>
+<main>
+  <div class="brand">I HEREBY <span>COMMIT</span></div>
+  <div class="tag">Test mode · no real charges</div>
+  <h1>Become a <span>member</span></h1>
+  <p class="lead">Start your I Hereby Commit membership. Payments are processed securely by Stripe.</p>
+  <div id="checkout-form"></div>
+  <div class="err" id="err"></div>
+  <p class="fine">Test mode, no real charges: use card 4242 4242 4242 4242, any future date, any CVC.</p>
+  <div class="links"><a href="../">Home</a><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms</a></div>
+</main>
+<script>
+// ===== STRIPE PUBLISHABLE KEY (REPLACE) =====
+// Set to your Stripe test publishable key (pk_test_...). Placeholder below = checkout disabled.
+const STRIPE_PUBLISHABLE_KEY_grokbot = 'pk_test_51UR4Tc9iHhoSvgvVmvK2DCe9zb3X2d9LNBNqdQ5kvC61ID6VlSoeb6qYcdyhYmcGn1kcNI9ryIhfWyVhnnqGPFhy00WFrSJhAM';
+// ============================================
+const FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/create-checkout-session-grokbot';
+let SC = '';
+try { const u = new URL(location.href), q = u.searchParams.get('sc'); if (q && /^[0-9a-f-]{36}$/i.test(q)) { localStorage.setItem('ihc_study_code', q.toLowerCase()); u.searchParams.delete('sc'); history.replaceState(null, '', u.pathname + u.search + u.hash); } SC = localStorage.getItem('ihc_study_code') || ''; } catch (e) {}
+const appearance = {
+  "theme": "stripe",
+  "labels": "auto",
+  "inputs": "spaced",
+  "variables": {
+    "borderRadius": "4px",
+    "colorBackground": "#ffffff",
+    "colorDanger": "#df1b41",
+    "colorPrimary": "#0570de",
+    "colorSuccess": "#00c853",
+    "colorText": "#30313d",
+    "fontFamily": "default",
+    "fontSizeBase": "16px",
+    "spacingUnit": "4px"
+  }
+};
+const errEl = document.getElementById('err');
+function fail(msg){ errEl.textContent = msg; }
+(async () => {
+  try {
+    if (!window.Stripe) return fail('Payments couldn’t load. Please refresh and try again.');
+    if (!/^pk_test_[A-Za-z0-9]{10,}/.test(STRIPE_PUBLISHABLE_KEY_grokbot)) return fail('Checkout isn’t set up yet. Please check back soon.');
+    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY_grokbot, {betas: ['custom_checkout_payment_form_1']});
+    const clientSecret = fetch(FN, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(SC ? {sc: SC} : {})})
+      .then((r) => r.json())
+      .then((json) => { if (!json.client_secret) throw new Error(json.error || 'no_client_secret'); return json.client_secret; });
+    await clientSecret; // fail gracefully before initializing if the server isn't configured
+    const checkout = stripe.initCheckoutFormSdk({clientSecret, appearance});
+    const form = checkout.createForm({layout: 'expanded'});
+    form.mount('#checkout-form');
+    const loadActionsResult = await checkout.loadActions();
+    if (loadActionsResult.type === 'success') {
+      form.on('confirm', async (event) => {
+        try {
+          await loadActionsResult.actions.confirm({formConfirmEvent: event});
+        } catch (error) {
+          console.error('Payment confirmation error:', error);
+          fail('Payment didn’t go through. Please try again.');
+        }
+      });
+    } else {
+      fail('Checkout couldn’t load. Please refresh and try again.');
+    }
+  } catch (e) {
+    console.error(e);
+    fail('Checkout isn’t available right now. Please check back soon.');
+  }
+})();
+</script>
+</body>
+</html>
