@@ -8,7 +8,7 @@
   </url>
   <url>
     <loc>https://iherebycommit.com/privacy/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
@@ -20,14 +20,14 @@
   </url>
   <url>
     <loc>https://iherebycommit.com/data-deletion/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://iherebycommit.com/consumer-health-privacy/</loc>
+    <loc>https://iherebycommit.com/support/</loc>
     <lastmod>2026-10-17</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.4</priority>
   </url>
 </urlset>
