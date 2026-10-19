@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Founding Membership checkout · I Hereby Commit</title>
+<meta name="referrer" content="no-referrer">
+<link rel="canonical" href="https://iherebycommit.com/test-checkout/">
+<!-- test-checkout PRODUCTION site (_grokbot): hidden page (noindex, unlisted, not in sitemap/nav) for a real Founding Membership purchase test. Stripe LIVE mode: real charges (refund from the Stripe dashboard). v2: button redirects to standard Stripe-hosted Checkout (session.url) from production create-checkout-session-grokbot; ?paid=1&session_id= return is verified server-side. Optional ?sc= study code links the session to the applicant. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#000; --text:#fff; --body:#bdbdbd; --accent:#c8f135; --orange:#FF7A2F; --dim:#333; }
+  * { box-sizing:border-box; } html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; }
+  main { max-width:640px; margin:0 auto; padding:28px 18px 40px; }
+  .brand { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.06em; margin:0 0 26px; } .brand span { color:var(--accent); }
+  .tag { display:inline-block; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#000; background:var(--orange); padding:3px 7px; border-radius:3px; margin-bottom:10px; }
+  h1 { font-family:'Bebas Neue',sans-serif; font-weight:400; font-size:56px; line-height:.95; margin:0 0 18px; } h1 span { color:var(--accent); }
+  p, li { font-size:13px; line-height:1.7; color:var(--body); } p.lead { color:var(--text); font-size:14px; }
+  h2 { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin:22px 0 8px; font-weight:400; }
+  ul { padding-left:18px; margin:0; } a { color:var(--accent); }
+  .btn { display:block; width:100%; height:48px; margin:22px 0 10px; background:var(--accent); color:#000; border:0; border-radius:4px; font-family:'Space Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .err { color:var(--orange); font-size:12px; min-height:18px; }
+  .box { border:1px solid var(--dim); border-radius:4px; padding:14px; margin-top:18px; } .ok { border-color:var(--accent); }
+  .fine { font-size:11px; color:#888; }
+  table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  th, td { padding:6px 4px; text-align:right; border-bottom:1px solid #222; white-space:nowrap; } th:first-child, td:first-child { text-align:left; }
+  th { color:var(--accent); font-weight:400; font-size:10px; letter-spacing:.1em; text-transform:uppercase; }
+  .scroll { overflow-x:auto; }
+  label.opt { display:flex; gap:10px; align-items:flex-start; font-size:12px; color:var(--text); margin:10px 0; line-height:1.5; cursor:pointer; }
+  label.opt input { appearance:none; width:18px; height:18px; flex:none; margin-top:1px; border:1.5px solid #fff; border-radius:2px; background:#000; }
+  label.opt input:checked { background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px #000; }
+  .linkbtn { background:none; border:0; padding:0; color:var(--orange); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
+  .links { margin-top:24px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
+</style>
+<style>#checkout-form { background:#fff; border-radius:4px; padding:16px; margin-top:18px; } #checkout-form:empty { display:none; }</style>
+</head>
+<body>
+<main>
+  <div class="brand">I HEREBY <span>COMMIT</span></div>
+  <div class="tag">Live · real charge</div>
+  <h1>Founding <span>Member</span></h1>
+  <p class="lead">Founding Membership, $99 per year. Payments are processed securely by Stripe.</p>
+  <div id="done" class="box ok" hidden></div>
+  <button class="btn" id="pay" type="button">Continue to secure checkout</button>
+  <div class="err" id="err"></div>
+  <p class="fine">This is a live payment: your card will be charged $99 (renews yearly). You'll be taken to Stripe's checkout page and brought back here.</p>
+  <div class="links"><a href="../">Home</a><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms</a></div>
+</main>
+<script>
+(function () {
+  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/create-checkout-session-grokbot';
+  var SC = '', u = new URL(location.href);
+  try { var q = u.searchParams.get('sc'); if (q && /^[0-9a-f-]{36}$/i.test(q)) localStorage.setItem('ihc_study_code', q.toLowerCase()); SC = localStorage.getItem('ihc_study_code') || ''; } catch (e) {}
+  var paid = u.searchParams.get('paid') === '1', sid = u.searchParams.get('session_id') || '', canceled = u.searchParams.get('canceled') === '1';
+  if (u.searchParams.has('sc') || paid || canceled) { ['sc', 'paid', 'session_id', 'canceled'].forEach(function (k) { u.searchParams.delete(k); }); history.replaceState(null, '', u.pathname + u.search + u.hash); }
+  var $ = function (id) { return document.getElementById(id); };
+  function fail(m) { $('err').textContent = m; }
+  function call(body) { return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); }); }
+  if (canceled) fail('Checkout was canceled. You can try again.');
+  if (paid && /^cs_(live|test)_/.test(sid)) {
+    $('done').hidden = false; $('done').textContent = 'Checking your payment…'; $('pay').hidden = true;
+    call({ action: 'verify', session_id: sid }).then(function (j) {
+      if (j.paid) { $('done').innerHTML = '<h2 style="margin-top:0">You\u2019re a member</h2><p>Payment confirmed: $' + (j.amount_total / 100).toFixed(2) + ' ' + String(j.currency || '').toUpperCase() + ' per year' + (j.livemode === false ? ' (test mode, no real charge)' : '') + '.</p>'; }
+      else { $('done').hidden = true; $('pay').hidden = false; fail('We couldn\u2019t confirm that payment yet (' + (j.payment_status || j.error || 'unknown') + '). Please try again.'); }
+    }).catch(function () { $('done').hidden = true; $('pay').hidden = false; fail('Couldn\u2019t check your payment. Please refresh.'); });
+  }
+  $('pay').addEventListener('click', function () {
+    fail(''); $('pay').disabled = true; $('pay').textContent = 'Opening checkout…';
+    call(SC ? { action: 'create', sc: SC } : { action: 'create' }).then(function (j) {
+      if (j.url && /^https:\/\/checkout\.stripe\.com\//.test(j.url)) { location.href = j.url; return; }
+      throw new Error(j.error || 'no_url');
+    }).catch(function () { $('pay').disabled = false; $('pay').textContent = 'Continue to secure checkout'; fail('Checkout isn\u2019t available right now. Please try again.'); });
+  });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { $('pay').disabled = false; $('pay').textContent = 'Continue to secure checkout'; } });
+})();
+</script>
+</body>
+</html>
