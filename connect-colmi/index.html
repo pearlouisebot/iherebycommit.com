@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="build" content="prod-colmi-v1_grokbot (from s3y203/s3y216 sandbox2)">
+<meta name="build" content="prod-colmi-v2-sleepdiag_grokbot (from s3y216c1 sandbox2)">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>Connect Colmi ring · I Hereby Commit</title>
   <link rel="canonical" href="https://iherebycommit.com/connect-colmi/">
+<!-- s3y216c1 / prod-colmi-v2 (_grokbot): sleep diagnostics only: keep the raw big-data sleep reply + ring firmware (Device Information, read-only) and send them with the save so the server log proves what the ring answered. No protocol, settings or UI change. -->
 <!-- s3y203 (_grokbot): from s3y202; Colmi HR: never lower frequency — read ring interval, keep if already ≤5 min, else write 5 min; never disable monitoring that is on. -->
 <!-- s3y188 (_grokbot): Connect a Colmi ring: HR, SpO2, stress, HRV, temperature settings + history (from s3y187) over Web Bluetooth (production). Ring numbers shown as-is. No AI. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -183,9 +184,9 @@
   }
   function sync() {
     err(''); $('connect').disabled = true; $('resync').disabled = true;
-    var result = { steps: [], hr: {}, sleep: [] }, server, name;
+    var result = { steps: [], hr: {}, sleep: [], diag: { build: (document.querySelector('meta[name=build]') || {}).content || '' } }, server, name;
     userDisconnected = false; DBG = []; dbg('page ' + (document.querySelector('meta[name=build]') ? '' : 's3y186') + ' · ' + navigator.userAgent);
-    var pick = dev ? Promise.resolve(dev) : navigator.bluetooth.requestDevice({ filters: [{ namePrefix: 'R0' }, { namePrefix: 'R1' }, { namePrefix: 'COLMI' }, { services: [P.SVC] }], optionalServices: [P.SVC, P.BIG_SVC] });
+    var pick = dev ? Promise.resolve(dev) : navigator.bluetooth.requestDevice({ filters: [{ namePrefix: 'R0' }, { namePrefix: 'R1' }, { namePrefix: 'COLMI' }, { services: [P.SVC] }], optionalServices: [P.SVC, P.BIG_SVC, 'device_information'] });
     return pick.then(function (d) { dev = d; name = d.name || 'Colmi ring'; dbg('device: ' + name); if (!d._s186) { d._s186 = 1; d.addEventListener('gattserverdisconnected', function () { dbg('ring disconnected'); }); } log('Connecting to ' + name + '…'); return d.gatt.connect(); })
     .then(function (s) { server = s; if (userDisconnected) { try { s.disconnect(); } catch (x) {} throw Object.assign(new Error('stopped'), { code: 'stopped' }); } return s.getPrimaryService(P.SVC); })
     .then(function (svc) { return Promise.all([svc.getCharacteristic(P.RX), svc.getCharacteristic(P.TX)]); })
@@ -223,12 +224,17 @@
       return server.getPrimaryService(P.BIG_SVC).then(function (svc) { return Promise.all([svc.getCharacteristic(P.BIG_WRITE), svc.getCharacteristic(P.BIG_NOTIFY)]); })
         .then(function (c) { c[1].removeEventListener('characteristicvaluechanged', onNotify); c[1].addEventListener('characteristicvaluechanged', onNotify); return c[1].startNotifications().then(function () {
           var sp = new P.SleepParser();
-          return send(c[0], P.sleepReq(), function (b) { return sp.feed(b); }, 10000, 'sleep', true).then(function () { result.sleep = sp.days(new Date()); dbg('   sleep: ' + result.sleep.length + ' nights'); })
-            .catch(function (e) { dbg('   sleep not read: ' + (e && (e.code || e.message))); result.sleepUnsupported = true; })
+          return send(c[0], P.sleepReq(), function (b) { return sp.feed(b); }, 10000, 'sleep', true).then(function () { result.sleep = sp.days(new Date()); var n = sp.buf.length >= 7 ? sp.buf[6] : null; dbg('   sleep: ' + result.sleep.length + ' nights (ring says ' + n + ' days in a ' + sp.buf.length + '-byte reply' + (n === 0 ? ': the ring itself has no sleep record' : '') + ')'); })
+            .catch(function (e) { dbg('   sleep not read: ' + (e && (e.code || e.message))); result.sleepUnsupported = true; result.diag.sleep_err = String(e && (e.code || e.message) || 'error').slice(0, 40); })
+            .then(function () { result.diag.sleep_req = P.hex(P.sleepReq()); result.diag.sleep_hex = P.hex(sp.buf.slice(0, 600)); result.diag.sleep_len = sp.buf.length; result.diag.sleep_nights = result.sleep.length; })
             .then(function () { var bp = new P.BigParser(0x2a); return send(c[0], P.spo2Req(), function (b) { return bp.feed(b); }, 10000, 'blood oxygen', true).then(function () { result.spo2 = bp.spo2(new Date()); dbg('   blood oxygen: ' + result.spo2.length + ' hourly readings'); }).catch(function (e) { dbg('   blood oxygen not read: ' + (e && (e.code || e.message))); }); })
             .then(function () { var bp = new P.BigParser(0x25); return send(c[0], P.tempReq(), function (b) { return bp.feed(b); }, 10000, 'temperature', true).then(function () { result.temp = bp.temp(new Date()); dbg('   temperature: ' + result.temp.length + ' half-hour readings'); }).catch(function (e) { dbg('   temperature not read: ' + (e && (e.code || e.message))); }); });
         }); })
         .catch(function (e) { dbg('   big-data channel not available: ' + (e && (e.code || e.message))); result.sleepUnsupported = true; }); })
+    .then(function () { // s3y216c1: firmware / hardware revision (standard Device Information service, read-only; skipped if the ring lacks it)
+      var dec = function (v) { try { return new TextDecoder().decode(v).replace(/[^\x20-\x7e]/g, '').slice(0, 40); } catch (e) { return ''; } };
+      return server.getPrimaryService('device_information').then(function (svc) { return Promise.all([['fw', 'firmware_revision_string'], ['hw', 'hardware_revision_string']].map(function (k) { return svc.getCharacteristic(k[1]).then(function (ch) { return ch.readValue(); }).then(function (v) { result.diag[k[0]] = dec(v); }).catch(function () {}); })); })
+        .then(function () { dbg('ring firmware ' + (result.diag.fw || '?') + ' · hardware ' + (result.diag.hw || '?')); }).catch(function () { dbg('ring firmware not readable'); }); })
     .then(function () { try { server.disconnect(); } catch (e) {} dbg('disconnected from ring after reading');
       var days = P.summarizeExtra(P.summarize(result.steps, result.hr, result.sleep), result);
       var samples = buildSamples(result);
@@ -236,7 +242,7 @@
       if (!days.length) { $('dbg-box').open = true; $('newring').hidden = false; log(''); var e0 = new Error('empty'); e0.code = 'empty'; throw e0; }
       $('newring').hidden = true; log('Saving ' + days.length + ' days…');
       return (key ? Promise.resolve() : api({ action:'register', device:name }).then(function (j) { key = j.key; try { localStorage.setItem(LS, key); } catch (e) {} }))
-        .then(function () { return api({ action:'save', key:key, device:name, battery:lastBattery, days:days, samples:samples }); })
+        .then(function () { return api({ action:'save', key:key, device:name, battery:lastBattery, days:days, samples:samples, diag:result.diag }); })
         .then(function (j) { log('Saved ' + j.saved + ' days and ' + (j.samples || 0) + ' readings from the ring.' + (result.sleepUnsupported ? ' This ring didn’t share sleep data.' : '')); load(); });
     })
     .catch(function (e) {
