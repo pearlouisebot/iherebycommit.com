@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Upload your Strava export · I Hereby Commit</title>
+<!-- strava_export_v1_grokbot: member-uploaded Strava export (production; approved by Amanda 3:53 AM CT Oct 19 2026). Only activities.csv is read, in the browser; only per-activity numbers are sent.
+     GPS files are never opened. Not linked from nav, signup or sitemap. No AI. No Strava logos (the file source is named in text only). -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#000; --text:#fff; --body:#bdbdbd; --accent:#c8f135; --orange:#FF7A2F; --dim:#333; }
+  * { box-sizing:border-box; } html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; }
+  main { max-width:640px; margin:0 auto; padding:28px 18px 40px; }
+  .brand { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.06em; margin:0 0 26px; } .brand span { color:var(--accent); }
+  .tag { display:inline-block; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#000; background:var(--orange); padding:3px 7px; border-radius:3px; margin-bottom:10px; }
+  h1 { font-family:'Bebas Neue',sans-serif; font-weight:400; font-size:56px; line-height:.95; margin:0 0 18px; } h1 span { color:var(--accent); }
+  p, li { font-size:13px; line-height:1.7; color:var(--body); } p.lead { color:var(--text); font-size:14px; }
+  h2 { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin:22px 0 8px; font-weight:400; }
+  ul { padding-left:18px; margin:0; } a { color:var(--accent); }
+  .btn { display:block; width:100%; height:48px; margin:22px 0 10px; background:var(--accent); color:#000; border:0; border-radius:4px; font-family:'Space Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .err { color:var(--orange); font-size:12px; min-height:18px; }
+  .box { border:1px solid var(--dim); border-radius:4px; padding:14px; margin-top:18px; } .ok { border-color:var(--accent); }
+  .fine { font-size:11px; color:#888; }
+  table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  th, td { padding:6px 4px; text-align:right; border-bottom:1px solid #222; white-space:nowrap; } th:first-child, td:first-child { text-align:left; }
+  th { color:var(--accent); font-weight:400; font-size:10px; letter-spacing:.1em; text-transform:uppercase; }
+  .scroll { overflow-x:auto; }
+  label.opt { display:flex; gap:10px; align-items:flex-start; font-size:12px; color:var(--text); margin:10px 0; line-height:1.5; cursor:pointer; }
+  label.opt input { appearance:none; width:18px; height:18px; flex:none; margin-top:1px; border:1.5px solid #fff; border-radius:2px; background:#000; }
+  label.opt input:checked { background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px #000; }
+  .linkbtn { background:none; border:0; padding:0; color:var(--orange); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
+  .links { margin-top:24px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
+  ol.steps { padding-left:22px; margin:0; } ol.steps li { margin:6px 0; color:var(--text); } ol.steps b { color:var(--accent); font-weight:400; }
+  .bar { height:6px; background:#222; border-radius:3px; overflow:hidden; margin-top:10px; } .bar i { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+  .radios { margin:8px 0 0; } label.rad { display:flex; gap:10px; align-items:center; font-size:13px; color:var(--text); margin:10px 0; cursor:pointer; }
+  label.rad input { appearance:none; width:18px; height:18px; flex:none; margin:0; border:1.5px solid #fff; border-radius:50%; background:#000; }
+  label.rad input:checked { background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px #000; }
+  input[type=file] { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">I HEREBY <span>COMMIT</span></div>
+  <div class="tag">Member upload</div>
+  <h1>Upload your <span>Strava</span> export</h1>
+  <p class="lead">Share a summary of your workouts from the archive Strava lets you download: date, type, time, distance, climb and heart rate.</p>
+
+  <h2>How to get your archive</h2>
+  <ol class="steps">
+    <li>On strava.com (in a browser, not the app), go to <b>Settings</b>, then <b>My Account</b>.</li>
+    <li>Under <b>Download or Delete Your Account</b>, tap <b>Get Started</b>, then <b>Request your archive</b>.</li>
+    <li>Strava emails you a link to a <b>.zip</b>, usually within a few hours. It holds <b>activities.csv</b> plus your workout files (.fit, .gpx, .tcx, often ending in .gz).</li>
+    <li>Download the zip and save it to <b>Files</b> (iPhone) or <b>Downloads</b>.</li>
+    <li>Come back here, tap <b>Upload</b> and pick the <b>.zip</b>, or just the <b>activities.csv</b> inside it.</li>
+  </ol>
+
+  <h2>What we read and keep</h2>
+  <ul>
+    <li>Your browser reads the archive right here on this page. Only <b>activities.csv</b> is read. The archive itself is never uploaded.</li>
+    <li>For each activity we keep only: date and time, type, moving and elapsed time, distance, elevation gain, average and max heart rate, and calories and relative effort if Strava included them.</li>
+    <li>We never open, upload or store your GPS tracks, routes or coordinates. Your .fit, .gpx and .tcx files are skipped. So are activity names, descriptions, private notes, gear, photos and your profile.</li>
+    <li>We never run AI on this data, and we never sell it.</li>
+    <li>Using it for research or matching needs your separate yes below. Both start off.</li>
+    <li>Uploading again only adds activities we don't have yet. Nothing already saved is removed. You can delete it all at any time with the link at the bottom of this page.</li>
+  </ul>
+
+  <div id="pre">
+    <label class="btn" id="pick" for="file" style="display:flex;align-items:center;justify-content:center" role="button" tabindex="0">Upload</label>
+    <input type="file" id="file" accept=".zip,.csv,.gz,application/zip,application/x-zip-compressed,text/csv">
+    <div id="prog" hidden><p class="fine" id="prog-t" style="margin:0">Reading your archive…</p></div>
+  </div>
+  <div class="err" id="err" role="alert"></div>
+
+  <div id="preview" hidden>
+    <div class="box ok">
+      <h2 style="margin-top:0">Ready to save</h2>
+      <p style="margin:0" id="pv-meta"></p>
+      <p style="margin:10px 0 0;color:var(--text)">By tapping Agree and save, you consent to I Hereby Commit storing the activity numbers listed above from your Strava export, as described on this page and in our Privacy Policy. GPS data is not included.</p>
+      <button type="button" class="btn" id="save" style="margin-bottom:4px">Agree and save</button>
+      <p class="fine" style="margin:0"><button type="button" class="linkbtn" id="cancel">Cancel, don't save anything</button></p>
+    </div>
+  </div>
+
+  <div id="post" hidden>
+    <div class="box ok">
+      <h2 style="margin-top:0">Saved</h2>
+      <p style="margin:0" id="meta"></p>
+      <p class="fine" style="margin:6px 0 0"><label for="file" class="linkbtn" style="color:var(--accent)">Upload another archive</label></p>
+    </div>
+  </div>
+
+  <div id="data" hidden>
+    <div class="box">
+      <h2 style="margin-top:0" id="data-h">Your activities</h2>
+      <div class="scroll"><table>
+        <thead><tr><th>Date</th><th>Type</th><th>Moving</th><th>Elapsed</th><th>Km</th><th>Climb m</th><th>Avg HR</th><th>Max HR</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <p class="fine">From your Strava export. Times in minutes, dates in UTC as Strava writes them.</p>
+    </div>
+  </div>
+
+  <div id="choices" hidden>
+    <div class="box">
+      <h2 style="margin-top:0">Your choices</h2>
+      <label class="opt"><input type="checkbox" id="opt-research"><span>Use my Strava export data in the I Hereby Commit research study (de-identified).</span></label>
+      <label class="opt"><input type="checkbox" id="opt-matching"><span>Use my Strava export data to help with matching.</span></label>
+      <div class="fine" id="opt-msg"></div>
+    </div>
+    <div class="links"><button type="button" class="linkbtn" id="delete">Delete my Strava export data</button></div>
+  </div>
+
+  <div class="links">
+    <a href="../privacy/">Privacy Policy</a>
+    <a href="../consumer-health-privacy/">Consumer Health Data Privacy</a>
+    <a href="../terms/">Terms</a>
+  </div>
+  <p class="fine" style="margin-top:18px">Strava is a trademark of Strava, Inc. I Hereby Commit is not affiliated with or endorsed by Strava.</p>
+</main>
+<script src="fflate-0.8.2.min.js"></script>
+<script src="strava-export-parse_grokbot.js"></script>
+<script>
+(function () {
+  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/strava-export-upload-grokbot';
+  var LS = 'ihc_strava_export_key';
+  var $ = function (id) { return document.getElementById(id); };
+  var ERR = { no_csv:'We didn\'t find activities.csv in that file. Choose the .zip from Strava\'s archive email, or the activities.csv inside it.',
+    no_rows:'We didn\'t find any activities in that file.', read:'We couldn\'t read that file. Make sure it\'s the zip or activities.csv from your Strava archive.',
+    server:'Something went wrong saving. Please try again.', busy:'Our server is busy. Please try again in a moment.', network:'Network error. Please try again.',
+    rate_limited:'Too many uploads right now. Please wait a few minutes and try again.', not_connected:'We couldn\'t find your saved data. Please upload again.' };
+  function err(c) { $('err').textContent = c ? (ERR[c] || 'Something went wrong (' + c + ').') : ''; }
+  function api(b, tries) {
+    tries = tries == null ? 4 : tries;
+    return fetch(FN, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(b) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || !j.ok) { var e = new Error(j.error || 'server'); e.code = j.error || 'server'; e.status = r.status; throw e; } return j; }); },
+            function () { var e = new Error('network'); e.code = 'network'; e.status = 0; throw e; })
+      .catch(function (e) {
+        if (tries > 0 && (e.status === 0 || e.status === 429 || e.status === 502 || e.status === 503 || e.status === 504 || e.status === 546)) {
+          return new Promise(function (ok) { setTimeout(ok, (5 - tries) * 1500 + Math.random() * 1000); }).then(function () { return api(b, tries - 1); });
+        }
+        throw e;
+      });
+  }
+  var key = null; try { key = localStorage.getItem(LS); } catch (e) {}
+  var pending = null, BATCH = 400;
+  function mins(s) { return s == null ? '–' : String(Math.round(s / 60)); }
+  function v(x) { return x == null ? '–' : String(Math.round(x)); }
+  function fmt(iso) { var d = new Date(iso); return d.toLocaleDateString(undefined, { timeZone:'UTC', month:'short', day:'numeric', year: d.getUTCFullYear() !== new Date().getFullYear() ? 'numeric' : undefined }); }
+  function table(rows, title) {
+    var tb = $('rows'); tb.innerHTML = ''; $('data-h').textContent = title;
+    if (!rows.length) { var tr0 = document.createElement('tr'), td0 = document.createElement('td'); td0.colSpan = 8; td0.style.textAlign = 'left'; td0.style.color = '#888'; td0.textContent = 'No activities found.'; tr0.appendChild(td0); tb.appendChild(tr0); }
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      [fmt(r.start_at), r.activity_type || '–', mins(r.moving_s), mins(r.elapsed_s), r.distance_m != null ? (r.distance_m / 1000).toFixed(1) : '–', v(r.elevation_gain_m), v(r.avg_hr), v(r.max_hr)]
+        .forEach(function (t) { var td = document.createElement('td'); td.textContent = t; tr.appendChild(td); });
+      tb.appendChild(tr);
+    });
+    $('data').hidden = false;
+  }
+  function show(j, counts) {
+    $('preview').hidden = true; $('post').hidden = false; $('choices').hidden = false;
+    var m = (j.rows_count || 0).toLocaleString() + ' activities saved';
+    if (j.first_activity_at && j.last_activity_at) m += ' (' + j.first_activity_at.slice(0, 10) + ' to ' + j.last_activity_at.slice(0, 10) + ')';
+    if (counts) m += ' · ' + counts.added + ' new, ' + counts.already + ' already saved';
+    if (j.last_upload_at) m += ' · ' + new Date(j.last_upload_at).toLocaleString();
+    $('meta').textContent = m;
+    table(j.rows, j.rows_count > j.rows.length ? 'Your latest ' + j.rows.length + ' activities' : 'Your activities');
+    $('opt-research').checked = !!j.research_optin; $('opt-matching').checked = !!j.matching_optin;
+  }
+  function reset() { $('post').hidden = true; $('choices').hidden = true; $('data').hidden = true; $('preview').hidden = true; $('pre').hidden = false; }
+  $('pick').addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } });
+  $('file').addEventListener('change', function () {
+    var fs = Array.prototype.slice.call(this.files || []); this.value = ''; if (!fs.length) return;
+    err(''); pending = null; $('preview').hidden = true; $('pre').hidden = false; $('pick').style.pointerEvents = 'none'; $('pick').style.opacity = '.5'; $('prog').hidden = false;
+    StravaExportParse.parseFiles(fs).then(function (r) {
+      if (!r.rows.length) throw Object.assign(new Error('no_rows'), { code: 'no_rows' });
+      pending = r; $('preview').hidden = false; $('post').hidden = true; $('save').disabled = false;
+      var t = r.rows.length.toLocaleString() + ' activities found (' + r.rows[r.rows.length - 1].start_at.slice(0, 10) + ' to ' + r.rows[0].start_at.slice(0, 10) + ')';
+      if (r.duplicates) t += ', ' + r.duplicates + ' duplicate rows skipped'; if (r.skipped) t += ', ' + r.skipped + ' rows without a date skipped';
+      $('pv-meta').textContent = t + '. Check the table below. Nothing is saved until you tap Agree and save.';
+      table(r.rows.slice(0, 200), r.rows.length > 200 ? 'Your latest 200 of ' + r.rows.length.toLocaleString() + ' activities' : 'Your activities');
+    }).catch(function (e) { err(e.code || 'read'); console.warn(e); })
+      .then(function () { $('prog').hidden = true; $('pick').style.pointerEvents = ''; $('pick').style.opacity = ''; });
+  });
+  $('cancel').addEventListener('click', function () { pending = null; if (key) load(); else reset(); });
+  $('save').addEventListener('click', function () {
+    if (!pending) return; err(''); $('save').disabled = true;
+    var P = pending, parts = Math.max(1, Math.ceil(P.rows.length / BATCH)), k = key, added = 0, already = 0;
+    function send(i) {
+      if (parts > 1) $('save').textContent = 'Saving… ' + Math.round(i / parts * 100) + '%';
+      return api({ action:'upload', key:k, part:i, parts:parts, files:P.files, columns:P.columns, rows:P.rows.slice(i * BATCH, (i + 1) * BATCH) }).then(function (j) {
+        if (j.key) { k = j.key; key = k; try { localStorage.setItem(LS, k); } catch (e) {} }
+        added += j.added || 0; already += j.already_saved || 0;
+        return i + 1 < parts ? send(i + 1) : j;
+      });
+    }
+    send(0).then(function (j) { pending = null; show(j, { added: added, already: already }); })
+      .catch(function (e) { err(e.code); }).then(function () { $('save').disabled = false; $('save').textContent = 'Agree and save'; });
+  });
+  ['research', 'matching'].forEach(function (n) {
+    $('opt-' + n).addEventListener('change', function () {
+      var b = { action:'optin', key:key }; b[n + '_optin'] = this.checked; var el = this;
+      api(b).then(function () { $('opt-msg').textContent = 'Saved.'; }).catch(function (e) { el.checked = !el.checked; err(e.code); });
+    });
+  });
+  $('delete').addEventListener('click', function () {
+    if (!confirm('Delete all the Strava export data we saved?')) return;
+    api({ action:'delete', key:key }).then(function () {
+      try { localStorage.removeItem(LS); } catch (e) {} key = null; reset(); $('err').textContent = 'Deleted. Your Strava export data is gone from our side.';
+    }).catch(function (e) { err(e.code); });
+  });
+  function load() {
+    if (!key) return;
+    api({ action:'data', key:key }).then(function (j) { show(j); }).catch(function (e) {
+      if (e.code === 'not_connected') { try { localStorage.removeItem(LS); } catch (x) {} key = null; reset(); }
+      err(e.code);
+    });
+  }
+  load();
+})();
+</script>
+</body>
+</html>
