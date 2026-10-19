@@ -7,7 +7,7 @@
 <title>Founding Membership checkout · I Hereby Commit</title>
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://iherebycommit.com/test-checkout/">
-<!-- test-checkout PRODUCTION site (_grokbot): hidden page (noindex, unlisted, not in sitemap/nav) for a real Founding Membership purchase test. Stripe LIVE mode: real charges (refund from the Stripe dashboard). v2: button redirects to standard Stripe-hosted Checkout (session.url) from production create-checkout-session-grokbot; ?paid=1&session_id= return is verified server-side. Optional ?sc= study code links the session to the applicant. -->
+<!-- test-checkout PRODUCTION site (_grokbot): hidden page (noindex, unlisted, not in sitemap/nav) for a real Founding Membership purchase test. Stripe LIVE mode: real charges (refund from the Stripe dashboard). v2: button redirects to standard Stripe-hosted Checkout (session.url) from production create-checkout-session-grokbot; ?paid=1&session_id= return is verified server-side. v3: on success the pay button and charge note are hidden ([hidden] beats .btn display:block) and replaced by 'Back to IHereByCommit' + 'Manage membership' (Stripe Customer Portal via create-portal-session-grokbot, keyed by the just-paid session_id). Optional ?sc= study code links the session to the applicant. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -35,6 +35,7 @@
   .linkbtn { background:none; border:0; padding:0; color:var(--orange); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
   .links { margin-top:24px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
 </style>
+<style>[hidden] { display:none !important; } .done-links { display:flex; gap:18px; flex-wrap:wrap; font-size:12px; margin:10px 0 0; }</style>
 <style>#checkout-form { background:#fff; border-radius:4px; padding:16px; margin-top:18px; } #checkout-form:empty { display:none; }</style>
 </head>
 <body>
@@ -46,12 +47,13 @@
   <div id="done" class="box ok" hidden></div>
   <button class="btn" id="pay" type="button">Continue to secure checkout</button>
   <div class="err" id="err"></div>
-  <p class="fine">This is a live payment: your card will be charged $99 (renews yearly). You'll be taken to Stripe's checkout page and brought back here.</p>
+  <p class="fine" id="note">This is a live payment: your card will be charged $99 (renews yearly). You'll be taken to Stripe's checkout page and brought back here.</p>
   <div class="links"><a href="../">Home</a><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms</a></div>
 </main>
 <script>
 (function () {
   var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/create-checkout-session-grokbot';
+  var PORTAL_FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/create-portal-session-grokbot';
   var SC = '', u = new URL(location.href);
   try { var q = u.searchParams.get('sc'); if (q && /^[0-9a-f-]{36}$/i.test(q)) localStorage.setItem('ihc_study_code', q.toLowerCase()); SC = localStorage.getItem('ihc_study_code') || ''; } catch (e) {}
   var paid = u.searchParams.get('paid') === '1', sid = u.searchParams.get('session_id') || '', canceled = u.searchParams.get('canceled') === '1';
@@ -61,11 +63,18 @@
   function call(body) { return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); }); }
   if (canceled) fail('Checkout was canceled. You can try again.');
   if (paid && /^cs_(live|test)_/.test(sid)) {
-    $('done').hidden = false; $('done').textContent = 'Checking your payment…'; $('pay').hidden = true;
+    $('done').hidden = false; $('done').textContent = 'Checking your payment…'; $('pay').hidden = true; $('note').hidden = true;
     call({ action: 'verify', session_id: sid }).then(function (j) {
-      if (j.paid) { $('done').innerHTML = '<h2 style="margin-top:0">You\u2019re a member</h2><p>Payment confirmed: $' + (j.amount_total / 100).toFixed(2) + ' ' + String(j.currency || '').toUpperCase() + ' per year' + (j.livemode === false ? ' (test mode, no real charge)' : '') + '.</p>'; }
-      else { $('done').hidden = true; $('pay').hidden = false; fail('We couldn\u2019t confirm that payment yet (' + (j.payment_status || j.error || 'unknown') + '). Please try again.'); }
-    }).catch(function () { $('done').hidden = true; $('pay').hidden = false; fail('Couldn\u2019t check your payment. Please refresh.'); });
+      if (j.paid) { $('done').innerHTML = '<h2 style="margin-top:0">You\u2019re a member</h2><p>Payment confirmed: $' + (j.amount_total / 100).toFixed(2) + ' ' + String(j.currency || '').toUpperCase() + ' per year' + (j.livemode === false ? ' (test mode, no real charge)' : '') + '.</p><p class="done-links"><a href="https://iherebycommit.com/">Back to IHereByCommit</a><a href="#" id="manage">Manage membership</a></p>'; $('manage').addEventListener('click', manage); }
+      else { $('done').hidden = true; $('pay').hidden = false; $('note').hidden = false; fail('We couldn\u2019t confirm that payment yet (' + (j.payment_status || j.error || 'unknown') + '). Please try again.'); }
+    }).catch(function () { $('done').hidden = true; $('pay').hidden = false; $('note').hidden = false; fail('Couldn\u2019t check your payment. Please refresh.'); });
+  }
+  function manage(e) {
+    e.preventDefault(); var a = e.currentTarget; if (a.dataset.busy) return; a.dataset.busy = '1'; fail(''); a.textContent = 'Opening\u2026';
+    fetch(PORTAL_FN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: sid }) }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.url && /^https:\/\/billing\.stripe\.com\//.test(j.url)) { location.href = j.url; return; }
+      throw new Error(j.error || 'no_url');
+    }).catch(function () { delete a.dataset.busy; a.textContent = 'Manage membership'; fail('Couldn\u2019t open membership settings. Email contact@hatchlabs.com and we\u2019ll send you a link.'); });
   }
   $('pay').addEventListener('click', function () {
     fail(''); $('pay').disabled = true; $('pay').textContent = 'Opening checkout…';
