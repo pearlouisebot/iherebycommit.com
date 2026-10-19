@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Connect Apple Health · I Hereby Commit</title>
+  <link rel="canonical" href="https://iherebycommit.com/connect-apple-health/">
+<!-- s3y182 (_grokbot): upload retries with backoff; rate-limit message. -->
+<!-- s3y180 (_grokbot): history choice (Last 90 days / All my history, round radios), batched upload. -->
+<!-- s3y179 (_grokbot): Health link uses x-apple-health:// (iPhone only; elsewhere it's plain text + note). -->
+<!-- s3y178-ah1 (_grokbot): Connect Apple Health by export upload (production). The zip is read on the phone; only daily totals for the last 90 days are sent. No AI. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#000; --text:#fff; --body:#bdbdbd; --accent:#c8f135; --orange:#FF7A2F; --dim:#333; }
+  * { box-sizing:border-box; } html,body { margin:0; background:var(--bg); color:var(--text); font-family:'Space Mono',monospace; }
+  main { max-width:640px; margin:0 auto; padding:28px 18px 40px; }
+  .brand { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.06em; margin:0 0 26px; } .brand span { color:var(--accent); }
+  .tag { display:inline-block; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#000; background:var(--orange); padding:3px 7px; border-radius:3px; margin-bottom:10px; }
+  h1 { font-family:'Bebas Neue',sans-serif; font-weight:400; font-size:56px; line-height:.95; margin:0 0 18px; } h1 span { color:var(--accent); }
+  p, li { font-size:13px; line-height:1.7; color:var(--body); } p.lead { color:var(--text); font-size:14px; }
+  h2 { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin:22px 0 8px; font-weight:400; }
+  ul { padding-left:18px; margin:0; } a { color:var(--accent); }
+  .btn { display:block; width:100%; height:48px; margin:22px 0 10px; background:var(--accent); color:#000; border:0; border-radius:4px; font-family:'Space Mono',monospace; font-weight:700; font-size:14px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .err { color:var(--orange); font-size:12px; min-height:18px; }
+  .box { border:1px solid var(--dim); border-radius:4px; padding:14px; margin-top:18px; } .ok { border-color:var(--accent); }
+  .fine { font-size:11px; color:#888; }
+  table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  th, td { padding:6px 4px; text-align:right; border-bottom:1px solid #222; white-space:nowrap; } th:first-child, td:first-child { text-align:left; }
+  th { color:var(--accent); font-weight:400; font-size:10px; letter-spacing:.1em; text-transform:uppercase; }
+  .scroll { overflow-x:auto; }
+  label.opt { display:flex; gap:10px; align-items:flex-start; font-size:12px; color:var(--text); margin:10px 0; line-height:1.5; cursor:pointer; }
+  label.opt input { appearance:none; width:18px; height:18px; flex:none; margin-top:1px; border:1.5px solid #fff; border-radius:2px; background:#000; }
+  label.opt input:checked { background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px #000; }
+  .linkbtn { background:none; border:0; padding:0; color:var(--orange); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; }
+  .links { margin-top:24px; font-size:12px; display:flex; gap:18px; flex-wrap:wrap; }
+  ol.steps { padding-left:22px; margin:0; } ol.steps li { margin:6px 0; color:var(--text); } ol.steps b { color:var(--accent); font-weight:400; }
+  .bar { height:6px; background:#222; border-radius:3px; overflow:hidden; margin-top:10px; } .bar i { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+  .radios { margin:8px 0 0; } label.rad { display:flex; gap:10px; align-items:center; font-size:13px; color:var(--text); margin:10px 0; cursor:pointer; }
+  label.rad input { appearance:none; width:18px; height:18px; flex:none; margin:0; border:1.5px solid #fff; border-radius:50%; background:#000; }
+  label.rad input:checked { background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px #000; }
+  input[type=file] { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">I HEREBY <span>COMMIT</span></div>
+  <div class="tag">Test page</div>
+  <h1>Connect <span>Apple Health</span></h1>
+  <p class="lead">Share a summary of your Apple Health data: steps, sleep, heart and workouts, by day, for the last 90 days.</p>
+
+  <h2>How to do it on your iPhone</h2>
+  <ol class="steps">
+    <li>Open the <a href="x-apple-health://" id="open-health"><b>Health</b> app</a>.<span class="fine" id="health-note" hidden> (Do this on your iPhone.)</span></li>
+    <li>Tap your <b>picture or initials</b> at the top right. (If you don't see it, tap <b>Summary</b> at the bottom first.)</li>
+    <li>Scroll all the way down and tap <b>Export All Health Data</b>.</li>
+    <li>Tap <b>Export</b>.</li>
+    <li><b>Wait.</b> It can take a few minutes. Keep the Health app open.</li>
+    <li>When the share menu appears, tap <b>Save to Files</b>, pick <b>On My iPhone</b>, and tap <b>Save</b>.</li>
+    <li>Come back to this page in <b>Safari</b> on the same iPhone.</li>
+    <li>Tap <b>Upload</b> below, then tap <b>Browse</b> and choose <b>Export.zip</b>.</li>
+  </ol>
+
+  <h2>What we keep</h2>
+  <ul>
+    <li>Your iPhone reads the file right here on this page. The file itself is never uploaded.</li>
+    <li>We only save one line per day, for the last 90 days or all your history (you choose): steps, hours asleep, resting heart rate, HRV, active calories, workouts (how many, minutes, type), VO2 max and blood oxygen.</li>
+    <li>We never run AI on your health data, and we never sell it.</li>
+    <li>Using it for research or matching needs your separate yes below. Both start off.</li>
+    <li>You can delete it at any time.</li>
+  </ul>
+
+  <h2>How much history to save</h2>
+  <div class="radios" role="radiogroup" aria-label="How much history to save">
+    <label class="rad"><input type="radio" name="range" value="90d" checked> Last 90 days</label>
+    <label class="rad"><input type="radio" name="range" value="all"> All my history</label>
+  </div>
+  <div id="pre">
+    <label class="btn" id="pick" for="file" style="display:flex;align-items:center;justify-content:center" role="button" tabindex="0">Upload</label>
+    <input type="file" id="file" accept=".zip,.xml,application/zip,application/x-zip-compressed,text/xml">
+    <div id="prog" hidden><p class="fine" id="prog-t" style="margin:0">Reading your export on this phone…</p><div class="bar"><i id="prog-b"></i></div></div>
+  </div>
+  <div class="err" id="err" role="alert"></div>
+
+  <div id="preview" hidden>
+    <div class="box ok">
+      <h2 style="margin-top:0">Ready to save</h2>
+      <p style="margin:0" id="pv-meta"></p>
+      <button type="button" class="btn" id="save" style="margin-bottom:4px">Save these daily totals</button>
+      <p class="fine" style="margin:0"><button type="button" class="linkbtn" id="cancel">Cancel, don't save anything</button></p>
+    </div>
+  </div>
+
+  <div id="post" hidden>
+    <div class="box ok">
+      <h2 style="margin-top:0">Saved</h2>
+      <p style="margin:0" id="meta"></p>
+      <p class="fine" style="margin:6px 0 0"><label for="file" class="linkbtn" style="color:var(--accent)">Upload a newer export</label></p>
+    </div>
+  </div>
+
+  <div id="data" hidden>
+    <div class="box">
+      <h2 style="margin-top:0">Your daily totals</h2>
+      <div class="scroll"><table>
+        <thead><tr><th>Date</th><th>Steps</th><th>Sleep</th><th>Rest HR</th><th>HRV</th><th>Active cal</th><th>Workouts</th><th>VO2 max</th><th>SpO2</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <p class="fine">Straight from Apple Health. Sleep is time asleep, in hours. Rest HR in bpm, HRV in ms, SpO2 is average blood oxygen.</p>
+    </div>
+  </div>
+
+  <div id="choices" hidden>
+    <div class="box">
+      <h2 style="margin-top:0">Your choices (optional)</h2>
+      <label class="opt"><input type="checkbox" id="opt-research"><span>Use my Apple Health data in the I Hereby Commit research study (de-identified).</span></label>
+      <label class="opt"><input type="checkbox" id="opt-matching"><span>Use my Apple Health data to help with matching.</span></label>
+      <div class="fine" id="opt-msg"></div>
+    </div>
+    <div class="links"><button type="button" class="linkbtn" id="delete">Delete my Apple Health data</button></div>
+  </div>
+
+  <div class="links">
+    <a href="../privacy/">Privacy Policy</a>
+    <a href="../terms/">Terms</a>
+  </div>
+</main>
+<script src="fflate-0.8.2.min.js"></script>
+<script src="ah-parse_grokbot.js"></script>
+<script>
+(function () {
+  var FN = 'https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/apple-health-grokbot';
+  var LS = 'ihc_ah_key_sbx';
+  var $ = function (id) { return document.getElementById(id); };
+  var ERR = { no_xml:'That zip doesn\'t look like an Apple Health export. Choose the Export.zip you saved from the Health app.',
+    no_days:'We didn\'t find any steps, sleep, heart or workout data from the last 90 days in that file.', truncated:'The file seems incomplete. Try exporting again.',
+    read:'We couldn\'t read that file. Make sure it\'s the Export.zip from the Health app.', server:'Something went wrong saving. Please try again.',
+    network:'Network error. Please try again.', rate_limited:'Too many uploads right now. Please wait a few minutes and try again.', not_connected:'We couldn\'t find your saved data. Please upload again.' };
+  function err(c) { $('err').textContent = c ? (ERR[c] || 'Something went wrong (' + c + ').') : ''; }
+  function api(b, tries) { // s3y182: retries busy/overloaded answers (503/429/502/network) with backoff
+    tries = tries == null ? 4 : tries;
+    return fetch(FN, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(b) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || !j.ok) { var e = new Error(j.error || 'server'); e.code = j.error || 'server'; e.status = r.status; throw e; } return j; }); },
+            function () { var e = new Error('network'); e.code = 'network'; e.status = 0; throw e; })
+      .catch(function (e) {
+        if (tries > 0 && (e.status === 0 || e.status === 429 || e.status === 502 || e.status === 503 || e.status === 504 || e.status === 546)) {
+          return new Promise(function (ok) { setTimeout(ok, (5 - tries) * 1500 + Math.random() * 1000); }).then(function () { return api(b, tries - 1); });
+        }
+        throw e;
+      });
+  }
+  var key = null; try { key = localStorage.getItem(LS); } catch (e) {}
+  var pending = null, allDays = null, BATCH = 500;
+  function range() { var r = document.querySelector('input[name=range]:checked'); return r ? r.value : '90d'; }
+  function cutoff() { var n = new Date(); n.setDate(n.getDate() - 89); return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2); }
+  function v(x) { return x == null ? '–' : String(x); }
+  function fmt(d) { var p = d.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' }); }
+  function table(rows) {
+    var tb = $('rows'); tb.innerHTML = '';
+    if (!rows.length) { tb.innerHTML = '<tr><td colspan="9" style="text-align:left;color:#888">No days found.</td></tr>'; }
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      [fmt(r.day), r.steps != null ? Number(r.steps).toLocaleString() : '–', r.sleep_minutes != null ? (r.sleep_minutes / 60).toFixed(1) : '–', v(r.resting_hr), v(r.hrv_ms),
+       r.active_kcal != null ? Number(r.active_kcal).toLocaleString() : '–', r.workouts ? r.workouts + ' · ' + r.workout_minutes + ' min' : '–', v(r.vo2max), r.spo2_pct != null ? r.spo2_pct + '%' : '–']
+        .forEach(function (t) { var td = document.createElement('td'); td.textContent = t; tr.appendChild(td); });
+      tb.appendChild(tr);
+    });
+    $('data').hidden = false;
+  }
+  function show(j) {
+    $('preview').hidden = true; $('post').hidden = false; $('choices').hidden = false;
+    $('meta').textContent = (j.days_count || j.rows.length).toLocaleString() + ' days saved (' + (j.history_range === 'all' ? 'all history' : 'last 90 days') + ')' + (j.last_upload_at ? ' · ' + new Date(j.last_upload_at).toLocaleString() : '');
+    table(j.rows); if (j.history_range) { var rr = document.querySelector('input[name=range][value="' + j.history_range + '"]'); if (rr) rr.checked = true; } $('opt-research').checked = !!j.research_optin; $('opt-matching').checked = !!j.matching_optin;
+  }
+  function reset() { $('post').hidden = true; $('choices').hidden = true; $('data').hidden = true; $('preview').hidden = true; $('pre').hidden = false; }
+  $('pick').addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } });
+  $('file').addEventListener('change', function () {
+    var f = this.files && this.files[0]; this.value = ''; if (!f) return;
+    err(''); pending = null; $('preview').hidden = true; $('pre').hidden = false; $('pick').style.pointerEvents = 'none'; $('pick').style.opacity = '.5';
+    $('prog').hidden = false; $('prog-b').style.width = '0';
+    $('prog-t').textContent = 'Reading your export on this phone… (' + Math.max(1, Math.round(f.size / 1048576)) + ' MB, nothing is uploaded yet)';
+    var t0 = Date.now();
+    AHParse.parseFile(f, { days: 0 }, function (p) { $('prog-b').style.width = Math.round(p * 100) + '%'; }).then(function (r) {
+      console.log('ah parsed', r.records, 'records in', Date.now() - t0, 'ms');
+      if (!r.days.length) throw Object.assign(new Error('no_days'), { code: 'no_days' });
+      allDays = r; preview();
+    }).catch(function (e) { err(e.code || (e.message === 'no_xml' || e.message === 'truncated' ? e.message : 'read')); console.warn(e); })
+      .then(function () { $('prog').hidden = true; $('pick').style.pointerEvents = ''; $('pick').style.opacity = ''; });
+  });
+  function preview() {
+    if (!allDays) return; var c = cutoff(), rg = range();
+    var days = rg === 'all' ? allDays.days : allDays.days.filter(function (d) { return d.day >= c; });
+    pending = { days: days, exportDate: allDays.exportDate, range: rg }; $('preview').hidden = false; $('post').hidden = true;
+    if (!days.length) { $('pv-meta').textContent = 'No days found in the last 90 days. Choose All my history to save older data.'; $('save').disabled = true; table([]); return; }
+    $('save').disabled = false;
+    $('pv-meta').textContent = days.length.toLocaleString() + ' days found (' + days[days.length - 1].day + ' to ' + days[0].day + '). Check the table below. Nothing is saved until you tap Save.';
+    table(days.slice(0, 400));
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=range]'), function (el) { el.addEventListener('change', preview); });
+  $('cancel').addEventListener('click', function () { pending = null; allDays = null; if (key) load(); else reset(); });
+  $('save').addEventListener('click', function () {
+    if (!pending) return; err(''); $('save').disabled = true;
+    var P = pending, ed = (P.exportDate || '').replace(' ', 'T').replace(/ ([+-]\d\d)(\d\d)$/, '$1:$2'), parts = Math.max(1, Math.ceil(P.days.length / BATCH)), k = key;
+    function send(i) {
+      if (parts > 1) $('save').textContent = 'Saving… ' + Math.round(i / parts * 100) + '%';
+      return api({ action:'upload', key:k, range:P.range, part:i, parts:parts, export_date:ed, days:P.days.slice(i * BATCH, (i + 1) * BATCH) }).then(function (j) {
+        if (j.key) { k = j.key; key = k; try { localStorage.setItem(LS, k); } catch (e) {} }
+        return i + 1 < parts ? send(i + 1) : j;
+      });
+    }
+    send(0).then(function (j) { pending = null; allDays = null; show(j); })
+      .catch(function (e) { err(e.code); }).then(function () { $('save').disabled = false; $('save').textContent = 'Save these daily totals'; });
+  });
+  ['research', 'matching'].forEach(function (n) {
+    $('opt-' + n).addEventListener('change', function () {
+      var b = { action:'optin', key:key }; b[n + '_optin'] = this.checked; var el = this;
+      api(b).then(function () { $('opt-msg').textContent = 'Saved.'; }).catch(function (e) { el.checked = !el.checked; err(e.code); });
+    });
+  });
+  $('delete').addEventListener('click', function () {
+    if (!confirm('Delete all the Apple Health totals we saved?')) return;
+    api({ action:'delete', key:key }).then(function () {
+      try { localStorage.removeItem(LS); } catch (e) {} key = null; reset(); $('err').textContent = 'Deleted. Your Apple Health data is gone from our side.';
+    }).catch(function (e) { err(e.code); });
+  });
+  function load() {
+    if (!key) return;
+    api({ action:'data', key:key }).then(show).catch(function (e) {
+      if (e.code === 'not_connected') { try { localStorage.removeItem(LS); } catch (x) {} key = null; reset(); }
+      err(e.code);
+    });
+  }
+  (function () { // s3y179: x-apple-health:// only works on iPhone; elsewhere show plain text + note
+    var ios = /iPhone|iPod/.test(navigator.userAgent); var a = $('open-health');
+    if (!ios && a) { var b = document.createElement('span'); b.innerHTML = a.innerHTML; a.parentNode.replaceChild(b, a); $('health-note').hidden = false; }
+  })();
+  load();
+})();
+</script>
+</body>
+</html>
