@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" class="s3y47 s3y46 s3y45 s3y44 s3y43 s3y42 s3y40 s3y38 s3y37 s3y36 s3y35 s3y34 s3y33 s3y32 s3y31 s3y30 s3y9 s3y29s2 s3y28s2 s3y27s2 s3y26s2 s3y25s2 s3y24s2 s3y23s2 s3y22s2 s3y21s2 s3y20s2 s3y19s2 s3y18s2 s3y17s2 s3y16s2 s3y15s2 s3y14s2 s3y13s2 s3y12s2 s3y11s2 s3y10s2 s3y9s2 s3y8 s3y7 s3y6 s3y5 s3y4 s3y3 s3y2 s3y1 s3y s3x s3x-left s3w s3v s3u s3t cp v-f vi vj vk vk2 vk4 vk5 wya wya-c gmap vk-al-box k4s-boxed">
 <head>
+  <script>
+  // Stripe reviewer path (_grokbot): when /review/ stored an access code for this tab, attach it to save-lead / submit-application so the server flags the rows is_test.
+  (function () { try { var K = 'ihbc_review_token_grokbot', f = window.fetch.bind(window);
+    window.fetch = function (input, init) { try { var t = sessionStorage.getItem(K), u = typeof input === 'string' ? input : (input && input.url) || '';
+      if (t && /\/functions\/v1\/(save-lead|submit-application)(\?|$)/.test(u) && init && typeof init.body === 'string') { var b = JSON.parse(init.body);
+        if (b && typeof b === 'object' && !Array.isArray(b)) { b.review_token = t; init = Object.assign({}, init, { body: JSON.stringify(b) }); } } } catch (e) {}
+      return f(input, init); }; } catch (e) {} })();
+  </script>
   <!-- SANDBOX_grokbot (k5-s3y38-main_income): non-overlapping own income labels; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y37-main_ptloc): couples partner live defaults from own location; Add→EDIT when prefilled; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y36-main_ocedit): Dist EDIT keeps OC condensed below Dist; no WMM -->
