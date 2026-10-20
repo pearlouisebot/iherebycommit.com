@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Reviewer access · I Hereby Commit</title>
+<title>Reviewer sign-in · I Hereby Commit</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#0e0e0e;color:#f0ece0;font-family:'Space Mono',Menlo,monospace;font-size:14px;line-height:1.55}
@@ -17,14 +17,16 @@ a.b.s{background:transparent;color:#c8f135;border:1px solid #c8f135}
 #err{color:#ff7a2f;min-height:18px;font-size:12px}
 #links{display:none}
 </style></head><body><div class="w">
-<h1>Reviewer access</h1>
+<h1>Reviewer sign-in</h1>
 <p>This private page is for payment-processor reviewers. Applications started from here are saved as test records: they are excluded from research data, matching and member counts, and no emails or texts are sent.</p>
-<div id="gate">
-<label for="code">Access code</label>
-<input id="code" autocomplete="off" autocapitalize="off" spellcheck="false">
+<form id="gate" autocomplete="on">
+<label for="u">Username</label>
+<input id="u" name="username" autocomplete="username" autocapitalize="off" spellcheck="false" required>
+<label for="p">Password</label>
+<input id="p" name="password" type="password" autocomplete="current-password" required>
 <div id="err"></div>
-<button id="go" type="button">Continue</button>
-</div>
+<button id="go" type="submit">Sign in</button>
+</form>
 <div id="links">
 <a class="b" href="/?review=single">Start single application</a>
 <p class="hint">On step 1, choose that you are single.</p>
@@ -37,10 +39,13 @@ a.b.s{background:transparent;color:#c8f135;border:1px solid #c8f135}
 <p class="hint" style="margin-top:22px"><a href="#" id="out" style="color:#888">Exit review mode</a></p>
 </div>
 <script>
-(function(){var K='ihbc_review_token_grokbot',g=document.getElementById('gate'),l=document.getElementById('links');
+(function(){var K='ihbc_review_token_grokbot',g=document.getElementById('gate'),l=document.getElementById('links'),e=document.getElementById('err'),btn=document.getElementById('go');
+var F='https://dqrmyqmpqnlemkwdndsf.supabase.co/functions/v1/save-lead',A='sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
 function show(){g.style.display='none';l.style.display='block'}
-var q=new URLSearchParams(location.search).get('code');if(q){sessionStorage.setItem(K,q.trim());history.replaceState(null,'',location.pathname)}
 if(sessionStorage.getItem(K))show();
-document.getElementById('go').onclick=function(){var v=document.getElementById('code').value.trim();if(v.length<32){document.getElementById('err').textContent='That code looks incomplete.';return}sessionStorage.setItem(K,v);show()};
-document.getElementById('out').onclick=function(e){e.preventDefault();sessionStorage.removeItem(K);l.style.display='none';g.style.display='block'};})();
+g.addEventListener('submit',function(ev){ev.preventDefault();e.textContent='';var t=document.getElementById('u').value.trim()+':'+document.getElementById('p').value;
+btn.disabled=true;fetch(F,{method:'POST',headers:{'Content-Type':'application/json','apikey':A},body:JSON.stringify({review_token:t,review_check:true})})
+.then(function(r){if(r.ok){sessionStorage.setItem(K,t);show()}else{e.textContent='Incorrect username or password'}})
+.catch(function(){e.textContent='Could not sign in. Please try again.'}).then(function(){btn.disabled=false})});
+document.getElementById('out').onclick=function(x){x.preventDefault();sessionStorage.removeItem(K);l.style.display='none';g.style.display='block'};})();
 </script></div></body></html>
