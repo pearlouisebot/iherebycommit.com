@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e0e0e">
+  <title>I Hereby Commit — AI video</title>
+  <meta name="description" content="AI video swipe sandbox.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://dqrmyqmpqnlemkwdndsf.supabase.co">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0e0e;
+      --text: #f0ece0;
+      --accent: #c8f135;
+      --card: #161616;
+      --muted: #888;
+      --border: #333;
+      --radius: 4px;
+      --font: 'Space Mono', monospace;
+      --display: 'Bebas Neue', sans-serif;
+    }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+    #app {
+      display: flex;
+      justify-content: center;
+      height: 100%;
+      min-height: 100dvh;
+    }
+    .phone {
+      width: 100%;
+      max-width: 420px;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 32px 24px 28px; overflow: auto; }
+    .screen.active { display: flex; }
+    #screen-splash { align-items: center; justify-content: center; text-align: center; }
+    .wordmark-wrap { display: inline-block; line-height: 1; }
+    .wordmark-text { font-family: var(--display); letter-spacing: 0.06em; display: block; font-size: 68px; line-height: 0.88; }
+    .wm-white { color: var(--text); }
+    .wm-green { color: var(--accent); }
+    .wordmark-wrap::after { content: ''; display: block; height: 4px; background: var(--accent); margin-top: 4px; }
+    .splash-kicker { margin-top: 22px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+    .splash-tagline { margin-top: 8px; font-size: 13px; color: var(--muted); }
+    .splash-spacer { flex: 1; }
+    #screen-rate { padding: 16px 16px calc(18px + env(safe-area-inset-bottom)); gap: 0; }
+    .rate-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; padding: 0 4px; gap: 12px; }
+    .rate-header-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); line-height: 1.4; flex: 1; padding-top: 2px; }
+    .rate-counter { font-size: 12px; color: var(--muted); white-space: nowrap; padding-top: 1px; }
+    .profile-card {
+      background: var(--card); border-radius: var(--radius); border: 1px solid var(--border);
+      overflow: hidden; display: flex;
+      flex-direction: column; min-height: 0;
+      width: min(100%, calc(56vh * 9 / 16));
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .profile-visual {
+      flex: none;
+      aspect-ratio: 9 / 16;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #000 center / cover no-repeat;
+    }
+    .profile-visual.landscape { background-size: contain; }
+    .profile-visual video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      background: transparent;
+    }
+    .profile-visual.landscape video { object-fit: contain; }
+    .poster-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 2;
+      pointer-events: none;
+      background: transparent;
+    }
+    .profile-visual.landscape .poster-img { object-fit: contain; }
+    .profile-visual.is-playing .poster-img,
+    .profile-visual.pending .poster-img,
+    .profile-visual.pending video { visibility: hidden; }
+    .profile-visual.pending { background-color: var(--card); background-image: none; }
+    .play-btn {
+      position: absolute; z-index: 3;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      border: 0;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      border-radius: var(--radius);
+      padding: 10px 22px;
+      cursor: pointer;
+    }
+    .sound-btn {
+      position: absolute; z-index: 2; left: 12px; bottom: 12px;
+      border: 1px solid var(--border); background: rgba(14,14,14,0.82);
+      color: var(--text); font-family: var(--font); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      border-radius: 999px; padding: 7px 12px; cursor: pointer;
+    }
+    .profile-info {
+      padding: 14px 18px 12px;
+      display: flex; flex-direction: column; gap: 3px;
+      border-top: 1px solid var(--border);
+    }
+    .profile-name { font-family: var(--display); font-size: 32px; letter-spacing: 0.04em; line-height: 1; }
+    .profile-school-job { font-size: 13px; color: var(--muted); }
+    .profile-social { font-size: 11px; color: rgba(246,243,238,0.2); margin-top: 5px; font-style: italic; }
+    .rating-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+    .rating-btn {
+      min-height: 48px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text); font-size: 16px;
+      cursor: pointer; font-family: var(--font);
+      transition: background 0.1s, border-color 0.1s, transform 0.1s;
+    }
+    .rating-btn:hover { border-color: var(--accent); }
+    .rating-btn:active { transform: scale(0.93); }
+    .rating-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+    .rating-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    .banner {
+      margin: 0 4px 10px;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text);
+      background: var(--card);
+    }
+    #screen-reveal { padding: 0; }
+    .reveal-inner { flex: 1; display: flex; flex-direction: column; padding: 32px 24px 24px; gap: 18px; }
+    .reveal-badge {
+      display: inline-block; padding: 5px 14px;
+      border-radius: 999px; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--accent); color: var(--bg);
+    }
+    .reveal-title { font-family: var(--display); font-size: 72px; letter-spacing: 0.02em; line-height: 1; margin-top: 10px; color: var(--accent); }
+    .reveal-body { font-size: 15px; color: var(--muted); line-height: 1.6; }
+    .reveal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+    .reveal-progress-wrap { padding: 0 24px calc(28px + env(safe-area-inset-bottom)); }
+    .reveal-progress-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .reveal-progress-track { height: 4px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .reveal-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+    .report-headline { font-family: var(--display); font-size: 52px; letter-spacing: 0.02em; line-height: 0.95; }
+    .report-headline span { color: var(--accent); }
+    .report-stats { margin-top: 22px; background: var(--card); border-radius: var(--radius); padding: 18px 20px; display: flex; }
+    .stat-item { flex: 1; text-align: center; }
+    .stat-item + .stat-item { border-left: 1px solid var(--border); }
+    .stat-num { font-family: var(--display); font-size: 40px; color: var(--accent); letter-spacing: 0.02em; }
+    .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .reset-link { display: block; text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; background: none; border: none; font-family: var(--font); }
+    .register-title { font-family: var(--display); font-size: 48px; letter-spacing: 0.02em; line-height: 0.95; }
+    .register-sub { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+    #screen-confirm { text-align: center; justify-content: center; align-items: center; gap: 10px; }
+    .confirm-mark { width: 68px; height: 68px; border-radius: 50%; background: #1a2208; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 36px; color: var(--accent); margin-bottom: 8px; }
+    .confirm-title { font-family: var(--display); font-size: 48px; letter-spacing: 0.02em; }
+    .confirm-sub { font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 280px; }
+    .btn { display: block; width: 100%; padding: 18px 24px; border-radius: var(--radius); border: none; font-size: 22px; letter-spacing: 0.1em; cursor: pointer; font-family: var(--display); transition: background 0.15s; text-align: center; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: #d8ff40; }
+    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .spacer { flex: 1; }
+    .status-title { font-family: var(--display); font-size: 52px; letter-spacing: 0.02em; line-height: 0.95; }
+    .status-body { margin-top: 14px; font-size: 15px; color: var(--muted); line-height: 1.6; }
+  </style>
+</head>
+<body>
+<div id="app">
+<div class="phone">
+
+  <div id="screen-splash" class="screen active">
+    <div class="splash-spacer"></div>
+    <div class="wordmark-wrap">
+      <span class="wordmark-text"><span class="wm-white">I HEREBY</span><br><span class="wm-green">COMMIT</span></span>
+    </div>
+    <div class="splash-kicker">AI video</div>
+    <div class="splash-tagline">Swipe sandbox</div>
+    <div class="splash-spacer"></div>
+    <button class="btn btn-primary" id="start-rating" type="button">Start rating</button>
+  </div>
+
+  <div id="screen-rate" class="screen">
+    <p id="banner" class="banner" hidden></p>
+    <div class="rate-header">
+      <div class="rate-header-title" id="rate-title">AI video</div>
+      <div class="rate-counter" id="rate-counter">1 / 25</div>
+    </div>
+    <div class="profile-card">
+      <div class="profile-visual" id="profile-visual">
+        <video id="profile-video" loop muted playsinline webkit-playsinline preload="none" disablepictureinpicture disableremoteplayback></video>
+        <img id="poster-img" class="poster-img" alt="" decoding="async">
+        <button type="button" class="play-btn" id="play-btn" hidden>Play</button>
+        <button type="button" class="sound-btn" id="sound-btn">Tap for sound</button>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name" id="profile-name">Profile</div>
+        <div class="profile-school-job" id="profile-school-job" hidden></div>
+      </div>
+    </div>
+    <div class="rating-grid" id="rating-grid"></div>
+  </div>
+
+  <div id="screen-reveal" class="screen">
+    <div class="reveal-inner">
+      <div>
+        <span class="reveal-badge" id="reveal-badge">Rated</span>
+        <div class="reveal-title" id="reveal-title">8</div>
+      </div>
+      <div class="reveal-body" id="reveal-body"></div>
+      <div class="spacer"></div>
+      <div class="reveal-actions">
+        <button class="btn btn-primary" id="reveal-next" type="button">Next</button>
+      </div>
+    </div>
+    <div class="reveal-progress-wrap">
+      <div class="reveal-progress-label" id="reveal-progress-label">1 of 25 rated</div>
+      <div class="reveal-progress-track">
+        <div class="reveal-progress-fill" id="reveal-progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-report" class="screen">
+    <div class="report-headline">Your ratings<br>are <span>in.</span></div>
+    <div class="report-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="stat-avg">–</div>
+        <div class="stat-label">Avg score given</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-count">–</div>
+        <div class="stat-label">Ratings</div>
+      </div>
+    </div>
+    <div style="margin-top:22px">
+      <button class="btn btn-primary" id="report-register" type="button">Done</button>
+    </div>
+    <button class="reset-link" id="reset-link" type="button">Rate again</button>
+  </div>
+
+  <div id="screen-register" class="screen">
+    <div class="register-title">AI video sandbox</div>
+    <div class="register-sub">This sandbox does not create an account. The study application does.</div>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="register-submit" type="button">Back</button>
+  </div>
+
+  <div id="screen-confirm" class="screen">
+    <div class="spacer"></div>
+    <div class="confirm-mark">+</div>
+    <div class="confirm-title">That's the deck.</div>
+    <div class="confirm-sub" id="confirm-sub">Accounts are created in the study application.</div>
+    <a class="btn btn-secondary" id="confirm-home" href="/" style="margin-top:18px;">Back to the study</a>
+    <div class="spacer"></div>
+  </div>
+
+  <div id="screen-empty" class="screen">
+    <div class="spacer"></div>
+    <div class="status-title">You've seen them all</div>
+    <p class="status-body" id="empty-body">Nothing left to rate right now.</p>
+    <div class="spacer"></div>
+    <a class="btn btn-secondary" href="/">Back to the study</a>
+  </div>
+
+  <div id="screen-error" class="screen">
+    <div class="spacer"></div>
+    <div class="status-title">Couldn't load the deck</div>
+    <p class="status-body">Check your connection and try again.</p>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="retry" type="button">Try again</button>
+  </div>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script>
+  // Same publishable key as the waitlist. Never a service-role key.
+  var SUPABASE_URL = 'https://dqrmyqmpqnlemkwdndsf.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_4vVukqsYa3MHQeq0ZDcInQ_x6CxeoYG';
+  // How many clips to ask for. The screen uses however many rows come back.
+  // The live deck is 16 and growing toward ~50. The server clamps this to 1..50.
+  var DECK_LIMIT = 50;
+  var VOTE_CLOSED = "Voting isn't open yet — sign-in is turned off. You can still watch the deck.";
+
+  var video = document.getElementById('profile-video');
+  var visual = document.getElementById('profile-visual');
+  var posterImg = document.getElementById('poster-img');
+  var playBtn = document.getElementById('play-btn');
+  var soundBtn = document.getElementById('sound-btn');
+  var banner = document.getElementById('banner');
+  var grid = document.getElementById('rating-grid');
+
+  var sb = null;
+  var deck = [];
+  var index = 0;
+  var ratings = [];
+  var locked = false;
+  var soundOn = false;
+  var authBlocked = false;
+  var sawAuthBlock = false;
+  var lastAuthAnonDisabled = true;
+  var videoStartedAt = null;
+  var playRequestedAt = 0;
+  var loadGen = 0;
+  var clipGen = 0;
+  var posterCache = [];
+
+  video.playsInline = true;
+  video.muted = true;
+  video.addEventListener('playing', function () {
+    if (videoStartedAt == null) videoStartedAt = performance.now();
+    // A video with no decoded frame paints black and covers the poster. Keep the still until playback has a frame.
+    if (video.readyState >= 2 && video.videoWidth > 0) {
+      visual.classList.add('is-playing');
+      showPlayButton(false);
+    }
+  });
+  video.addEventListener('loadedmetadata', function () {
+    if (video.videoWidth && video.videoHeight) applyFit(video.videoWidth, video.videoHeight);
+  });
+  video.addEventListener('error', function () {
+    // Dropping the previous src also reports an error. Only a clip we still mean to play counts.
+    if (!video.getAttribute('src')) return;
+    visual.classList.remove('is-playing');
+    showPlayButton(false);
+    showBanner("This clip didn't load. You can still keep going.");
+  });
+
+  function safeUrl(value) {
+    if (!value) return '';
+    try {
+      var url = new URL(value);
+      return url.protocol === 'https:' ? url.href : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
+    var el = document.getElementById('screen-' + id);
+    if (el) el.classList.add('active');
+  }
+
+  function showBanner(text) {
+    banner.textContent = text;
+    banner.hidden = !text;
+  }
+
+  function unloadClip() {
+    video.pause();
+    video.preload = 'none';
+    video.removeAttribute('src');
+    video.load();
+  }
+
+  function preloadPoster(entry) {
+    var href = entry ? safeUrl(entry.poster_url) : '';
+    if (!href) return;
+    var img = new Image();
+    img.decoding = 'async';
+    img.src = href;
+    posterCache.push(img);
+    var link = document.getElementById('next-poster');
+    if (!link) {
+      link = document.createElement('link');
+      link.id = 'next-poster';
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = href;
+      document.head.appendChild(link);
+    } else if (link.href !== href) {
+      link.href = href;
+    }
+  }
+
+  function updateSound() {
+    soundBtn.textContent = soundOn ? 'Sound on' : 'Tap for sound';
+    soundBtn.setAttribute('aria-label', soundOn ? 'Mute video' : 'Unmute video');
+    video.muted = !soundOn;
+    if (soundOn) video.removeAttribute('muted');
+    else video.setAttribute('muted', '');
+  }
+
+  function dwellMs() {
+    var start = videoStartedAt || playRequestedAt || performance.now();
+    var ms = Math.round(performance.now() - start);
+    if (!isFinite(ms) || ms < 0) return 0;
+    return ms;
+  }
+
+  // 1–5 store as not, 6–10 as hot. The vote RPC only accepts hot|not|bot|human.
+  function voteForScore(score) {
+    return score >= 6 ? 'hot' : 'not';
+  }
+
+  function profileTitle(entry, n) {
+    if (entry.name && entry.age) return entry.name + ', ' + entry.age;
+    if (entry.name) return entry.name;
+    return 'Profile ' + n;
+  }
+
+  function profileDetail(entry) {
+    var parts = [];
+    if (entry.school) parts.push(entry.school);
+    if (entry.job) parts.push(entry.job);
+    return parts.join(' · ');
+  }
+
+  // Portrait fills the 9:16 card. Landscape (1280x720) letterboxes so the whole frame stays visible.
+  function applyFit(w, h) {
+    var width = Number(w);
+    var height = Number(h);
+    visual.classList.toggle('landscape', width > 0 && height > 0 && width > height);
+  }
+
+  function showPlayButton(on) {
+    playBtn.hidden = !on;
+  }
+
+  // The <img> sits above the video. WebKit paints an opaque black frame as soon as
+  // playback is requested, which used to cover the poster for the whole first load.
+  function showPoster(url) {
+    visual.classList.remove('is-playing');
+    showPlayButton(false);
+    if (!url) {
+      posterImg.removeAttribute('src');
+      visual.style.backgroundImage = 'none';
+      video.removeAttribute('poster');
+      return;
+    }
+    if (posterImg.getAttribute('src') !== url) posterImg.src = url;
+    video.setAttribute('poster', url);
+    visual.style.backgroundImage = 'url("' + url.replace(/["\\]/g, '') + '")';
+  }
+
+  function startPlayback() {
+    var keepSound = soundOn;
+    video.muted = true;
+    video.setAttribute('muted', '');
+    var attempt = video.play();
+    if (!attempt || !attempt.then) return;
+    attempt.then(function () {
+      showPlayButton(false);
+      if (keepSound) {
+        soundOn = true;
+        video.muted = false;
+        video.removeAttribute('muted');
+      }
+      updateSound();
+    }).catch(function () {
+      video.muted = true;
+      video.setAttribute('muted', '');
+      showPlayButton(true);
+      updateSound();
+    });
+  }
+
+  // Don't attach the mp4 until the still is on screen. Setting src first makes WebKit
+  // drop the poster and paint black for the whole download.
+  function whenPosterReady(url, done) {
+    if (!url) { done(); return; }
+    var finished = false;
+    var finish = function () {
+      if (finished) return;
+      finished = true;
+      posterImg.removeEventListener('load', finish);
+      posterImg.removeEventListener('error', finish);
+      done();
+    };
+    posterImg.addEventListener('load', finish);
+    posterImg.addEventListener('error', finish);
+    if (posterImg.complete && posterImg.getAttribute('src') === url && posterImg.naturalWidth > 0) finish();
+    setTimeout(finish, 1200);
+  }
+
+  function playClip(entry) {
+    var src = safeUrl(entry.video_url);
+    var poster = safeUrl(entry.poster_url);
+    var gen = ++clipGen;
+    applyFit(entry.width, entry.height);
+    showPoster(poster);
+    unloadClip();
+    soundBtn.textContent = soundOn ? 'Sound on' : 'Tap for sound';
+    if (!src) {
+      showBanner("This clip didn't load. You can still keep going.");
+      return;
+    }
+    whenPosterReady(poster, function () {
+      if (gen !== clipGen) return;
+      visual.classList.remove('pending');
+      videoStartedAt = null;
+      playRequestedAt = performance.now();
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.autoplay = false;
+      video.removeAttribute('autoplay');
+      video.loop = true;
+      video.muted = true;
+      video.setAttribute('muted', '');
+      video.preload = 'auto';
+      if (poster) video.setAttribute('poster', poster);
+      video.src = src;
+      startPlayback();
+    });
+  }
+
+  function buildRatingButtons() {
+    grid.replaceChildren();
+    for (var i = 1; i <= 10; i++) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'rating-btn';
+      b.textContent = String(i);
+      b.dataset.score = String(i);
+      grid.appendChild(b);
+    }
+  }
+
+  function setButtonsDisabled(disabled) {
+    grid.querySelectorAll('.rating-btn').forEach(function (b) { b.disabled = disabled; });
+  }
+
+  function showRate() {
+    var entry = deck[index];
+    if (!entry) {
+      showReport();
+      return;
+    }
+    showScreen('rate');
+    var total = deck.length;
+    document.getElementById('rate-title').textContent = 'AI video';
+    document.getElementById('rate-counter').textContent = (index + 1) + ' / ' + total;
+    document.getElementById('profile-name').textContent = profileTitle(entry, index + 1);
+    var detail = profileDetail(entry);
+    var detailEl = document.getElementById('profile-school-job');
+    detailEl.hidden = !detail;
+    detailEl.textContent = detail;
+    showBanner(sawAuthBlock ? (lastAuthAnonDisabled ? VOTE_CLOSED : "Voting isn't available right now. You can still watch the deck.") : '');
+    setButtonsDisabled(false);
+    grid.querySelectorAll('.rating-btn').forEach(function (b) { b.classList.remove('selected'); });
+    playClip(entry);
+    preloadPoster(deck[index + 1]);
+  }
+
+  function isAnonDisabled(error) {
+    var blob = ((error && (error.code || error.error_code || error.message)) || '') + '';
+    return /anonymous/i.test(blob) || /sign-?ins are disabled/i.test(blob);
+  }
+
+  async function ensureSession() {
+    if (authBlocked) return null;
+    var current = await sb.auth.getSession();
+    if (current && current.data && current.data.session) return current.data.session;
+    var signed = await sb.auth.signInAnonymously();
+    if (signed && signed.data && signed.data.session) return signed.data.session;
+    authBlocked = true;
+    sawAuthBlock = true;
+    lastAuthAnonDisabled = !signed || !signed.error || isAnonDisabled(signed.error);
+    return null;
+  }
+
+  async function saveVote(entry, vote, dwell) {
+    var session = null;
+    try {
+      session = await ensureSession();
+    } catch (err) {
+      authBlocked = true;
+      sawAuthBlock = true;
+      lastAuthAnonDisabled = isAnonDisabled(err);
+      return false;
+    }
+    if (!session) return false;
+    var result = await sb.rpc('cast_swipe_vote', {
+      p_video_profile_id: entry.id,
+      p_vote: vote,
+      p_dwell_ms: dwell,
+      p_client: 'web'
+    });
+    if (result.error) {
+      var code = result.error.code || '';
+      var message = result.error.message || '';
+      if (code === '28000' || code === '42501' || /not authenticated|permission denied/i.test(message)) {
+        authBlocked = true;
+        sawAuthBlock = true;
+        return false;
+      }
+      throw result.error;
+    }
+    return true;
+  }
+
+  function showReveal(score, saved) {
+    unloadClip();
+    var n = ratings.length;
+    var total = deck.length || 1;
+    document.getElementById('reveal-badge').textContent = 'Rated';
+    document.getElementById('reveal-title').textContent = String(score);
+    var body = saved
+      ? 'Next profile when you are ready.'
+      : (lastAuthAnonDisabled ? VOTE_CLOSED : "That score didn't save. You can still keep watching.");
+    document.getElementById('reveal-body').textContent = body;
+    document.getElementById('reveal-progress-label').textContent = n + ' of ' + total + ' rated';
+    document.getElementById('reveal-progress-fill').style.width = ((n / total) * 100) + '%';
+    var next = document.getElementById('reveal-next');
+    next.textContent = index + 1 >= deck.length ? 'See your ratings' : 'Next';
+    showScreen('reveal');
+  }
+
+  async function handleRating(score) {
+    if (locked || !deck[index]) return;
+    locked = true;
+    setButtonsDisabled(true);
+    var chosen = grid.querySelector('[data-score="' + score + '"]');
+    if (chosen) chosen.classList.add('selected');
+    var entry = deck[index];
+    var dwell = dwellMs();
+    var saved = false;
+    try {
+      saved = await saveVote(entry, voteForScore(score), dwell);
+    } catch (err) {
+      locked = false;
+      setButtonsDisabled(false);
+      showBanner("That score didn't save. You can try again.");
+      return;
+    }
+    ratings.push({ id: entry.id, score: score, saved: saved });
+    showReveal(score, saved);
+    locked = false;
+  }
+
+  function showReport() {
+    unloadClip();
+    var count = ratings.length;
+    var avg = count ? (ratings.reduce(function (sum, r) { return sum + r.score; }, 0) / count) : 0;
+    document.getElementById('stat-avg').textContent = count ? avg.toFixed(1) : '–';
+    document.getElementById('stat-count').textContent = String(count);
+    showScreen('report');
+  }
+
+  function showEmpty(note) {
+    unloadClip();
+    document.getElementById('empty-body').textContent = note || 'Nothing left to rate right now.';
+    showScreen('empty');
+  }
+
+  function loadDeck() {
+    var gen = ++loadGen;
+    showScreen('rate');
+    document.getElementById('rate-title').textContent = 'Loading the deck…';
+    document.getElementById('rate-counter').textContent = '';
+    grid.replaceChildren();
+    banner.hidden = true;
+    clipGen += 1;
+    visual.classList.add('pending');
+    visual.classList.remove('is-playing', 'landscape');
+    visual.style.backgroundImage = 'none';
+    posterImg.removeAttribute('src');
+    showPlayButton(false);
+    unloadClip();
+    deck = [];
+    index = 0;
+    ratings = [];
+    sb.rpc('get_swipe_deck', { p_limit: DECK_LIMIT }).then(function (result) {
+      if (gen !== loadGen) return;
+      if (result.error) {
+        showScreen('error');
+        return;
+      }
+      deck = Array.isArray(result.data) ? result.data : [];
+      if (!deck.length) {
+        showEmpty("You've seen them all");
+        return;
+      }
+      buildRatingButtons();
+      showRate();
+    }).catch(function () {
+      if (gen === loadGen) showScreen('error');
+    });
+  }
+
+  soundBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (video.paused || !visual.classList.contains('is-playing')) {
+      soundOn = true;
+      startPlayback();
+      return;
+    }
+    soundOn = !soundOn;
+    updateSound();
+  });
+  playBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    startPlayback();
+  });
+  visual.addEventListener('click', function (e) {
+    if (e.target.closest('button')) return;
+    if (video.paused || !visual.classList.contains('is-playing')) {
+      startPlayback();
+      return;
+    }
+    soundOn = !soundOn;
+    updateSound();
+  });
+  grid.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-score]');
+    if (!btn) return;
+    handleRating(Number(btn.dataset.score));
+  });
+  document.getElementById('start-rating').addEventListener('click', loadDeck);
+  document.getElementById('reveal-next').addEventListener('click', function () {
+    index += 1;
+    if (!deck[index]) showReport();
+    else showRate();
+  });
+  document.getElementById('report-register').addEventListener('click', function () { showScreen('register'); });
+  document.getElementById('register-submit').addEventListener('click', function () {
+    document.getElementById('confirm-sub').textContent = 'Accounts are created in the study application.';
+    showScreen('confirm');
+  });
+  document.getElementById('reset-link').addEventListener('click', loadDeck);
+  document.getElementById('retry').addEventListener('click', loadDeck);
+  document.addEventListener('keydown', function (e) {
+    if (!document.getElementById('screen-rate').classList.contains('active')) return;
+    if (e.key >= '1' && e.key <= '9') handleRating(Number(e.key));
+    else if (e.key === '0') handleRating(10);
+  });
+
+  if (!window.supabase || !window.supabase.createClient) {
+    showScreen('error');
+  } else {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+    });
+  }
+</script>
+</body>
+</html>
