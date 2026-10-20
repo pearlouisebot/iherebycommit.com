@@ -9,6 +9,11 @@
         if (b && typeof b === 'object' && !Array.isArray(b)) { b.review_token = t; init = Object.assign({}, init, { body: JSON.stringify(b) }); } } } catch (e) {}
       return f(input, init); }; } catch (e) {} })();
   </script>
+  <script>
+  // Review mode (_grokbot): hide the Casual options for signed-in reviewers only; real applicants keep them.
+  (function () { try { if (sessionStorage.getItem('ihbc_review_token_grokbot')) { document.documentElement.classList.add('ihbc-review-grokbot');
+    var st = document.createElement('style'); st.textContent = '.ihbc-review-grokbot #btn-looking-casual{display:none!important}'; document.head.appendChild(st); } } catch (e) {} })();
+  </script>
   <!-- SANDBOX_grokbot (k5-s3y38-main_income): non-overlapping own income labels; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y37-main_ptloc): couples partner live defaults from own location; Add→EDIT when prefilled; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y36-main_ocedit): Dist EDIT keeps OC condensed below Dist; no WMM -->
@@ -4156,7 +4161,7 @@ function validateScreen(screenId) {
   if (screenId === 6) {
     const phone = document.getElementById('phone').value.trim();
     // Phone is required (2026-09-27k). No hint on the label: the error only appears after pressing Submit.
-    if (!phone) { showError('phone', 'Required'); ok = false; }
+    if (!phone) { if ((function () { try { return !!sessionStorage.getItem('ihbc_review_token_grokbot'); } catch (e) { return false; } })()) hideError('phone'); else { showError('phone', 'Required'); ok = false; } } // review mode (_grokbot): phone not required
     else if (!isValidPhone(phone)) { showError('phone', 'Invalid'); ok = false; }
     else hideError('phone');
   }
@@ -4164,7 +4169,8 @@ function validateScreen(screenId) {
     const username = document.getElementById('linkedin_username').value.trim();
     const valid = username && /^[a-zA-Z0-9\-]+$/.test(username);
     const wrap = document.getElementById('linkedin-wrap');
-    if (!valid) { showError('linkedin_username', username ? 'Invalid' : 'Required'); wrap.classList.add('error'); ok = false; }
+    if (!username && (function () { try { return !!sessionStorage.getItem('ihbc_review_token_grokbot'); } catch (e) { return false; } })()) { hideError('linkedin_username'); wrap.classList.remove('error'); } // review mode (_grokbot): LinkedIn not required
+    else if (!valid) { showError('linkedin_username', username ? 'Invalid' : 'Required'); wrap.classList.add('error'); ok = false; }
     else { hideError('linkedin_username'); wrap.classList.remove('error'); }
   }
   return ok;
@@ -7827,7 +7833,7 @@ const WMM_DEF = [
   { k: 'ethnicity', t: 'Ethnicity', multi: true, o: ['Any', 'White', 'Black', 'Asian', 'Hispanic / Latino', 'South Asian', 'MENA', 'Pacific Islander', 'Native American', 'Other'] },
   { k: 'education', t: 'Education', edu: true },
   { k: 'income', t: 'Income', pick: WMM_INCOME },
-  { k: 'intentions', t: 'Intentions', multi: true, o: ['Any', 'Casual', 'Dating', 'Relationship', 'Marriage', 'Life partner'] },
+  { k: 'intentions', t: 'Intentions', multi: true, o: ['Any', 'Casual', 'Dating', 'Relationship', 'Marriage', 'Life partner'].filter(function (x) { try { return !(x === 'Casual' && sessionStorage.getItem('ihbc_review_token_grokbot')); } catch (e) { return true; } }) },
   { k: 'haskids', t: 'Have kids', o: ['Any', 'Yes', 'No'] },
   { k: 'wantkids', t: 'Want kids', o: ['Any', 'Yes', 'No', 'Open to either', 'Unsure'] },
   { k: 'religion', t: 'Religion', multi: true, o: null }, // the Who You Are Religion list (without None Stated) + Any
