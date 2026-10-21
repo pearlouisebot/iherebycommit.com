@@ -9551,7 +9551,7 @@ body.idv-a-grokbot #idv-note-grokbot { display: block; }
     return showFail();
   }
   function poll(n) {
-    return post({ action: 'status', lead_id: state.partialLeadId }).then(function (r) {
+    return post({ action: 'status', lead_id: state.partialLeadId, session_id: state.idvSession || undefined }).then(function (r) {
       if (r && r.outcome === 'processing' && n > 0) return new Promise(function (res) { setTimeout(res, 2000); }).then(function () { return poll(n - 1); });
       return r;
     });
@@ -9572,7 +9572,8 @@ body.idv-a-grokbot #idv-note-grokbot { display: block; }
       if (!r || r.error) { if (r && r.error === 'under_18') return under18(); return showFail(); }
       if (r.lead_id) { state.partialLeadId = r.lead_id; try { localStorage.setItem(LS, r.lead_id); } catch (e) {} }
       if (r.outcome !== 'created') return handle(r);
-      try { sessionStorage.setItem(SS, JSON.stringify({ s1: s1(), lead: state.partialLeadId,  })); } catch (e) {}
+      state.idvSession = String(r.client_secret || '').split('_secret_')[0] || null; // under-18 routing after the row is deleted
+      try { sessionStorage.setItem(SS, JSON.stringify({ s1: s1(), lead: state.partialLeadId, sess: state.idvSession,  })); } catch (e) {}
       if (!PK) { location.href = r.url; return; }
       return loadStripe().then(function (S) {
         return S(PK).verifyIdentity(r.client_secret).then(function (res) {
@@ -9596,7 +9597,7 @@ body.idv-a-grokbot #idv-note-grokbot { display: block; }
   showUnder18 = function () {
     _u18.apply(this, arguments);
     var m = document.getElementById('under18-msg');
-    if (m) m.innerHTML = '<p style="font-size:13px;color:var(--muted);line-height:1.7;text-transform:none;">Come back when you&#39;re 18!</p>';
+    if (m) m.innerHTML = '<p style="font-size:13px;color:var(--muted);line-height:1.7;text-transform:none;">Verification failed. Come back when you&#39;re 18!</p>';
   };
   window.idvTryAgain_grokbot = function () { hideFail(); start(); };
   window.idvStartOver_grokbot = function () {
@@ -9619,7 +9620,7 @@ body.idv-a-grokbot #idv-note-grokbot { display: block; }
         document.getElementById('last_name').value = st.s1.last_name || '';
         if (st.s1.birthdate) { var b = document.getElementById('birthdate'); b.value = st.s1.birthdate; b.classList.remove('is-default'); state.birthdateTouched = true; }
         if (st.s1.gender) setGender(st.s1.gender);
-        state.partialLeadId = st.lead; setBusy(true);
+        state.partialLeadId = st.lead; state.idvSession = st.sess || null; setBusy(true);
         poll(8).then(handle).catch(showFail);
       }
     }
