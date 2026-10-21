@@ -2347,11 +2347,18 @@
             <input class="field-input" id="email" type="email" placeholder="you@example.com" autocomplete="email">
             <div class="field-error" id="err-email">Required</div>
           </div>
+        <div id="idv-note-grokbot"><p>Next: a quick ID check with a matching selfie, handled by Stripe. Your ID images stay with Stripe; we only keep the result.</p></div>
       </div>
       <div id="under18-msg">
         <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
         <p style="font-size:13px;color:var(--muted);line-height:1.7;">This study is open to adults 18 and older. Come back when you're ready.</p>
         <button class="btn btn-outline" style="margin-top:8px;" onclick="resetUnder18()">← START OVER</button>
+      </div>
+      <div id="idv-fail-grokbot" role="alert">
+        <div class="screen-headline" style="font-size:36px;">WE COULDN'T<br><span class="accent">VERIFY YOU.</span></div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;">The ID check didn't go through. Try again with a valid government photo ID and a live selfie.</p>
+        <button class="btn btn-primary" style="margin-top:8px;" onclick="idvTryAgain_grokbot()">TRY AGAIN</button>
+        <button class="btn btn-outline" onclick="idvStartOver_grokbot()">&larr; START OVER</button>
       </div>
     </div>
     <div class="bottom-action" id="screen1-next-btn">
@@ -9456,5 +9463,162 @@ window.addEventListener('load', function () {
   });
 })();
 </script>
+<style id="idv-css-grokbot">
+/* identity_grokbot: new step 1 = name + birthdate + gender + Stripe Identity ID check; the rest of old step 1 is step 2 */
+body.idv-a-grokbot #screen1-fields > *:not(#who-gn-row):not(#who-dl-row):not(#idv-note-grokbot) { display: none !important; }
+body.idv-a-grokbot #who-loc { display: none !important; }
+#idv-note-grokbot { display: none; margin-top: 14px; }
+body.idv-a-grokbot #idv-note-grokbot { display: block; }
+#idv-note-grokbot p { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
+#idv-fail-grokbot { display: none; flex-direction: column; align-items: flex-start; gap: 16px; }
+#idv-fail-grokbot.visible { display: flex; }
+</style>
+<script id="idv-js-grokbot">
+(function () {
+  if (typeof _rvIsReviewGrokbot !== 'function' || !_rvIsReviewGrokbot()) return; // PROD: reviewer (/review/) sessions only; the public form is unchanged
+  var PK = ''; // no live publishable key in the site: use Stripe's hosted page (returns here and resumes at step 2)
+  var FN = FUNCTIONS_URL + '/create-verification-session-grokbot';
+  var LS = 'ihbc_idv_lead_grokbot', SS = 'ihbc_idv_stash_grokbot';
+  state.idvPassed = false;
+  var _busy = false;
+  function onS1() { return state.currentScreen === 1; }
+  function phase() { document.body.classList.toggle('idv-a-grokbot', onS1() && !state.idvPassed); }
+  function nextBtn() { return document.querySelector('#screen1-next-btn .btn-primary'); }
+  function setBusy(b) { _busy = b; var n = nextBtn(); if (n) { n.disabled = b; n.textContent = b ? 'VERIFYING\u2026' : 'NEXT'; } }
+  // Step numbers / progress: the ID-check step is step 1, the rest of the old step 1 is step 2.
+  totalSteps = function () { return getPath().length + 1; };
+  getStepNum = function (id) { var i = getPath().indexOf(id); return i < 0 ? 0 : i + 2; };
+  var _rsn = renderStepNums;
+  renderStepNums = function (id) {
+    _rsn(id);
+    var lab = document.querySelector('#screen-1 .screen-content > .screen-label');
+    if (lab && lab.firstChild && lab.firstChild.nodeType === 3) lab.firstChild.textContent = 'Step ' + (state.idvPassed ? 2 : 1) + ' of ';
+  };
+  var _rp = renderProgress;
+  renderProgress = function (id) {
+    _rp(id);
+    var el = document.getElementById('progress-' + id); if (!el) return;
+    var d = document.createElement('div');
+    var a = id === 1 && !state.idvPassed;
+    d.className = 'progress-step ' + (a ? 'active' : 'done');
+    if (a) { var f = el.querySelector('.progress-step.active'); if (f) f.classList.remove('active'); }
+    el.insertBefore(d, el.firstChild);
+  };
+  var _ss = showScreen;
+  showScreen = function (id, dir) { _ss(id, dir); phase(); if (id === 1) { renderProgress(1); renderStepNums(1); } };
+  // Nothing past step 1 is saved until the check passes (step 1 itself is saved by the verification function).
+  var _sl = saveLead;
+  saveLead = function () { if (!state.idvPassed) return Promise.resolve(); return _sl.apply(this, arguments); };
+  function s1() {
+    return { first_name: (document.getElementById('first_name').value || '').trim(), last_name: (document.getElementById('last_name').value || '').trim(),
+      birthdate: state.birthdateTouched ? document.getElementById('birthdate').value : '', gender: state.gender || '', status: state.status || '', page_version: (typeof PAGE_VERSION !== 'undefined' ? PAGE_VERSION : '') + '-idv' };
+  }
+  function post(body) {
+    var rvt = null; try { rvt = sessionStorage.getItem('ihbc_review_token_grokbot'); } catch (e) {}
+    if (rvt) body.review_token = rvt;
+    return fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY }, body: JSON.stringify(body) }).then(function (r) { return r.json().catch(function () { return {}; }); });
+  }
+  function testDob() { try { var v = new URLSearchParams(location.search).get('idv_test_dob'); return /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : undefined; } catch (e) { return undefined; } }
+  function pass() {
+    state.idvPassed = true; setBusy(false); hideFail();
+    try { localStorage.setItem(LS, state.partialLeadId || ''); sessionStorage.removeItem(SS); } catch (e) {}
+    phase(); renderProgress(1); renderStepNums(1);
+    logEvent && logEvent('id_verified', 'who_you_are');
+    if (crRevealNext(1)) { _crClearErrors(1); _crFirstOpen(1); }
+    window.scrollTo(0, 0);
+  }
+  function under18() {
+    setBusy(false); state.partialLeadId = null;
+    try { localStorage.removeItem(LS); sessionStorage.removeItem(SS); } catch (e) {}
+    showUnder18();
+  }
+  function showFail() {
+    setBusy(false);
+    document.getElementById('screen1-fields').style.display = 'none';
+    document.getElementById('screen1-next-btn').style.display = 'none';
+    document.getElementById('idv-fail-grokbot').classList.add('visible');
+  }
+  function hideFail() {
+    document.getElementById('idv-fail-grokbot').classList.remove('visible');
+    document.getElementById('screen1-fields').style.display = 'block';
+    document.getElementById('screen1-next-btn').style.display = '';
+  }
+  function handle(r) {
+    if (!r) return showFail();
+    if (r.lead_id) state.partialLeadId = r.lead_id;
+    if (r.outcome === 'verified') return pass();
+    if (r.outcome === 'under_18' || r.error === 'under_18') return under18();
+    return showFail();
+  }
+  function poll(n) {
+    return post({ action: 'status', lead_id: state.partialLeadId }).then(function (r) {
+      if (r && r.outcome === 'processing' && n > 0) return new Promise(function (res) { setTimeout(res, 2000); }).then(function () { return poll(n - 1); });
+      return r;
+    });
+  }
+  function loadStripe() {
+    if (window.Stripe) return Promise.resolve(window.Stripe);
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script'); s.src = 'https://js.stripe.com/v3/'; s.async = true;
+      s.onload = function () { window.Stripe ? res(window.Stripe) : rej(new Error('no Stripe')); }; s.onerror = rej;
+      document.head.appendChild(s); setTimeout(function () { rej(new Error('timeout')); }, 10000);
+    });
+  }
+  function start() {
+    if (_busy) return; setBusy(true);
+    var prior = null; try { prior = localStorage.getItem(LS); } catch (e) {}
+    var ret = location.origin + location.pathname + '?idv_return=1';
+    post({ action: 'create', lead_id: state.partialLeadId || undefined, prior_lead_id: prior || undefined, step1: s1(), return_url: ret,  }).then(function (r) {
+      if (!r || r.error) { if (r && r.error === 'under_18') return under18(); return showFail(); }
+      if (r.lead_id) { state.partialLeadId = r.lead_id; try { localStorage.setItem(LS, r.lead_id); } catch (e) {} }
+      if (r.outcome !== 'created') return handle(r);
+      try { sessionStorage.setItem(SS, JSON.stringify({ s1: s1(), lead: state.partialLeadId,  })); } catch (e) {}
+      if (!PK) { location.href = r.url; return; }
+      return loadStripe().then(function (S) {
+        return S(PK).verifyIdentity(r.client_secret).then(function (res) {
+          if (res && res.error && res.error.code !== 'session_cancelled') console.warn('verifyIdentity', res.error.code);
+          return poll(8).then(handle);
+        });
+      }, function () { location.href = r.url; }); // Stripe.js unavailable: hosted page, which returns here and resumes at step 2
+    }).catch(function () { showFail(); });
+  }
+  var _gn = goNext;
+  goNext = function (id) {
+    if (id !== 1 || state.idvPassed) return _gn.apply(this, arguments);
+    var v = s1(), ok = !!(v.first_name && v.last_name && v.gender && v.birthdate);
+    if (v.birthdate && getAge(v.birthdate) < 18) { showUnder18(); return; }
+    if (!ok) return _gn.apply(this, arguments); // the normal flow reveals / flags the first three questions
+    clearErrorSummary(1);
+    start();
+  };
+  window.idvTryAgain_grokbot = function () { hideFail(); start(); };
+  window.idvStartOver_grokbot = function () {
+    hideFail(); state.partialLeadId = null;
+    try { sessionStorage.removeItem(SS); } catch (e) {}
+    resetUnder18();
+  };
+  // A new APPLY: the check runs again unless this applicant already passed (the server copies a prior verified result).
+  var _sa = startAs;
+  startAs = function (st) { state.idvPassed = false; return _sa(st); };
+  // Hosted-redirect return: restore step 1, read the result, resume at step 2.
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.get('idv_return') === '1') {
+      var st = JSON.parse(sessionStorage.getItem(SS) || 'null');
+      history.replaceState(null, '', location.pathname);
+      if (st && st.lead) {
+        startAs(st.s1.status || 'single');
+        document.getElementById('first_name').value = st.s1.first_name || '';
+        document.getElementById('last_name').value = st.s1.last_name || '';
+        if (st.s1.birthdate) { var b = document.getElementById('birthdate'); b.value = st.s1.birthdate; b.classList.remove('is-default'); state.birthdateTouched = true; }
+        if (st.s1.gender) setGender(st.s1.gender);
+        state.partialLeadId = st.lead; setBusy(true);
+        poll(8).then(handle).catch(showFail);
+      }
+    }
+  } catch (e) {}
+})();
+</script>
+
 </body>
 </html>
