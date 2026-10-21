@@ -9591,6 +9591,13 @@ body.idv-a-grokbot #idv-note-grokbot { display: block; }
     clearErrorSummary(1);
     start();
   };
+  // Review mode only (Amanda 9:10 PM CT): the under-18 block shows just "Come back when you're 18!" (no Start Over).
+  var _u18 = showUnder18;
+  showUnder18 = function () {
+    _u18.apply(this, arguments);
+    var m = document.getElementById('under18-msg');
+    if (m) m.innerHTML = '<div class="screen-headline" style="font-size:36px;">Come back when you&#39;re 18!</div>';
+  };
   window.idvTryAgain_grokbot = function () { hideFail(); start(); };
   window.idvStartOver_grokbot = function () {
     hideFail(); state.partialLeadId = null;
