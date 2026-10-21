@@ -12,7 +12,7 @@
   <script>
   // Review mode (_grokbot): hide the Casual options for signed-in reviewers only; real applicants keep them.
   (function () { try { if (sessionStorage.getItem('ihbc_review_token_grokbot')) { document.documentElement.classList.add('ihbc-review-grokbot');
-    var st = document.createElement('style'); st.textContent = '.ihbc-review-grokbot #btn-looking-casual{display:none!important}'; document.head.appendChild(st); } } catch (e) {} })();
+    var st = document.createElement('style'); st.textContent = '.ihbc-review-grokbot #btn-looking-casual{display:none!important}.ihbc-review-grokbot #recruit-single,.ihbc-review-grokbot #recruit-couple{display:none!important}.ihbc-review-grokbot #recruit-review-grokbot{display:block!important}'; document.head.appendChild(st); } } catch (e) {} })();
   </script>
   <!-- SANDBOX_grokbot (k5-s3y38-main_income): non-overlapping own income labels; no WMM -->
   <!-- SANDBOX_grokbot (k5-s3y37-main_ptloc): couples partner live defaults from own location; Add→EDIT when prefilled; no WMM -->
@@ -2919,6 +2919,10 @@
       <div class="recruit-section" id="recruit-couple" style="display:none;">
         <button class="btn btn-primary" id="share-partner-btn" onclick="sharePartnerLink()">Send your partner The Link</button>
         <button class="btn btn-friend-green" id="invite-friend-btn" style="margin-top:10px;" onclick="shareFriendLink()">Invite a Friend to Join</button>
+      </div>
+      <div class="recruit-section" id="recruit-review-grokbot" style="display:none;">
+        <div class="field-label" style="margin-bottom:12px;">Want to get guaranteed access to our Founding Cohort? Become a founding member for $99/year</div>
+        <button class="btn btn-primary" id="buy-membership-btn" onclick="location.href='/membership/'">Buy a Founding Membership</button>
       </div>
     </div>
   </div>
