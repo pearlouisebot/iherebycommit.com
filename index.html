@@ -5,6 +5,7 @@
   // Stripe reviewer path (_grokbot): when /review/ stored an access code for this tab, attach it to save-lead / submit-application so the server flags the rows is_test.
   (function () { try { var K = 'ihbc_review_token_grokbot', f = window.fetch.bind(window);
     window.fetch = function (input, init) { try { var t = sessionStorage.getItem(K), u = typeof input === 'string' ? input : (input && input.url) || '';
+      if (t && /\/functions\/v1\/(save-lead|submit-application)(\?|$)/.test(u) && typeof _rvNonUSGrokbot === 'function' && _rvNonUSGrokbot()) { return Promise.resolve(new Response(JSON.stringify({ ok: true, skipped: true }), { status: 200, headers: { 'Content-Type': 'application/json' } })); } // non-US review attempt: save nothing (_grokbot)
       if (t && /\/functions\/v1\/(save-lead|submit-application)(\?|$)/.test(u) && init && typeof init.body === 'string') { var b = JSON.parse(init.body);
         if (b && typeof b === 'object' && !Array.isArray(b)) { b.review_token = t; init = Object.assign({}, init, { body: JSON.stringify(b) }); } } } catch (e) {}
       return f(input, init); }; } catch (e) {} })();
@@ -3603,7 +3604,43 @@ function hasRevealedErrors(screenId) {
   const scr = document.getElementById('screen-' + screenId); if (!scr) return false;
   return Array.from(scr.querySelectorAll('.field-error.visible')).some(e => !_errUnrevealed(e));
 }
+// Review mode (_grokbot): US-only check on the applicant's own city (picked or typed; no IP / geolocation).
+var _RV_US_STATES = 'AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY PR GU VI AS MP'.split(' ');
+var _RV_US_NAMES = ['alabama','alaska','arizona','arkansas','california','colorado','connecticut','delaware','district of columbia','florida','georgia','hawaii','idaho','illinois','indiana','iowa','kansas','kentucky','louisiana','maine','maryland','massachusetts','michigan','minnesota','mississippi','missouri','montana','nebraska','nevada','new hampshire','new jersey','new mexico','new york','north carolina','north dakota','ohio','oklahoma','oregon','pennsylvania','rhode island','south carolina','south dakota','tennessee','texas','utah','vermont','virginia','washington','west virginia','wisconsin','wyoming','puerto rico','us','usa','u.s.','u.s.a.','united states','united states of america','america'];
+var _rvCountryNames = null;
+function _rvNames() {
+  if (_rvCountryNames) return _rvCountryNames; _rvCountryNames = {};
+  try { var dn = new Intl.DisplayNames(['en'], { type: 'region' }), A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for (var i = 0; i < 26; i++) for (var j = 0; j < 26; j++) { var c = A[i] + A[j], n = dn.of(c); if (n && n !== c) _rvCountryNames[n.toLowerCase()] = c; } } catch (e) {}
+  ['uk:GB','england:GB','scotland:GB','wales:GB','great britain:GB','uae:AE','south korea:KR','korea:KR','russia:RU','czech republic:CZ','holland:NL','the netherlands:NL'].forEach(function (p) { var q = p.split(':'); _rvCountryNames[q[0]] = q[1]; });
+  return _rvCountryNames;
+}
+// Country code a free-text place ends with: 'US', another ISO code, or null when unrecognised.
+// Rule: look at the last comma-separated part. A US state / "USA" -> US. A country name -> that country.
+// A 2-letter code counts as a country only if it is not also a US state code (CA, DE, IN... stay US). Anything else -> null (allowed).
+function _rvTextCountry(txt) {
+  var parts = String(txt || '').split(',').map(function (s) { return s.trim().replace(/\.$/, ''); }).filter(Boolean);
+  if (!parts.length) return null;
+  var last = parts[parts.length - 1], low = last.toLowerCase(), up = last.toUpperCase();
+  if (_RV_US_NAMES.indexOf(low) >= 0 || _RV_US_STATES.indexOf(up) >= 0) return 'US';
+  if (/^\d{5}(-\d{4})?$/.test(last)) return 'US';
+  var names = _rvNames(); if (names[low]) return names[low];
+  if (/^[A-Za-z]{2}$/.test(last)) { try { var n = new Intl.DisplayNames(['en'], { type: 'region' }).of(up); if (n && n !== up) return up; } catch (e) {} }
+  return null;
+}
+function _rvIsReviewGrokbot() { try { return !!sessionStorage.getItem('ihbc_review_token_grokbot'); } catch (e) { return false; } }
+function _rvNonUSGrokbot() {
+  try {
+    if (state.wya && state.wya.cc) return String(state.wya.cc).toUpperCase() !== 'US';
+    if (state.locationCountry) return state.locationCountry !== 'United States';
+    var typed = ['wya-q', 'intl_city_input'].map(function (id) { var el = document.getElementById(id); return el ? el.value : ''; }).filter(Boolean);
+    if (state.wya && state.wya.label) typed.push(state.wya.label);
+    for (var i = 0; i < typed.length; i++) { var c = _rvTextCountry(typed[i]); if (c && c !== 'US') return true; }
+  } catch (e) {}
+  return false;
+}
 async function goNext(screenId) {
+  if (screenId === 1 && _rvIsReviewGrokbot() && _rvNonUSGrokbot()) { showToast("currently we're only serving US customers"); return; }
   if (screenId === 2 && state.livesWithPartner === 'no') partnerCityPicker.commit(); // typed but not yet added
   if (screenId === 3) _commitPartnerLocationTyped(); // typed partner location not yet added
   // p3: Next tapped while Looking for is still settling (1.2s) only collapses it and reveals the next question,
