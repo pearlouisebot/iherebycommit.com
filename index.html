@@ -2351,6 +2351,7 @@
       </div>
       <div id="under18-msg">
         <div class="screen-headline" style="font-size:36px;">NOT<br>QUITE<br><span class="accent">YET.</span></div>
+        <p id="under18-dob" style="font-size:13px;color:var(--muted);line-height:1.7;"></p>
         <p style="font-size:13px;color:var(--muted);line-height:1.7;">This study is open to adults 18 and older. Come back when you're ready.</p>
         <button class="btn btn-outline" style="margin-top:8px;" onclick="resetUnder18()">← START OVER</button>
       </div>
@@ -4252,6 +4253,9 @@ function getAge(dateStr) {
 }
 
 function showUnder18() {
+  const _dob = (document.getElementById('birthdate')?.value || '').split('-'); // YYYY-MM-DD -> MM/DD/YYYY
+  const _dobEl = document.getElementById('under18-dob');
+  if (_dobEl) _dobEl.textContent = _dob.length === 3 ? 'Date of birth entered: ' + _dob[1] + '/' + _dob[2] + '/' + _dob[0] : '';
   document.getElementById('screen1-fields').style.display = 'none';
   document.getElementById('under18-msg').classList.add('visible');
   document.getElementById('screen1-next-btn').style.display = 'none';
